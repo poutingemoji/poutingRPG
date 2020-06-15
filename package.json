@@ -1,0 +1,16 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "poutingemoji",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.2.0"
+  },
+  "prefix": "!",
+	"token": "NjYzOTI4NDI3NjU2NTExNTA4.XuW6mQ.PmEAunnd6T6qG2L99b4UGiROKo0"
+}
