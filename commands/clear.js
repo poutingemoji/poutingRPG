@@ -1,6 +1,7 @@
 module.exports = {
 	name: 'clear',
 	description: 'Clear up to 99 messages.',
+	guildOnly: true,
 	execute(message, args) {
 		const amount = parseInt(args[0]) + 1;
 

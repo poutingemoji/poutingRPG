@@ -1,46 +1,50 @@
-const { prefix } = require('../config.json');
+const { prefix, color } = require('../config.json');
+const Discord = require('discord.js');
 
 module.exports = {
 	name: 'help',
 	description: 'List all of my commands or info about a specific command.',
-	aliases: ['commands'],
 	usage: '[command name]',
-	cooldown: 5,
+	guildOnly: true,
+	cooldown: 1,
 	execute(message, args) {
-		const data = [];
-		const { commands } = message.client;
+		const data = []
+		const { commands } = message.client
 
 		if (!args.length) {
-			data.push('Here\'s a list of all my commands:');
-			data.push(commands.map(command => command.name).join(', '));
-			data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
-
+			const helpEmbed = new Discord.MessageEmbed()
+			.setColor(color)
+			.setAuthor('poutingbot Commands', 'https://cdn.discordapp.com/attachments/722720878932262952/722909293480902737/Tower-of-God-Anak_1.png')
+			.setDescription(commands.map(command => command.name).join(', '))
+			.setThumbnail('https://cdn.discordapp.com/attachments/722720878932262952/722909293480902737/Tower-of-God-Anak_1.png')
+			.addFields(
+				{ name: '**Commands**', value: `${prefix}help commands`, inline: true },
+				{ name: '**Commands**', value: `${prefix}help commands`, inline: true },
+				{ name: '**Commands**', value: `${prefix}help commands`, inline: true },
+				{ name: '**Commands**', value: `${prefix}help commands`, inline: true },
+				{ name: '**Commands**', value: `${prefix}help commands`, inline: true },
+				{ name: '**Commands**', value: `${prefix}help commands`, inline: true },
+			)
+			data.push(helpEmbed)
 			return message.author.send(data, { split: true })
 				.then(() => {
-					if (message.channel.type === 'dm') return;
-					message.reply('I\'ve sent you a DM with all my commands!');
+					if (message.channel.type === 'dm') return
 				})
 				.catch(error => {
-					console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
-					message.reply('it seems like I can\'t DM you!');
-				});
+					console.error(`Could not send help DM to ${message.author.tag}.\n`, error)
+					message.reply('Yo dawg, ')
+			
+			message.channel.send(data, { split: true })	
+			});
 		}
-
+		
 		const name = args[0].toLowerCase();
 		const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
-
-		if (!command) {
-			return message.reply('that\'s not a valid command!');
-		}
-
-		data.push(`**Name:** ${command.name}`);
-
-		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
-		if (command.description) data.push(`**Description:** ${command.description}`);
-		if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
-
-		data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
-
-		message.channel.send(data, { split: true });
+		console.log(args)
+		if (args == 'commands') {
+			data.push("`" + prefix + command.name + "`")
+			data.push(command.description)
+			message.channel.send(data, { split: true })	
+		}	
 	},
 };
