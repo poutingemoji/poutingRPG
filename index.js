@@ -5,11 +5,18 @@ const { prefix, token } = require('./config.json');
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
-for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
+const commandFiles = [
+	fs.readdirSync('./commands').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./commands/fun').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./commands/moderation').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./commands/playerinfo').filter(file => file.endsWith('.js')),
+]
+const commandTypes = ['', 'fun/', 'moderation/', 'playerinfo/']
+for (var commandTypeIndex = 0; commandTypeIndex < 4; commandTypeIndex++) {
+	for (const file of commandFiles[commandTypeIndex]) {
+		const command = require(`./commands/${commandTypes[commandTypeIndex]}${file}`);
+		client.commands.set(command.name, command);
+	}
 }
 
 const cooldowns = new Discord.Collection();
