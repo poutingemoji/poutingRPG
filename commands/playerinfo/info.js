@@ -1,3 +1,4 @@
+const {color} = require('../../config.json');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 function getMemberPosition() {
@@ -6,6 +7,7 @@ function getMemberPosition() {
 module.exports = {
 	name: 'info',
 	description: 'Display info about yourself.',
+	guildOnly: true,
 	execute(message) {
 		let user;
 		if (message.mentions.users.first()) {
@@ -16,7 +18,7 @@ module.exports = {
 		
 		const member = message.guild.member(user);
 		const embed = new Discord.MessageEmbed()
-			.setColor('#b0daaa')
+			.setColor(color)
 			.setThumbnail(user.displayAvatarURL())
 			.setAuthor(user.username + ' | ' + user.id)
 			.addField("Account Created On:", `${user.createdAt}`) 

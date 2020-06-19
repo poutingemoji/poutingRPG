@@ -1,12 +1,13 @@
-const { prefix, color} = require('../config.json');
+const { prefix, color} = require('../../config.json');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 module.exports = {
 	name: 'recommend',
 	description: 'Recommend an anime to me.',
-	aliases: ['commands'],
+	aliases: ['anime'],
 	usage: '[command name]',
-	cooldown: 3,
+    cooldown: 3,
+    guildOnly: true,
 	execute(message, args) {
 		const data = [];
         const { commands } = message.client;

@@ -1,8 +1,9 @@
 const Discord = require('discord.js');
 module.exports = {
 	name: 'position',
-	description: 'Beep!',
+	description: 'just a tower of god rank and position randomizer',
 	cooldown: 3,
+	guildOnly: true,
 	execute(message) {
 		const positions = {
 			[0] : {

@@ -1,6 +1,8 @@
 module.exports = {
 	name: 'box',
-	description: 'Beep!',
+	description: 'uhhh... eee urrr?',
+	fun: true,
+	guildOnly: true,
 	execute(message) {
 		async function editMessage() {
 			try {
