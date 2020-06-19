@@ -11,16 +11,12 @@ module.exports = {
 	usage: '[command name]',
 	cooldown: 1,
 	execute(message, args) {
-		const capitalize = (s) => {
-			if (typeof s !== 'string') return ''
-			return s.charAt(0).toUpperCase() + s.slice(1)
-		  }
 		const data = []
 		if (!args.length && message.channel.type !== 'dm') {
 			const helpEmbed = new Discord.MessageEmbed()
 			.setColor(color)
-			.setAuthor('poutingbot Commands', 'https://cdn.discordapp.com/attachments/722720878932262952/722909293480902737/Tower-of-God-Anak_1.png')
-			.setThumbnail('https://cdn.discordapp.com/attachments/722720878932262952/722909293480902737/Tower-of-God-Anak_1.png')
+			.setAuthor('poutingbot Commands', 'https://cdn.discordapp.com/attachments/722720878932262952/723594329477611600/Tower-of-God-Anak_1.png')
+			.setThumbnail('https://cdn.discordapp.com/attachments/722720878932262952/723594329477611600/Tower-of-God-Anak_1.png')
 			.addFields(
 				{ name: '**Player Info**', value: `${prefix}help playerinfo`, inline: true },
 				{ name: '**Moderation**', value: `${prefix}help moderation`, inline: true },
@@ -46,11 +42,18 @@ module.exports = {
 					data.push(description)
 				})
 				console.log(data)
+				if (helpCategory === 'playerinfo') {
+					helpCategory = 'Player Info'
+				} else if (helpCategory === 'moderation') {
+					helpCategory = 'Moderation'
+				} else if (helpCategory === 'fun') {
+					helpCategory = 'Fun'
+				}
 				const helpEmbed = new Discord.MessageEmbed()
 					.setColor(color)
-					.setTitle(capitalize(helpCategory))
+					.setTitle(helpCategory)
 					.setDescription(data)
-					.setThumbnail('https://cdn.discordapp.com/attachments/722168603620933714/723442881368555550/latest.png')
+					.setThumbnail('https://cdn.discordapp.com/attachments/722720878932262952/723594429314629702/latest.png')
 				message.author.send(helpEmbed)	
 			})	
 		}	
