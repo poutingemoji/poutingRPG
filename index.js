@@ -16,6 +16,10 @@ const cooldowns = new Discord.Collection();
 
 client.once('ready', () => {
 	console.log('Ready!');
+	client.user.setActivity(".help", {
+		type: "STREAMING",
+		url: "https://www.twitch.tv/pokimane"
+	  });
 });
 
 client.on('message', message => {
