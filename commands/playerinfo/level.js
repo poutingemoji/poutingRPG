@@ -1,18 +1,17 @@
 const Discord = require('discord.js')
-const { MessageAttachment } = Discord
-const { join } = require(path)
-const {color} = require('../../config.json');
 const { createCanvas, loadImage } = require('canvas')
+const { MessageAttachment } = Discord
+const { color } = require('../../config.json');
+
 
 let xp = require('../../xp.json');
 module.exports = {
 	name: 'level',
-	aliases: ['rank'],
+	aliases: ['rank', 'pocket'],
 	description: 'check ur current level.',
 	guildOnly: true,
 	cooldown: 3,
 	execute(message) {
-		console.log('executed')
 		let user
 		if (message.mentions.users.first()) {
 			user = message.mentions.users.first();
@@ -32,50 +31,52 @@ module.exports = {
 		let nxtLevelXP = curlevel * 300
 		let difference = nxtLevelXP - curxp
 		
-		const canvas = createCanvas(1000, 333)
-		const ctx = canvas.getContext('2d')
-		const background = await loadImage(`https://cdn.discordapp.com/attachments/722720878932262952/723017703581024346/Main_position_7.png`)
-		ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
+		async function createImage() {
+			const canvas = createCanvas(311, 142)
+			const ctx = canvas.getContext('2d');
+			const background = await loadImage(`https://cdn.discordapp.com/attachments/722720878932262952/723017703581024346/Main_position_7.png`)
+			ctx.drawImage(background, 0 , 0, canvas.width, canvas.height)
+			// Since the image takes time to load, you should await it
 
-		ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = '#ffffff'
-		ctx.globalAlpha = 0.2
-		ctx.fillStyle = '#000000'
-		ctx.fillRect(180, 216, 770, 65)
-		ctx.fill()
-		ctx.globalAlpha = 1
-		ctx.strokeRect(100, 216, 770, 65)
-		ctx.stroke()
 
-		ctx.fillStyle = "#e67e22"
-		ctx.globalAlpha = 0.6
-		ctx.fillRect(180, 216, ((100 / curlevel * 300) * curxp) * 7.7, 65)
-		ctx.fill()
-		ctx.globalAlpha = 1
+            ctx.beginPath()
+            ctx.lineWidth = 4
+            ctx.strokeStyle = '#ffffff'
+            ctx.globalAlpha = 0.2
+            ctx.fillStyle = '#23272A'
+            ctx.fillRect(180, 216, 770, 65)
+            ctx.fill()
+            ctx.globalAlpha = 1
+            ctx.strokeRect(100, 216, 770, 65)
+            ctx.stroke()
 
-		ctx.font = "30px Arial"
-		ctx.textAlign = "center"
-		ctx.fillStyle = '#ffffff'
-		ctx.fillText(`${curxp} / ${curlevel * 300} XP`, 600, 260)
+            ctx.fillStyle = "#e67e22"
+            ctx.globalAlpha = 0.6
+            ctx.fillRect(180, 216, ((100 / curlevel * 300) * curxp) * 7.7, 65)
+            ctx.fill()
+            ctx.globalAlpha = 1
 
-		ctx.textAlign = 'left'
-		ctx.fillText(user.username, 300, 120)
+            ctx.font = "16px Arial"
+            ctx.textAlign = "center"
+            ctx.fillStyle = '#ffffff'
+            ctx.fillText(`${curxp} / ${curlevel * 300} XP`, 170, 62)
 
-		ctx.font = '50px Arial'
-		ctx.fillText('Level:', 300, 180)
-		ctx.fillText(curlevel, 470, 180)
+            ctx.textAlign = 'left'
+            ctx.fillText(user.username, 100, 20)
 
-		ctx.arc(170, 160, 120, 0, Math.PI *2, true)
-		ctx.lineWidth = 6
-		ctx.strokeStyle = '#ffffff'
-		ctx.stroke()
-		ctx.closePath()
-		ctx.clip()
-		const avatar = await loadImage(member.user.displayAvatarURL())
-		ctx.drawings(avatar, 40, 40, 250, 250)
-
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'rank.png')
-		message.channel.send(`${user.username}'s Rank`, attachment)
+            ctx.font = '16px Arial'
+			ctx.fillText('Level:', 100, 41)
+			//x, y,
+            ctx.fillText(curlevel, 143, 41)
+			//x, y,
+			const avatar = await loadImage(user.displayAvatarURL({ format: 'jpg' }))
+			ctx.drawImage(avatar, 5, 5, 85, 85)
+			//x, y, width, height
+			const attachment = new MessageAttachment(canvas.toBuffer(), 'rank.png')
+			message.channel.send(`Opening your pocket...`, attachment);
+		}
+		createImage()
 	},
 };
+
+// 

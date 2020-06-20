@@ -30,7 +30,6 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-	console.log('here')
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	let xpAdd = Math.floor(Math.random() * 7) + 8
