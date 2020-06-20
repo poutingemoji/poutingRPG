@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { prefix, token } = require('./config.json');
-
+const { prefix, token, color } = require('./config.json');
+let xp = require('./xp.json')
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
@@ -30,7 +30,35 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
+	console.log('here')
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+	let xpAdd = Math.floor(Math.random() * 7) + 8
+	console.log(xpAdd)
+
+	if(!xp[message.author.id]) {
+		xp[message.author.id] = {
+			xp: 0,
+			level: 1,
+		}
+	}
+
+	let curxp = xp[message.author.id].xp
+	let curlevel = xp[message.author.id].level
+	let nxtLvl = xp[message.author.id].level * 300
+
+	xp[message.author.id].xp = curxp + xpAdd
+
+	if (nxtLvl <= xp[message.author.id].xp) {
+		xp[message.author.id].level = curlevel + 1
+		message.channel.send(`ur level ${curlevel + 1} now bro, good shit`)
+	}
+
+	fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
+		if(err) console.log(err)
+	})
+
+	console.log(`level is ${xp[message.author.id].level}`)
 
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
@@ -43,6 +71,8 @@ client.on('message', message => {
 	if (command.guildOnly && message.channel.type !== 'text') {
 		return message.reply('I can\'t execute that command inside DMs!');
 	}
+	
+	if (command.ownerOnly && message.author.id !== "257641125135908866") return;
 
 	if (command.args && !args.length) {
 		let reply = `You didn't provide any arguments, ${message.author}!`;

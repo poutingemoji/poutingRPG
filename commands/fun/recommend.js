@@ -73,16 +73,24 @@ module.exports = {
                 Rating: 7,
             },
         }
-        var animeIndex = Math.floor(Math.random() * Object.keys(animeRecommendations).length);
+        var animeIndex = Math.floor(Math.random() * Object.keys(animeRecommendations).length)
         var anime = animeRecommendations[animeIndex]
-        var currentAuthor = client.guilds.resolve(message.guild).members.resolve(anime.AuthorID).user
-        const exampleEmbed = new Discord.MessageEmbed()
-        .setColor(color)
-        .setTitle(anime.Name)
-        .setAuthor(currentAuthor.username, currentAuthor.displayAvatarURL())
-        .setDescription(`Rating: ${anime.Rating}/10`)
-        .setImage(anime.Image)
-    console.log(anime.Name)
-    message.channel.send(exampleEmbed);
-	},
-};
+        async function recommendAnime() {
+            try {
+            const currentAuthor =  await client.users.fetch(anime.AuthorID)
+                console.log(currentAuthor)
+                const exampleEmbed = new Discord.MessageEmbed()
+                    .setColor(color)
+                    .setTitle(anime.Name)
+                    .setAuthor(currentAuthor.username, currentAuthor.displayAvatarURL())
+                    .setDescription(`test`)
+                    .setImage(anime.Image)
+                console.log(anime.Name)
+                message.channel.send(exampleEmbed)
+            } catch(err) {
+                console.error('couldnt grab author')
+            }
+        }
+        recommendAnime()
+	}
+}

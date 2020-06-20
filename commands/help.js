@@ -3,13 +3,10 @@ const fs = require('fs');
 const { prefix, color } = require('../config.json');
 const Discord = require('discord.js');
 
-
-
 module.exports = {
 	name: 'help',
 	description: 'List all of my commands or info about a specific command.',
 	usage: '[command name]',
-	cooldown: 1,
 	execute(message, args) {
 		const data = []
 		if (!args.length && message.channel.type !== 'dm') {
@@ -18,9 +15,9 @@ module.exports = {
 			.setAuthor('poutingbot Commands', 'https://cdn.discordapp.com/attachments/722720878932262952/723594329477611600/Tower-of-God-Anak_1.png')
 			.setThumbnail('https://cdn.discordapp.com/attachments/722720878932262952/723594329477611600/Tower-of-God-Anak_1.png')
 			.addFields(
-				{ name: '**Player Info**', value: `${prefix}help playerinfo`, inline: true },
-				{ name: '**Moderation**', value: `${prefix}help moderation`, inline: true },
-				{ name: '**Fun**', value: `${prefix}help fun`, inline: true },
+				{ name: 'Player Info', value: `${prefix}help playerinfo`, inline: true },
+				{ name: 'Moderation', value: `${prefix}help moderation`, inline: true },
+				{ name: 'Fun', value: `${prefix}help fun`, inline: true },
 			)
 			data.push(helpEmbed)
 			return message.author.send(data, { split: true })
