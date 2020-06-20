@@ -26,11 +26,11 @@ module.exports = {
 			}
 		}
 
-		let curxp = xp[message.author.id].xp
-		let curlevel = xp[message.author.id].level
+		let curxp = xp[user.id].xp
+		let curlevel = xp[user.id].level
 		let nxtLevelXP = curlevel * 300
 		let difference = nxtLevelXP - curxp
-		
+		console.log(user.id)
 		async function createImage() {
 			const canvas = createCanvas(311, 142)
 			const ctx = canvas.getContext('2d');
