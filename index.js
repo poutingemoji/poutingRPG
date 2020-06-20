@@ -30,8 +30,8 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
+	if (message.author.bot) return
 	let xpAdd = Math.floor(Math.random() * 7) + 8
 	console.log(xpAdd)
 
@@ -56,8 +56,10 @@ client.on('message', message => {
 	fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
 		if(err) console.log(err)
 	})
-
+	console.log(message.author.id)
 	console.log(`level is ${xp[message.author.id].level}`)
+
+	if (!message.content.startsWith(prefix)) return;
 
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
