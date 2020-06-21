@@ -33,7 +33,7 @@ client.on('message', message => {
 
 	if (message.author.bot) return
 	let xpAdd = Math.floor(Math.random() * 7) + 8
-	console.log(xpAdd)
+	
 
 	if(!xp[message.author.id]) {
 		xp[message.author.id] = {
@@ -56,7 +56,9 @@ client.on('message', message => {
 	fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
 		if(err) console.log(err)
 	})
-	console.log(message.author.id)
+	console.log(message.author.username)
+	console.log(message.content)
+	console.log(curxp, nxtLvl)
 	console.log(`level is ${xp[message.author.id].level}`)
 
 	if (!message.content.startsWith(prefix)) return;
