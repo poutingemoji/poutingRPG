@@ -5,7 +5,8 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/user-stats', {
+var url = process.env.MONGODB_URI || 'mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/user-stats'
+mongoose.connect(url, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
