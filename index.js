@@ -12,15 +12,15 @@ mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.ne
 const userStats = require('./models/user-stats')
 
 const commandFiles = [
-	fs.readdirSync('./Commands').filter(file => file.endsWith('.js')),
-	fs.readdirSync('./Commands/fun').filter(file => file.endsWith('.js')),
-	fs.readdirSync('./Commands/moderation').filter(file => file.endsWith('.js')),
-	fs.readdirSync('./Commands/playerinfo').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./commands').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./commands/fun').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./commands/moderation').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./commands/playerinfo').filter(file => file.endsWith('.js')),
 ]
 const commandTypes = ['', 'fun/', 'moderation/', 'playerinfo/']
 for (var commandTypeIndex = 0; commandTypeIndex < 4; commandTypeIndex++) {
 	for (const file of commandFiles[commandTypeIndex]) {
-		const command = require(`./Commands/${commandTypes[commandTypeIndex]}${file}`);
+		const command = require(`./commands/${commandTypes[commandTypeIndex]}${file}`);
 		client.commands.set(command.name, command);
 	}
 }
