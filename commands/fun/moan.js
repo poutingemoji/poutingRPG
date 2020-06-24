@@ -1,9 +1,10 @@
 module.exports = {
 	name: 'moan',
 	description: 'get your mind out of the gutters',
-	fun: true,
 	aliases: ['orgasm'],
 	cooldown: 3,
+	usage: '[command name]',
+	args: false,
 	guildOnly: true,
 	execute(message) {
 		message.channel.send("**Gon:** If I can't escape, I will attack!")

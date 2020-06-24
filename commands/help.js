@@ -6,7 +6,11 @@ const Discord = require('discord.js');
 module.exports = {
 	name: 'help',
 	description: 'List all of my commands or info about a specific command.',
+	aliases: [],
+	cooldown: 0,
 	usage: '[command name]',
+	args: false,
+	guildOnly: false,
 	execute(message, args) {
 		const data = []
 		if (!args.length && message.channel.type !== 'dm') {
@@ -32,9 +36,9 @@ module.exports = {
 		}
 		var helpCategory = args.toString()
 		if (['playerinfo','moderation', 'fun'].includes(helpCategory) && message.channel.type === 'dm') {
-			fs.readdir(`./commands/${helpCategory}`, (err, files) => {
+			fs.readdir(`./Commands/${helpCategory}`, (err, files) => {
 				files.forEach(file => {
-					const {name, description} = require(`../commands/${helpCategory}/${file.slice(0,-3)}`)
+					const {name, description} = require(`../Commands/${helpCategory}/${file.slice(0,-3)}`)
 					data.push("`" + prefix + name + "`")
 					data.push(description)
 				})

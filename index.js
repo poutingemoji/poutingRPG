@@ -1,20 +1,26 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 const { prefix, token, color } = require('./config.json');
-let xp = require('./xp.json')
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
+const mongoose = require('mongoose')
+mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/user-stats', {
+	useUnifiedTopology: true,
+	useNewUrlParser: true
+})
+const userStats = require('./models/user-stats')
+
 const commandFiles = [
-	fs.readdirSync('./commands').filter(file => file.endsWith('.js')),
-	fs.readdirSync('./commands/fun').filter(file => file.endsWith('.js')),
-	fs.readdirSync('./commands/moderation').filter(file => file.endsWith('.js')),
-	fs.readdirSync('./commands/playerinfo').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./Commands').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./Commands/fun').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./Commands/moderation').filter(file => file.endsWith('.js')),
+	fs.readdirSync('./Commands/playerinfo').filter(file => file.endsWith('.js')),
 ]
 const commandTypes = ['', 'fun/', 'moderation/', 'playerinfo/']
 for (var commandTypeIndex = 0; commandTypeIndex < 4; commandTypeIndex++) {
 	for (const file of commandFiles[commandTypeIndex]) {
-		const command = require(`./commands/${commandTypes[commandTypeIndex]}${file}`);
+		const command = require(`./Commands/${commandTypes[commandTypeIndex]}${file}`);
 		client.commands.set(command.name, command);
 	}
 }
@@ -30,35 +36,42 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-
 	if (message.author.bot) return
-	let xpAdd = Math.floor(Math.random() * 7) + 8
-	
-	if(!xp[message.author.id]) {
-		xp[message.author.id] = {
-			xp: 0,
-			level: 1,
-		}
-	}
+	let expAdd = Math.floor(Math.random() * 7) + 8
+	userStats.findOne({
+		userID: message.author.id,
+		serverID: message.guild.id,
+	}, (err, currentUserStats) => {
+		if (err) console.log(err);
+		if (!currentUserStats) {
+            const newStats = new userStats({
+                userID: message.author.id,
+                serverID: message.guild.id,
+                totalExp: expAdd,
+                currentExp: expAdd,
+                level: 1,
+                points: 0,
+                position: 'No Position',
+                irregular: false,
+                rank: 30,
+            })
+			newStats.save().catch(err => console.log(err))
+		} else {
+			let currentExp = currentUserStats.currentExp
+			let currentLevel = currentUserStats.level
+			let nextLevel = Math.floor(100 *(Math.pow(currentLevel, 1.04)))
 
-	let curxp = xp[message.author.id].xp
-	let curlevel = xp[message.author.id].level
-	let nxtLvl = xp[message.author.id].level * 300
+			currentUserStats.totalExp = currentUserStats.totalExp + expAdd
+			currentUserStats.currentExp = currentUserStats.currentExp + expAdd
 
-	xp[message.author.id].xp = curxp + xpAdd
-
-	if (nxtLvl <= xp[message.author.id].xp) {
-		xp[message.author.id].level = curlevel + 1
-		message.channel.send(`ur level ${curlevel + 1} now bro, good shit`)
-	}
-
-	fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
-		if(err) console.log(err)
+			if(nextLevel <= currentExp) {
+				currentUserStats.level = currentLevel + 1
+				currentUserStats.currentExp = 0
+				message.channel.send(`ur level ${currentLevel + 1} now bro, good shit`)
+			}
+			currentUserStats.save().catch(err => console.log(err))
+		} 
 	})
-	console.log(message.author.username)
-	console.log(message.content)
-	console.log(curxp, nxtLvl)
-	console.log(`level is ${xp[message.author.id].level}`)
 
 	if (!message.content.startsWith(prefix)) return;
 

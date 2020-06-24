@@ -1,12 +1,13 @@
 const {color} = require('../../config.json');
 const Discord = require('discord.js');
-const client = new Discord.Client();
-function getMemberPosition() {
-	message.guild.members.cache
-}
+
 module.exports = {
 	name: 'info',
 	description: 'Display info about yourself.',
+	aliases: [],
+	cooldown: 2,
+	usage: '[command name]',
+	args: false,
 	guildOnly: true,
 	execute(message) {
 		let user;

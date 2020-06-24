@@ -1,7 +1,12 @@
 module.exports = {
 	name: 'clear',
 	description: 'Clear up to 99 messages.',
+	aliases: ['purge', 'wipe'],
+	cooldown: 3,
+	usage: '[command name]',
+	args: true,
 	guildOnly: true,
+	
 	execute(message, args) {
 		const amount = parseInt(args[0]) + 1;
 		if (isNaN(amount)) {

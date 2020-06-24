@@ -4,10 +4,12 @@ const client = new Discord.Client();
 module.exports = {
 	name: 'recommend',
 	description: 'Recommend an anime to me.',
-	aliases: ['anime'],
+    aliases: [],
+	cooldown: 3,
 	usage: '[command name]',
-    cooldown: 3,
+	args: false,
     guildOnly: true,
+    
 	execute(message, args) {
 		const data = [];
         const { commands } = message.client;

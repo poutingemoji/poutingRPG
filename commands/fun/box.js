@@ -1,8 +1,12 @@
 module.exports = {
 	name: 'box',
 	description: 'uhhh... eee urrr?',
-	fun: true,
+	aliases: [],
+	cooldown: 0,
+	usage: '[command name]',
+	args: false,
 	guildOnly: true,
+
 	execute(message) {
 		async function editMessage() {
 			try {

@@ -1,8 +1,21 @@
 const Discord = require('discord.js');
+const fs = require('fs');
+const { positionColors } = require('../../config.json');
+
+const mongoose = require('mongoose')
+mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/user-stats', {
+	useUnifiedTopology: true,
+	useNewUrlParser: true
+})
+const userStats = require('../../models/user-stats')
+
 module.exports = {
 	name: 'position',
-	description: 'just a tower of god rank and position randomizer',
-	cooldown: 3,
+	description: 'tower of god rank and position randomizer',
+	aliases: [],
+	cooldown: 1,
+	usage: '[command name]',
+	args: false,
 	guildOnly: true,
 	execute(message) {
 		const positions = {
@@ -32,14 +45,36 @@ module.exports = {
 				Color: "#748394",
 			}
 		}
-		const ranks = ["an Irregular", "an A-rank", "a B-rank", "a C-rank", "a D-rank", "an E-rank", "a F-rank"]
-		var positionIndex = Math.floor(Math.random() * Object.keys(positions).length)
-		var position = positions[positionIndex]
-		var rank = ranks[Math.floor(Math.random() * Object.keys(ranks).length)]
-		const storyEmbed = new Discord.MessageEmbed()
-        .setColor(position.Color)
-        .setDescription(`You are ${rank} ${position.Name}.`)
+		const positionIndex = Math.floor(Math.random() * Object.keys(positions).length)
+		const position = positions[positionIndex]
+		const ranks = ['A', 'B', 'C', 'D', 'E', 'F']
+		const rankIndex = Math.floor(Math.random() * 30) + 1  
+		const rankLetter = ranks[Math.ceil(rankIndex/5) - 1]
+		let rankNumber = rankIndex % 5
+		if (rankNumber == 0) {
+			rankNumber = 5
+		}
+		const isIrregular = Math.random() >= 0.95
+		let description 
+		if (isIrregular) {
+			description = `You will bring great change and chaos to the tower, ${rankLetter}-Rank ${rankNumber} ${position.Name}.`
+		} else {
+			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`
+		}
+		const positionEmbed = new Discord.MessageEmbed()
+		.setColor(positionColors[position.Name])
+        .setDescription(description)
         .setImage(position.Image)
-		message.channel.send(storyEmbed)
-	},
+		message.channel.send(positionEmbed)
+		userStats.findOne({
+			userID: message.author.id,
+			serverID: message.guild.id,
+		}, (err, currentUserStats) => {
+			if (err) console.log(err);
+			currentUserStats.position = position.Name
+			currentUserStats.irregular = isIrregular
+			currentUserStats.rank = rankIndex
+			currentUserStats.save().catch(err => console.log(err))
+		})
+	}
 };
