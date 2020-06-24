@@ -68,7 +68,6 @@ module.exports = {
 		message.channel.send(positionEmbed)
 		userStats.findOne({
 			userID: message.author.id,
-			serverID: message.guild.id,
 		}, (err, currentUserStats) => {
 			if (err) console.log(err);
 			currentUserStats.position = position.Name

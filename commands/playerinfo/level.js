@@ -133,7 +133,6 @@ module.exports = {
 
 		userStats.findOne({
 			userID: user.id,
-			serverID: message.guild.id,
 		}, (err, currentUserStats) => {
 			if (err) console.log(err);
 			if (!currentUserStats) {

@@ -10,6 +10,7 @@ mongoose.connect(url, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
+
 const userStats = require('./models/user-stats')
 
 const commandFiles = [
@@ -41,13 +42,11 @@ client.on('message', message => {
 	let expAdd = Math.floor(Math.random() * 7) + 8
 	userStats.findOne({
 		userID: message.author.id,
-		serverID: message.guild.id,
 	}, (err, currentUserStats) => {
 		if (err) console.log(err);
 		if (!currentUserStats) {
             const newStats = new userStats({
                 userID: message.author.id,
-                serverID: message.guild.id,
                 totalExp: expAdd,
                 currentExp: expAdd,
                 level: 1,
