@@ -1,6 +1,7 @@
 {
 	"prefix": ".",
-	"token": "NjYzOTI4NDI3NjU2NTExNTA4.XuW6mQ.PmEAunnd6T6qG2L99b4UGiROKo0",
+	"token": "x3wqXZlgGrQ5xWnD6_0corfbCKV3b66C",
+	"mongodbkey": "mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/Userstats",
 	"color": "#92b096",
 	"positionColors": {
 		"Fisherman": "#a2716b",

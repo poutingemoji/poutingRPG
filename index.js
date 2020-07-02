@@ -1,17 +1,17 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { prefix, token, color } = require('./config.json');
+const { prefix, token, mongodbkey } = require('./config.json');
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 const mongoose = require('mongoose')
-var url = process.env.MONGODB_URI || 'mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/user-stats'
+var url = process.env.MONGODB_URI || mongodbkey
 mongoose.connect(url, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
 
-const userStats = require('./models/user-stats')
+const Userstat = require('./models/userstat')
 
 const commandFiles = [
 	fs.readdirSync('./commands').filter(file => file.endsWith('.js')),
@@ -19,6 +19,7 @@ const commandFiles = [
 	fs.readdirSync('./commands/moderation').filter(file => file.endsWith('.js')),
 	fs.readdirSync('./commands/playerinfo').filter(file => file.endsWith('.js')),
 ]
+
 const commandTypes = ['', 'fun/', 'moderation/', 'playerinfo/']
 for (var commandTypeIndex = 0; commandTypeIndex < 4; commandTypeIndex++) {
 	for (const file of commandFiles[commandTypeIndex]) {
@@ -40,12 +41,12 @@ client.once('ready', () => {
 client.on('message', message => {
 	if (message.author.bot) return
 	let expAdd = Math.floor(Math.random() * 7) + 8
-	userStats.findOne({
+	Userstat.findOne({
 		userID: message.author.id,
-	}, (err, currentUserStats) => {
+	}, (err, currentUserstat) => {
 		if (err) console.log(err);
-		if (!currentUserStats) {
-            const newStats = new userStats({
+		if (!currentUserstat) {
+            const userstat = new Userstat({
                 userID: message.author.id,
                 totalExp: expAdd,
                 currentExp: expAdd,
@@ -55,21 +56,21 @@ client.on('message', message => {
                 irregular: false,
                 rank: 30,
             })
-			newStats.save().catch(err => console.log(err))
+			userstat.save().catch(err => console.log(err))
 		} else {
-			let currentExp = currentUserStats.currentExp
-			let currentLevel = currentUserStats.level
+			let currentExp = currentUserstat.currentExp
+			let currentLevel = currentUserstat.level
 			let nextLevel = Math.floor(100 *(Math.pow(currentLevel, 1.04)))
 
-			currentUserStats.totalExp = currentUserStats.totalExp + expAdd
-			currentUserStats.currentExp = currentUserStats.currentExp + expAdd
+			currentUserstat.totalExp = currentUserstat.totalExp + expAdd
+			currentUserstat.currentExp = currentUserstat.currentExp + expAdd
 
 			if(nextLevel <= currentExp) {
-				currentUserStats.level = currentLevel + 1
-				currentUserStats.currentExp = 0
+				currentUserstat.level = currentLevel + 1
+				currentUserstat.currentExp = 0
 				message.channel.send(`ur level ${currentLevel + 1} now bro, good shit`)
 			}
-			currentUserStats.save().catch(err => console.log(err))
+			currentUserstat.save().catch(err => console.log(err))
 		} 
 	})
 

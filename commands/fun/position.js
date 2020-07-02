@@ -7,7 +7,7 @@ mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.ne
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
-const userStats = require('../../models/user-stats')
+const userStats = require('../../models/userstat')
 
 module.exports = {
 	name: 'position',

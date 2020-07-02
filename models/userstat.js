@@ -11,5 +11,5 @@ const userStatSchema = mongoose.Schema({
     rank: Number,
 })
 
-module.exports = mongoose.model('userStats', userStatSchema)
+module.exports = mongoose.model('Userstat', userStatSchema)
 
