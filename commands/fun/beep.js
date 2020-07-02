@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'beep',
 	description: 'Beep boop. Beep Boop.',
-	aliases: ['orgasm'],
+	aliases: [],
 	cooldown: 3,
 	usage: '[command name]',
 	args: false,

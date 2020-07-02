@@ -7,7 +7,7 @@ mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.ne
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
-const userStats = require('../../models/userstat')
+const userStat = require('../../models/userstat')
 
 module.exports = {
 	name: 'position',
@@ -66,14 +66,14 @@ module.exports = {
         .setDescription(description)
         .setImage(position.Image)
 		message.channel.send(positionEmbed)
-		userStats.findOne({
+		userStat.findOne({
 			userID: message.author.id,
-		}, (err, currentUserStats) => {
+		}, (err, currentUserstat) => {
 			if (err) console.log(err);
-			currentUserStats.position = position.Name
-			currentUserStats.irregular = isIrregular
-			currentUserStats.rank = rankIndex
-			currentUserStats.save().catch(err => console.log(err))
+			currentUserstat.position = position.Name
+			currentUserstat.irregular = isIrregular
+			currentUserstat.rank = rankIndex
+			currentUserstat.save().catch(err => console.log(err))
 		})
 	}
 };

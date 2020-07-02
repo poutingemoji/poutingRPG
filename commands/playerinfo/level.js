@@ -9,7 +9,7 @@ mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.ne
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
-const userStats = require('../../models/userstat')
+const userStat = require('../../models/userstat')
 
 function roundRect(ctx, x, y, width, height, radius, fill, fillStyle) {
 	stroke = true;
@@ -131,24 +131,24 @@ module.exports = {
 		let currentRank 
 		let nextLevel 
 
-		userStats.findOne({
+		userStat.findOne({
 			userID: user.id,
-		}, (err, currentUserStats) => {
+		}, (err, currentUserstat) => {
 			if (err) console.log(err);
-			if (!currentUserStats) {
+			if (!currentUserstat) {
 				currentExp = 0
 				currentLevel = 1
 				currentPosition = 'No Position'
 				currentIrregular = false
 			} else {
-				totalExp = currentUserStats.totalExp
-				currentExp = currentUserStats.currentExp
-				currentLevel = currentUserStats.level
-				currentPoints = currentUserStats.points
-				currentPosition = currentUserStats.position
-				currentIrregular = currentUserStats.irregular
+				totalExp = currentUserstat.totalExp
+				currentExp = currentUserstat.currentExp
+				currentLevel = currentUserstat.level
+				currentPoints = currentUserstat.points
+				currentPosition = currentUserstat.position
+				currentIrregular = currentUserstat.irregular
 				const ranks = ['A', 'B', 'C', 'D', 'E', 'F']
-				const rankIndex = currentUserStats.rank
+				const rankIndex = currentUserStat.rank
 				const rankLetter = ranks[Math.ceil(rankIndex/5) - 1]
 				let rankNumber = rankIndex % 5
 				if (rankNumber == 0) {
