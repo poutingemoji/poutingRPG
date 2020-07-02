@@ -1,5 +1,6 @@
 const {color} = require('../../config.json');
 const Discord = require('discord.js');
+const dateFormat = require('dateformat')
 
 module.exports = {
 	name: 'info',
@@ -22,8 +23,8 @@ module.exports = {
 			.setColor(color)
 			.setThumbnail(user.displayAvatarURL())
 			.setAuthor(user.username + ' | ' + user.id)
-			.addField("Account Created On:", `${user.createdAt}`) 
-			.addField("Joined The Server On:", `${member.joinedAt}`)
+			.addField("Account Created On:", `${dateFormat(user.createdAt, "dddd, mmmm dS, yyyy, h:MM:ss TT")}`) 
+			.addField("Joined The Server On:", `${dateFormat(member.joinedAt, "dddd, mmmm dS, yyyy, h:MM:ss TT")}`)
 			.addField("Status:", `${user.presence.status}`, true)
 			.addField("Game:", `${user.presence.game ? user.presence.game.name : 'None'}`, true)
 		message.channel.send({embed});

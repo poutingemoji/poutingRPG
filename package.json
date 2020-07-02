@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "canvas": "^2.6.1",
+    "dateformat": "^3.0.3",
     "discord.js": "^12.2.0",
     "mongoose": "^5.9.20",
     "node-pre-gyp": "0.12.0"
