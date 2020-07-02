@@ -2,10 +2,10 @@ const fs = require('fs');
 const Discord = require('discord.js')
 const { createCanvas, loadImage } = require('canvas')
 const { MessageAttachment } = Discord
-const { color, positionColors } = require('../../config.json');
+const { mongodbkey, color, positionColors } = require('../../config.json');
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/user-stats', {
+mongoose.connect(mongodbkey, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })

@@ -1,9 +1,9 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const { positionColors } = require('../../config.json');
+const { mongodbkey, positionColors } = require('../../config.json');
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/user-stats', {
+mongoose.connect(mongodbkey, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
