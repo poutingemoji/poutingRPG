@@ -148,7 +148,7 @@ module.exports = {
 				currentPosition = currentUserstat.position
 				currentIrregular = currentUserstat.irregular
 				const ranks = ['A', 'B', 'C', 'D', 'E', 'F']
-				const rankIndex = currentUserStat.rank
+				const rankIndex = currentUserstat.rank
 				const rankLetter = ranks[Math.ceil(rankIndex/5) - 1]
 				let rankNumber = rankIndex % 5
 				if (rankNumber == 0) {
