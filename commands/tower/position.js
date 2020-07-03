@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const { MONGODBKEY, positionColors } = require('../../config.json');
 const userStat = require('../../models/userstat');
 
-
 mongoose.connect(MONGODBKEY, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true

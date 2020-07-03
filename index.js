@@ -43,7 +43,7 @@ client.on("error", console.error);
 client.login(TOKEN);
 
 var url = process.env.MONGODB_URI || MONGODBKEY;
-mongoose.connect(MONGODBKEY, {
+mongoose.connect(url, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 });
