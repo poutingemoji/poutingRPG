@@ -20,11 +20,15 @@ const client = new CommandoClient({
 client.registry
 	.registerDefaultTypes()
 	.registerGroups([
+		["administration", "Administration Commands"],
 		["moderation", "Moderation Commands"],
+		["tower", "Tower of God Commands"],
+		["info", "Info Commands"],
+		["fun", "Fun Commands"],
+		["social", "Social Commands"],
+		["image", "Image Commands"],
 		["music", "Music Commands"],
-		["info", "User-Info Commands"],
-		["level", "Level Commands"],
-		["memes", "Meme Commands"],
+		["utility", "Utility Commands"],
 	])
 	.registerDefaultGroups()
 	.registerDefaultCommands({

@@ -13,12 +13,12 @@ module.exports = class PositionCommand extends Command {
 		super(client, {
 			name: 'position',
 			aliases: [],
-			group: 'level',
+			group: 'tower',
 			memberName: 'position',
             description: 'Rank and position randomizer (placeholder for real rank system)',
             throttling: {
-                usages: 2,
-                duration: 10
+                usages: 1,
+                duration: 5
             },
         });
 	};

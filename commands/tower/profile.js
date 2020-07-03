@@ -9,17 +9,17 @@ mongoose.connect(MONGODBKEY, {
 	useNewUrlParser: true
 });
 
-module.exports = class RankCommand extends Command {
+module.exports = class ProfileCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'rank',
-			aliases: ['level'],
-			group: 'level',
-			memberName: 'rank',
-			description: 'Fetches your rank.',
+			name: 'profile',
+			aliases: [],
+			group: 'tower',
+			memberName: 'profile',
+			description: 'Displays your profile.',
 			throttling: {
-				usages: 2,
-				duration: 10
+				usages: 1,
+				duration: 5
 			},
 		});
 	};
