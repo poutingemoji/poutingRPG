@@ -1,15 +1,9 @@
-const { prefix, TOKEN, MONGODBKEY } = require("./config.json");
-
-const Userstat = require("./models/userstat");
-const mongoose = require("mongoose");
-var url = process.env.MONGODB_URI || MONGODBKEY;
-mongoose.connect(url, {
-	useUnifiedTopology: true,
-	useNewUrlParser: true
-});
-
 const { CommandoClient } = require("discord.js-commando");
 const path = require("path");
+const mongoose = require("mongoose");
+const { prefix, TOKEN, MONGODBKEY } = require("./config.json");
+const Userstat = require("./models/userstat");
+
 const client = new CommandoClient({
 	commandPrefix: prefix,
 	owner: "257641125135908866",
@@ -47,3 +41,9 @@ client.once("ready", () => {
 client.on("error", console.error);
 
 client.login(TOKEN);
+
+var url = process.env.MONGODB_URI || MONGODBKEY;
+mongoose.connect(MONGODBKEY, {
+	useUnifiedTopology: true,
+	useNewUrlParser: true
+});

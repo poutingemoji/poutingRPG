@@ -1,9 +1,10 @@
 const { Command } = require('discord.js-commando');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, loadImage } = require('canvas');
-const { MONGODBKEY, color, positionColors } = require('../../config.json');
-const userStat = require('../../models/userstat');
 const mongoose = require('mongoose');
+const { MONGODBKEY, positionColors } = require('../../config.json');
+const userStat = require('../../models/userstat');
+
 mongoose.connect(MONGODBKEY, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
@@ -17,6 +18,11 @@ module.exports = class ProfileCommand extends Command {
 			group: 'tower',
 			memberName: 'profile',
 			description: 'Displays your profile.',
+			examples: [],
+			clientPermissions: [],
+			userPermissions: [],
+			guildOnly: true,
+			args: [],
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -103,7 +109,7 @@ async function createImage(currentExp, currentLevel, currentPoints, currentPosit
 	circleAvatar(ctx, 36, 48, 190, avatar, status);
 
 	const attachment = new MessageAttachment(canvas.toBuffer(), 'rank.png');
-	message.channel.send(`Opening your pocket...`, attachment);
+	return message.say(`Opening your pocket...`, attachment);
 }
 
 function roundRect(ctx, x, y, width, height, radius, fill, fillStyle) {

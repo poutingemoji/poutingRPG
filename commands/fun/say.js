@@ -1,34 +1,39 @@
 const { Command } = require('discord.js-commando');
+const { prefix } = require("../../config.json");
 
 module.exports = class SayCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'say',
             aliases: ['copycat', 'repeat', 'echo', 'parrot'],
-            group: 'social',
+            group: 'fun',
             memberName: 'say',
             description: 'Replies with the text you provide.',
-            examples: ['say Hi there!'],
+            examples: [`${prefix}say I have a voice? .3.`],
             clientPermissions: ['MANAGE_MESSAGES'],
-            userPermissions: ['MANAGE_MESSAGES'],
-            guildOnly: true,
+            userPermissions: [],
+            guildOnly: false,
             args: [
                 {
                     key: 'text',
                     prompt: 'What text would you like the bot to say?',
                     type: 'string'
                 }
-            ]
+            ],
+            throttling: {
+                usages: 1,
+                duration: 5
+            },
         });    
     }
 
-    hasPermission(msg) {
-        if (!this.client.isOwner(msg.author)) return 'Only the bot owner(s) may use this command.';
+    hasPermission(message) {
+        if (!this.client.isOwner(message.author)) return 'Only the bot owner(s) may use this command.';
         return true;
     }
 
-    run(msg, { text }) {
-        msg.delete();
-        return msg.say(text);
+    run(message, { text }) {
+        message.delete();
+        return message.say(text);
     }
 };

@@ -1,8 +1,10 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
-const { MONGODBKEY, color, positionColors } = require('../../config.json');
-const userStat = require('../../models/userstat');
 const mongoose = require('mongoose');
+const { MONGODBKEY, positionColors } = require('../../config.json');
+const userStat = require('../../models/userstat');
+
+
 mongoose.connect(MONGODBKEY, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
@@ -15,7 +17,12 @@ module.exports = class PositionCommand extends Command {
 			aliases: [],
 			group: 'tower',
 			memberName: 'position',
-            description: 'Rank and position randomizer (placeholder for real rank system)',
+			description: 'Rank and position randomizer (placeholder for real rank system)',
+			examples: [],
+			clientPermissions: [],
+			userPermissions: [],
+			guildOnly: true,
+			args: [],
             throttling: {
                 usages: 1,
                 duration: 5
@@ -43,8 +50,7 @@ module.exports = class PositionCommand extends Command {
 		const positionEmbed = new MessageEmbed()
 		.setColor(positionColors[position.Name])
         .setDescription(description)
-        .setImage(position.Image)
-		message.channel.send(positionEmbed);
+		.setImage(position.Image)
 		userStat.findOne({
 			userID: message.author.id,
 		}, (err, currentUserstat) => {
@@ -54,6 +60,7 @@ module.exports = class PositionCommand extends Command {
 			currentUserstat.rank = rankIndex
 			currentUserstat.save().catch(err => console.log(err))
 		});
+		return message.say(positionEmbed);
 	};
 };
 

@@ -1,6 +1,7 @@
-const math = require('mathjs')
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
+const math = require('mathjs')
+const { prefix } = require("../../config.json");
 
 module.exports = class MathCommand extends Command {
 	constructor(client) {
@@ -10,6 +11,10 @@ module.exports = class MathCommand extends Command {
 			group: 'utility',
 			memberName: 'math',
             description: 'A calculator in Discord.',
+            examples: [`${prefix}math (5+3)/2`],
+            clientPermissions: [],
+            userPermissions: [],
+            guildOnly: false,
             args: [
                 {
                     key: 'equation',
@@ -29,7 +34,7 @@ module.exports = class MathCommand extends Command {
             evaluatedEquation = math.evaluate(equation);
             console.log(evaluatedEquation)
         } catch (error) {
-            return message.channel.send("Equation provided could not be evaluated.")
+            return message.say("Equation provided could not be evaluated.")
         };
 
         const calculationEmbed = new MessageEmbed()
@@ -40,6 +45,6 @@ module.exports = class MathCommand extends Command {
                 { name: 'Result', value: evaluatedEquation },
             )
             .setTimestamp()
-        message.channel.send(calculationEmbed);
+        return message.say(calculationEmbed);
     };
 };
