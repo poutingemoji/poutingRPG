@@ -54,15 +54,16 @@ mongoose.connect(MONGODB, {
 const talkedRecently = new Set();
 client.on('message', message => {
 	if (message.author.bot) return;
+	//Message Cooldown Check
 	if (talkedRecently.has(message.author.id)) {
 		return
 	};
-
 	talkedRecently.add(message.author.id);
 	setTimeout(() => {
 	  talkedRecently.delete(message.author.id);
 	}, expCooldown);
 	
+	//Adding Random EXP Amt and Checking Level Up
 	let expAdd = Math.floor(Math.random() * 7) + 8;
 	Userstat.findOne({
 		userID: message.author.id,
