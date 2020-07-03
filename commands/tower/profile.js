@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, loadImage } = require('canvas');
 const { positionColors } = require('../../config.json');
-const userStat = require('../../models/userstat');
+const userStat = require('../../Models/userstat');
 
 module.exports = class ProfileCommand extends Command {
 	constructor(client) {
@@ -25,7 +25,7 @@ module.exports = class ProfileCommand extends Command {
 	};
 
 	run(message) {
-		let user
+		let user;
 		if (message.mentions.users.first()) {
 			user = message.mentions.users.first()
 			if (user.bot) return
@@ -50,10 +50,10 @@ module.exports = class ProfileCommand extends Command {
 					message
 				);
 			} else {
-				const ranks = ['A', 'B', 'C', 'D', 'E', 'F']
+				const ranks = ['A', 'B', 'C', 'D', 'E', 'F'];
 				const rankIndex = currentUserstat.rank;
 				const rankLetter = ranks[Math.ceil(rankIndex/5) - 1];
-				let rankNumber = rankIndex % 5
+				let rankNumber = rankIndex % 5;
 				if (rankNumber == 0) {
 					rankNumber = 5
 				};
@@ -79,7 +79,7 @@ async function createImage(currentExp, currentLevel, currentPoints, currentPosit
 	//ctx, x, y, width, height, radius, fill, fillColor
 	roundRect(ctx, 0, 0, canvas.width, canvas.height, 10, true, "#23272A");
 
-	let currentPositionColor = positionColors[currentPosition]
+	let currentPositionColor = positionColors[currentPosition];
 	if (currentPosition == 'No Position') {
 		currentPositionColor = '#ffffff'
 	};

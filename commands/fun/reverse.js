@@ -27,7 +27,7 @@ module.exports = class ReverseCommand extends Command {
         });
     };
     run(message, {text}) {
-        text = text.split(/\s/).reverse().join(" ")
+        text = text.split(/\s/).reverse().join(" ");
         message.delete();
         return message.say(`**${message.author.username}** : ${text}`);
     };

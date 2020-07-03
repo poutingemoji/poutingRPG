@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 const { positionColors } = require('../../config.json');
-const userStat = require('../../models/userstat');
+const userStat = require('../../Models/userstat');
 
 module.exports = class PositionCommand extends Command {
 	constructor(client) {
@@ -29,16 +29,16 @@ module.exports = class PositionCommand extends Command {
 		const ranks = ['A', 'B', 'C', 'D', 'E', 'F'];
 		const rankIndex = Math.floor(Math.random() * 30) + 1;  
 		const rankLetter = ranks[Math.ceil(rankIndex/5) - 1];
-		let rankNumber = rankIndex % 5
+		let rankNumber = rankIndex % 5;
 		if (rankNumber == 0) {
-			rankNumber = 5
+			rankNumber = 5;
 		};
 		const isIrregular = Math.random() >= 0.95;
-		let description 
+		let description;
 		if (isIrregular) {
-			description = `You will bring great change and chaos to the tower, ${rankLetter}-Rank ${rankNumber} ${position.Name}.`
+			description = `You will bring great change and chaos to the tower, ${rankLetter}-Rank ${rankNumber} ${position.Name}.`;
 		} else {
-			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`
+			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`;
 		};
 		const positionEmbed = new MessageEmbed()
 		.setColor(positionColors[position.Name])
@@ -83,4 +83,4 @@ const positions = {
         Image: "https://cdn.discordapp.com/attachments/722720878932262952/723016677834489906/Main_position_2.png",
         Color: "#748394",
     }
-}
+};
