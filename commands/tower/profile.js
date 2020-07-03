@@ -1,14 +1,8 @@
 const { Command } = require('discord.js-commando');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, loadImage } = require('canvas');
-const mongoose = require('mongoose');
-const { MONGODBKEY, positionColors } = require('../../config.json');
+const { positionColors } = require('../../config.json');
 const userStat = require('../../models/userstat');
-
-mongoose.connect(MONGODBKEY, {
-	useUnifiedTopology: true,
-	useNewUrlParser: true
-});
 
 module.exports = class ProfileCommand extends Command {
 	constructor(client) {

@@ -1,13 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
-const mongoose = require('mongoose');
-const { MONGODBKEY, positionColors } = require('../../config.json');
+const { positionColors } = require('../../config.json');
 const userStat = require('../../models/userstat');
-
-mongoose.connect(MONGODBKEY, {
-	useUnifiedTopology: true,
-	useNewUrlParser: true
-});
 
 module.exports = class PositionCommand extends Command {
 	constructor(client) {
