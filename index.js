@@ -14,7 +14,7 @@ const client = new CommandoClient({
 	commandPrefix: prefix,
 	owner: "257641125135908866",
 	invite: "https://discord.gg/nGVe96h",
-	unknownCommandResponse: false,
+	disableEveryone: true
 });
 
 client.registry
@@ -27,7 +27,9 @@ client.registry
 		["memes", "Meme Commands"],
 	])
 	.registerDefaultGroups()
-	.registerDefaultCommands()
+	.registerDefaultCommands({
+		unknownCommand: false
+	})
 	.registerCommandsIn(path.join(__dirname, "commands"));
 
 client.once("ready", () => {
