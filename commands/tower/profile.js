@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, loadImage } = require('canvas');
 const { positionColors } = require('../../config.json');
-const userStat = require('../../Models/userstat');
+const userStat = require('../../models/userstat');
 
 module.exports = class ProfileCommand extends Command {
 	constructor(client) {

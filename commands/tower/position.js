@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 const { positionColors } = require('../../config.json');
-const userStat = require('../../Models/userstat');
+const userStat = require('../../models/userstat');
 
 module.exports = class PositionCommand extends Command {
 	constructor(client) {

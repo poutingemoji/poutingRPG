@@ -2,7 +2,7 @@ const { CommandoClient } = require("discord.js-commando");
 const path = require("path");
 const mongoose = require("mongoose");
 const { prefix, TOKEN, MONGODBKEY, expCooldown } = require("./config.json");
-const Userstat = require("./Models/userstat");
+const Userstat = require("./models/userstat");
 
 //Creating Commando Client
 const client = new CommandoClient({
