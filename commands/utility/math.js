@@ -39,7 +39,7 @@ module.exports = class MathCommand extends Command {
 
         const calculationEmbed = new MessageEmbed()
             .setColor('#000000')
-            .setAuthor( message.author.tag, message.author.displayAvatarURL() )
+            .setAuthor(message.author.tag, message.author.displayAvatarURL())
             .addFields(
                 { name: 'Equation', value: "`" + equation + "`"},
                 { name: 'Result', value: evaluatedEquation },

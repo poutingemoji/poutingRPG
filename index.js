@@ -1,7 +1,14 @@
 const { CommandoClient } = require("discord.js-commando");
 const path = require("path");
 const mongoose = require("mongoose");
-const { prefix, TOKEN, MONGODBKEY, expCooldown } = require("./config.json");
+const { 
+	prefix, 
+	TOKEN, 
+	MONGODBKEY, 
+	baseExpMultiplier, 
+	exponentialExpMultiplier, 
+	expCooldown 
+} = require("./config.json");
 const Userstat = require("./models/userstat");
 
 //Creating Commando Client
@@ -64,7 +71,7 @@ client.on('message', message => {
 	}, expCooldown);
 	
 	//Adding Random EXP Amt and Checking Level Up
-	let expAdd = Math.floor(Math.random() * 7) + 8;
+	let expAdd = randomIntFromInterval(15, 25);
 	Userstat.findOne({
 		userID: message.author.id,
 	}, (err, currentUserstat) => {
@@ -84,17 +91,40 @@ client.on('message', message => {
 		} else {
 			let currentExp = currentUserstat.currentExp;
 			let currentLevel = currentUserstat.level;
-			let nextLevel = Math.floor(100 *(Math.pow(currentLevel, 1.04)));
-
+			let nextLevel = Math.floor(baseExpMultiplier *(Math.pow(currentLevel, exponentialExpMultiplier)));
+			console.log(baseExpMultiplier)
 			currentUserstat.totalExp = currentUserstat.totalExp + expAdd;
 			currentUserstat.currentExp = currentUserstat.currentExp + expAdd;
 
 			if(nextLevel <= currentExp) {
 				currentUserstat.level = currentLevel + 1;
 				currentUserstat.currentExp = 0;
-				message.say(`Congratz on reaching Level ${currentLevel + 1}. Ur gonna be the next Hokage fam.`);
+				randomTip(message, `Congratz on reaching Level ${currentLevel + 1}. Ur gonna be the next Hokage fam.`)
 			};
 			currentUserstat.save().catch(err => console.log(err));
 		}; 
 	});
 });
+
+function randomIntFromInterval(min, max){
+    return Math.floor(Math.random() * (max - min + 1) + min)
+};
+
+//Hints and Fun Facts For Bot
+function randomTip(message, text){
+	const hasTip = Math.random() >= 0.8;
+	let messageContent = text;
+	if (hasTip) {
+		const tipAuthors = ["A Tip from the Nigatsuki", "WARNING", "Fun Fact", "ATTENTION", "yes"]
+		const tips = [
+			"Don't know what the commands are? Use " + "`" + `${message.guild.commandPrefix}help` + "`" + " for info on commands!", 
+			"Shameless plug for the homie, https://richardxhtml.github.io/nagatsuki/",
+			"Ever wondered what goes on behind poutingbot? Here's the git repo, <https://github.com/poutingemoji/poutingbot>",
+			"You can do " + "`" + `${message.guild.commandPrefix}help [command]` + "`" + " to get more info on a specific command.",
+			"You can change the prefix for poutingbot with " + "`" + `${message.guild.commandPrefix}prefix [newprefix]` + "`",
+		];
+		messageContent = messageContent + `\n\n` + ">>> " + `**${tipAuthors[Math.floor(Math.random() * tipAuthors.length)]}**` + " : " + tips[Math.floor(Math.random() * tips.length)]
+	}
+	message.say(messageContent)
+};
+
