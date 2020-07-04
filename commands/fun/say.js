@@ -27,11 +27,6 @@ module.exports = class SayCommand extends Command {
         });    
     }
 
-    hasPermission(message) {
-        if (!this.client.isOwner(message.author)) return 'Only the bot owner(s) may use this command.';
-        return true;
-    }
-
     run(message, { text }) {
         message.delete();
         return message.say(text);
