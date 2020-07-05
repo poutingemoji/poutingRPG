@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 const dateFormat = require('dateformat')
-const { botUsername, botAvatarURL, prefix } = require("../../config.json");
+const { prefix } = require("../../config.json");
 
 module.exports = class UserinfoCommand extends Command {
 	constructor(client) {
@@ -46,7 +46,7 @@ module.exports = class UserinfoCommand extends Command {
                 { name: "Roles", value: mentionedRoles, inline: true },
             )
             .setTimestamp()
-            .setFooter(botUsername , botAvatarURL);
+            .setFooter(message.client.username , message.client.displayAvatarURL());
 		message.channel.send(userinfoEmbed);
     };
 };

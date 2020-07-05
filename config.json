@@ -1,6 +1,4 @@
 {
-	"botUsername": "poutingbot",
-	"botAvatarURL": "https://cdn.discordapp.com/attachments/722720878932262952/728939963164524645/159303301379131644_1_cropped.png",
 	"prefix": "%",
 	"TOKEN": "NzI4MTYzODk5MTg2MDg1OTA4.Xv2jMg.AVkhYpdIsrceBD28moqB5QdDY1g",
 	"MONGODBKEY": "mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/Userstats",
