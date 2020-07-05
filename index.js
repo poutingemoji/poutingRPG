@@ -61,10 +61,7 @@ mongoose.connect(MONGODB, {
 const talkedRecently = new Set();
 client.on('message', message => {
 	
-	if (message.author.bot) {
-		randomTip(message)
-		return;
-	}
+	if (message.author.bot) return;
 	//Message Cooldown Check
 	if (talkedRecently.has(message.author.id)) {
 		return
@@ -115,9 +112,9 @@ function randomIntFromInterval(min, max){
 };
 
 //Hints and Fun Facts For Bot
-function randomTip(message){
-	const hasTip = Math.random() >= 0.95;
-	let messageContent;
+function randomTip(message, text){
+	const hasTip = Math.random() >= 0.8;
+	let messageContent = text;
 	if (hasTip) {
 		const tipAuthors = ["A Tip from the Nigatsuki", "WARNING", "Fun Fact", "ATTENTION", "yes"]
 		const tips = [
