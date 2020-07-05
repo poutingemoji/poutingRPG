@@ -29,6 +29,6 @@ module.exports = class ReverseCommand extends Command {
     run(message, {text}) {
         text = text.split(/\s/).reverse().join(" ");
         message.delete();
-        return message.say(`${message.client.emojis.cache.get("729189843401310228").toString()}**${message.author.username}** : ${text}`);
+        return message.say(`${message.client.emojis.cache.get("729206897818730567").toString()}**${message.author.username}** : ${text}`);
     };
 };
