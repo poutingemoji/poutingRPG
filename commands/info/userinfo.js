@@ -38,7 +38,6 @@ module.exports = class UserinfoCommand extends Command {
             .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())
 			.setThumbnail(mentionedUser.displayAvatarURL())
             .addFields(
-                { name: "ID", value: mentionedUser.id, inline: true },
                 { name: "Nickname", value: mentionedMember.nickname, inline: true },
                 { name: 'Created', value: dateFormat(mentionedUser.createdAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), inline: true },
                 { name: 'Joined', value: dateFormat(mentionedMember.joinedAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), inline: true },
@@ -46,7 +45,7 @@ module.exports = class UserinfoCommand extends Command {
                 { name: "Roles", value: mentionedRoles, inline: true },
             )
             .setTimestamp()
-            .setFooter(message.client.username , message.client.displayAvatarURL());
+            .setFooter(`ID: ${mentionedUser.id}`);
 		message.channel.send(userinfoEmbed);
     };
 };
