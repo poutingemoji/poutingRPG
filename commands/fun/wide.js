@@ -29,6 +29,6 @@ module.exports = class WideCommand extends Command {
     run(message, {text}) {
         text = text.split("").join(" ");
         message.delete();
-        return message.say(`${message.client.emojis.cache.get("729206897818730567").toString()}**${message.author.username}** : ${text}`);
+        message.say(`${message.client.emojis.cache.get("729206897818730567").toString()}**${message.author.username}** : ${text}`);
     };
 };

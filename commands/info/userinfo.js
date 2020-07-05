@@ -23,8 +23,8 @@ module.exports = class UserinfoCommand extends Command {
         });
     };
     run(message) {
-        var mentionedMember = message.member;
-        var mentionedUser = message.author;
+        let mentionedMember = message.member;
+        let mentionedUser = message.author;
         if (message.mentions.users.first()) {
             mentionedUser = message.mentions.users.first()
             mentionedMember = message.mentions.members.first()
@@ -46,7 +46,7 @@ module.exports = class UserinfoCommand extends Command {
             )
             .setTimestamp()
             .setFooter(`ID: ${mentionedUser.id}`);
-		message.channel.send(userinfoEmbed);
+		message.say(randomTip(message, userinfoEmbed));
     };
 };
 
@@ -54,10 +54,7 @@ function titleCase(str) {
     str = str.replace(/_/g, " ")
     var splitStr = str.toLowerCase().split(' ');
     for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
     }
-    // Directly return the joined string
     return splitStr.join(' '); 
  }

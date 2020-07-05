@@ -52,35 +52,35 @@ module.exports = class PurgeCommand extends Command {
             message.delete();
             let filteredMessages;
             message.channel.messages.fetch({ limit: numOfMessages }).then(messages => {
-                if (message.mentions.users.first()) {
-                    const user = message.mentions.users.first();
-                    filteredMessages = messages.filter(msg => msg.author.id === user.id);
+                if (typeOfPurge !== "reactions") {
+                        if (message.mentions.users.first()) {
+                            const user = message.mentions.users.first();
+                            filteredMessages = messages.filter(msg => msg.author.id === user.id);
+                        } else if (typeOfPurge === "bots") {
+                            filteredMessages = messages.filter(msg => msg.author.bot);
+                        } else if (typeOfPurge === "commands") {
+                            filteredMessages = messages.filter(msg => msg.content.startsWith(message.guild.commandPrefix));
+                        } else if (typeOfPurge === "embeds") {
+                            filteredMessages = messages.filter(msg => !!msg.embeds.length);
+                        } else if (typeOfPurge === "emojis") {
+                            filteredMessages = messages.filter(msg => msg.content.includes('<:' && '>' || '<a:' && '>') || isDoubleByte(msg.content));
+                        } else if (typeOfPurge === "images") {
+                            filteredMessages = messages.filter(msg => msg.attachments.size > 0);
+                        } else if (typeOfPurge === "invites") {
+                            filteredMessages = messages.filter(msg => msg.content.includes('discord.gg/'||'discordapp.com/invite/'));
+                        } else if (typeOfPurge === "links") {
+                            filteredMessages = messages.filter(msg => msg.content.includes('https://'||'www.'||'.com'));
+                        } else if (typeOfPurge === "mentions") {
+                            filteredMessages = messages.filter(msg => msg.mentions.users.first() || msg.mentions.roles.first());
+                        } else if (typeOfPurge === "text") {
+                            filteredMessages = messages.filter(msg => !(msg.attachments.size > 0) && !msg.embeds.length);
+                        };
+                        messagesDeleted = filteredMessages.array(); 
+                        message.channel.bulkDelete(messagesDeleted);
+                        purgeMessage(message, `Deletion of **${typeOfPurge}** successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
                 } else {
-                    if (typeOfPurge === "bots") {
-                        filteredMessages = messages.filter(msg => msg.author.bot);
-                    } else if (typeOfPurge === "commands") {
-                        filteredMessages = messages.filter(msg => msg.content.startsWith(message.guild.commandPrefix));
-                    } else if (typeOfPurge === "embeds") {
-                        filteredMessages = messages.filter(msg => !!msg.embeds.length);
-                    } else if (typeOfPurge === "emojis") {
-                        filteredMessages = messages.filter(msg => msg.embeds);
-                    } else if (typeOfPurge === "images") {
-                        filteredMessages = messages.filter(msg => msg.attachments.size > 0);
-                    } else if (typeOfPurge === "invites") {
-                        filteredMessages = messages.filter(msg => msg.content.includes('discord.gg/'||'discordapp.com/invite/'));
-                    } else if (typeOfPurge === "links") {
-                        filteredMessages = messages.filter(msg => msg.content.includes('https://'||'www.'||'.com'));
-                    } else if (typeOfPurge === "mentions") {
-                        filteredMessages = messages.filter(msg => msg.mentions.users.first() || msg.mentions.roles.first());
-                    } else if (typeOfPurge === "reactions") {
-                        filteredMessages = messages.filter(msg => msg.content.includes('discord.gg/'||'discordapp.com/invite/'));
-                    } else if (typeOfPurge === "text") {
-                        filteredMessages = messages.filter(msg => !(msg.attachments.size > 0));
-                    }
-                };
-                messagesDeleted = filteredMessages.array(); 
-                message.channel.bulkDelete(messagesDeleted);
-                purgeMessage(message, `Deletion of **${typeOfPurge}** successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
+                    messages.filter(msg =>  msg.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error)));
+                }
             }).catch(err => {
                 console.log(err);
             });
@@ -99,3 +99,10 @@ async function purgeMessage(message, text) {
         return console.log("Didn't edit the message.");
     };
 };
+
+function isDoubleByte(str) {
+    for (var i = 0, n = str.length; i < n; i++) {
+        if (str.charCodeAt( i ) > 255) { return true; }
+    }
+    return false;
+}

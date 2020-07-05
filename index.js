@@ -62,6 +62,7 @@ const talkedRecently = new Set();
 client.on('message', message => {
 	
 	if (message.author.bot) return;
+
 	//Message Cooldown Check
 	if (talkedRecently.has(message.author.id)) {
 		return
@@ -71,6 +72,9 @@ client.on('message', message => {
 	  talkedRecently.delete(message.author.id);
 	}, expCooldown);
 	
+	//Percentage Chance of Providing a Random Tip
+	randomTip(message)
+
 	//Adding Random EXP Amt and Checking Level Up
 	let expAdd = randomIntFromInterval(15, 25);
 	Userstat.findOne({
@@ -112,9 +116,8 @@ function randomIntFromInterval(min, max){
 };
 
 //Hints and Fun Facts For Bot
-function randomTip(message, text){
-	const hasTip = Math.random() >= 0.8;
-	let messageContent = text;
+global.randomTip = function randomTip(message, text){
+	const hasTip = Math.random() >= 0.9;
 	if (hasTip) {
 		const tipAuthors = ["A Tip from the Nigatsuki", "WARNING", "Fun Fact", "ATTENTION", "yes"]
 		const tips = [
@@ -124,8 +127,12 @@ function randomTip(message, text){
 			"You can do " + "`" + `${message.guild.commandPrefix}help [command]` + "`" + " to get more info on a specific command.",
 			"You can change the prefix for poutingbot with " + "`" + `${message.guild.commandPrefix}prefix [newprefix]` + "`",
 		];
-		messageContent = messageContent + `\n\n` + ">>> " + `**${tipAuthors[Math.floor(Math.random() * tipAuthors.length)]}**` + " : " + tips[Math.floor(Math.random() * tips.length)]
-	}
-	message.say(messageContent)
+		if (typeof(text) === "string") {
+			text = text + `\n\n` + ">>> " + `**${tipAuthors[Math.floor(Math.random() * tipAuthors.length)]}**` + " : " + tips[Math.floor(Math.random() * tips.length)]
+		} else if (typeof(text) === "object") {
+			text = {content: `\n\n` + `**${tipAuthors[Math.floor(Math.random() * tipAuthors.length)]}**` + " : " + tips[Math.floor(Math.random() * tips.length)], embed: text }
+		}
+	} 
+	return text
 };
 

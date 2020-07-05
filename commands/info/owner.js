@@ -21,6 +21,6 @@ module.exports = class OwnerCommand extends Command {
         });
     };
     run(message) {
-        return message.say(`${message.client.emojis.cache.get("729209778898862171").toString()} **${message.author.username}**, the Naruto Uzumaki to my Boruto Uzumaki is **poutingemoji#5785**. Nin!`);
+        message.say(randomTip(message, `${message.client.emojis.cache.get("729209778898862171").toString()} **${message.author.username}**, the Naruto Uzumaki to my Boruto Uzumaki is **poutingemoji#5785**. Nin!`));
     };
 };

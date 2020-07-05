@@ -45,6 +45,6 @@ module.exports = class MathCommand extends Command {
                 { name: 'Result', value: evaluatedEquation },
             )
             .setTimestamp()
-        return message.say(calculationEmbed);
+        return message.say(randomTip(message, calculationEmbed));
     };
 };
