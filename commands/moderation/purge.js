@@ -8,7 +8,7 @@ module.exports = class PurgeCommand extends Command {
             aliases: ['purge', 'prune', 'clear', 'wipe'],
             group: 'moderation',
             memberName: 'purge',
-            description: 'Allows you to mass delete messages in your server. DEFAULT: 100 MSGS',
+            description: 'Allows you to mass delete messages in your server. DEFAULT: 50 MSGS',
             examples: [`${prefix}purge @user\n${prefix}purge [number]\n${prefix}purge bots [number]\n${prefix}purge bots [number]\n${prefix}purge bots [number]\n${prefix}purge bots [number]\n${prefix}purge endswith [content]\n${prefix}purge images [number]\n${prefix}purge invites [number]\n${prefix}purge links [number]\n${prefix}purge match [content]\n${prefix}purge mentions [number]\n${prefix}purge reactions [number]\n${prefix}purge startswith [content]\n${prefix}purge text [number]\n`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: ['MANAGE_MESSAGES'],
@@ -24,7 +24,7 @@ module.exports = class PurgeCommand extends Command {
                     key: 'numOfMessages',
                     prompt: 'How many messages would you like to purge?',
                     type: 'integer',
-                    default: 100,
+                    default: 50,
                 },
             ],
             throttling: {

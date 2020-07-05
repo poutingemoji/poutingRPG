@@ -60,7 +60,11 @@ mongoose.connect(MONGODB, {
 //EXP For Talking (1-min Cooldown)
 const talkedRecently = new Set();
 client.on('message', message => {
-	if (message.author.bot) return;
+	
+	if (message.author.bot) {
+		randomTip(message)
+		return;
+	}
 	//Message Cooldown Check
 	if (talkedRecently.has(message.author.id)) {
 		return
@@ -99,7 +103,7 @@ client.on('message', message => {
 			if(nextLevel <= currentExp) {
 				currentUserstat.level = currentLevel + 1;
 				currentUserstat.currentExp = 0;
-				randomTip(message, `Congratz on reaching Level ${currentLevel + 1}. Ur gonna be the next Hokage fam.`)
+				message.say(`Congratz on reaching Level ${currentLevel + 1}. Ur gonna be the next Hokage fam.`)
 			};
 			currentUserstat.save().catch(err => console.log(err));
 		}; 
@@ -111,9 +115,9 @@ function randomIntFromInterval(min, max){
 };
 
 //Hints and Fun Facts For Bot
-function randomTip(message, text){
-	const hasTip = Math.random() >= 0.8;
-	let messageContent = text;
+function randomTip(message){
+	const hasTip = Math.random() >= 0.95;
+	let messageContent;
 	if (hasTip) {
 		const tipAuthors = ["A Tip from the Nigatsuki", "WARNING", "Fun Fact", "ATTENTION", "yes"]
 		const tips = [
