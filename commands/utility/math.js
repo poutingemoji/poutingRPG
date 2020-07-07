@@ -24,7 +24,7 @@ module.exports = class MathCommand extends Command {
             ],
             throttling: {
                 usages: 1,
-                duration: 1
+                duration: 2
             },
         });
     };
@@ -32,7 +32,6 @@ module.exports = class MathCommand extends Command {
         let evaluatedEquation;
         try {
             evaluatedEquation = math.evaluate(equation);
-            console.log(evaluatedEquation)
         } catch (error) {
             return message.say("Equation provided could not be evaluated.")
         };

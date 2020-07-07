@@ -16,7 +16,7 @@ module.exports = class OwnerCommand extends Command {
             args: [],
             throttling: {
                 usages: 1,
-                duration: 5
+                duration: 3
             },
         });
     };

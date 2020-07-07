@@ -12,7 +12,7 @@ module.exports = class ReverseCommand extends Command {
             examples: [`${prefix}reverse message your reverse will This`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
-            guildOnly: false,
+            guildOnly: true,
             args: [
                 {
                     key: 'text',

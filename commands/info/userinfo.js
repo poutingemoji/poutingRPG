@@ -1,7 +1,8 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 const dateFormat = require('dateformat')
-const { prefix } = require("../../config.json");
+const { prefix, color } = require("../../config.json");
+const { add } = require('mathjs');
 
 module.exports = class UserinfoCommand extends Command {
 	constructor(client) {
@@ -14,7 +15,7 @@ module.exports = class UserinfoCommand extends Command {
             examples: [`${prefix}userinfo [@user]`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: false,
+            guildOnly: true,
             args: [],
             throttling: {
                 usages: 1,
@@ -29,23 +30,25 @@ module.exports = class UserinfoCommand extends Command {
             mentionedUser = message.mentions.users.first()
             mentionedMember = message.mentions.members.first()
         }
-        const mentionedRoles = [];
-        mentionedMember._roles.forEach(role => mentionedRoles.push("<@&" + role + ">"))
-        const formattedPermissions = [];
-        mentionedMember.permissions.toArray().forEach(permission => formattedPermissions.push(titleCase(permission)))
+        const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ");
+        const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => titleCase(permission)).join(', ')
 		const userinfoEmbed = new MessageEmbed()
-            .setColor("#ffffff")
+            .setColor(color)
             .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())
 			.setThumbnail(mentionedUser.displayAvatarURL())
-            .addFields(
-                { name: "Nickname", value: mentionedMember.nickname, inline: true },
-                { name: 'Created', value: dateFormat(mentionedUser.createdAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), inline: true },
-                { name: 'Joined', value: dateFormat(mentionedMember.joinedAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), inline: true },
-                { name: "Permissions", value: formattedPermissions.join(', ') },
-                { name: "Roles", value: mentionedRoles, inline: true },
-            )
             .setTimestamp()
             .setFooter(`ID: ${mentionedUser.id}`);
+        if (mentionedMember.nickname) {
+            userinfoEmbed.addField("Nickname", mentionedMember.nickname, true)
+        }
+        userinfoEmbed.addField("Created", dateFormat(mentionedUser.createdAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), true)
+        userinfoEmbed.addField("Joined", dateFormat(mentionedMember.joinedAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), true)
+        if (mentionedPermissions) {
+            userinfoEmbed.addField(`Permissions (${mentionedPermissions.split(', ').length})`, mentionedPermissions)
+        }
+        if (mentionedRoles) {
+            userinfoEmbed.addField(`Roles (${mentionedRoles.split(' ').length})`,  mentionedRoles)
+        }
 		message.say(randomTip(message, userinfoEmbed));
     };
 };

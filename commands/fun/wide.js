@@ -12,7 +12,7 @@ module.exports = class WideCommand extends Command {
             examples: [`${prefix}wide I like my text wide, yes sir.`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
-            guildOnly: false,
+            guildOnly: true,
             args: [
                 {
                     key: 'text',

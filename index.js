@@ -97,7 +97,6 @@ client.on('message', message => {
 			let currentExp = currentUserstat.currentExp;
 			let currentLevel = currentUserstat.level;
 			let nextLevel = Math.floor(baseExpMultiplier *(Math.pow(currentLevel, exponentialExpMultiplier)));
-			console.log(baseExpMultiplier)
 			currentUserstat.totalExp = currentUserstat.totalExp + expAdd;
 			currentUserstat.currentExp = currentUserstat.currentExp + expAdd;
 

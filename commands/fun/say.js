@@ -12,7 +12,7 @@ module.exports = class SayCommand extends Command {
             examples: [`${prefix}say I have a voice? .3.`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
-            guildOnly: false,
+            guildOnly: true,
             args: [
                 {
                     key: 'text',

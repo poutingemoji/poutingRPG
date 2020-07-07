@@ -1,5 +1,5 @@
 {
-	"prefix": "%",
+	"prefix": "!",
 	"TOKEN": "NzI4MTYzODk5MTg2MDg1OTA4.Xv2jMg.AVkhYpdIsrceBD28moqB5QdDY1g",
 	"MONGODBKEY": "mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/Userstats",
 	"baseExpMultiplier": 50,

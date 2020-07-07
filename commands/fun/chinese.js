@@ -12,7 +12,7 @@ module.exports = class ChineseCommand extends Command {
             examples: [`${prefix}chinese I am fluent in chinese. ;)`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
-            guildOnly: false,
+            guildOnly: true,
             args: [
                 {
                     key: 'text',
