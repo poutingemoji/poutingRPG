@@ -2,6 +2,7 @@
 	"prefix": "!",
 	"TOKEN": "NzI4MTYzODk5MTg2MDg1OTA4.Xv2jMg.AVkhYpdIsrceBD28moqB5QdDY1g",
 	"MONGODBKEY": "mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/Userstats",
+	"OPENWEATHERMAPKEY": "3186cf4de84ea7db59df2e96e9510ff9",
 	"baseExpMultiplier": 50,
 	"exponentialExpMultiplier": 1.04,
 	"expCooldown": 60000,
