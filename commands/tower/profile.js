@@ -126,8 +126,13 @@ function roundRect(ctx, x, y, width, height, radius, fill, fillStyle) {
 
 function expBar(ctx, x, y, width, height, radius, currentExp, currentLevel, nextLevel, expBarColor) {
 	roundRect(ctx, x, y, width, height, radius, true, "#999999");
+	console.log(ctx, x, y, width, height, radius, currentExp, currentLevel, nextLevel, expBarColor)
+	if (!expBarColor) {
+		expBarColor = "#ffffff"
+	}
+	console.log(currentExp, nextLevel)
 	if (currentExp > (nextLevel/10)) {
-		roundRect(ctx, x, y, (currentExp / (currentLevel * 300)) * width, height, radius, true, expBarColor)
+		roundRect(ctx, x, y, (currentExp / nextLevel) * width, height, radius, true, expBarColor)
 	};
 };
 
