@@ -47,3 +47,4 @@ module.exports = class MathCommand extends Command {
         return message.say(randomTip(message, calculationEmbed));
     };
 };
+
