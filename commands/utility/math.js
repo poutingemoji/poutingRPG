@@ -14,7 +14,7 @@ module.exports = class MathCommand extends Command {
             examples: [`${prefix}math (5+3)/2`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: false,
+            guildOnly: true,
             args: [
                 {
                     key: 'equation',
@@ -35,9 +35,8 @@ module.exports = class MathCommand extends Command {
         } catch (error) {
             return message.say("Equation provided could not be evaluated.")
         };
-
         const calculationEmbed = new MessageEmbed()
-            .setColor('#000000')
+            .setColor('#ed7220')
             .setAuthor(message.author.tag, message.author.displayAvatarURL())
             .addFields(
                 { name: 'Equation', value: "`" + equation + "`"},

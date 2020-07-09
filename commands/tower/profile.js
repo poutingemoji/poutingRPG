@@ -25,14 +25,11 @@ module.exports = class ProfileCommand extends Command {
 	};
 
 	run(message) {
-		let user;
+		let user = message.author;
 		if (message.mentions.users.first()) {
 			user = message.mentions.users.first()
 			if (user.bot) return
-		} else {
-			user = message.author;
-		};
-
+		} 
 		userStat.findOne({
 			userID: user.id,
 		}, (err, currentUserstat) => {

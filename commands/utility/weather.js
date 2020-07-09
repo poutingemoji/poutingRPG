@@ -13,7 +13,7 @@ module.exports = class WeatherCommand extends Command {
             examples: [`${prefix}weather [place or postal code]`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: false,
+            guildOnly: true,
             args: [
                 {
                     key: 'place',
@@ -35,9 +35,6 @@ module.exports = class WeatherCommand extends Command {
             weatherInfo = await fetchWeatherInfo(`https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`)
         }
         if (weatherInfo.name === undefined) return;
-        const currentDate = new Date();
-        console.log(currentDate.getDay())
-        console.log(currentDate.getTimezoneOffset() / 60)
         console.log(weatherInfo)
         const currentWeather = weatherInfo["weather"][0]
         const weatherEmbed = new MessageEmbed()
@@ -47,7 +44,6 @@ module.exports = class WeatherCommand extends Command {
             .addFields(
                 {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },
                 {name: "Current Weather", value: titleCase(currentWeather["description"]) },
-                {name: "Timezone", value: `UTC+${currentDate.getTimezoneOffset() / 60}`},
                 {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
                 {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
             )
@@ -84,7 +80,7 @@ function titleCase(str) {
     return splitStr.join(' '); 
 }
 
- var isoCountries = {
+var isoCountries = {
     'AF' : 'Afghanistan',
     'AX' : 'Aland Islands',
     'AL' : 'Albania',

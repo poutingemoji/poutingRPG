@@ -2,7 +2,6 @@ const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 const dateFormat = require('dateformat')
 const { prefix, color } = require("../../config.json");
-const { add } = require('mathjs');
 
 module.exports = class UserinfoCommand extends Command {
 	constructor(client) {
