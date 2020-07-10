@@ -2,6 +2,7 @@ const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 const { prefix, OPENWEATHERMAPKEY } = require("../../config.json");
 const fetch = require("node-fetch")
+
 module.exports = class WeatherCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -34,7 +35,7 @@ module.exports = class WeatherCommand extends Command {
         } else {
             weatherInfo = await fetchWeatherInfo(`https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`)
         }
-        if (weatherInfo.name === undefined) return;
+        if (weatherInfo.name === undefined) return message.say(`${emoji(message, "729190277511905301")} I can't find info on the weather in **${place}**.`);
         console.log(weatherInfo)
         const currentWeather = weatherInfo["weather"][0]
         const weatherEmbed = new MessageEmbed()
@@ -78,6 +79,10 @@ function titleCase(str) {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
     }
     return splitStr.join(' '); 
+}
+
+function emoji(message, emojiID) {
+    return message.client.emojis.cache.get(emojiID).toString()
 }
 
 var isoCountries = {

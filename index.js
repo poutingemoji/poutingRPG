@@ -29,7 +29,6 @@ client.registry
 		["fun", "Fun Commands"],
 		["social", "Social Commands"],
 		["image", "Image Commands"],
-		["music", "Music Commands"],
 		["utility", "Utility Commands"],
 	])
 	.registerDefaultGroups()

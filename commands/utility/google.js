@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { prefix } = require("../../config.json");
+
 module.exports = class GoogleCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -26,8 +27,8 @@ module.exports = class GoogleCommand extends Command {
             },
         });
     };
-    run(message, {search}) {
-        search = search.replace(/ /g, "+")
-        message.say(`https://www.google.fr/search?q=${search}`)
+    run(message, {query}) {
+        query = query.replace(/ /g, "+")
+        message.say(`https://www.google.fr/search?q=${query}`)
     };
 };

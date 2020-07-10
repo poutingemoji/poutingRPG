@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const dateFormat = require('dateformat')
 const { prefix } = require("../../config.json");
 const fetch = require("node-fetch")
@@ -31,13 +31,13 @@ module.exports = class UrbanCommand extends Command {
         });
     };
     async run(message, {query}) {
+        if (!message.channel.nsfw) return message.say(`${emoji(message, "729209778898862171")} This command is only allowed in nsfw channels.`)
         const urbanRequest = await fetchUrbanInfo(`https://api.urbandictionary.com/v0/define?term=${query}`)
         const urbanList = urbanRequest["list"]
         const urbanInfo = urbanList[Math.floor(Math.random()*urbanList.length)]
-        console.log(urbanInfo)
+        if (!urbanInfo) return message.say(`${emoji(message, "729190277511905301")} I can't find the term, ${query} on Urban Dictionary.`);
         const urbanEmbed = new MessageEmbed()
             .setColor("#199ceb")
-            .setAuthor("Urban Dictionary", "https://cdn.discordapp.com/attachments/722720878932262952/730659040996098194/246x0w.png")
             .setTitle(urbanInfo["word"])
             .setURL(urbanInfo["permalink"])
             .setDescription(urbanInfo["definition"])
@@ -52,3 +52,7 @@ async function fetchUrbanInfo(URL) {
     return await res.json();
 }
  
+function emoji(message, emojiID) {
+    return message.client.emojis.cache.get(emojiID).toString()
+}
+

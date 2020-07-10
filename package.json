@@ -14,6 +14,7 @@
     "dateformat": "^3.0.3",
     "discord.js": "^12.2.0",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
+    "genius-lyrics": "^3.0.0",
     "mathjs": "^7.0.2",
     "mongoose": "^5.9.20",
     "node-pre-gyp": "0.12.0"

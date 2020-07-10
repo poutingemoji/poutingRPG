@@ -33,7 +33,7 @@ module.exports = class MathCommand extends Command {
         try {
             evaluatedEquation = math.evaluate(equation);
         } catch (error) {
-            return message.say("Equation provided could not be evaluated.")
+            return message.say(`${emoji(message, "729190277511905301")} Equation provided could not be evaluated.`)
         };
         const calculationEmbed = new MessageEmbed()
             .setColor('#ed7220')
