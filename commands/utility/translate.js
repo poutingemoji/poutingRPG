@@ -52,9 +52,9 @@ module.exports = class TranslateCommand extends Command {
                     .setTimestamp()
                     .setFooter("Translated")
                 if (language.length !== 2) {
-                    translateEmbed.addField(titleCase(language), "```\n" + response.from.text.value + "\n```")
+                    translateEmbed.addField(titleCase(language), "```\n" + response.text + "\n```")
                 } else {
-                    translateEmbed.addField(translate.languages[language], "```\n" + response.from.text.value + "\n```")
+                    translateEmbed.addField(translate.languages[language], "```\n" + response.text + "\n```")
                 }
                 message.say(randomTip(message, translateEmbed))
             })
