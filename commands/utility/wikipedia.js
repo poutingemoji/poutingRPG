@@ -1,21 +1,21 @@
 const { Command } = require('discord.js-commando');
 const { prefix } = require("../../config.json");
 
-module.exports = class GoogleCommand extends Command {
+module.exports = class WikipediaCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'google',
-			aliases: [],
+			name: 'wikipedia',
+			aliases: ['wiki'],
 			group: 'utility',
-			memberName: 'google',
-            description: 'Search using the Google Search Engine right from Discord.',
-            examples: [`${prefix}google [search query]`],
+			memberName: 'wikipedia',
+            description: 'S',
+            examples: [`${prefix}wikipedia [article]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,
             args: [
                 {
-                    key: 'query',
+                    key: 'article',
                     prompt: "What would you like to search on Google?",
                     type: 'string',
                 },
@@ -27,8 +27,8 @@ module.exports = class GoogleCommand extends Command {
             },
         });
     };
-    run(message, {query}) {
-        query = query.replace(/ /g, "+")
-        message.say(`https://www.google.fr/search?q=${query}`)
+    run(message, {article}) {
+        article = article.replace(/ /g, "_")
+        message.say(`https://en.wikipedia.org/wiki/${article}`)
     };
 };
