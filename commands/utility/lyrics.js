@@ -29,23 +29,23 @@ module.exports = class LyricsCommand extends Command {
             },
         });
     };
-    async run(message, {query}) {
+    async run(message, {song}) {
         const sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching database for requested song lyrics... \:mag_right: `);
-        const lyricsRequest = await fetchLyricsInfo(query)
-        if (!lyricsRequest) return sentMessage.edit(`${emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${query}**`)
+        const lyricsRequest = await fetchLyricsInfo(song)
+        console.log(lyricsRequest)
+        if (!lyricsRequest) return sentMessage.edit(`${emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${song}**`)
         const lyricsEmbed = new MessageEmbed()
             .setColor("#fffa64")
             .setDescription(truncateText(lyricsRequest))
         sentMessage.delete()
-        message.say(lyricsEmbed)
+        message.say(randomTip(lyricsEmbed))
     };
 };
 
 async function fetchLyricsInfo(query) {
-    let songs;
     try {
-        songs = await Genius.tracks.search(query, { limit: 1 })
-        return await songs[0].lyrics()
+        const songs = await Genius.tracks.search(query, { limit: 10 })
+        return songs[0].lyrics()
     } catch(error) {
         console.log(error)
     }

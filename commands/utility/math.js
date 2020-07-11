@@ -39,10 +39,11 @@ module.exports = class MathCommand extends Command {
             .setColor('#ed7220')
             .setAuthor(message.author.tag, message.author.displayAvatarURL())
             .addFields(
-                { name: 'Equation', value: "`" + equation + "`"},
-                { name: 'Result', value: evaluatedEquation },
+                { name: 'Equation', value: "```py\n" + equation + "\n```"},
+                { name: 'Result', value: "```py\n" + evaluatedEquation + "\n```"},
             )
             .setTimestamp()
+            .setFooter("Calculated")
         return message.say(randomTip(message, calculationEmbed));
     };
 };

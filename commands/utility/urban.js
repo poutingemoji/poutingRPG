@@ -18,7 +18,7 @@ module.exports = class UrbanCommand extends Command {
             guildOnly: true,
             args: [
                 {
-                    key: 'query',
+                    key: 'term',
                     prompt: "What term would you like to look up on Urban Dictionary?",
                     type: 'string',
                 },
@@ -30,12 +30,12 @@ module.exports = class UrbanCommand extends Command {
             },
         });
     };
-    async run(message, {query}) {
+    async run(message, {term}) {
         if (!message.channel.nsfw) return message.say(`${emoji(message, "729209778898862171")} This command is only allowed in nsfw channels.`)
-        const urbanRequest = await fetchUrbanInfo(`https://api.urbandictionary.com/v0/define?term=${query}`)
+        const urbanRequest = await fetchUrbanInfo(`https://api.urbandictionary.com/v0/define?term=${term}`)
         const urbanList = urbanRequest["list"]
         const urbanInfo = urbanList[Math.floor(Math.random()*urbanList.length)]
-        if (!urbanInfo) return message.say(`${emoji(message, "729190277511905301")} I can't find the term, ${query} on Urban Dictionary.`);
+        if (!urbanInfo) return message.say(`${emoji(message, "729190277511905301")} I can't find the term, ${term} on Urban Dictionary.`);
         const urbanEmbed = new MessageEmbed()
             .setColor("#199ceb")
             .setTitle(urbanInfo["word"])

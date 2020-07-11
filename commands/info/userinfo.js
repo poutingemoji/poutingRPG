@@ -59,4 +59,4 @@ function titleCase(str) {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
     }
     return splitStr.join(' '); 
- }
+}

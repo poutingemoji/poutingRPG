@@ -4,6 +4,7 @@
 	"MONGODBKEY": "mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/Userstats",
 	"OPENWEATHERMAPKEY": "3186cf4de84ea7db59df2e96e9510ff9",
 	"GENIUSLYRICSKEY": "pWmblCU0aBV8GNa-JRANQsD0AtW6VyfJEkr8_dx7xz3gpBmty4pSWHPFOON-UwjN",
+	"SYSTRANTRANSLATIONKEY": "03955f37b1msh6ad9210f4e38d66p",
 	"baseExpMultiplier": 50,
 	"exponentialExpMultiplier": 1.04,
 	"expCooldown": 60000,
