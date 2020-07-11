@@ -1,7 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 const { prefix } = require("../../config.json");
-const tcom = require('thesaurus-com');
 
 module.exports = class ThesaurusCommand extends Command {
 	constructor(client) {
