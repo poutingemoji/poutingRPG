@@ -29,28 +29,35 @@ module.exports = class WeatherCommand extends Command {
         });
     };
     async run(message, {place}) {
-        let weatherInfo;
-        if (isNaN(place)) {
-            weatherInfo = await fetchWeatherInfo(`https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`)
-        } else {
-            weatherInfo = await fetchWeatherInfo(`https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`)
+        try {
+            let weatherURL;
+            if (isNaN(place)) {
+                weatherURL =`https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`
+            } else {
+                weatherURL = `https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`
+            }
+            let weatherInfo = await fetch(weatherURL)
+            weatherInfo = await weatherInfo.json()
+            if (weatherInfo.name === undefined) {
+                throw `${emoji(message, "729190277511905301")} I can't find info on the weather in **${place}**.`
+            }
+            const currentWeather = weatherInfo["weather"][0]
+            const messageEmbed = new MessageEmbed()
+                .setColor('#99ccff')
+                .setAuthor(weatherInfo["name"] + ", " + getCountryName(weatherInfo["sys"]["country"]))
+                .setThumbnail(`http://openweathermap.org/img/wn/${currentWeather["icon"]}@2x.png`)
+                .addFields(
+                    {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },
+                    {name: "Current Weather", value: titleCase(currentWeather["description"]) },
+                    {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
+                    {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
+                )
+                .setTimestamp()
+                .setFooter('Weather');
+            message.say(randomTip(message, messageEmbed));
+        } catch(error) {
+            message.say(error)
         }
-        if (weatherInfo.name === undefined) return message.say(`${emoji(message, "729190277511905301")} I can't find info on the weather in **${place}**.`);
-        console.log(weatherInfo)
-        const currentWeather = weatherInfo["weather"][0]
-        const weatherEmbed = new MessageEmbed()
-            .setColor('#99ccff')
-            .setAuthor(weatherInfo["name"] + ", " + getCountryName(weatherInfo["sys"]["country"]))
-            .setThumbnail(`http://openweathermap.org/img/wn/${currentWeather["icon"]}@2x.png`)
-            .addFields(
-                {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },
-                {name: "Current Weather", value: titleCase(currentWeather["description"]) },
-                {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
-                {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
-            )
-            .setTimestamp()
-            .setFooter('Weather');
-        return message.say(randomTip(message, weatherEmbed));
     };
 };
 
@@ -66,11 +73,6 @@ function getCardinalDirection(angle) {
       if (angle >= (i * degree) && angle < (i + 1) * degree) return arrows[directions[i]];
     }
     return arrows['north'];
-}
-
-async function fetchWeatherInfo(URL) {
-    const res = await fetch(URL)
-    return await res.json();
 }
 
 function titleCase(str) {

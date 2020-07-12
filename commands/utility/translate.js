@@ -37,26 +37,26 @@ module.exports = class TranslateCommand extends Command {
         if (language.toLowerCase() === "chinese") {
             language = "Chinese (Simplified)"
         }
+        if (!translate.languages.getCode(language)) return message.say(`${emoji(message, "729190277511905301")} The language, **${titleCase(language)}**, doesn't exist in my database.`)
         const opts = {
             to: translate.languages.getCode(language.toLowerCase()), 
         };
         translate(content, opts)
-            .then(response => {
-                if (!translate.languages.getCode(language)) return message.say(`${emoji(message, "729190277511905301")} The language, **${titleCase(language)}**, doesn't exist in my database.`)
-                const translateEmbed = new MessageEmbed()
+            .then(result => {
+                const messageEmbed = new MessageEmbed()
                     .setColor("#4c8cf5")
                     .setAuthor(message.author.tag, message.author.displayAvatarURL())
                     .addFields(
-                        {name: translate.languages[response.from.language.iso], value: "```\n" + content + "\n```"},
+                        {name: translate.languages[result.from.language.iso], value: "```\n" + content + "\n```"},
                     )
                     .setTimestamp()
                     .setFooter("Translated")
                 if (language.length !== 2) {
-                    translateEmbed.addField(titleCase(language), "```\n" + response.text + "\n```")
+                    messageEmbed.addField(titleCase(language), "```\n" + result.text + "\n```")
                 } else {
-                    translateEmbed.addField(translate.languages[language], "```\n" + response.text + "\n```")
+                    messageEmbed.addField(translate.languages[language], "```\n" + result.text + "\n```")
                 }
-                message.say(randomTip(message, translateEmbed))
+                message.say(randomTip(message, messageEmbed))
             })
             .catch(console.error);
     };

@@ -44,8 +44,8 @@ module.exports = class AnimeCommand extends Command {
             var sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested anime... \:mag_right: `);
             var animeRequest = await fetchAnimeInfo(`https://kitsu.io/api/edge/anime?filter[text]=${anime}`)
             if (animeRequest["data"][0] === undefined) return sentMessage.edit(`${emoji(message,"729190277511905301")} Request failed! Could not find info on ${anime}`);
-        } catch(err) {
-            console.log(err)
+        } catch(error) {
+            console.log(error)
         };
         console.log(sentMessage)
         let i = 0;
@@ -69,7 +69,7 @@ module.exports = class AnimeCommand extends Command {
                     } else {
                         title = `${animeInfo["titles"]["ja_jp"]} - ${animeInfo["canonicalTitle"]}`
                     }
-                    const animeEmbed = new MessageEmbed()
+                    const messageEmbed = new MessageEmbed()
                         .setColor('#ed7220')
                         .setTitle(title)
                         .setURL(`https://kitsu.io/anime/${animeRequest["data"][chosenAnimeIndex]["id"]}`)
@@ -78,13 +78,13 @@ module.exports = class AnimeCommand extends Command {
                     Object.keys(checkDict).forEach(function(check) {
                         console.log(check)
                         if (animeInfo[check]) {
-                            animeEmbed.addField(checkDict[check], animeInfo[check], true)
+                            messageEmbed.addField(checkDict[check], animeInfo[check], true)
                          }
                      });
                     if (animeInfo["nextRelease"]) {
-                        animeEmbed.setFooter(`Next Release: ${dateFormat(animeInfo["nextRelease"], "dddd, mmmm dS, yyyy, h:MM TT")}`)
+                        messageEmbed.setFooter(`Next Release: ${dateFormat(animeInfo["nextRelease"], "dddd, mmmm dS, yyyy, h:MM TT")}`)
                     }
-                    message.say(randomTip(message, animeEmbed));    
+                    message.say(randomTip(message, messageEmbed));    
                 })
                 .catch(collected => {
                     message.say(`${emoji(message,"729204396726026262")}**${message.author.username}**, what's taking so long bruh? This search is cancelled.`)

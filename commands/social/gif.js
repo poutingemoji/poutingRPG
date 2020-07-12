@@ -2,9 +2,9 @@ const { Command } = require('discord.js-commando');
 const { TENORKEY } = require("../../config.json");
 const Tenor = require("tenorjs").client({
     "Key": TENORKEY,
-    "Filter": "off", 
+    "Filter": "medium", 
     "Locale": "en_US", 
-    "MediaFilter": "minimal",
+    "MediaFilter": "basic",
     "DateFormat": "D/MM/YYYY - H:mm:ss A" 
 });
 

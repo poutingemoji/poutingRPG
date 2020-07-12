@@ -29,22 +29,25 @@ module.exports = class MathCommand extends Command {
         });
     };
     run(message, {equation}) {
-        let evaluatedEquation;
         try {
+            let evaluatedEquation;
             evaluatedEquation = math.evaluate(equation);
+            const messageEmbed = new MessageEmbed()
+                .setColor('#ed7220')
+                .setAuthor(message.author.tag, message.author.displayAvatarURL())
+                .addFields(
+                    { name: 'Equation', value: "```py\n" + equation + "\n```"},
+                    { name: 'Result', value: "```py\n" + evaluatedEquation + "\n```"},
+                )
+                .setTimestamp()
+                .setFooter("Calculated")
+            message.say(randomTip(message, messageEmbed));
         } catch (error) {
             return message.say(`${emoji(message, "729190277511905301")} Equation provided could not be evaluated.`)
         };
-        const calculationEmbed = new MessageEmbed()
-            .setColor('#ed7220')
-            .setAuthor(message.author.tag, message.author.displayAvatarURL())
-            .addFields(
-                { name: 'Equation', value: "```py\n" + equation + "\n```"},
-                { name: 'Result', value: "```py\n" + evaluatedEquation + "\n```"},
-            )
-            .setTimestamp()
-            .setFooter("Calculated")
-        return message.say(randomTip(message, calculationEmbed));
     };
 };
 
+function emoji(message, emojiID) {
+    return message.client.emojis.cache.get(emojiID).toString()
+}

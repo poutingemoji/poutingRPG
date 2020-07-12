@@ -28,7 +28,7 @@ module.exports = class ChannelinfoCommand extends Command {
         if (message.mentions.channels.first()) {
             channel = message.mentions.channels.first()
         }
-		const channelEmbed = new MessageEmbed()
+		const messageEmbed = new MessageEmbed()
             .setColor(color)
             .setThumbnail("https://cdn.discordapp.com/attachments/722720878932262952/729916844017713182/Green_april_hook_shape.png")
             .addFields(
@@ -40,8 +40,8 @@ module.exports = class ChannelinfoCommand extends Command {
             .setTimestamp()
             .setFooter(`ID: ${channel.id}`);
         if (channel.topic) {
-            channelEmbed.addField("Topic", channel.topic)
+            messageEmbed.addField("Topic", channel.topic)
         }
-		message.say(randomTip(message, channelEmbed));
+		message.say(randomTip(message, messageEmbed));
     };
 };

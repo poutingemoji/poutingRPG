@@ -34,7 +34,7 @@ module.exports = class ServerinfoCommand extends Command {
         const humanCount = members.length - botCount
         const roles = guild.roles.cache.map(role => "<@&" + role.id + ">");
         const emojis = guild.emojis.cache.map(emoji => emoji)
-		const serverinfoEmbed = new MessageEmbed()
+		const messageEmbed = new MessageEmbed()
             .setColor(color)
             .setAuthor(guild.name)
 			.setThumbnail(guild.iconURL())
@@ -49,11 +49,11 @@ module.exports = class ServerinfoCommand extends Command {
             .setTimestamp()
             .setFooter(`ID: ${guild.id}`);
         if (roles) {
-            serverinfoEmbed.addField("Roles", roles.length, true)
+            messageEmbed.addField("Roles", roles.length, true)
         }
         if (emojis) {
-            serverinfoEmbed.addField(`Emojis (${emojis.length})`, emojis.slice(0, 20).join(' '))
+            messageEmbed.addField(`Emojis (${emojis.length})`, emojis.slice(0, 20).join(' '))
         }
-		message.say(randomTip(message, serverinfoEmbed));
+		message.say(randomTip(message, messageEmbed));
     };
 };

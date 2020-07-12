@@ -31,25 +31,20 @@ module.exports = class LyricsCommand extends Command {
     };
     async run(message, {song}) {
         const sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested song lyrics... \:mag_right: `);
-        const lyricsRequest = await fetchLyricsInfo(song)
-        console.log(lyricsRequest)
-        if (!lyricsRequest) return sentMessage.edit(`${emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${song}**`)
-        const lyricsEmbed = new MessageEmbed()
-            .setColor("#fffa64")
-            .setDescription(truncateText(lyricsRequest))
-        sentMessage.delete()
-        message.say(randomTip(lyricsEmbed))
+        try {
+            const songs = await Genius.tracks.search(song, { limit: 10 })
+            const lyricsRequest = await songs[0].lyrics()
+            const messageEmbed = new MessageEmbed()
+                .setColor("#fffa64")
+                .setDescription(truncateText(lyricsRequest))
+            sentMessage.delete()
+            message.say(messageEmbed)
+        } catch(error) {
+            console.log(error)
+            sentMessage.edit(`${emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${song}**`)
+        }
     };
 };
-
-async function fetchLyricsInfo(query) {
-    try {
-        const songs = await Genius.tracks.search(query, { limit: 10 })
-        return songs[0].lyrics()
-    } catch(error) {
-        console.log(error)
-    }
-}
 
 function emoji(message, emojiID) {
     return message.client.emojis.cache.get(emojiID).toString()

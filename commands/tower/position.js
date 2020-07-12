@@ -40,10 +40,10 @@ module.exports = class PositionCommand extends Command {
 		} else {
 			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`;
 		};
-		const positionEmbed = new MessageEmbed()
-		.setColor(positionColors[position.Name])
-        .setDescription(description)
-		.setImage(position.Image)
+		const messageEmbed = new MessageEmbed()
+			.setColor(positionColors[position.Name])
+			.setDescription(description)
+			.setImage(position.Image)
 		userStat.findOne({
 			userID: message.author.id,
 		}, (err, currentUserstat) => {
@@ -53,7 +53,7 @@ module.exports = class PositionCommand extends Command {
 			currentUserstat.rank = rankIndex
 			currentUserstat.save().catch(err => console.log(err))
 		});
-		return message.say(positionEmbed);
+		return message.say(messageEmbed);
 	};
 };
 

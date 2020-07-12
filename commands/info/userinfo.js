@@ -31,24 +31,24 @@ module.exports = class UserinfoCommand extends Command {
         }
         const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ");
         const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => titleCase(permission)).join(', ')
-		const userinfoEmbed = new MessageEmbed()
+		const messageEmbed = new MessageEmbed()
             .setColor(color)
             .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())
 			.setThumbnail(mentionedUser.displayAvatarURL())
             .setTimestamp()
             .setFooter(`ID: ${mentionedUser.id}`);
         if (mentionedMember.nickname) {
-            userinfoEmbed.addField("Nickname", mentionedMember.nickname, true)
+            messageEmbed.addField("Nickname", mentionedMember.nickname, true)
         }
-        userinfoEmbed.addField("Created", dateFormat(mentionedUser.createdAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), true)
-        userinfoEmbed.addField("Joined", dateFormat(mentionedMember.joinedAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), true)
+        messageEmbed.addField("Created", dateFormat(mentionedUser.createdAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), true)
+        messageEmbed.addField("Joined", dateFormat(mentionedMember.joinedAt, "dddd, mmmm dS, yyyy, h:MM:ss TT"), true)
         if (mentionedPermissions) {
-            userinfoEmbed.addField(`Permissions (${mentionedPermissions.split(', ').length})`, mentionedPermissions)
+            messageEmbed.addField(`Permissions (${mentionedPermissions.split(', ').length})`, mentionedPermissions)
         }
         if (mentionedRoles) {
-            userinfoEmbed.addField(`Roles (${mentionedRoles.split(' ').length})`,  mentionedRoles)
+            messageEmbed.addField(`Roles (${mentionedRoles.split(' ').length})`,  mentionedRoles)
         }
-		message.say(randomTip(message, userinfoEmbed));
+		message.say(randomTip(message, messageEmbed));
     };
 };
 
