@@ -1,5 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { prefix } = require("../../config.json");
+const translate = require('@vitalets/google-translate-api');
+const { e } = require('mathjs');
 
 module.exports = class SayCommand extends Command {
     constructor(client) {
@@ -28,7 +30,26 @@ module.exports = class SayCommand extends Command {
     }
 
     run(message, { text }) {
+        console.log(text)
+        const args = text.split(" ")
         message.delete();
-        return message.say(text);
+        if (args[0].toLowerCase() === "chinese") {
+            args[0] = "Chinese (Simplified)"
+        }
+        console.log(args)
+        text = args.join(" ")
+        if (translate.languages.getCode(args[0])) {
+            let language = args[0];
+            const opts = {
+                to: translate.languages.getCode(language.toLowerCase()), 
+            }
+            translate(text.replace(args[0], ''), opts)
+                .then(response => {
+                    message.say(response.text)
+                })
+                .catch(console.error);
+        } else {
+            return message.say(text);
+        }
     }
 };
