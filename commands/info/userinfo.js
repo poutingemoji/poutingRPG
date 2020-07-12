@@ -7,10 +7,10 @@ module.exports = class UserinfoCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'userinfo',
-			aliases: ['ui', 'whois'],
+			aliases: ['whois'],
 			group: 'info',
 			memberName: 'userinfo',
-            description: "Shows your info or the user you mentioned's info",
+            description: "Display your info or the user mentioned's info",
             examples: [`${prefix}userinfo [@user]`],
             clientPermissions: [],
             userPermissions: [],

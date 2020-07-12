@@ -8,15 +8,15 @@ module.exports = class WideCommand extends Command {
 			aliases: [],
 			group: 'fun',
 			memberName: 'wide',
-            description: 'Makes your message w i d e r.',
-            examples: [`${prefix}wide I like my text wide, yes sir.`],
+            description: 'Makes your text wider.',
+            examples: [`${prefix}wide [text]`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
             guildOnly: true,
             args: [
                 {
                     key: 'text',
-                    prompt: 'What would you like to make w i d e?',
+                    prompt: 'What text would you like to make wide?',
                     type: 'string',
                 },
             ],

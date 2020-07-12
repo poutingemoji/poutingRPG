@@ -10,7 +10,7 @@ module.exports = class PositionCommand extends Command {
 			aliases: [],
 			group: 'tower',
 			memberName: 'position',
-			description: 'Rank and position randomizer (placeholder for real rank system)',
+			description: 'Randomizes your position and rank. (Chance to be an Irregular)',
 			examples: [],
 			clientPermissions: [],
 			userPermissions: [],

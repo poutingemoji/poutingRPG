@@ -7,11 +7,11 @@ module.exports = class SayCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'say',
-            aliases: ['copycat', 'repeat', 'echo', 'parrot'],
+            aliases: [],
             group: 'fun',
             memberName: 'say',
-            description: 'Replies with the text you provide.',
-            examples: [`${prefix}say I have a voice? .3.`],
+            description: 'Makes the bot mimic what you say.',
+            examples: [`${prefix}say [text]`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
             guildOnly: true,
@@ -32,11 +32,11 @@ module.exports = class SayCommand extends Command {
     run(message, { text }) {
         console.log(text)
         const args = text.split(" ")
+        let mentions = [];
         message.delete();
         if (args[0].toLowerCase() === "chinese") {
             args[0] = "Chinese (Simplified)"
         }
-        console.log(args)
         text = args.join(" ")
         if (translate.languages.getCode(args[0])) {
             let language = args[0];
@@ -45,7 +45,7 @@ module.exports = class SayCommand extends Command {
             }
             translate(text.replace(args[0], ''), opts)
                 .then(response => {
-                    message.say(response.text)
+                    message.say(mentions.join(' ') + response.text)
                 })
                 .catch(console.error);
         } else {

@@ -10,11 +10,11 @@ module.exports = class TranslateCommand extends Command {
 			aliases: ['ts'],
 			group: 'utility',
 			memberName: 'translate',
-            description: 'Google translator in Discord.',
-            examples: [`${prefix}translate french baguette`],
+            description: 'Translates the text into the specified language.',
+            examples: [`${prefix}translate [language/ISO 639-1] [text]`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: true,
+            guildOnly: false,
             args: [
                 {
                     key: 'language',
@@ -23,7 +23,7 @@ module.exports = class TranslateCommand extends Command {
                 },
                 {
                     key: 'content',
-                    prompt: 'What would you like to say in this language?',
+                    prompt: 'What would you like to translate in this language?',
                     type: 'string',
                 },
             ],

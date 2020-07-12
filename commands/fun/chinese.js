@@ -8,15 +8,15 @@ module.exports = class ChineseCommand extends Command {
 			aliases: [],
 			group: 'fun',
 			memberName: 'chinese',
-            description: 'Instantly learn how to write in Chinese.',
-            examples: [`${prefix}chinese I am fluent in chinese. ;)`],
+            description: 'Converts your english letters into their corresponding Chinese letters.',
+            examples: [`${prefix}chinese [text]`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
             guildOnly: true,
             args: [
                 {
                     key: 'text',
-                    prompt: 'What would you like to translate into Chinese?',
+                    prompt: 'What text would you like to convert into Chinese letters?',
                     type: 'string',
                 },
             ],

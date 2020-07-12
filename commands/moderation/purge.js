@@ -5,10 +5,10 @@ module.exports = class PurgeCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'purge',
-            aliases: ['purge', 'prune', 'clear', 'wipe'],
+            aliases: ['prune', 'clear', 'wipe'],
             group: 'moderation',
             memberName: 'purge',
-            description: 'Allows you to mass delete messages in your server. DEFAULT: 50 MSGS',
+            description: 'Allows you to mass delete messages in your server. DEFAULT: 25 MSGS',
             examples: [
                 `${prefix}purge @user`,
                 `${prefix}purge [number]`,

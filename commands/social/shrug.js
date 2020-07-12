@@ -1,13 +1,13 @@
 const { Command } = require('discord.js-commando');
 
-module.exports = class PatCommand extends Command {
+module.exports = class ShrugCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'pat',
+			name: 'shrug',
 			aliases: [],
 			group: 'fun',
-			memberName: 'pat',
-            description: 'Displays a random pat gif.',
+			memberName: 'shrug',
+            description: 'Displays a random shrug gif.',
             examples: [],
             clientPermissions: [],
             userPermissions: [],
@@ -38,7 +38,10 @@ function* infiniteShuffle(array) {
 }
 
 const gifs = infiniteShuffle([
-    "https://tenor.com/view/kanna-kamui-pat-head-pat-gif-12018819",
-    "https://tenor.com/view/funny-dog-cat-patting-head-gif-4953911",
-    "https://tenor.com/view/nagi_no_asukara-nagi-manaka-head-pat-gif-8841561"
+    "https://tenor.com/view/shrug-smug-smile-miss-kobayashi-kobayashisan-chi-no-maid-dragon-gif-13119038",
+    "https://tenor.com/view/anime-shrug-maybe-idont-know-gif-14913933",
+    "https://tenor.com/view/shrug-anime-non-non-biyori-renge-gif-9724581",
+    "https://tenor.com/view/senyuu-anime-anime-boy-demon-teufel-diabolos-gif-14625512",
+    "https://tenor.com/view/izaya-orihara-durarara-drrr-anime-shrug-gif-12286564",
+    "https://tenor.com/view/anime-shrug-dont-know-idk-gif-15487155",
 ])

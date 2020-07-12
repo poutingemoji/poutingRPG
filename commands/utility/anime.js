@@ -20,11 +20,11 @@ module.exports = class AnimeCommand extends Command {
 			aliases: [],
 			group: 'utility',
 			memberName: 'anime',
-            description: 'Search for info about your favorite anime!',
-            examples: [`${prefix}anime [name of anime]`],
+            description: 'Displays info about the requested anime.',
+            examples: [`${prefix}anime [anime]`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: true,
+            guildOnly: false,
             args: [
                 {
                     key: 'anime',
@@ -41,7 +41,7 @@ module.exports = class AnimeCommand extends Command {
     };
     async run(message, {anime}) {
         try {
-            var sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching database for requested anime... \:mag_right: `);
+            var sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested anime... \:mag_right: `);
             var animeRequest = await fetchAnimeInfo(`https://kitsu.io/api/edge/anime?filter[text]=${anime}`)
             if (animeRequest["data"][0] === undefined) return sentMessage.edit(`${emoji(message,"729190277511905301")} Request failed! Could not find info on ${anime}`);
         } catch(err) {

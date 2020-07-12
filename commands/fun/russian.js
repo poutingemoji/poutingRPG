@@ -8,15 +8,15 @@ module.exports = class RussianCommand extends Command {
 			aliases: [],
 			group: 'fun',
 			memberName: 'russian',
-            description: 'Instantly learn how to write in Russian.',
-            examples: [`${prefix}chinese I am fluent in russian. ;)`],
+            description: 'Converts your english letters into their corresponding Russian letters.',
+            examples: [`${prefix}russian [text]`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
             guildOnly: true,
             args: [
                 {
                     key: 'text',
-                    prompt: 'What would you like to translate into Russian?',
+                    prompt: 'What text would you like to convert into Russian letters?',
                     type: 'string',
                 },
             ],

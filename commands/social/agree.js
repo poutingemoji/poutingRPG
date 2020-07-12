@@ -1,13 +1,13 @@
 const { Command } = require('discord.js-commando');
 
-module.exports = class PatCommand extends Command {
+module.exports = class AgreeCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'pat',
+			name: 'agree',
 			aliases: [],
 			group: 'fun',
-			memberName: 'pat',
-            description: 'Displays a random pat gif.',
+			memberName: 'agree',
+            description: 'Displays a random agree gif.',
             examples: [],
             clientPermissions: [],
             userPermissions: [],
@@ -38,7 +38,13 @@ function* infiniteShuffle(array) {
 }
 
 const gifs = infiniteShuffle([
-    "https://tenor.com/view/kanna-kamui-pat-head-pat-gif-12018819",
-    "https://tenor.com/view/funny-dog-cat-patting-head-gif-4953911",
-    "https://tenor.com/view/nagi_no_asukara-nagi-manaka-head-pat-gif-8841561"
+    "https://tenor.com/view/nodding-crossed-arms-pikachu-eyes-closed-pokemon-gif-15194868",
+    "https://tenor.com/view/yes-anime-nods-agree-gif-14855108",
+    "https://tenor.com/view/anime-zero-two-cute-smile-nod-gif-13451534",
+    "https://tenor.com/view/yep-gif-4361784",
+    "https://tenor.com/view/ranma-ranma-one-half-shampoo-anime-90s-gif-15175750",
+    "https://tenor.com/view/jotaro-kujo-yes-jojo-distorted-anime-gif-17239598",
+    "https://tenor.com/view/ngnl-no-game-no-life-shiro-sora-anime-gif-17083387",
+    "https://tenor.com/view/anime-konosuba-shake-head-ok-yes-gif-16705379",
+
 ])

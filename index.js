@@ -117,7 +117,7 @@ function randomIntFromInterval(min, max){
 global.randomTip = function randomTip(message, text){
 	const hasTip = Math.random() >= 0.9;
 	if (hasTip) {
-		const tipAuthors = ["A Tip from the Nigatsuki", "WARNING", "Fun Fact", "ATTENTION", "yes"]
+		const tipAuthors = ["From the Nigatsuki", "WARNING", "Fun Fact", "ATTENTION", "yes"]
 		const tips = [
 			"Don't know what the commands are? Use " + "`" + `${message.guild.commandPrefix}help` + "`" + " for info on commands!", 
 			"Shameless plug for the homie, https://richardxhtml.github.io/nagatsuki/",

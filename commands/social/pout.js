@@ -1,13 +1,13 @@
 const { Command } = require('discord.js-commando');
 
-module.exports = class PatCommand extends Command {
+module.exports = class PoutCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'pat',
+			name: 'pout',
 			aliases: [],
 			group: 'fun',
-			memberName: 'pat',
-            description: 'Displays a random pat gif.',
+			memberName: 'pout',
+            description: 'Displays a random pout gif.',
             examples: [],
             clientPermissions: [],
             userPermissions: [],
@@ -38,7 +38,12 @@ function* infiniteShuffle(array) {
 }
 
 const gifs = infiniteShuffle([
-    "https://tenor.com/view/kanna-kamui-pat-head-pat-gif-12018819",
-    "https://tenor.com/view/funny-dog-cat-patting-head-gif-4953911",
-    "https://tenor.com/view/nagi_no_asukara-nagi-manaka-head-pat-gif-8841561"
+    "https://tenor.com/view/senko-poute-hmph-pouting-mope-sulk-gif-15650605",
+    "https://tenor.com/view/anime-gifs-to-communicate-gifs-reaction-gifs-reaction-anime-kawaii-gif-14065051",
+    "https://tenor.com/view/cute-pouting-pout-anime-girl-gif-14739721",
+    "https://tenor.com/view/anime-pouting-angry-pissed-gif-14210734",
+    "https://tenor.com/view/raphtalia-anime-pouting-gif-14210688",
+    "https://tenor.com/view/pouting-anime-girl-cute-mad-gif-17164029",
+    "https://tenor.com/view/pokemon-jigglypuff-angry-frustrated-puff-gif-5688400",
+    "https://tenor.com/view/cute-girl-pouting-pout-anime-gif-14716136",
 ])

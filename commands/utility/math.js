@@ -10,11 +10,11 @@ module.exports = class MathCommand extends Command {
 			aliases: ['math', 'calc', 'calculate'],
 			group: 'utility',
 			memberName: 'math',
-            description: 'A calculator in Discord.',
-            examples: [`${prefix}math (5+3)/2`],
+            description: 'Calculates the provided equation.',
+            examples: [`${prefix}math [equation]`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: true,
+            guildOnly: false,
             args: [
                 {
                     key: 'equation',

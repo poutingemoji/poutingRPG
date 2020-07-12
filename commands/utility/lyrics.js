@@ -10,14 +10,14 @@ module.exports = class LyricsCommand extends Command {
 			aliases: [],
 			group: 'utility',
 			memberName: 'lyrics',
-            description: 'Search up the lyrics to a song.',
-            examples: [`${prefix}lyrics [name of song]`],
+            description: 'Display the lyrics of the requested song.',
+            examples: [`${prefix}lyrics [song]`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: true,
+            guildOnly: false,
             args: [
                 {
-                    key: 'query',
+                    key: 'song',
                     prompt: "What song would you like to know the lyrics to?",
                     type: 'string',
                 },
@@ -30,7 +30,7 @@ module.exports = class LyricsCommand extends Command {
         });
     };
     async run(message, {song}) {
-        const sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching database for requested song lyrics... \:mag_right: `);
+        const sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested song lyrics... \:mag_right: `);
         const lyricsRequest = await fetchLyricsInfo(song)
         console.log(lyricsRequest)
         if (!lyricsRequest) return sentMessage.edit(`${emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${song}**`)

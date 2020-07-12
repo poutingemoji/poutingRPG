@@ -8,11 +8,11 @@ module.exports = class OwnerCommand extends Command {
 			aliases: [],
 			group: 'info',
 			memberName: 'owner',
-            description: "This is my owner.",
+            description: "Shows the owner of this bot.",
             examples: [`${prefix}owner`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: false,
+            guildOnly: true,
             args: [],
             throttling: {
                 usages: 1,

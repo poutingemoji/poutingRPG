@@ -11,11 +11,12 @@ module.exports = class UrbanCommand extends Command {
 			aliases: [],
 			group: 'utility',
 			memberName: 'urban',
-            description: 'Search up a term on Urban Dictionary.',
-            examples: [`${prefix}urban [query]`],
+            description: 'Look up a term on Urban Dictionary.',
+            examples: [`${prefix}urban [term]`],
             clientPermissions: [],
             userPermissions: [],
-            guildOnly: true,
+            guildOnly: false,
+            nsfw: true,
             args: [
                 {
                     key: 'term',
@@ -31,7 +32,7 @@ module.exports = class UrbanCommand extends Command {
         });
     };
     async run(message, {term}) {
-        if (!message.channel.nsfw) return message.say(`${emoji(message, "729209778898862171")} This command is only allowed in nsfw channels.`)
+        if (!message.channel.nsfw) return message.say(`${emoji(message, "729209778898862171")} This command is only allowed in NSFW channels.`)
         const urbanRequest = await fetchUrbanInfo(`https://api.urbandictionary.com/v0/define?term=${term}`)
         const urbanList = urbanRequest["list"]
         const urbanInfo = urbanList[Math.floor(Math.random()*urbanList.length)]

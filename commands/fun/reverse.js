@@ -9,7 +9,7 @@ module.exports = class ReverseCommand extends Command {
 			group: 'fun',
 			memberName: 'reverse',
             description: 'Reverses the sentence structure of your text.',
-            examples: [`${prefix}reverse message your reverse will This`],
+            examples: [`${prefix}reverse [text]`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
             guildOnly: true,
