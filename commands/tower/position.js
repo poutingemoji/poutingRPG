@@ -53,7 +53,7 @@ module.exports = class PositionCommand extends Command {
 			currentUserstat.rank = rankIndex
 			currentUserstat.save().catch(err => console.log(err))
 		});
-		return message.say(messageEmbed);
+		message.say(messageEmbed);
 	};
 };
 
@@ -61,26 +61,21 @@ const positions = {
     [0] : {
         Name: "Fisherman",
         Image: "https://cdn.discordapp.com/attachments/722720878932262952/723017703581024346/Main_position_7.png",
-        Color: "#a2716b",
     },
     [1] : {
         Name: "Scout",
         Image: "https://cdn.discordapp.com/attachments/722720878932262952/723017470788763659/Main_position_6.png",
-        Color: "#92b096",
     },
     [2] : {
         Name: "Spear Bearer",
         Image: "https://cdn.discordapp.com/attachments/722720878932262952/723017114872578098/Main_position_3.png",
-        Color: "#604f41",
     },
     [3] : {
         Name: "Light Bearer",
         Image: "https://cdn.discordapp.com/attachments/722720878932262952/723016426264461393/unknown.png",
-        Color: "#baa564",
     },
     [4] : {
         Name: "Wave Controller",
         Image: "https://cdn.discordapp.com/attachments/722720878932262952/723016677834489906/Main_position_2.png",
-        Color: "#748394",
     }
 };

@@ -21,10 +21,11 @@ module.exports = class PurgeCommand extends Command {
                 `${prefix}purge text [number]`,
                 `${prefix}purge embeds [number]`,
                 `${prefix}purge emojis [number]`,
-                `${prefix}purge reactions [number]`,
+                `${prefix}purge reactions [number] REMOVES ALL REACTIONS RIGHT NOW`,
                 `${prefix}purge startswith [content]`,
                 `${prefix}purge endswith [content]`,
                 `${prefix}purge includes [content]`,
+                `${prefix}purge match [content]`,
             ],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: ['MANAGE_MESSAGES'],
@@ -39,7 +40,7 @@ module.exports = class PurgeCommand extends Command {
                 {
                     key: 'numOfMessages',
                     prompt: 'How many messages would you like to purge?',
-                    type: 'integer',
+                    type: 'string',
                     default: 25,
                 },
             ],
@@ -51,33 +52,50 @@ module.exports = class PurgeCommand extends Command {
     }
 
     run(message, { typeOfMessages, numOfMessages }) {
-        if (numOfMessages <= 0 || numOfMessages > 100) return purgeMessage(message, "Number of messages deleted must be greater than 0 and less than 101.");
         counter = 0;
         let messagesDeleted;
         if (!typeOfMessages) {
             message.delete();
-            message.channel.bulkDelete(numOfMessages, true).catch(err => {
-                console.error(err);
+            message.channel.bulkDelete(numOfMessages, true).catch(error => {
+                console.error(error);
             });
             purgeMessage(message, "Deletion of messages successful. Total messages deleted: " + "`" + numOfMessages + "`")
-        } else if (!isNaN(typeOfMessages)) {
-            if (typeOfMessages <= 0 || typeOfMessages > 100) return purgeMessage(message, "Number of messages deleted must be greater than 0 and less than 101.");
-            message.delete();
-            message.channel.bulkDelete(typeOfMessages, true).catch(err => {
-                console.error(err);
-            });
-            purgeMessage(message, "Deletion of messages successful. Total messages deleted: " + "`" + typeOfMessages + "`")
-        } else if (["startswith", "endswith", "includes"].includes(typeOfMessages)) {
-            if (typeOfMessages === "includes") {
-
-            }
-        } else if (["bots", "commands", "embeds", "emojis", "images", "invites", "links", "mentions", "reactions", "text"].includes(typeOfMessages) || message.mentions.users.first()) {
-            message.delete();
+        } else if (["bots", "commands", "embeds", "emojis", "images", "invites", "links", "mentions", "reactions", "text", "startswith", "endswith", "contains", "match"].includes(typeOfMessages) || message.mentions.users.first()) {
             let filteredMessages;
             message.channel.messages.fetch().then(messages => {
-                if (typeOfMessages !== "reactions") {
+                if (typeOfMessages === "reactions") {
+                    messages.filter(msg =>  filterLimit(msg, msg.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error), numOfMessages)));
+                } else {
+                    if (isNaN(numOfMessages)) {
+                        message.delete();
+                        let promptKeyword;
+                        if (typeOfMessages === "contains") {
+                            filteredMessages = messages.filter(msg => msg.content.includes(numOfMessages));
+                            promptKeyword = 'containing'
+                        } else if (typeOfMessages === "startswith") {
+                            filteredMessages = messages.filter(msg => msg.content.startsWith(numOfMessages));
+                            promptKeyword = 'starting with'
+                        } else if (typeOfMessages === "endswith") {
+                            filteredMessages = messages.filter(msg => msg.content.endsWith(numOfMessages));
+                            promptKeyword = 'ending with'
+                        } else if (typeOfMessages === "match") {
+                            filteredMessages = messages.filter(msg => msg.content === numOfMessages);
+                            promptKeyword = 'matching'
+                        }
+                        messagesDeleted = filteredMessages.array(); 
+                        console.log(typeOfMessages)
+                        message.channel.bulkDelete(messagesDeleted, true).catch(error => {
+                            console.error(error);
+                        });
+                        if (messagesDeleted.length > 0) {
+                            purgeMessage(message, `Deletion of messages ${promptKeyword} **${numOfMessages}** was successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
+                        } else
+                            purgeMessage(message, `No messages ${promptKeyword} **${numOfMessages}** could be found!`)
+                    } else {
+                        if (typeOfMessages <= 0 || typeOfMessages > 100) return purgeMessage(message, "Number of messages deleted must be greater than 0 and less than 101.");
+                        message.delete();
                         const user = message.mentions.users.first()
-                        if (user) {
+                        if (user) {                         
                             filteredMessages = messages.filter(msg => filterLimit(msg, msg.author.id === user.id, numOfMessages));
                         } else if (typeOfMessages === "bots") {
                             filteredMessages = messages.filter(msg => filterLimit(msg, msg.author.bot, numOfMessages));
@@ -97,41 +115,45 @@ module.exports = class PurgeCommand extends Command {
                             filteredMessages = messages.filter(msg => filterLimit(msg, msg.mentions.users.first() || msg.mentions.roles.first(), numOfMessages));
                         } else if (typeOfMessages === "text") {
                             filteredMessages = messages.filter(msg => filterLimit(msg, !(msg.attachments.size > 0) && !msg.embeds.length), numOfMessages);
-                        };
+                        }
                         messagesDeleted = filteredMessages.array(); 
+
+                        message.channel.bulkDelete(messagesDeleted, true).catch(error => {
+                            console.error(error);
+                        });
+
                         if (!user) {
                             if (messagesDeleted.length > 0) {
-                                message.channel.bulkDelete(messagesDeleted);
                                 purgeMessage(message, `Deletion of **${typeOfMessages}** successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
                             } else
                                 purgeMessage(message, `No **${typeOfMessages}** were found!`)
                         } else {
                             if (messagesDeleted.length > 0) {
-                                message.channel.bulkDelete(messagesDeleted);
                                 purgeMessage(message, `Deletion of **${user.username}**'s messages was successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
                             } else
                                 purgeMessage(message, `None of **${user.username}** 's messages were found!`)
                         }
-                } else {
-                    messages.filter(msg =>  msg.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error)));
+                    }
                 }
-            }).catch(err => {
-                console.log(err);
+            }).catch(error => {
+                console.log(error);
             });
+        } else if (!isNaN(typeOfMessages)) {
+            if (typeOfMessages <= 0 || typeOfMessages > 100) return purgeMessage(message, "Number of messages deleted must be greater than 0 and less than 101.");
+            message.delete();
+            message.channel.bulkDelete(typeOfMessages, true).catch(error => {
+                console.error(error);
+            });
+            purgeMessage(message, "Deletion of messages successful. Total messages deleted: " + "`" + typeOfMessages + "`")
         };
     };
 };
 
 function filterLimit(msg, condition, numOfMessages) {
-    console.log("msg " + msg.content)
     if (counter < numOfMessages && condition) {
         counter++;
-        console.log("counter: " + counter, "numofmessages: " + numOfMessages)
-        console.log("true")
         return true
     } else {
-        console.log("counter: " + counter, "numofmessages: " + numOfMessages)
-        console.log("false")
         return false
     }
 };
@@ -149,8 +171,8 @@ async function purgeMessage(message, text) {
             setTimeout(function(){
                 sentMessage.delete()
             }, 1500);
-    } catch(err) {
-        console.log(err)
+    } catch(error) {
+        console.log(error)
         return console.log("Didn't edit the message.");
     };
 };
