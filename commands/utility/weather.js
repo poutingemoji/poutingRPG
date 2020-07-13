@@ -54,7 +54,7 @@ module.exports = class WeatherCommand extends Command {
                 )
                 .setTimestamp()
                 .setFooter('Weather');
-            message.say(randomTip(message, messageEmbed));
+            message.say(messageEmbed)
         } catch(error) {
             message.say(error)
         }

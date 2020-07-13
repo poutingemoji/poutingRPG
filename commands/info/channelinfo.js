@@ -42,6 +42,6 @@ module.exports = class ChannelinfoCommand extends Command {
         if (channel.topic) {
             messageEmbed.addField("Topic", channel.topic)
         }
-		message.say(randomTip(message, messageEmbed));
+		message.say(messageEmbed);
     };
 };

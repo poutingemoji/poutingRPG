@@ -48,7 +48,7 @@ module.exports = class UserinfoCommand extends Command {
         if (mentionedRoles) {
             messageEmbed.addField(`Roles (${mentionedRoles.split(' ').length})`,  mentionedRoles)
         }
-		message.say(randomTip(message, messageEmbed));
+		message.say(messageEmbed);
     };
 };
 

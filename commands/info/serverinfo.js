@@ -54,6 +54,6 @@ module.exports = class ServerinfoCommand extends Command {
         if (emojis) {
             messageEmbed.addField(`Emojis (${emojis.length})`, emojis.slice(0, 20).join(' '))
         }
-		message.say(randomTip(message, messageEmbed));
+		message.say(message, messageEmbed)
     };
 };

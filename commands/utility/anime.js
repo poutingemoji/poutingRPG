@@ -84,7 +84,7 @@ module.exports = class AnimeCommand extends Command {
                     if (animeInfo["nextRelease"]) {
                         messageEmbed.setFooter(`Next Release: ${dateFormat(animeInfo["nextRelease"], "dddd, mmmm dS, yyyy, h:MM TT")}`)
                     }
-                    message.say(randomTip(message, messageEmbed));    
+                    message.say(message, messageEmbed);    
                 })
                 .catch(collected => {
                     message.say(`${emoji(message,"729204396726026262")}**${message.author.username}**, what's taking so long bruh? This search is cancelled.`)

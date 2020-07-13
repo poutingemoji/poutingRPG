@@ -56,7 +56,7 @@ module.exports = class TranslateCommand extends Command {
                 } else {
                     messageEmbed.addField(translate.languages[language], "```\n" + result.text + "\n```")
                 }
-                message.say(randomTip(message, messageEmbed))
+                message.say(messageEmbed)
             })
             .catch(console.error);
     };
