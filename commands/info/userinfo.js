@@ -10,7 +10,7 @@ module.exports = class UserinfoCommand extends Command {
 			aliases: ['whois'],
 			group: 'info',
 			memberName: 'userinfo',
-            description: "Display your info or the user mentioned's info",
+            description: "Display the user mentioned's info.",
             examples: [`${prefix}userinfo [@user/id]`],
             clientPermissions: [],
             userPermissions: [],
