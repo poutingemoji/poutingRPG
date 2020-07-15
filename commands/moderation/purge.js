@@ -55,7 +55,7 @@ module.exports = class PurgeCommand extends Command {
         let messagesDeleted;
         message.delete();
         if (!isNaN(messageFilter)) {
-            messageFilter = math.floor(messageFilter)
+            messageFilter = Math.floor(messageFilter)
         }
         if (!typeOfMessages) {
             message.channel.bulkDelete(messageFilter, true).catch(error => {
