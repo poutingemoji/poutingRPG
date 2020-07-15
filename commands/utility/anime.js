@@ -57,7 +57,7 @@ module.exports = class AnimeCommand extends Command {
         const filter = response => [1,2,3,4,5,6,7,8,9,10].includes(parseInt(response.content));
         let animeInfo;
         sentMessage.edit(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (0.69 seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
-            message.channel.awaitMessages(filter, { max: 1, time: 6000 })
+            message.channel.awaitMessages(filter, { max: 1, time: 12000 })
                 .then(collected => {
                     const chosenAnimeIndex = (parseInt(collected.first().content))-1
                     animeInfo = animeRequest["data"][chosenAnimeIndex]["attributes"]

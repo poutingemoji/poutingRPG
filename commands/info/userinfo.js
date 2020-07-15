@@ -11,24 +11,27 @@ module.exports = class UserinfoCommand extends Command {
 			group: 'info',
 			memberName: 'userinfo',
             description: "Display your info or the user mentioned's info",
-            examples: [`${prefix}userinfo [@user]`],
+            examples: [`${prefix}userinfo [@user/id]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,
-            args: [],
+            args: [
+                {
+                    key: 'user',
+                    prompt: 'Who would you like to get info on?',
+                    type: 'user',
+                    default: false,
+                },
+            ],
             throttling: {
                 usages: 1,
                 duration: 5
             },
         });
     };
-    run(message) {
-        let mentionedMember = message.member;
-        let mentionedUser = message.author;
-        if (message.mentions.users.first()) {
-            mentionedUser = message.mentions.users.first()
-            mentionedMember = message.mentions.members.first()
-        }
+    run(message, {user}) {
+        const mentionedUser = user || message.author
+        const mentionedMember = message.guild.member(user) || message.member
         const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ");
         const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => titleCase(permission)).join(', ')
 		const messageEmbed = new MessageEmbed()

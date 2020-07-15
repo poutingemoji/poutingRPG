@@ -1,0 +1,54 @@
+const { Command } = require('discord.js-commando');
+const { prefix } = require("../../config.json");
+
+module.exports = class BanCommand extends Command {
+	constructor(client) {
+		super(client, {
+			name: 'ban',
+			aliases: [],
+			group: 'moderation',
+			memberName: 'ban',
+            description: 'Bans the specified user.',
+            examples: [`${prefix}ban [@user/id]`],
+            clientPermissions: ['BAN_MEMBERS'],
+            userPermissions: ['BAN_MEMBERS'],
+            guildOnly: true,
+            args: [
+                {
+                    key: 'user',
+                    prompt: 'Who would you like to ban?',
+                    type: 'user',
+                },
+                {
+                    key: 'numOfDays',
+                    prompt: 'How many days would you like this user to be banned?',
+                    type: 'integer',
+                    default: false,
+                },
+            ],
+            throttling: {
+                usages: 1,
+                duration: 3
+            },
+        });
+    };
+    run(message, {user, numOfDays}) {
+        console.log(numOfDays)
+        message.guild.member(user)
+            .ban({ days: numOfDays })
+            .then(() => {
+                if (numOfDays) {
+                    message.say(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} Successfully banned **${user.tag}** for ${numOfDays} day(s).`)
+                } else {
+                    message.say(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} Successfully banned **${user.tag}**.`)
+                }
+            })
+            .catch(() => {
+                message.say(`${emoji(message, "729190277511905301")} Unable to ban **${user.tag}**.`)
+            }) 
+    };
+};
+
+function emoji(message, emojiID) {
+    return message.client.emojis.cache.get(emojiID).toString()
+}

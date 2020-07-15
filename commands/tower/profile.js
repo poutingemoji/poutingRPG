@@ -1,7 +1,7 @@
 const { Command } = require("discord.js-commando");
 const { MessageAttachment } = require("discord.js");
 const { createCanvas, loadImage } = require("canvas");
-const { positionColors, baseExpMultiplier, exponentialExpMultiplier } = require("../../config.json");
+const { prefix, positionColors, baseExpMultiplier, exponentialExpMultiplier } = require("../../config.json");
 const userStat = require("../../models/userstat");
 
 module.exports = class ProfileCommand extends Command {
@@ -12,11 +12,17 @@ module.exports = class ProfileCommand extends Command {
 			group: "tower",
 			memberName: "profile",
 			description: "Displays your profile.",
-			examples: [],
+			examples: [`${prefix}profile [@user/id]`],
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
-			args: [],
+            args: [
+                {
+                    key: 'user',
+                    prompt: `Who's profile would you like to see?`,
+                    type: 'user',
+                },
+            ],
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -24,12 +30,7 @@ module.exports = class ProfileCommand extends Command {
 		});
 	};
 
-	run(message) {
-		let user = message.author;
-		if (message.mentions.users.first()) {
-			user = message.mentions.users.first()
-			if (user.bot) return
-		} 
+	run(message, {user}) {
 		userStat.findOne({
 			userID: user.id,
 		}, (err, currentUserstat) => {
