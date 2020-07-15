@@ -51,9 +51,9 @@ module.exports = class PurgeCommand extends Command {
     }
 
     run(message, { typeOfMessages, messageFilter }) {
+        message.delete();
         counter = 0;
         let messagesDeleted;
-        message.delete();
         if (!isNaN(messageFilter)) {
             messageFilter = Math.floor(messageFilter)
         }
