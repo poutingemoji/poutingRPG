@@ -31,6 +31,7 @@ module.exports = class ProfileCommand extends Command {
 	};
 
 	run(message, {user}) {
+		user = user || message.author
 		userStat.findOne({
 			userID: user.id,
 		}, (err, currentUserstat) => {
