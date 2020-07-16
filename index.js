@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { CommandoClient } = require("discord.js-commando");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -56,11 +57,19 @@ mongoose.connect(MONGODB, {
 	useNewUrlParser: true
 });
 
+const Userevents = []
+for (const file of fs.readdirSync('./userevents').filter(file => file.endsWith('.js'))) {
+	Userevents.push(require(`./userevents/${file}`))
+}
+
 //EXP For Talking (1-min Cooldown)
 const talkedRecently = new Set();
 client.on('message', message => {
-	
 	if (message.author.bot) return;
+	
+	if (Math.random() >= 0.5) {
+		Userevents[Math.floor(Math.random() * Userevents.length)]["userevent"](message)
+	}
 
 	//Message Cooldown Check
 	if (talkedRecently.has(message.author.id)) {
@@ -70,9 +79,6 @@ client.on('message', message => {
 	setTimeout(() => {
 	  talkedRecently.delete(message.author.id);
 	}, expCooldown);
-	
-	//Percentage Chance of Providing a Random Tip
-	randomTip(message)
 
 	//Adding Random EXP Amt and Checking Level Up
 	let expAdd = randomIntFromInterval(15, 25);
@@ -100,9 +106,9 @@ client.on('message', message => {
 			currentUserstat.currentExp = currentUserstat.currentExp + expAdd;
 
 			if(nextLevel <= currentExp) {
-				currentUserstat.level = currentLevel + 1;
+				currentUserstat.level++
 				currentUserstat.currentExp = 0;
-				message.say(`Congratz on reaching Level ${currentLevel + 1}. Ur gonna be the next Hokage fam.`)
+				message.say(`${emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${emoji(message, "729255637837414450")}`)
 			};
 			currentUserstat.save().catch(err => console.log(err));
 		}; 
@@ -113,24 +119,6 @@ function randomIntFromInterval(min, max){
     return Math.floor(Math.random() * (max - min + 1) + min)
 };
 
-//Hints and Fun Facts For Bot
-global.randomTip = function randomTip(message, text){
-	const hasTip = Math.random() >= 0.9;
-	if (hasTip) {
-		const tipAuthors = ["From the Nigatsuki", "WARNING", "Fun Fact", "ATTENTION", "yes"]
-		const tips = [
-			"Don't know what the commands are? Use " + "`" + `${message.guild.commandPrefix}help` + "`" + " for info on commands!", 
-			"Shameless plug for the homie, https://richardxhtml.github.io/nagatsuki/",
-			"Ever wondered what goes on behind poutingbot? Here's the git repo, <https://github.com/poutingemoji/poutingbot>",
-			"You can do " + "`" + `${message.guild.commandPrefix}help [command]` + "`" + " to get more info on a specific command.",
-			"You can change the prefix for poutingbot with " + "`" + `${message.guild.commandPrefix}prefix [newprefix]` + "`",
-		];
-		if (typeof(text) === "string") {
-			text = text + `\n\n` + ">>> " + `**${tipAuthors[Math.floor(Math.random() * tipAuthors.length)]}**` + " : " + tips[Math.floor(Math.random() * tips.length)]
-		} else if (typeof(text) === "object") {
-			text = {content: `\n\n` + `**${tipAuthors[Math.floor(Math.random() * tipAuthors.length)]}**` + " : " + tips[Math.floor(Math.random() * tips.length)], embed: text }
-		}
-	} 
-	return text
-};
-
+function emoji(message, emojiID) {
+    return message.client.emojis.cache.get(emojiID).toString()
+}
