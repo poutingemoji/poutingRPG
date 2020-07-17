@@ -66,11 +66,11 @@ for (const file of fs.readdirSync('./userevents').filter(file => file.endsWith('
 const talkedRecently = new Set();
 client.on('message', message => {
 	if (message.author.bot) return;
-	
+	//Userevents[0]["userevent"](message)
 	if (Math.random() >= 0.5) {
-		Userevents[Math.floor(Math.random() * Userevents.length)]["userevent"](message)
+		
 	}
-
+	//Math.floor(Math.random() * Userevents.length)
 	//Message Cooldown Check
 	if (talkedRecently.has(message.author.id)) {
 		return

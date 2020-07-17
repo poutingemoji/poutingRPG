@@ -40,6 +40,9 @@ module.exports = class PositionCommand extends Command {
 		} else {
 			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`;
 		};
+
+		const badge = Math.floor(Math.random() * 6)
+		
 		const messageEmbed = new MessageEmbed()
 			.setColor(positionColors[position.Name])
 			.setDescription(description)
@@ -51,6 +54,10 @@ module.exports = class PositionCommand extends Command {
 			currentUserstat.position = position.Name
 			currentUserstat.irregular = isIrregular
 			currentUserstat.rank = rankIndex
+			if (currentUserstat.badges.includes(badge) === false) {
+				currentUserstat.badges.push(badge)
+				console.log(badge)
+			}
 			currentUserstat.save().catch(err => console.log(err))
 		});
 		message.say(messageEmbed);

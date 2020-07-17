@@ -9,6 +9,7 @@ const userStatSchema = mongoose.Schema({
     position: String,
     irregular: Boolean,
     rank: Number,
+    badges: Array,
 })
 
 module.exports = mongoose.model('Userstat', userStatSchema)

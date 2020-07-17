@@ -7,7 +7,6 @@ module.exports.userevent = function(message) {
         message.say(`https://tenor.com/view/tower-of-god-tog-kami-no-tou-anime-khun-aguero-agnis-gif-17479176 \n \:crown: **${collected.first().author.tag}** won the crown game in **${Math.round(100*(new Date().getTime() - start)/1000)/100}** second(s)!`)
     })
     .catch(collected => {
-        console.log(collected)
         message.say(`https://tenor.com/view/crown-game-tower-of-god-long-green-whip-hit-gif-17039887 Looks like nobody won this time.`)
     });
 }

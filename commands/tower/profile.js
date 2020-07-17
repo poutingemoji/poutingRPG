@@ -20,7 +20,8 @@ module.exports = class ProfileCommand extends Command {
                 {
                     key: 'user',
                     prompt: `Who's profile would you like to see?`,
-                    type: 'user',
+					type: 'user',
+					default: false,
                 },
             ],
 			throttling: {
@@ -30,7 +31,7 @@ module.exports = class ProfileCommand extends Command {
 		});
 	};
 
-	run(message, {user}) {
+	async run(message, {user}) {
 		user = user || message.author
 		userStat.findOne({
 			userID: user.id,
@@ -45,6 +46,7 @@ module.exports = class ProfileCommand extends Command {
 					false, // currentIrregular
 					"F-RANK 5", // currentRank
 					2, // nextLevel
+					[],
 					user,
 					message
 				);
@@ -64,6 +66,7 @@ module.exports = class ProfileCommand extends Command {
 					currentUserstat.irregular, 
 					`${rankLetter}-RANK ${rankNumber}`, // currentRank
 					Math.floor(baseExpMultiplier * (Math.pow(currentUserstat.level, exponentialExpMultiplier))), // nextLevel
+					currentUserstat.badges,
 					user,
 					message
 				);
@@ -73,7 +76,7 @@ module.exports = class ProfileCommand extends Command {
 	};
 };
 
-async function createImage(currentExp, currentLevel, currentPoints, currentPosition, currentIrregular, currentRank, nextLevel, user, message) {
+async function createImage(currentExp, currentLevel, currentPoints, currentPosition, currentIrregular, currentRank, nextLevel, currentBadges, user, message) {
 	const canvas = createCanvas(934, 282);
 	const ctx = canvas.getContext("2d");
 	//ctx, x, y, width, height, radius, fill, fillColor
@@ -87,14 +90,24 @@ async function createImage(currentExp, currentLevel, currentPoints, currentPosit
 	expBar(ctx, 264, 210, 642, 45, 20, currentExp, currentLevel, nextLevel, currentPositionColor);
 
 	//ctx, x, y, text, font, textAlignment, color
-	textBox(ctx, 270, 197, user.username, "32px Arial", "left", "white");
+	textBox(ctx, 270, 197, user.tag, "32px Arial", "left", "white");
 	textBox(ctx, 270, 45, currentPosition.toUpperCase(), "bold 32px Arial", "left", currentPositionColor);
 	textBox(ctx, 270, 80, currentRank, "32px Arial", "left", "white");
-	textBox(ctx, 270, 115, `POINTS ${currentPoints}`, "32px Arial", "left", "white");
 	if (currentIrregular) {
-		textBox(ctx, 270, 150, "IRREGULAR", "oblique 32px Arial", "left", "#525252");
+		textBox(ctx, 270, 166, "IRREGULAR", "oblique 32px Arial", "left", "#525252");
 	};
+
+	let badgePosition = 267;
+	for (let badge = 0; badge < 6; badge++) {
+		let badgeState = badges[badge][1];
+		if (currentBadges.includes(badge)) badgeState = badges[badge][0];
+		const badgeImage = await loadImage(badgeState);
+		ctx.drawImage(badgeImage, badgePosition, 91, 40, 40);
+		badgePosition = badgePosition + 44
+	}
+
 	textBox(ctx, 895, 45, `LEVEL ${currentLevel}`, "32px Arial", "right", "white");
+	textBox(ctx, 895, 80, `POINTS ${currentPoints}`, "32px Arial", "right", "white");
 	textBox(ctx, 895, 197, `${currentExp} / ${nextLevel} XP`, "25px Arial", "right", "white");
 
 	//ctx, x, y, radius, avatar
@@ -103,8 +116,23 @@ async function createImage(currentExp, currentLevel, currentPoints, currentPosit
 	circleAvatar(ctx, 36, 48, 190, avatar, status);
 
 	const attachment = new MessageAttachment(canvas.toBuffer(), "rank.png");
-	return message.say(`Opening your pocket...`, attachment);
+	message.say(attachment)
 }
+
+const badges = [
+	['https://cdn.discordapp.com/attachments/722720878932262952/733574768749576202/Skull.png',
+	'https://cdn.discordapp.com/attachments/722720878932262952/733582850015756316/NoSkull.png'],
+	['https://cdn.discordapp.com/attachments/722720878932262952/733575603298631771/Wave.png',
+	'https://cdn.discordapp.com/attachments/722720878932262952/733583567237677086/NoWave.png'],
+	['https://cdn.discordapp.com/attachments/722720878932262952/733574457490145330/Door.png',
+	'https://cdn.discordapp.com/attachments/722720878932262952/733582480044720197/NoDoor.png'],
+	['https://cdn.discordapp.com/attachments/722720878932262952/733574476280758403/Crown.png',
+	'https://cdn.discordapp.com/attachments/722720878932262952/733581893832015983/NoCrown.png'],
+	['https://cdn.discordapp.com/attachments/722720878932262952/733575199898861628/Monkey.png',
+	'https://cdn.discordapp.com/attachments/722720878932262952/733583104974782524/NoMonkey.png'],
+	['https://cdn.discordapp.com/attachments/722720878932262952/733575390731173938/FishingPole.png',
+	'https://cdn.discordapp.com/attachments/722720878932262952/733583373238534164/NoFishingPole.png'],
+]
 
 function roundRect(ctx, x, y, width, height, radius, fill, fillStyle) {
 	stroke = true;
@@ -125,10 +153,7 @@ function roundRect(ctx, x, y, width, height, radius, fill, fillStyle) {
 
 function expBar(ctx, x, y, width, height, radius, currentExp, currentLevel, nextLevel, expBarColor) {
 	roundRect(ctx, x, y, width, height, radius, true, "#999999");
-	console.log(ctx, x, y, width, height, radius, currentExp, currentLevel, nextLevel, expBarColor)
-	if (!expBarColor) {
-		expBarColor = "#ffffff"
-	}
+	expBarColor = expBarColor || "#ffffff"
 	console.log(currentExp, nextLevel)
 	if (currentExp > (nextLevel/10)) {
 		roundRect(ctx, x, y, (currentExp / nextLevel) * width, height, radius, true, expBarColor)
