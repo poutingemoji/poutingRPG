@@ -15,6 +15,7 @@ module.exports = class SayCommand extends Command {
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
             guildOnly: true,
+            hidden: true,
             args: [
                 {
                     key: 'text',
@@ -30,6 +31,7 @@ module.exports = class SayCommand extends Command {
     }
 
     run(message, { text }) {
+        if (!['257641125135908866', '423317547920916492'].includes(message.author.id)) return;
         console.log(text)
         const args = text.split(" ")
         let mentions = [];
