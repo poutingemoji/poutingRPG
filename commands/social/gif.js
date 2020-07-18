@@ -13,7 +13,7 @@ module.exports = class GifCommand extends Command {
 		super(client, {
 			name: 'gif',
 			aliases: [],
-			group: 'fun',
+			group: 'social',
 			memberName: 'gif',
             description: 'Displays a random gif based on the provided tag or category.',
             examples: [],

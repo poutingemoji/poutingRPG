@@ -20,7 +20,7 @@ module.exports = class AnimeCommand extends Command {
 			aliases: [],
 			group: 'utility',
 			memberName: 'anime',
-            description: 'Displays info about the requested anime.',
+            description: 'Displays info of the requested anime.',
             examples: [`${prefix}anime [anime]`],
             clientPermissions: [],
             userPermissions: [],

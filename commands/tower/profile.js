@@ -80,14 +80,14 @@ async function createImage(currentExp, currentLevel, currentPoints, currentPosit
 	const canvas = createCanvas(934, 282);
 	const ctx = canvas.getContext("2d");
 	//ctx, x, y, width, height, radius, fill, fillColor
-	roundRect(ctx, 0, 0, canvas.width, canvas.height, 10, true, "#23272A");
+	roundRect(ctx, 0, 0, canvas.width, canvas.height, 10, "#23272A");
 
 	let currentPositionColor = positionColors[currentPosition];
 	if (currentPosition == "No Position") {
 		currentPositionColor = "#ffffff"
 	};
 	//ctx, x, y, width, height, radius, exp, level
-	expBar(ctx, 264, 210, 642, 45, 20, currentExp, currentLevel, nextLevel, currentPositionColor);
+	expBar(ctx, 264, 210, 642, 45, 20, currentExp, nextLevel, currentPositionColor);
 
 	//ctx, x, y, text, font, textAlignment, color
 	textBox(ctx, 270, 197, user.tag, "32px Arial", "left", "white");
@@ -126,7 +126,7 @@ const badges = [
 	'https://cdn.discordapp.com/attachments/722720878932262952/733583567237677086/NoWave.png'],
 	['https://cdn.discordapp.com/attachments/722720878932262952/733574457490145330/Door.png',
 	'https://cdn.discordapp.com/attachments/722720878932262952/733582480044720197/NoDoor.png'],
-	['https://cdn.discordapp.com/attachments/722720878932262952/733574476280758403/Crown.png',
+	['https://media.discordapp.net/attachments/722720878932262952/733574476280758403/Crown.png',
 	'https://cdn.discordapp.com/attachments/722720878932262952/733581893832015983/NoCrown.png'],
 	['https://cdn.discordapp.com/attachments/722720878932262952/733575199898861628/Monkey.png',
 	'https://cdn.discordapp.com/attachments/722720878932262952/733583104974782524/NoMonkey.png'],
@@ -134,7 +134,7 @@ const badges = [
 	'https://cdn.discordapp.com/attachments/722720878932262952/733583373238534164/NoFishingPole.png'],
 ]
 
-function roundRect(ctx, x, y, width, height, radius, fill, fillStyle) {
+function roundRect(ctx, x, y, width, height, radius, fillStyle) {
 	stroke = true;
 	ctx.beginPath();
 	ctx.moveTo(x + radius, y);
@@ -151,12 +151,12 @@ function roundRect(ctx, x, y, width, height, radius, fill, fillStyle) {
 	ctx.fill();       
 }
 
-function expBar(ctx, x, y, width, height, radius, currentExp, currentLevel, nextLevel, expBarColor) {
-	roundRect(ctx, x, y, width, height, radius, true, "#999999");
+function expBar(ctx, x, y, width, height, radius, currentExp, nextLevel, expBarColor) {
+	roundRect(ctx, x, y, width, height, radius, "#999999");
 	expBarColor = expBarColor || "#ffffff"
 	console.log(currentExp, nextLevel)
 	if (currentExp > (nextLevel/10)) {
-		roundRect(ctx, x, y, (currentExp / nextLevel) * width, height, radius, true, expBarColor)
+		roundRect(ctx, x, y, (currentExp / nextLevel) * width, height, radius, expBarColor)
 	};
 };
 
