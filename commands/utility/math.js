@@ -41,7 +41,7 @@ module.exports = class MathCommand extends Command {
                 )
                 .setTimestamp()
                 .setFooter("Calculated")
-            message.say(message, messageEmbed)
+            message.say(messageEmbed)
         } catch (error) {
             return message.say(`${emoji(message, "729190277511905301")} Equation provided could not be evaluated.`)
         };
