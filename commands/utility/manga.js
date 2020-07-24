@@ -6,7 +6,7 @@ const fetch = require("node-fetch");
 
 const checkDict = {
     status: "Status",
-    episodeCount: "Episodes",
+    volumeCount: "Volumes",
     averageRating: "Rating",
     showType: "Show Type",
     startDate: "Start Date",
@@ -42,7 +42,8 @@ module.exports = class MangaCommand extends Command {
     async run(message, {manga}) {
         try {
             var sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested manga... \:mag_right: `);
-            var mangaRequest = await fetchAnimeInfo(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
+            var mangaRequest = await fetchMangaInfo(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
+            console.log(mangaRequest["data"][1])
             if (mangaRequest["data"][0] === undefined) return sentMessage.edit(`${emoji(message,"729190277511905301")} Request failed! Could not find info on ${manga}`);
         } catch(error) {
             console.log(error)
@@ -72,7 +73,7 @@ module.exports = class MangaCommand extends Command {
                     const messageEmbed = new MessageEmbed()
                         .setColor('#ed7220')
                         .setTitle(title)
-                        .setURL(`https://kitsu.io/anime/${mangaRequest["data"][chosenAnimeIndex]["id"]}`)
+                        .setURL(`https://kitsu.io/anime/${mangaRequest["data"][chosenMangaIndex]["id"]}`)
                         .setThumbnail(mangaInfo["posterImage"]["original"])
                         .setDescription(mangaInfo["synopsis"])
                     Object.keys(checkDict).forEach(function(check) {
@@ -87,13 +88,14 @@ module.exports = class MangaCommand extends Command {
                     message.say(messageEmbed);    
                 })
                 .catch(collected => {
+                    console.log(collected)
                     message.say(`${emoji(message,"729204396726026262")}**${message.author.username}**, what's taking so long bruh? This search is cancelled.`)
                 });
         });
     };
 };
 
-async function fetchAnimeInfo(URL) {
+async function fetchMangaInfo(URL) {
     const res = await fetch(URL)
     return await res.json();
 }
