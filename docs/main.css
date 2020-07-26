@@ -28,12 +28,18 @@
     padding-bottom: 20rem;   
   }
   #footer {
+    color: white;
+    font-family: "Roboto";
     background-color: #18191c;
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 20rem;         
   }
+
+ul {
+  list-style-type: none;
+}
 
 h1 {
     color: white;
@@ -77,6 +83,11 @@ body {
 
 .topnav {
     overflow: hidden;
+  }
+  #active {
+    color:white;
+    font-size: 24px; 
+    line-height: .8;
   }
   .topnav a {
     float: left;
