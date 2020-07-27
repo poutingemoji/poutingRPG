@@ -180,13 +180,12 @@ const jsonFiles = {
 	["Utility Commands"] : "utility",
 }
 
-console.log(groups)
 Object.keys(jsonFiles).forEach(function(key) {
 	groups.filter(grp => grp.name === key && grp.commands.some(cmd => !cmd.hidden)).map(grp => 
 		{
 			grp.commands.filter(cmd => !cmd.hidden)
 			.map(cmd => commands.push([
-				`**${cmd.name}:**`, 
+				`${cmd.name}`, 
 				`${cmd.description}${cmd.nsfw ? ' (NSFW)' : ''}`,
 				cmd.examples.join("\n"), 
 				cmd.aliases.join("\n"), 
@@ -198,7 +197,3 @@ Object.keys(jsonFiles).forEach(function(key) {
 	fs.writeFile(`./docs/commands/${jsonFiles[key]}.json`, JSON.stringify(commands), function() {})
 	commands = []
 });
-
-
-
-

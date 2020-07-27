@@ -1,4 +1,3 @@
-
 $('a').each(function() {
     if( location.hostname === this.hostname || !this.hostname.length ) {
         $(this).addClass('local');
@@ -7,20 +6,39 @@ $('a').each(function() {
         $(this).attr({
             target: "_blank",
             rel: "nofollow"
-            })
+        })
     }
-    });
+})
 
-  const commandsBody = document.querySelector("#commands-table > tbody")
+$(".profile-picture").hover(function() {
+    $(this).addClass("animate__animated")
+    $(this).addClass("animate__rubberBand")
+});
+$(".profile-picture").on("webkitAnimationEnd mozAnimationEnd oAnimationEnd animationEnd", function(event) {
+    $(this).removeClass("animate__animated")
+    $(this).removeClass("animate__rubberBand")
+});
 
-  function loadCommands(id) {
-    const sidebarButtons = document.querySelectorAll(".sidebar-button")
-    for (let i = 0; i < sidebarButtons.length; i++) {
-    sidebarButtons[i].style.backgroundColor = "#ffffff00"
-    }
-    const sidebarButton = document.getElementById(id)
-    sidebarButton.style.backgroundColor = "#7289da"
-    sidebarButton.style.color = "white"
+$('.featuredescription, .featureattachment').each(function() {
+    $(this).attr("data-aos", "zoom-in")
+})
+AOS.refreshHard()
+
+$(function(){ 
+    $(".topnav").load("./sections/topnav.html")
+    $(".footer").load("./sections/footer.html")
+})
+
+const commandsBody = document.querySelector("#commands-table > tbody")
+
+function loadCommands(id) {
+    $('.sidebar-button').each(function() {
+        $(this).css("background-color", "#ffffff00")
+        $(this).css("color", "#b5b5b5")
+    })
+    console.log(id)
+    $('#' + id).css("background-color", "#7289da") 
+    $('#' + id).css("color", "white") 
     const request = new XMLHttpRequest()
     request.open("get", `./commands/${id}.json`)
     request.onload = () => {
@@ -32,25 +50,24 @@ $('a').each(function() {
         }
     }
     request.send()
-  }
+}
 
-  function populateCommands(json) {
-      while (commandsBody.firstChild) {
-          commandsBody.removeChild(commandsBody.firstChild)
-      }
+function populateCommands(json) {
+    while (commandsBody.firstChild) {
+        commandsBody.removeChild(commandsBody.firstChild)
+    }
 
-      json.forEach((row) => {
-          console.log(row)
-          const tr = document.createElement("tr")
-          row.forEach((cell) => {
-              const td = document.createElement("td")
-              td.textContent = cell
-              tr.appendChild(td)
-          })
-          commandsBody.appendChild(tr)
-      })
-      console.log(json)
-  }
+    json.forEach((row) => {
+        const tr = document.createElement("tr")
+        row.forEach((cell) => {
+            const td = document.createElement("td")
+            td.textContent = cell
+            tr.appendChild(td)
+        })
+        commandsBody.appendChild(tr)
+    })
+}
 
-  document.addEventListener("DOMContentLoaded", () => {loadCommands("moderation")})
-  console.log(commandsBody)
+if (document.getElementById("commands")) {
+    document.addEventListener("DOMContentLoaded", () => {loadCommands("moderation")})
+}

@@ -1,34 +1,33 @@
-<title>poutingbot</title>
 <head>
+    <meta charset="UTF-8">
+    <title>poutingbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+JP">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
 </head>
-<body>
-    <div class="topnav">
-        <h1><a href="index.html" id="active"><strong>poutingbot</strong></a></h1>
-        <a href="#invite">Invite Me</a>
-        <a href="commands.html">Commands</a>
-        <a href="https://discord.gg/nGVe96h">Support</a>
-    </div>
-    <div id="page-container">
-        <div id="content-wrap">
+<body id="commands">
+    <div class="topnav"></div>
+    <div id="wrapper">
             <div class="center">
-                <img src="images/poutingbot-Profile-Picture.png" width="200" height="200" class="center">
+                <img src="images/poutingbot-Profile-Picture.png" width="200" height="200" class="profile-picture center">
                 <h1>Commands<br></h1>
                 <p>
                    A list of available commands.
                 </p>
             </div>
-            <div class="wrapper" style="padding-top: 10px">
+            <div class="row" style="padding-top: 10px">
                 <aside class="sidebar left">
-                    <button class="sidebar-button" id="moderation" onclick="loadCommands(this.id)" autofocus>Moderation</button>
+                    <p><strong>Command Groups</strong></p>
+                    <button class="sidebar-button" id="moderation" onclick="loadCommands(this.id)" style="color: white" autofocus>Moderation</button>
                     <button class="sidebar-button" id="info" onclick="loadCommands(this.id)">Info</button>
                     <button class="sidebar-button" id="fun" onclick="loadCommands(this.id)">Fun</button>
                     <button class="sidebar-button" id="social" onclick="loadCommands(this.id)">Social</button>
@@ -50,27 +49,9 @@
                 </table>
             </div>
         </div>
-        <footer>
-            <div style="padding-left:30px; padding-top: 20px; background-color: red;">
-                <div style="display:inline-block; background-color: blue;">
-                    <p style="line-height: 0px;"><strong>Libraries</strong></p>
-                    <p>
-                        <a href="https://www.npmjs.com/package/discord.js">- discord.js</a><br>
-                        <a href="https://www.npmjs.com/package/discord.js-commando">- discord.js-commando</a><br>
-                        <a href="https://www.npmjs.com/package/discord-giveaways">- discord-giveaways</a><br>
-                        <a href="https://www.npmjs.com/package/mongoose">- mongoose</a><br>
-                        <a href="https://www.npmjs.com/package/canvas">- canvas</a><br>
-                        <a href="https://www.npmjs.com/package/dateformat">- dateformat</a><br>
-                        <a href="https://www.npmjs.com/package/tenorjs">- tenorjs</a><br>
-                        <a href="https://www.npmjs.com/package/@vitalets/google-translate-api">- @vitalets/google-translate-api</a><br>
-                        <a href="https://www.npmjs.com/package/mathjs">- mathjs</a><br>
-                        <a href="https://www.npmjs.com/package/genius-lyrics">- genius-lyrics</a><br>
-                    </p>
-                </div>
-                <div style="display:inline-block; background-color: blue;">
-                    <p>📝 Scripted by poutingemoji</p>
-                </div>
-            </div>
-        </footer>
-    </div>
+        <footer class="footer"></footer>
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            AOS.init();
+        </script>
 </body>

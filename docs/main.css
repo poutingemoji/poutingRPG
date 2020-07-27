@@ -15,24 +15,37 @@
   .right {
     float: right;
   }
+  .inline {
+    line-height: 23px;
+    display: inline-block;
+  }
+  .row {
+    display: flex;
+    justify-content: space-evenly;
+  }
 
 table, th, td {
+  padding: 10px;
+  font-size: 20px;
   color: white;
   font-family: "Roboto";
-  padding: 10px;
   border: 1px solid white;
-  border-collapse: collapse;
-}
-table {
-  table-layout: auto;
-  width: 70%;
-}
-td {
-  word-wrap: break-word;
-}
+  }
+  table {
+    table-layout: auto;
+  }
+  td {
+    vertical-align: text-top;
+  }
+  #commands-table {
+    text-align: left;
+    border-collapse: collapse;
+    white-space: pre-line;
+    width: 70%;
+    margin-bottom: 50px;
+  }
 
 aside {
-   
     border-radius: 10px;
     height: 300px;
     display: flex;
@@ -41,41 +54,32 @@ aside {
     justify-content: space-evenly;
   }
   aside button {
+    width: 290px;
     color: #b5b5b5;
     background-color: #ffffff00;
     transition: color 110ms linear;
   }
   aside button:hover {
-    color: white;
+    color: white !important;
     background-color: #ffffff00;
   }
   .sidebar {
     background-color: #23272a;
     padding-top: 10px;
-    padding-right: 40px;
-    padding-bottom: 20px;
-    padding-left: 40px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    line-height: 0px;
   }
 
-#page-container {
-    position: relative;
-    min-height: 100vh;
-  }
-  #content-wrap {
-    margin-left: 20px;
-    margin-right: 20px;
-    padding-left: 2%;
-    padding-right: 2%;
-    padding-bottom: 20rem;   
-  }
-  footer {
+footer {
     color: white;
     font-family: "Roboto";
     background-color: #18191c;
-    position: absolute;
     bottom: 0;
-    width: 100%;
-    height: 20rem;        
+    height: 20.5rem;        
   }
   footer a {
     color: #b5b5b5;
@@ -83,6 +87,9 @@ aside {
   }
   footer a:hover {
     color: white;
+  }
+  .footer-category {
+    width: 290px;
   }
 
 h1 {
@@ -96,6 +103,10 @@ h1 {
   }
   a {
     text-decoration: none;
+    transition: color 200ms linear;
+  }
+  a:hover {
+    color: white !important;
   }
   hr {
     width: 95%;
@@ -110,7 +121,6 @@ body {
 #wrapper {
     margin: 0 auto;
     overflow: hidden;
-    background-color: red;
   }
   .featuredescription {
     background-color: #23272a;
@@ -119,7 +129,7 @@ body {
     padding-bottom: 20px;
     padding-left: 40px;
   }
-  .featuregif {
+  .featureattachment {
     margin: 40px;
     border-radius: 10px;
   }
