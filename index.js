@@ -22,6 +22,7 @@ const client = new CommandoClient({
 });
 
 const { GiveawaysManager } = require("discord-giveaways");
+const { json } = require('mathjs');
 
 const manager = new GiveawaysManager(client, {
 	storage: "./giveaways.json",
@@ -37,18 +38,17 @@ const manager = new GiveawaysManager(client, {
 client.registry
 	.registerDefaultTypes()
 	.registerGroups([
-		["administration", "Administration Commands"],
 		["moderation", "Moderation Commands"],
 		["tower", "Tower of God Commands"],
 		["info", "Info Commands"],
 		["fun", "Fun Commands"],
 		["social", "Social Commands"],
-		["image", "Image Commands"],
 		["utility", "Utility Commands"],
 	])
 	.registerDefaultGroups()
 	.registerDefaultCommands({
-		unknownCommand: false
+		unknownCommand: false,
+		help: false
 	})
 	.registerCommandsIn(path.join(__dirname, "commands"));
 
@@ -169,3 +169,36 @@ function randomIntFromInterval(min, max){
 function emoji(message, emojiID) {
     return message.client.emojis.cache.get(emojiID).toString()
 }
+
+const groups = client.registry.groups
+let commands = []
+const jsonFiles = {
+	["Moderation Commands"] : "moderation",
+	["Tower of God Commands"] : "tower",
+	["Info Commands"] : "info",
+	["Social Commands"] : "social",
+	["Utility Commands"] : "utility",
+}
+
+console.log(groups)
+Object.keys(jsonFiles).forEach(function(key) {
+	groups.filter(grp => grp.name === key && grp.commands.some(cmd => !cmd.hidden)).map(grp => 
+		{
+			grp.commands.filter(cmd => !cmd.hidden)
+			.map(cmd => commands.push([
+				`**${cmd.name}:**`, 
+				`${cmd.description}${cmd.nsfw ? ' (NSFW)' : ''}`,
+				cmd.examples.join("\n"), 
+				cmd.aliases.join("\n"), 
+				`${cmd.throttling.duration} seconds`
+				])
+			)
+		}
+	)
+	fs.writeFile(`./docs/commands/${jsonFiles[key]}.json`, JSON.stringify(commands), function() {})
+	commands = []
+});
+
+
+
+

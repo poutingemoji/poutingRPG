@@ -16,6 +16,47 @@
     float: right;
   }
 
+table, th, td {
+  color: white;
+  font-family: "Roboto";
+  padding: 10px;
+  border: 1px solid white;
+  border-collapse: collapse;
+}
+table {
+  table-layout: auto;
+  width: 70%;
+}
+td {
+  word-wrap: break-word;
+}
+
+aside {
+   
+    border-radius: 10px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+  aside button {
+    color: #b5b5b5;
+    background-color: #ffffff00;
+    transition: color 110ms linear;
+  }
+  aside button:hover {
+    color: white;
+    background-color: #ffffff00;
+  }
+  .sidebar {
+    background-color: #23272a;
+    padding-top: 10px;
+    padding-right: 40px;
+    padding-bottom: 20px;
+    padding-left: 40px;
+  }
+
 #page-container {
     position: relative;
     min-height: 100vh;
@@ -37,7 +78,8 @@
     height: 20rem;        
   }
   footer a {
-    color: #d6d6d6;
+    color: #b5b5b5;
+    transition: color 200ms linear;
   }
   footer a:hover {
     color: white;
@@ -93,12 +135,13 @@ body {
   }
   .topnav a {
     float: left;
-    color: #d6d6d6;
+    color: #b5b5b5;
     font-family: "Roboto";
     padding: 14px 6px;
     margin-left: 30px;
     text-decoration: none;
     font-size: 18px;
+    transition: color 200ms linear;
   }
   .topnav a:hover {
     color: white;
@@ -114,6 +157,7 @@ button {
     border-radius: 3px;
     height: 40px;
     width: 180px;
+    transition: background-color 100ms linear;
   }
   button:hover {
     background-color: #8097e8;

@@ -1,8 +1,7 @@
 <title>poutingbot</title>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="main.js"></script>
-    
+    <script src="main.js" defer></script>
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -15,11 +14,41 @@
     <div class="topnav">
         <h1><a href="index.html" id="active"><strong>poutingbot</strong></a></h1>
         <a href="#invite">Invite Me</a>
-        <a href="commands">Commands</a>
+        <a href="commands.html">Commands</a>
         <a href="https://discord.gg/nGVe96h">Support</a>
     </div>
     <div id="page-container">
         <div id="content-wrap">
+            <div class="center">
+                <img src="images/poutingbot-Profile-Picture.png" width="200" height="200" class="center">
+                <h1>Commands<br></h1>
+                <p>
+                   A list of available commands.
+                </p>
+            </div>
+            <div class="wrapper" style="padding-top: 10px">
+                <aside class="sidebar left">
+                    <button class="sidebar-button" id="moderation" onclick="loadCommands(this.id)" autofocus>Moderation</button>
+                    <button class="sidebar-button" id="info" onclick="loadCommands(this.id)">Info</button>
+                    <button class="sidebar-button" id="fun" onclick="loadCommands(this.id)">Fun</button>
+                    <button class="sidebar-button" id="social" onclick="loadCommands(this.id)">Social</button>
+                    <button class="sidebar-button" id="tower" onclick="loadCommands(this.id)">Tower of God</button>
+                    <button class="sidebar-button" id="utility" onclick="loadCommands(this.id)">Utility</button>
+                </aside>
+                <table id="commands-table" class="left">
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                            <th>Usage</th>
+                            <th>Aliases</th>
+                            <th>Cooldown</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <footer>
             <div style="padding-left:30px; padding-top: 20px; background-color: red;">
