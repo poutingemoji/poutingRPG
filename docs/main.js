@@ -1,8 +1,10 @@
 $('a').each(function() {
     if( location.hostname === this.hostname || !this.hostname.length ) {
         $(this).addClass('local');
+        console.log(this)
     } else {
         $(this).addClass('external');
+        console.log(this)
         $(this).attr({
             target: "_blank",
             rel: "nofollow"
@@ -13,26 +15,26 @@ $('a').each(function() {
 $(".profile-picture").hover(function() {
     $(this).addClass("animate__animated")
     $(this).addClass("animate__rubberBand")
+    $(this).addClass("animate__fast")
 });
 $(".profile-picture").on("webkitAnimationEnd mozAnimationEnd oAnimationEnd animationEnd", function(event) {
-    $(this).removeClass("animate__animated")
     $(this).removeClass("animate__rubberBand")
 });
 
 $('.featuredescription, .featureattachment').each(function() {
     $(this).attr("data-aos", "zoom-in")
 })
-AOS.refreshHard()
+AOS.init();
 
 $(function(){ 
-    $(".topnav").load("./sections/topnav.html")
+    $(".navbar").load("./sections/navbar.html")
     $(".footer").load("./sections/footer.html")
 })
 
 const commandsBody = document.querySelector("#commands-table > tbody")
 
 function loadCommands(id) {
-    $('.sidebar-button').each(function() {
+    $('.menu button').each(function() {
         $(this).css("background-color", "#ffffff00")
         $(this).css("color", "#b5b5b5")
     })
@@ -56,7 +58,6 @@ function populateCommands(json) {
     while (commandsBody.firstChild) {
         commandsBody.removeChild(commandsBody.firstChild)
     }
-
     json.forEach((row) => {
         const tr = document.createElement("tr")
         row.forEach((cell) => {
@@ -66,8 +67,14 @@ function populateCommands(json) {
         })
         commandsBody.appendChild(tr)
     })
+    console.log(commandsBody)
 }
 
-if (document.getElementById("commands")) {
+if (document.getElementById("moderation")) {
     document.addEventListener("DOMContentLoaded", () => {loadCommands("moderation")})
 }
+
+$(".navbar-burger").click(function() {
+    $(".navbar-burger").toggleClass("is-active");
+    $(".navbar-menu").toggleClass("is-active");
+})

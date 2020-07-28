@@ -1,7 +1,8 @@
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
     <title>poutingbot</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="main.css">
@@ -13,14 +14,15 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+    <link rel="stylesheet" href="variables.sass">
 </head>
 <body>
-    <div class="topnav"></div>
+    <div class="navbar"></div>
     <div id="page-container">
         <div id="content-wrap">
             <div class="header center">
                 <img src="images/poutingbot-Profile-Picture.png" width="200" height="200" class="profile-picture center">
-                <a href="https://github.com/poutingemoji/poutingbot"><h1>poutingbot<br></h1></a>
+                <h1>poutingbot<br></h1>
                 <p>
                     A 
                     <a href="https://discord.com/"><img src="images/Discord-Wordmark-White.png" width="100"></a>
@@ -132,7 +134,4 @@
         <footer class="footer"></footer>
     </div>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init();
-    </script>
 </body>

@@ -1,7 +1,6 @@
 {
   "name": "poutingbot",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "@vitalets/google-translate-api": "^3.0.0",
+    "bulma": "^0.9.0",
     "canvas": "^2.6.1",
     "dateformat": "^3.0.3",
     "discord-giveaways": "^4.2.1",
@@ -20,5 +20,10 @@
     "mongoose": "^5.9.20",
     "node-pre-gyp": "0.12.0",
     "tenorjs": "^1.0.7"
-  }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {},
+  "description": ""
 }

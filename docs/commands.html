@@ -1,7 +1,8 @@
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
     <title>poutingbot</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="main.css">
@@ -13,45 +14,52 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+    <link rel="stylesheet" href="variables.css">
 </head>
-<body id="commands">
-    <div class="topnav"></div>
-    <div id="wrapper">
-            <div class="center">
-                <img src="images/poutingbot-Profile-Picture.png" width="200" height="200" class="profile-picture center">
-                <h1>Commands<br></h1>
-                <p>
-                   A list of available commands.
-                </p>
-            </div>
-            <div class="row" style="padding-top: 10px">
-                <aside class="sidebar left">
-                    <p><strong>Command Groups</strong></p>
-                    <button class="sidebar-button" id="moderation" onclick="loadCommands(this.id)" style="color: white" autofocus>Moderation</button>
-                    <button class="sidebar-button" id="info" onclick="loadCommands(this.id)">Info</button>
-                    <button class="sidebar-button" id="fun" onclick="loadCommands(this.id)">Fun</button>
-                    <button class="sidebar-button" id="social" onclick="loadCommands(this.id)">Social</button>
-                    <button class="sidebar-button" id="tower" onclick="loadCommands(this.id)">Tower of God</button>
-                    <button class="sidebar-button" id="utility" onclick="loadCommands(this.id)">Utility</button>
-                </aside>
-                <table id="commands-table" class="left">
-                    <thead>
-                        <tr>
-                            <th>Command</th>
-                            <th>Description</th>
-                            <th>Usage</th>
-                            <th>Aliases</th>
-                            <th>Cooldown</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+<body>
+    <div class="navbar"></div>
+    <div class="columns">
+        <div class="column has-text-centered">
+            <img src="images/poutingbot-Profile-Picture.png" width="200" height="200" class="profile-picture center">
+            <h1>Commands<br></h1>
+            <p>
+               A list of available commands.
+            </p>
+            <hr>
+            <div class="columns">
+                <div class="column is-one-quarter">
+                    <aside class="menu">
+                        <p class="menu-label">
+                            Command Groups
+                        </p>
+                        <ul class="menu-list">
+                            <li><button class="button" id="moderation" onclick="loadCommands(this.id)" autofocus>Moderation</button></li>
+                            <li><button class="button" id="info" onclick="loadCommands(this.id)">Info</button></li>
+                            <li><button class="button" id="fun" onclick="loadCommands(this.id)">Fun</button></li>
+                            <li><button class="button" id="social" onclick="loadCommands(this.id)">Social</button></li>
+                            <li><button class="button" id="tower" onclick="loadCommands(this.id)">Tower of God</button></li>
+                            <li><button class="button" id="utility" onclick="loadCommands(this.id)">Utility</button></li>
+                        </ul>
+                    </aside>
+                </div>
+                <div class="column">
+                    <table id="commands-table" class="table is-transparent is-bordered is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>Command</th>
+                                <th>Description</th>
+                                <th>Usage</th>
+                                <th>Aliases</th>
+                                <th>Cooldown</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <footer class="footer"></footer>
-        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-        <script>
-            AOS.init();
-        </script>
+    </div>
+    <footer class="footer"></footer>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </body>

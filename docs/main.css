@@ -15,21 +15,14 @@
   .right {
     float: right;
   }
-  .inline {
-    line-height: 23px;
-    display: inline-block;
-  }
   .row {
     display: flex;
     justify-content: space-evenly;
   }
 
 table, th, td {
-  padding: 10px;
-  font-size: 20px;
   color: white;
   font-family: "Roboto";
-  border: 1px solid white;
   }
   table {
     table-layout: auto;
@@ -38,48 +31,34 @@ table, th, td {
     vertical-align: text-top;
   }
   #commands-table {
+    background-color: #ffffff00;
     text-align: left;
     border-collapse: collapse;
     white-space: pre-line;
-    width: 70%;
     margin-bottom: 50px;
   }
 
-aside {
-    border-radius: 10px;
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-  }
-  aside button {
-    width: 290px;
+
+button {
     color: #b5b5b5;
     background-color: #ffffff00;
     transition: color 110ms linear;
   }
-  aside button:hover {
+  button:hover {
     color: white !important;
     background-color: #ffffff00;
   }
-  .sidebar {
+  .menu {
     background-color: #23272a;
-    padding-top: 10px;
-    padding-right: 15px;
-    padding-bottom: 10px;
-    padding-left: 15px;
     margin-bottom: 30px;
     text-align: center;
-    line-height: 0px;
+
   }
 
 footer {
+    border: 1px solid red;
     color: white;
-    font-family: "Roboto";
-    background-color: #18191c;
-    bottom: 0;
-    height: 20.5rem;        
+    font-family: "Roboto";  
   }
   footer a {
     color: #b5b5b5;
@@ -87,9 +66,6 @@ footer {
   }
   footer a:hover {
     color: white;
-  }
-  .footer-category {
-    width: 290px;
   }
 
 h1 {
@@ -109,6 +85,7 @@ h1 {
     color: white !important;
   }
   hr {
+    margin: auto;
     width: 95%;
     border: 1px solid #424448;
   }
@@ -119,7 +96,6 @@ body {
 }
 
 #wrapper {
-    margin: 0 auto;
     overflow: hidden;
   }
   .featuredescription {
@@ -130,7 +106,6 @@ body {
     padding-left: 40px;
   }
   .featureattachment {
-    margin: 40px;
     border-radius: 10px;
   }
 
@@ -176,3 +151,7 @@ button {
     button:focus { 
         outline: none; 
     }
+
+.navbar {
+  background-color: #ffffff00;
+}
