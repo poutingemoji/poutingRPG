@@ -1,6 +1,3 @@
-*:focus {
-    background-color: white !important;
-}
 button:hover {
     transition: background-color 100ms linear;
     background-color: #8ca1ea;
@@ -17,7 +14,6 @@ table {
 
 hr {
     margin: auto;
-    width: 95%;
     border: 1px solid #424448 !important;
 }
 
@@ -32,16 +28,27 @@ hr {
 
 .tile .is-child {
     background-color: #23272a;
+    padding-left: 2rem; 
+    padding-right: 2rem; 
 }
 
 .menu {
-    background-color: #181d20;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    background-color: #23272a;
+    padding-top: 1rem;
+    padding-left: .6rem;
+    padding-right: .6rem;
+    padding-bottom: 1rem;
   }
   .menu-list button {
     transition: color 100ms linear;
     color: #b1b5bb;
-    width: 240px;
+    display: block;
+    width: 100%;
   }
 
+#slideshow {
+    position: relative;
+  }
+  #slideshow > div {
+    position: absolute;
+  }

@@ -21,8 +21,7 @@ const client = new CommandoClient({
 	disableEveryone: true
 });
 
-const { GiveawaysManager } = require("discord-giveaways");
-const { json } = require('mathjs');
+const { GiveawaysManager } = require("discord-giveaways")
 
 const manager = new GiveawaysManager(client, {
 	storage: "./giveaways.json",
@@ -196,4 +195,5 @@ Object.keys(jsonFiles).forEach(function(key) {
 	)
 	fs.writeFile(`./docs/commands/${jsonFiles[key]}.json`, JSON.stringify(commands), function() {})
 	commands = []
-});
+	console.log('written')
+})

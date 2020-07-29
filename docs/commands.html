@@ -19,53 +19,56 @@
 </head>
 <body>
     <div class="navbar"></div>
-        <div class="column has-text-centered">
-            <div class="section">
-                <img src="images/poutingbot-Icon.png" width="200" height="200" class="profile-picture">
-                <p class="title">Commands</p>
-                <p class="subtitle">
-                   A list of available commands.
-                </p>
-            </div>
-            <hr>
-            <div class="section">
-                <div class="columns">
-                    <div class="column is-2">
-                        <aside class="menu">
-                            <p class="menu-label">
-                                Command Groups
-                            </p>
-                            <ul id="commandBtnList" class="menu-list">
-                                <li><button class="button" id="moderation" onclick="loadCommands(this.id)" autofocus>Moderation</button></li>
-                                <li><button class="button" id="info" onclick="loadCommands(this.id)">Info</button></li>
-                                <li><button class="button" id="fun" onclick="loadCommands(this.id)">Fun</button></li>
-                                <li><button class="button" id="social" onclick="loadCommands(this.id)">Social</button></li>
-                                <li><button class="button" id="tower" onclick="loadCommands(this.id)">Tower of God</button></li>
-                                <li><button class="button" id="utility" onclick="loadCommands(this.id)">Utility</button></li>
-                            </ul>
-                        </aside>
-                    </div>
-                    <div class="column">
-                        <div class="table-container">
-                            <table id="commands-table" class="table is-transparent is-bordered is-fullwidth">
-                                <thead>
-                                    <tr>
-                                        <th>Command</th>
-                                        <th>Description</th>
-                                        <th>Usage</th>
-                                        <th>Aliases</th>
-                                        <th>Cooldown</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+        <div class="container">
+            <div class="column has-text-centered">
+                <div class="section">
+                    <img src="assets/poutingbot-Icon.png" width="200" height="200" class="profile-picture">
+                    <p class="title">Commands</p>
+                    <p class="subtitle">
+                    A list of available commands.
+                    </p>
+                </div>
+                <hr>
+                <div class="section">
+                    <div class="columns">
+                        <div class="column is-2">
+                            <aside class="menu">
+                                <p class="menu-label">
+                                    Command Groups
+                                </p>
+                                <ul id="commandBtnList" class="menu-list">
+                                    <li><button class="button" id="moderation" onclick="loadCommands(this.id)" autofocus>Moderation</button></li>
+                                    <li><button class="button" id="info" onclick="loadCommands(this.id)">Info</button></li>
+                                    <li><button class="button" id="fun" onclick="loadCommands(this.id)">Fun</button></li>
+                                    <li><button class="button" id="social" onclick="loadCommands(this.id)">Social</button></li>
+                                    <li><button class="button" id="tower" onclick="loadCommands(this.id)">Tower of God</button></li>
+                                    <li><button class="button" id="utility" onclick="loadCommands(this.id)">Utility</button></li>
+                                </ul>
+                            </aside>
+                        </div>
+                        <div class="column">
+                            <div class="table-container">
+                                <table id="commands-table" class="table is-transparent is-bordered is-fullwidth">
+                                    <thead>
+                                        <tr>
+                                            <th>Command</th>
+                                            <th>Description</th>
+                                            <th>Usage</th>
+                                            <th>Aliases</th>
+                                            <th>Cooldown</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
     <footer class="footer"></footer>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </body>

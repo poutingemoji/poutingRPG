@@ -1,7 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { prefix } = require("../../config.json");
 const translate = require('@vitalets/google-translate-api');
-const { e } = require('mathjs');
 
 module.exports = class SayCommand extends Command {
     constructor(client) {

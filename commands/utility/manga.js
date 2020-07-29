@@ -40,6 +40,7 @@ module.exports = class MangaCommand extends Command {
         });
     };
     async run(message, {manga}) {
+        const start = Date.now()
         try {
             var sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested manga... \:mag_right: `);
             var mangaRequest = await fetchMangaInfo(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
@@ -57,7 +58,7 @@ module.exports = class MangaCommand extends Command {
         console.log(possibleMatches)
         const filter = response => [1,2,3,4,5,6,7,8,9,10].includes(parseInt(response.content));
         let mangaInfo;
-        sentMessage.edit(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (0.69 seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
+        sentMessage.edit(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (${(Date.now() - start)/1000} seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
             message.channel.awaitMessages(filter, { max: 1, time: 12000 })
                 .then(collected => {
                     const chosenMangaIndex = (parseInt(collected.first().content))-1

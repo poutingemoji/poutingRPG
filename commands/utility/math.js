@@ -1,13 +1,13 @@
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
-const math = require('mathjs')
+const Parser = require('expr-eval').Parser;
 const { prefix } = require("../../config.json");
 
 module.exports = class MathCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'math',
-			aliases: ['math', 'calc', 'calculate'],
+			aliases: ['math', 'calculate', 'evaluate'],
 			group: 'utility',
 			memberName: 'math',
             description: 'Calculates the provided equation.',
@@ -30,8 +30,7 @@ module.exports = class MathCommand extends Command {
     };
     run(message, {equation}) {
         try {
-            let evaluatedEquation;
-            evaluatedEquation = math.evaluate(equation);
+            let evaluatedEquation = Parser.evaluate(equation)
             const messageEmbed = new MessageEmbed()
                 .setColor('#ed7220')
                 .setAuthor(message.author.tag, message.author.displayAvatarURL())

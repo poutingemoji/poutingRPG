@@ -78,3 +78,17 @@ function toggleNavBar() {
     $(".navbar-burger").toggleClass("is-active");
     $(".navbar-menu").toggleClass("is-active");
 }
+
+$("#slideshow > div:gt(0)").hide();
+
+let delay = $('#slideshow > div:eq(0)').attr('data-delay');
+setInterval(function() {
+  $('#slideshow > div:first')
+    .fadeOut(1000)
+    .next()
+    .fadeIn(1000)
+    .end()
+    .appendTo('#slideshow')
+    delay = $('#slideshow > div:eq(0)').attr('data-delay')
+    console.log(delay)
+}, delay);
