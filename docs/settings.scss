@@ -1,0 +1,43 @@
+@import "../docs/node_modules/bulma/sass/utilities/initial-variables.sass";
+@import "../docs/node_modules/bulma/sass/utilities/functions";
+
+$transparent: #ffffff00;
+$grey: #2c2f33;
+$light-grey: #b1b5bb;
+$dark-grey: #23272a;
+$blurple: #8097e8;
+$scheme-main: $grey;
+$scheme-main-bis: $dark-grey;
+
+$text: white; 
+$text-light: white;
+$text-strong: white;
+
+$primary: $grey;
+
+$family-primary: "Roboto";
+$family-secondary: "Open Sans";
+$subtitle-family: $family-secondary;
+
+$title-size: $size-4;
+$title-color: white;
+
+$subtitle-size: $size-6;
+
+$link: $blurple;
+$link-hover: white;
+$link-hover-border: $transparent;
+$link-active: white;
+$link-focus: white;
+
+$navbar-background-color: $dark-grey;
+$navbar-item-color: $light-grey;
+
+$button-background-color: $blurple;
+$button-border-color: $transparent;
+
+$menu-item-color: $light-grey;
+
+@import "../docs/node_modules/bulma/sass/utilities/derived-variables";
+
+@import "../docs/node_modules/bulma/bulma.sass";

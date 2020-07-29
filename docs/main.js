@@ -21,7 +21,7 @@ $(".profile-picture").on("webkitAnimationEnd mozAnimationEnd oAnimationEnd anima
     $(this).removeClass("animate__rubberBand")
 });
 
-$('.featuredescription, .featureattachment').each(function() {
+$('.tile').each(function() {
     $(this).attr("data-aos", "zoom-in")
 })
 AOS.init();
@@ -35,12 +35,11 @@ const commandsBody = document.querySelector("#commands-table > tbody")
 
 function loadCommands(id) {
     $('.menu button').each(function() {
-        $(this).css("background-color", "#ffffff00")
-        $(this).css("color", "#b5b5b5")
+        $(this).attr("style", "background-color: #ffffff00 !important;")
     })
     console.log(id)
-    $('#' + id).css("background-color", "#7289da") 
-    $('#' + id).css("color", "white") 
+    $('#' + id).attr("style", "background-color: #7289da !important; color: white !important;") 
+    console.log($('#commands'))
     const request = new XMLHttpRequest()
     request.open("get", `./commands/${id}.json`)
     request.onload = () => {
@@ -74,7 +73,8 @@ if (document.getElementById("moderation")) {
     document.addEventListener("DOMContentLoaded", () => {loadCommands("moderation")})
 }
 
-$(".navbar-burger").click(function() {
+
+function toggleNavBar() {
     $(".navbar-burger").toggleClass("is-active");
     $(".navbar-menu").toggleClass("is-active");
-})
+}

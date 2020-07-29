@@ -1,11 +1,13 @@
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
     <title>poutingbot</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="css/settings.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+JP">
@@ -14,124 +16,119 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
-    <link rel="stylesheet" href="style.scss">
 </head>
 <body>
     <div class="navbar"></div>
-    <div id="page-container">
-        <div id="content-wrap">
-            <div class="header center">
-                <img src="images/poutingbot-Profile-Picture.png" width="200" height="200" class="profile-picture center">
-                <h1>poutingbot<br></h1>
-                <p>
-                    A 
-                    <a href="https://discord.com/"><img src="images/Discord-Wordmark-White.png" width="100"></a>
-                    bot written in 
-                    <a href="https://nodejs.org/en/" style="color:#afcca6;">NodeJS</a> 
-                    with
-                    <a href="https://discord.js.org/#/" style="color: #7289da;">discord.js</a>.
-                </p>
-                <button>Invite to Server</button>
-            </div>
-            <br>
-            <hr>
-                <div class="center">
-                    <h1>Features</h1>
-                </div>
-                <div id="wrapper">
-                    <div class="featuredescription center round left">
-                        <h1>Moderation ⚖️</h1>
-                        <p>
-                            - Simple moderation commands such as ban and kick<br>
-                            - Powerful purge command with many filters (bots, mentions, links, invites, etc.)<br>
-                        </p>
-                    </div>
-                    <div class="featureattachment round left">
-                        <video class="features" autoplay="" loop="" muted="" playsinline="">
-                            <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
-                        </video>
-                    </div> 
-                </div>
-            <hr>
-                <div id="wrapper">
-                    <div class="featuredescription center round right">
-                        <h1>Info 📝</h1>
-                        <p>
-                            - Get info on your members and channels 👀<br>
-                            - Get indepth stats on your server<br>
-                            - Steal people's profile pictures! 😈<br>
-                        </p>
-                    </div>
-                    <div class="featureattachment round right">
-                        <video class="features" autoplay="" loop="" muted="" playsinline="">
-                            <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
-                        </video>
-                    </div> 
-                </div>
-            <hr>
-                <div id="wrapper">
-                    <div class="featuredescription center round left" data-aos="zoom-in">
-                        <h1>Gifs 🎁</h1>
-                        <p>
-                            - Get anime-related gifs quickly!<br>
-                            - Post gifs from mobile 📱<br>
-                            - Hardly ever inaccurate <img src="images/Kappa.png" width="15"><br>
-                            
-                        </p>
-                    </div>
-                    <div class="featureattachment round left">
-                        <video class="features" autoplay="" loop="" muted="" playsinline="">
-                            <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
-                        </video>
-                    </div> 
-                </div>
-            <hr>
-                <div id="wrapper">
-                    <div class="featuredescription center round right">
-                        <h1>Utility 🔨</h1>
-                        <p>
-                            - Can be executed from DMS! 💬<br>
-                            - Calculate simple equations conveniently ➗<br>
-                            - Get the latest info on many anime and mangas 📺📚<br>
-                            - Check the weather of a place you're interested in (🌞,☔,⛄,🌁) <br>
-                            - Search up the definition of a word from Urban Dictionary (NSFW)<br>
-                            - Translate your text into many different languages (🇪🇸, 🇨🇳, 🇫🇷, 🇯🇵, etc.)<br>
-                            - Ever forgot the lyrics of a song? Now you can search them up from Discord 🎵<br>
-                        </p>
-                    </div>
-                    <div class="featureattachment round right">
-                        <video class="features" autoplay="" loop="" muted="" playsinline="">
-                            <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
-                        </video>
-                    </div> 
-                </div>
-            <hr>
-                <div id="wrapper">
-                    <div class="featuredescription center round left">
-                        <h1>Tower of God Experience 🌊</h1>
-                        <p>
-                            - Themed around the webtoon and anime, Tower of God<br>
-                            - Global stats and economy 💵<br>
-                            - Collect all the badges from the different tests! 🥇<br>
-                            - Custom rank card to display your dedication and achievements 💳<br>
-                            - Discover the position that fits your fighting style and climb the ranks! 🥊<br>
-                        </p>
-                    </div>
-                    <div class="featureattachment round left">
-                        <video class="features" autoplay="" loop="" muted="" playsinline="">
-                            <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
-                        </video>
-                    </div> 
-                </div>
-            <hr>
-            <div class="center" style="padding: 50px;">
-                <h1>
-                    Begin Your Adventure
-                </h1>
-                <button>Invite to Server</button>
-            </div>
+    <div class="container has-text-centered">
+        <div class="section">
+            <img src="images/poutingbot-Icon.png" width="200" height="200" class="profile-picture">
+            <p class="title">poutingbot<br></h1>
+            <p class="subtitle">
+                A 
+                <a href="https://discord.com/"><img src="images/Discord-Wordmark-White.png" width="100"></a>
+                bot written in 
+                <a href="https://nodejs.org/en/">NodeJS</a> 
+                with
+                <a href="https://discord.js.org/#/">discord.js</a>.
+            </p>
+            <button class="button">Invite to Server</button>
         </div>
-        <footer class="footer"></footer>
+        <hr>
+        <div class="section">
+            <p class="title">Features</p>
+            <div class="tile is-ancestor">
+                <div class="tile is-vertical is-8">
+                    <div class="tile">
+                        <div class="tile is-parent is-vertical">
+                            <article class="tile is-child notification">
+                                <p class="title">Info 📝</p>
+                                <p class="subtitle">
+                                    - Get info on your members and channels 👀<br>
+                                    - Get indepth stats on your server<br>
+                                    - Steal people's profile pictures! 😈<br>
+                                </p>
+                                <div class="content">
+                                    <video class="features" autoplay="" loop="" muted="" playsinline="">
+                                        <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
+                                    </video>
+                                </div>
+                            </article>
+                            <article class="tile is-child notification">
+                                <p class="title">Gifs 🎁</p>
+                                <p class="subtitle">
+                                    - Get anime-related gifs quickly!<br>
+                                    - Post gifs from mobile 📱<br>
+                                    - Hardly ever inaccurate ;)<br>
+                                </p>
+                                <div class="content">
+                                    <video class="features" autoplay="" loop="" muted="" playsinline="">
+                                        <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
+                                    </video>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="tile is-parent">
+                            <article class="tile is-child notification">
+                                    <p class="title">Utility 🔨</p>
+                                    <p class="subtitle">
+                                        - Can be executed from DMS! 💬<br>
+                                        - Calculate simple equations conveniently ➗<br>
+                                        - Get the latest info on many anime and mangas 📺📚<br>
+                                        - Check the weather of a place you're interested in (🌞,☔,⛄,🌁) <br>
+                                        - Search up the definition of a word from Urban Dictionary (NSFW)<br>
+                                        - Translate your text into many different languages (🇪🇸, 🇨🇳, 🇫🇷, 🇯🇵, etc.)<br>
+                                        - Ever forgot the lyrics of a song? Now you can search them up from Discord 🎵<br>
+                                    </p>
+                                    <figure class="image is-4by3">
+                                        <img src="https://bulma.io/images/placeholders/640x480.png">
+                                    </figure>
+                                </article>
+                            </div>
+                        </div>
+                        <div class="tile is-parent">
+                            <article class="tile is-child notification">
+                                <p class="title">Moderation ⚖️</p>
+                                <p class="subtitle">
+                                    - Simple moderation commands such as ban and kick<br>
+                                    - Powerful purge command with many filters (bots, mentions, links, invites, etc.)<br>
+                                </p>
+                                <div class="content">
+                                    <video class="features" autoplay="" loop="" muted="" playsinline="">
+                                        <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
+                                    </video>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                    <div class="tile is-parent">
+                        <article class="tile is-child notification">
+                            <div class="content">
+                                <p class="title">Tower of God Experience 🌊</p>
+                                <p class="subtitle">
+                                        - Themed around the webtoon and anime, Tower of God<br>
+                                        - Global stats and economy 💵<br>
+                                        - Collect all the badges from the different tests! 🥇<br>
+                                        - Custom rank card to display your dedication and achievements 💳<br>
+                                        - Discover the position that fits your fighting style and climb the ranks! 🥊<br>
+                                </p>
+                                <div class="content">
+                                    <video class="features" autoplay="" loop="" muted="" playsinline="">
+                                        <source src="https://cdn.discordapp.com/attachments/722720878932262952/736794258245156894/ezgif.com-gif-to-webm.webm" type="video/webm">
+                                    </video>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="section has-text-centered">
+            <p class="title">Begin Your Adventure</p>
+            <button class="button">Invite to Server</button>
+        </div>
     </div>
+
+    <footer class="footer"></footer>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </body>
