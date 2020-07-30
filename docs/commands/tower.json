@@ -1,1 +1,1 @@
-[["daily","Claim your daily reward.","","","86400 seconds"],["position","Randomizes your position and rank. (Chance to be an Irregular)","","","5 seconds"],["profile","Displays your profile.","!profile [@user/id]","","5 seconds"]]
+[["daily","Claim your daily reward.","","","86400 seconds"],["leaderboard","Displays the top players.","","top","4 seconds"],["position","Randomizes your position and rank. (Chance to be an Irregular)","","","5 seconds"],["profile","Displays your profile.","!profile [@user/id]","","5 seconds"]]

@@ -1,17 +1,3 @@
-$('a').each(function() {
-    if( location.hostname === this.hostname || !this.hostname.length ) {
-        $(this).addClass('local');
-        console.log(this)
-    } else {
-        $(this).addClass('external');
-        console.log(this)
-        $(this).attr({
-            target: "_blank",
-            rel: "nofollow"
-        })
-    }
-})
-
 $(".profile-picture").hover(function() {
     $(this).addClass("animate__animated")
     $(this).addClass("animate__rubberBand")
@@ -29,6 +15,21 @@ AOS.init();
 $(function(){ 
     $(".navbar").load("./sections/navbar.html")
     $(".footer").load("./sections/footer.html")
+})
+
+$('a').each(function() {
+    console.log(this)
+    if( location.hostname === this.hostname || !this.hostname.length ) {
+        $(this).addClass('local');
+        console.log(this)
+    } else {
+        $(this).addClass('external');
+        console.log(this)
+        $(this).attr({
+            target: "_blank",
+            rel: "nofollow"
+        })
+    }
 })
 
 const commandsBody = document.querySelector("#commands-table > tbody")
@@ -78,17 +79,3 @@ function toggleNavBar() {
     $(".navbar-burger").toggleClass("is-active");
     $(".navbar-menu").toggleClass("is-active");
 }
-
-$("#slideshow > div:gt(0)").hide();
-
-let delay = $('#slideshow > div:eq(0)').attr('data-delay');
-setInterval(function() {
-  $('#slideshow > div:first')
-    .fadeOut(1000)
-    .next()
-    .fadeIn(1000)
-    .end()
-    .appendTo('#slideshow')
-    delay = $('#slideshow > div:eq(0)').attr('data-delay')
-    console.log(delay)
-}, delay);

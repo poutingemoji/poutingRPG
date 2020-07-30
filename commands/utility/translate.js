@@ -34,7 +34,7 @@ module.exports = class TranslateCommand extends Command {
         });
     };
     run(message, {language, content}) {
-        if (language.toLowerCase() === "chinese") {
+        if (language.toLowerCase() === "chinese" || language.toLowerCase() === "ch") {
             language = "Chinese (Simplified)"
         }
         if (!translate.languages.getCode(language)) return message.say(`${emoji(message, "729190277511905301")} The language, **${titleCase(language)}**, doesn't exist in my database.`)

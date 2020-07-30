@@ -33,6 +33,7 @@ module.exports = class ProfileCommand extends Command {
 
 	async run(message, {user}) {
 		user = user || message.author
+		if (user.bot) return
 		userStat.findOne({
 			userID: user.id,
 		}, (err, currentUserstat) => {

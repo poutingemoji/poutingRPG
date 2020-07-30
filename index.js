@@ -195,5 +195,4 @@ Object.keys(jsonFiles).forEach(function(key) {
 	)
 	fs.writeFile(`./docs/commands/${jsonFiles[key]}.json`, JSON.stringify(commands), function() {})
 	commands = []
-	console.log('written')
 })
