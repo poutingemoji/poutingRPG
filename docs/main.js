@@ -1,4 +1,4 @@
-const currentPage = window.location.pathname.replace('/','').replace('docs','').replace('.html','') || "index"
+const currentPage = window.location.pathname.split('/').join('').replace('docs','').replace('.html','') || "index"
 
 $(".navbar").load("./includes/navbar.html")
 $(".footer").load("./includes/footer.html")
@@ -23,8 +23,10 @@ $('a').each(function() {
     }
 })
 
+console.log(currentPage)
 if (currentPage == "shop") {
     $('.slick-carousel').slick({
+        
         dots: true,
         arrows: true,
         autoplay: false,
@@ -46,6 +48,7 @@ if (currentPage == "shop") {
             }
         ]
     })
+    console.log('test')
 }
 //nextArrow: '<i class="fa fa-arrow-right"></i> fa-5x',
 //prevArrow: '<i class="fa fa-arrow-left"></i>',
