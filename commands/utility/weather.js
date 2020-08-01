@@ -1,6 +1,6 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
-const { prefix, OPENWEATHERMAPKEY } = require("../../config.json");
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
+const { prefix, OPENWEATHERMAPKEY } = require("../../config.json")
 const fetch = require("node-fetch")
 
 module.exports = class WeatherCommand extends Command {
@@ -26,11 +26,11 @@ module.exports = class WeatherCommand extends Command {
                 usages: 1,
                 duration: 10
             },
-        });
-    };
+        })
+    }
     async run(message, {place}) {
         try {
-            let weatherURL;
+            let weatherURL
             if (isNaN(place)) {
                 weatherURL =`https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`
             } else {
@@ -53,34 +53,34 @@ module.exports = class WeatherCommand extends Command {
                     {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
                 )
                 .setTimestamp()
-                .setFooter('Weather');
+                .setFooter('Weather')
             message.say(messageEmbed)
         } catch(error) {
             message.say(error)
         }
-    };
-};
+    }
+}
 
 function getCardinalDirection(angle) {
     console.log(angle)
-    if (typeof angle === 'string') angle = parseInt(angle);
-    if (angle <= 0 || angle > 360 || typeof angle === 'undefined') return '☈';
-    const arrows = { north: 'N \:arrow_up:', north_east: 'NE \:arrow_upper_right:', east: 'E \:arrow_right:', south_east: 'SE \:arrow_lower_right:', south: 'S \:arrow_down: ', south_west: 'SW \:arrow_lower_left:', west: 'W \:arrow_left:', north_west: 'NW \:arrow_upper_left:' };
-    const directions = Object.keys(arrows);
-    const degree = 360 / directions.length;
-    angle = angle + degree / 2;
+    if (typeof angle === 'string') angle = parseInt(angle)
+    if (angle <= 0 || angle > 360 || typeof angle === 'undefined') return '☈'
+    const arrows = { north: 'N \:arrow_up:', north_east: 'NE \:arrow_upper_right:', east: 'E \:arrow_right:', south_east: 'SE \:arrow_lower_right:', south: 'S \:arrow_down: ', south_west: 'SW \:arrow_lower_left:', west: 'W \:arrow_left:', north_west: 'NW \:arrow_upper_left:' }
+    const directions = Object.keys(arrows)
+    const degree = 360 / directions.length
+    angle = angle + degree / 2
     for (let i = 0; i < directions.length; i++) {
-      if (angle >= (i * degree) && angle < (i + 1) * degree) return arrows[directions[i]];
+      if (angle >= (i * degree) && angle < (i + 1) * degree) return arrows[directions[i]]
     }
-    return arrows['north'];
+    return arrows['north']
 }
 
 function titleCase(str) {
-    var splitStr = str.toLowerCase().split(' ');
+    var splitStr = str.toLowerCase().split(' ')
     for (var i = 0; i < splitStr.length; i++) {
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)    
     }
-    return splitStr.join(' '); 
+    return splitStr.join(' ')
 }
 
 function emoji(message, emojiID) {
@@ -333,13 +333,13 @@ var isoCountries = {
     'YE' : 'Yemen',
     'ZM' : 'Zambia',
     'ZW' : 'Zimbabwe'
-};
+}
 
 function getCountryName (countryCode) {
     if (isoCountries.hasOwnProperty(countryCode)) {
-        return isoCountries[countryCode];
+        return isoCountries[countryCode]
     } else {
-        return countryCode;
+        return countryCode
     }
 }
  

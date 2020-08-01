@@ -1,7 +1,7 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
-const Parser = require('expr-eval').Parser;
-const { prefix } = require("../../config.json");
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
+const Parser = require('expr-eval').Parser
+const { prefix } = require("../../config.json")
 
 module.exports = class MathCommand extends Command {
 	constructor(client) {
@@ -26,8 +26,8 @@ module.exports = class MathCommand extends Command {
                 usages: 1,
                 duration: 2
             },
-        });
-    };
+        })
+    }
     run(message, {equation}) {
         try {
             let evaluatedEquation = Parser.evaluate(equation)
@@ -43,9 +43,9 @@ module.exports = class MathCommand extends Command {
             message.say(messageEmbed)
         } catch (error) {
             return message.say(`${emoji(message, "729190277511905301")} Equation provided could not be evaluated.`)
-        };
-    };
-};
+        }
+    }
+}
 
 function emoji(message, emojiID) {
     return message.client.emojis.cache.get(emojiID).toString()

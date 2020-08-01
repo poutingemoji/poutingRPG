@@ -1,15 +1,17 @@
-const { Command } = require('discord.js-commando');
-const userStat = require('../../models/userstat');
-const { MessageEmbed } = require('discord.js');
-module.exports = class LeaderboardCommand extends Command {
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
+const { prefix } = require("../../config.json")
+const userStat = require('../../models/userstat')
+
+module.exports = class TopCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'leaderboard',
-			aliases: ['top'],
+			name: 'top',
+			aliases: ['leaderboard'],
 			group: 'tower',
-			memberName: 'leaderboard',
+			memberName: 'top',
 			description: 'Displays the top players.',
-			examples: [],
+			examples: [`${prefix}top [level/points]`],
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
@@ -25,8 +27,8 @@ module.exports = class LeaderboardCommand extends Command {
                 usages: 1,
                 duration: 4
             },
-        });
-	};
+        })
+	}
 
 	run(message, filter) {
 		filter = filter['filter']
@@ -42,7 +44,7 @@ module.exports = class LeaderboardCommand extends Command {
 
 			let leaderboardMaxUsers = 10
 			if (res.length < leaderboardMaxUsers) leaderboardMaxUsers = res.length 
-			let topPlayers = []
+			let topPlayers = ''
 			const messageEmbed = new MessageEmbed()
 			messageEmbed.setTitle(`Global Leaderboard [${titleCase(filter)}]`)
 			messageEmbed.setColor('#2f3136')
@@ -58,12 +60,12 @@ module.exports = class LeaderboardCommand extends Command {
 						}
 						const user = await message.client.users.fetch(res[i].userID)
 						if (filter === 'level') {
-							topPlayers.push(leaderboardPosition + ` **${user.username}** - ${titleCase(filter)}: ${res[i].level} - Exp: ${res[i].totalExp}`)
+							topPlayers += leaderboardPosition + ` **${user.username}** ─ ${titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].totalExp}\n`
 						} else {
-							topPlayers.push(leaderboardPosition + `  **${user.username}** - ${titleCase(filter)}: ${res[i].points}`)
+							topPlayers += leaderboardPosition + `  **${user.username}** ─ ${titleCase(filter)}: ${res[i].points}\n`
 						}
 					}
-					messageEmbed.setDescription(topPlayers.join('\n'))
+					messageEmbed.setDescription(topPlayers)
 					message.say(messageEmbed)
 				} catch(error) {
 					console.log(error)

@@ -1,7 +1,7 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix, color } = require("../../config.json");
+const { prefix, color } = require("../../config.json")
 
 module.exports = class ChannelinfoCommand extends Command {
 	constructor(client) {
@@ -20,10 +20,10 @@ module.exports = class ChannelinfoCommand extends Command {
                 usages: 1,
                 duration: 5
             },
-        });
-    };
+        })
+    }
     run(message) {
-        let channel = message.channel;
+        let channel = message.channel
         console.log(message.mentions.channels.first())
         if (message.mentions.channels.first()) {
             channel = message.mentions.channels.first()
@@ -38,10 +38,10 @@ module.exports = class ChannelinfoCommand extends Command {
                 { name: 'Position', value: channel.position, inline: true  },
             )
             .setTimestamp()
-            .setFooter(`ID: ${channel.id}`);
+            .setFooter(`ID: ${channel.id}`)
         if (channel.topic) {
             messageEmbed.addField("Topic", channel.topic)
         }
-		message.say(messageEmbed);
-    };
-};
+		message.say(messageEmbed)
+    }
+}

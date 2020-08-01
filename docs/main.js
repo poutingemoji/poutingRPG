@@ -1,3 +1,4 @@
+//Animate Profile Picture
 $(".profile-picture").hover(function() {
     $(this).addClass("animate__animated")
     $(this).addClass("animate__rubberBand")
@@ -7,16 +8,17 @@ $(".profile-picture").on("webkitAnimationEnd mozAnimationEnd oAnimationEnd anima
     $(this).removeClass("animate__rubberBand")
 });
 
+//AOS Tiles
 $('.tile').each(function() {
     $(this).attr("data-aos", "zoom-in")
 })
 AOS.init();
 
-$(function(){ 
-    $(".navbar").load("./sections/navbar.html")
-    $(".footer").load("./sections/footer.html")
-})
+//Load Navbar and Footer
+$(".navbar").load("./sections/navbar.html")
+$(".footer").load("./sections/footer.html")
 
+//Make Links Open In Different Tab
 $('a').each(function() {
     console.log(this)
     if( location.hostname === this.hostname || !this.hostname.length ) {
@@ -32,28 +34,29 @@ $('a').each(function() {
     }
 })
 
+//Load different commands table
+if (document.getElementById("moderation")) {
+    document.addEventListener("DOMContentLoaded", () => {loadCommands("moderation")})
+}
 const commandsBody = document.querySelector("#commands-table > tbody")
-
 function loadCommands(id) {
     $('.menu button').each(function() {
         $(this).attr("style", "background-color: #ffffff00 !important;")
     })
-    console.log(id)
     $('#' + id).attr("style", "background-color: #7289da !important; color: white !important;") 
     console.log($('#commands'))
     const request = new XMLHttpRequest()
-    request.open("get", `./commands/${id}.json`)
+    request.open("get", `./commandinfo.json`)
     request.onload = () => {
         try {
             const json = JSON.parse(request.responseText)
-            populateCommands(json)
+            populateCommands(json[id])
         } catch(error) {
         console.warn("Couldn't load commands.")
         }
     }
     request.send()
 }
-
 function populateCommands(json) {
     while (commandsBody.firstChild) {
         commandsBody.removeChild(commandsBody.firstChild)
@@ -70,11 +73,7 @@ function populateCommands(json) {
     console.log(commandsBody)
 }
 
-if (document.getElementById("moderation")) {
-    document.addEventListener("DOMContentLoaded", () => {loadCommands("moderation")})
-}
-
-
+//Toggle Navbar (MOBILE)
 function toggleNavBar() {
     $(".navbar-burger").toggleClass("is-active");
     $(".navbar-menu").toggleClass("is-active");

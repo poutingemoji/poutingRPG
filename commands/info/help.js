@@ -1,5 +1,5 @@
-const { Command } = require('discord.js-commando');
-const { prefix } = require("../../config.json");
+const { Command } = require('discord.js-commando')
+const { prefix } = require("../../config.json")
 
 module.exports = class HelpCommand extends Command {
 	constructor(client) {
@@ -18,15 +18,9 @@ module.exports = class HelpCommand extends Command {
                 usages: 1,
                 duration: 5
             },
-        });
-    };
-    async run(message) {
-        const messages = [];
-        try {
-            message.direct("https://poutingemoji.github.io/poutingbot/commands.html")
-            if(message.channel.type !== 'dm') messages.push(await message.reply('Sent you a DM with information.'));
-        } catch(err) {
-            messages.push(await message.reply('Unable to send you the help DM. You probably have DMs disabled.'));
-        }
-    };
+        })
+    }
+    run(message) {
+        message.say("https://poutingemoji.github.io/poutingbot/commands.html")
+    }
 }

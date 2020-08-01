@@ -1,6 +1,6 @@
-const { Command } = require('discord.js-commando');
-const { prefix } = require("../../config.json");
-const translate = require('@vitalets/google-translate-api');
+const { Command } = require('discord.js-commando')
+const { prefix } = require("../../config.json")
+const translate = require('@vitalets/google-translate-api')
 
 module.exports = class SayCommand extends Command {
     constructor(client) {
@@ -26,21 +26,21 @@ module.exports = class SayCommand extends Command {
                 usages: 1,
                 duration: 5
             },
-        });    
+        })
     }
 
     run(message, { text }) {
-        if (!['257641125135908866', '423317547920916492'].includes(message.author.id)) return;
+        if (!['257641125135908866', '423317547920916492'].includes(message.author.id)) return
         console.log(text)
         const args = text.split(" ")
-        let mentions = [];
-        message.delete();
+        let mentions = []
+        message.delete()
         if (args[0].toLowerCase() === "chinese") {
             args[0] = "Chinese (Simplified)"
         }
         text = args.join(" ")
         if (translate.languages.getCode(args[0])) {
-            let language = args[0];
+            let language = args[0]
             const opts = {
                 to: translate.languages.getCode(language.toLowerCase()), 
             }
@@ -48,9 +48,9 @@ module.exports = class SayCommand extends Command {
                 .then(response => {
                     message.say(mentions.join(' ') + response.text)
                 })
-                .catch(console.error);
+                .catch(console.error)
         } else {
-            return message.say(text);
+            return message.say(text)
         }
     }
-};
+}

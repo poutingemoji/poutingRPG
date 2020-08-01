@@ -1,8 +1,8 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix } = require("../../config.json");
-const fetch = require("node-fetch");
+const { prefix } = require("../../config.json")
+const fetch = require("node-fetch")
 
 const checkDict = {
     status: "Status",
@@ -37,27 +37,27 @@ module.exports = class MangaCommand extends Command {
                 usages: 1,
                 duration: 10
             },
-        });
-    };
+        })
+    }
     async run(message, {manga}) {
         const start = Date.now()
         try {
-            var sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested manga... \:mag_right: `);
+            var sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested manga... \:mag_right: `)
             var mangaRequest = await fetchMangaInfo(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
             console.log(mangaRequest["data"][1])
-            if (mangaRequest["data"][0] === undefined) return sentMessage.edit(`${emoji(message,"729190277511905301")} Request failed! Could not find info on ${manga}`);
+            if (mangaRequest["data"][0] === undefined) return sentMessage.edit(`${emoji(message,"729190277511905301")} Request failed! Could not find info on ${manga}`)
         } catch(error) {
             console.log(error)
-        };
+        }
         console.log(sentMessage)
-        let i = 0;
+        let i = 0
         const possibleMatches = mangaRequest["data"].map(manga => {
-            i++;
-            return "**" + i + "** : " + manga["attributes"]['canonicalTitle'];
-        });
+            i++
+            return "**" + i + "** : " + manga["attributes"]['canonicalTitle']
+        })
         console.log(possibleMatches)
-        const filter = response => [1,2,3,4,5,6,7,8,9,10].includes(parseInt(response.content));
-        let mangaInfo;
+        const filter = response => [1,2,3,4,5,6,7,8,9,10].includes(parseInt(response.content))
+        let mangaInfo
         sentMessage.edit(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (${(Date.now() - start)/1000} seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
             message.channel.awaitMessages(filter, { max: 1, time: 12000 })
                 .then(collected => {
@@ -65,7 +65,7 @@ module.exports = class MangaCommand extends Command {
                     mangaInfo = mangaRequest["data"][chosenMangaIndex]["attributes"]
                     sentMessage.delete()
                     //console.log(mangaInfo)
-                    let title;
+                    let title
                     if (!mangaInfo["titles"]["ja_jp"]) {
                         title = mangaInfo["canonicalTitle"]
                     } else {
@@ -82,23 +82,23 @@ module.exports = class MangaCommand extends Command {
                         if (mangaInfo[check]) {
                             messageEmbed.addField(checkDict[check], mangaInfo[check], true)
                          }
-                     });
+                     })
                     if (mangaInfo["nextRelease"]) {
                         messageEmbed.setFooter(`Next Release: ${dateFormat(mangaInfo["nextRelease"], "dddd, mmmm dS, yyyy, h:MM TT")}`)
                     }
-                    message.say(messageEmbed);    
+                    message.say(messageEmbed)
                 })
                 .catch(collected => {
                     console.log(collected)
                     message.say(`${emoji(message,"729204396726026262")}**${message.author.username}**, what's taking so long bruh? This search is cancelled.`)
-                });
-        });
-    };
-};
+                })
+        })
+    }
+}
 
 async function fetchMangaInfo(URL) {
     const res = await fetch(URL)
-    return await res.json();
+    return await res.json()
 }
 
 function emoji(message, emojiID) {

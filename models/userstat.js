@@ -10,6 +10,10 @@ const userStatSchema = mongoose.Schema({
     irregular: Boolean,
     rank: Number,
     badges: Array,
+    inventory: {
+        type: Map,
+        of: String
+    }
 })
 
 module.exports = mongoose.model('Userstat', userStatSchema)

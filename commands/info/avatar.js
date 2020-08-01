@@ -1,5 +1,5 @@
-const { Command } = require('discord.js-commando');
-const { prefix } = require("../../config.json");
+const { Command } = require('discord.js-commando')
+const { prefix } = require("../../config.json")
 
 module.exports = class AvatarCommand extends Command {
 	constructor(client) {
@@ -25,10 +25,10 @@ module.exports = class AvatarCommand extends Command {
                 usages: 1,
                 duration: 5
             },
-        });
-    };
+        })
+    }
     run(message, {user}) {
         const mentionedUser = user || message.author
-		message.say(mentionedUser.displayAvatarURL());
-    };
-};
+		message.say(mentionedUser.displayAvatarURL())
+    }
+}

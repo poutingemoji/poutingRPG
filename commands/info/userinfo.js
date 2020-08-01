@@ -1,7 +1,7 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix, color } = require("../../config.json");
+const { prefix, color } = require("../../config.json")
 
 module.exports = class UserinfoCommand extends Command {
 	constructor(client) {
@@ -27,19 +27,19 @@ module.exports = class UserinfoCommand extends Command {
                 usages: 1,
                 duration: 5
             },
-        });
-    };
+        })
+    }
     run(message, {user}) {
         const mentionedUser = user || message.author
         const mentionedMember = message.guild.member(user) || message.member
-        const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ");
+        const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ")
         const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => titleCase(permission)).join(', ')
 		const messageEmbed = new MessageEmbed()
             .setColor(color)
             .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())
 			.setThumbnail(mentionedUser.displayAvatarURL())
             .setTimestamp()
-            .setFooter(`ID: ${mentionedUser.id}`);
+            .setFooter(`ID: ${mentionedUser.id}`)
         if (mentionedMember.nickname) {
             messageEmbed.addField("Nickname", mentionedMember.nickname, true)
         }
@@ -51,15 +51,15 @@ module.exports = class UserinfoCommand extends Command {
         if (mentionedRoles) {
             messageEmbed.addField(`Roles (${mentionedRoles.split(' ').length})`,  mentionedRoles)
         }
-		message.say(messageEmbed);
-    };
-};
+		message.say(messageEmbed)
+    }
+}
 
 function titleCase(str) {
     str = str.replace(/_/g, " ")
-    var splitStr = str.toLowerCase().split(' ');
+    var splitStr = str.toLowerCase().split(' ')
     for (var i = 0; i < splitStr.length; i++) {
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1) 
     }
-    return splitStr.join(' '); 
+    return splitStr.join(' ')
 }

@@ -1,7 +1,7 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix } = require("../../config.json");
+const { prefix } = require("../../config.json")
 const fetch = require("node-fetch")
 
 module.exports = class UrbanCommand extends Command {
@@ -28,8 +28,8 @@ module.exports = class UrbanCommand extends Command {
                 usages: 1,
                 duration: 10
             },
-        });
-    };
+        })
+    }
     async run(message, {term}) {
         try {
             let urbanRequest = await fetch(`https://api.urbandictionary.com/v0/define?term=${term}`)
@@ -48,8 +48,8 @@ module.exports = class UrbanCommand extends Command {
         } catch(error) {
             message.say(error)
         }
-    };
-};
+    }
+}
 
 function emoji(message, emojiID) {
     return message.client.emojis.cache.get(emojiID).toString()

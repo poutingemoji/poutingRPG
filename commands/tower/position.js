@@ -1,7 +1,7 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
-const { positionColors } = require('../../config.json');
-const userStat = require('../../models/userstat');
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
+const { positionColors } = require('../../config.json')
+const userStat = require('../../models/userstat')
 
 module.exports = class PositionCommand extends Command {
 	constructor(client) {
@@ -20,26 +20,26 @@ module.exports = class PositionCommand extends Command {
                 usages: 1,
                 duration: 5
             },
-        });
-	};
+        })
+	}
 
 	run(message) {
-        const positionIndex = Math.floor(Math.random() * Object.keys(positions).length);
-		const position = positions[positionIndex];
-		const ranks = ['A', 'B', 'C', 'D', 'E', 'F'];
-		const rankIndex = Math.floor(Math.random() * 30) + 1;  
-		const rankLetter = ranks[Math.ceil(rankIndex/5) - 1];
-		let rankNumber = rankIndex % 5;
+        const positionIndex = Math.floor(Math.random() * Object.keys(positions).length)
+		const position = positions[positionIndex]
+		const ranks = ['A', 'B', 'C', 'D', 'E', 'F']
+		const rankIndex = Math.floor(Math.random() * 30) + 1
+		const rankLetter = ranks[Math.ceil(rankIndex/5) - 1]
+		let rankNumber = rankIndex % 5
 		if (rankNumber == 0) {
-			rankNumber = 5;
-		};
-		const isIrregular = Math.random() >= 0.95;
-		let description;
+			rankNumber = 5
+		}
+		const isIrregular = Math.random() >= 0.95
+		let description
 		if (isIrregular) {
 			description = `You will bring great change and chaos to the tower, ${rankLetter}-Rank ${rankNumber} ${position.Name}.`;
 		} else {
-			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`;
-		};
+			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`
+		}
 
 		const badge = Math.floor(Math.random() * 6)
 		
@@ -50,7 +50,7 @@ module.exports = class PositionCommand extends Command {
 		userStat.findOne({
 			userID: message.author.id,
 		}, (err, currentUserstat) => {
-			if (err) console.log(err);
+			if (err) console.log(err)
 			currentUserstat.position = position.Name
 			currentUserstat.irregular = isIrregular
 			currentUserstat.rank = rankIndex
@@ -59,10 +59,10 @@ module.exports = class PositionCommand extends Command {
 				console.log(badge)
 			}
 			currentUserstat.save().catch(err => console.log(err))
-		});
-		message.say(messageEmbed);
-	};
-};
+		})
+		message.say(messageEmbed)
+	}
+}
 
 const positions = {
     [0] : {
@@ -85,4 +85,4 @@ const positions = {
         Name: "Wave Controller",
         Image: "https://cdn.discordapp.com/attachments/722720878932262952/723016677834489906/Main_position_2.png",
     }
-};
+}

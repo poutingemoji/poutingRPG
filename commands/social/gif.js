@@ -1,12 +1,12 @@
-const { Command } = require('discord.js-commando');
-const { TENORKEY } = require("../../config.json");
+const { Command } = require('discord.js-commando')
+const { TENORKEY, prefix } = require("../../config.json")
 const Tenor = require("tenorjs").client({
     "Key": TENORKEY,
     "Filter": "low", 
     "Locale": "en_US", 
     "MediaFilter": "basic",
     "DateFormat": "D/MM/YYYY - H:mm:ss A" 
-});
+})
 
 module.exports = class GifCommand extends Command {
 	constructor(client) {
@@ -16,7 +16,7 @@ module.exports = class GifCommand extends Command {
 			group: 'social',
 			memberName: 'gif',
             description: 'Displays a random gif based on the provided tag or category.',
-            examples: [],
+            examples: [`${prefix}gif [keyword]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,
@@ -31,15 +31,15 @@ module.exports = class GifCommand extends Command {
                 usages: 1,
                 duration: 2
             },
-        });
-    };
+        })
+    }
     run(message, {gif}) { 
         Tenor.Search.Random("anime" + gif, "1").then(Results => {
             Results.forEach(Post => {
-                    Post.title ? Post.title : "Untitled";
-                    console.log(`Item ${Post.id} (Created: ${Post.created}) @ ${Post.url}`);
+                    Post.title ? Post.title : "Untitled"
+                    console.log(`Item ${Post.id} (Created: ${Post.created}) @ ${Post.url}`)
                     message.say(Post.url)
-            });
-        }).catch(console.error);
-    };
-};
+            })
+        }).catch(console.error)
+    }
+}

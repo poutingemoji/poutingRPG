@@ -1,7 +1,7 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
-const { prefix, GENIUSLYRICSKEY } = require("../../config.json");
-const Genius = new (require("genius-lyrics")).Client(GENIUSLYRICSKEY);
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
+const { prefix, GENIUSLYRICSKEY } = require("../../config.json")
+const Genius = new (require("genius-lyrics")).Client(GENIUSLYRICSKEY)
 
 module.exports = class LyricsCommand extends Command {
 	constructor(client) {
@@ -27,10 +27,10 @@ module.exports = class LyricsCommand extends Command {
                 usages: 1,
                 duration: 10
             },
-        });
-    };
+        })
+    }
     async run(message, {song}) {
-        const sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested song lyrics... \:mag_right: `);
+        const sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested song lyrics... \:mag_right: `)
         try {
             const songs = await Genius.tracks.search(song, { limit: 10 })
             const lyricsRequest = await songs[0].lyrics()
@@ -43,19 +43,19 @@ module.exports = class LyricsCommand extends Command {
             console.log(error)
             sentMessage.edit(`${emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${song}**`)
         }
-    };
-};
+    }
+}
 
 function emoji(message, emojiID) {
     return message.client.emojis.cache.get(emojiID).toString()
 }
 
 function truncateText(str) {
-    const length = 2048;
-    const ending = '...';
+    const length = 2048
+    const ending = '...'
     if (str.length > length) {
-      return str.substring(0, length - ending.length) + ending;
+      return str.substring(0, length - ending.length) + ending
     } else {
-      return str;
+      return str
     }
-};
+}

@@ -1,5 +1,5 @@
-const { Command } = require('discord.js-commando');
-const { prefix } = require("../../config.json");
+const { Command } = require('discord.js-commando')
+const { prefix } = require("../../config.json")
 
 module.exports = class OwnerCommand extends Command {
 	constructor(client) {
@@ -18,9 +18,9 @@ module.exports = class OwnerCommand extends Command {
                 usages: 1,
                 duration: 3
             },
-        });
-    };
+        })
+    }
     run(message) {
-        message.say(`${message.client.emojis.cache.get("729209778898862171").toString()} **${message.author.username}**, the Boruto's dad to my Boruto is **poutingemoji#5785**. Nin!`);
-    };
-};
+        message.say(`${message.client.emojis.cache.get("729209778898862171").toString()} **${message.author.username}**, the Boruto's dad to my Boruto is **poutingemoji#5785**. Nin!`)
+    }
+}

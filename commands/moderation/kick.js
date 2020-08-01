@@ -1,5 +1,5 @@
-const { Command } = require('discord.js-commando');
-const { prefix } = require("../../config.json");
+const { Command } = require('discord.js-commando')
+const { prefix } = require("../../config.json")
 
 module.exports = class KickCommand extends Command {
 	constructor(client) {
@@ -24,8 +24,8 @@ module.exports = class KickCommand extends Command {
                 usages: 1,
                 duration: 3
             },
-        });
-    };
+        })
+    }
     run(message, {user}) {
         message.guild.member(user)
             .kick()
@@ -35,8 +35,8 @@ module.exports = class KickCommand extends Command {
             .catch(() => {
                 message.say(`${emoji(message, "729190277511905301")} Unable to kick **${user.tag}**.`)
             }) 
-    };
-};
+    }
+}
 
 function emoji(message, emojiID) {
     return message.client.emojis.cache.get(emojiID).toString()

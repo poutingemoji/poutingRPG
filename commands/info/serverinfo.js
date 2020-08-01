@@ -1,7 +1,7 @@
-const { Command } = require('discord.js-commando');
-const { MessageEmbed } = require('discord.js');
+const { Command } = require('discord.js-commando')
+const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix, color } = require("../../config.json");
+const { prefix, color } = require("../../config.json")
 
 module.exports = class ServerinfoCommand extends Command {
 	constructor(client) {
@@ -20,10 +20,10 @@ module.exports = class ServerinfoCommand extends Command {
                 usages: 1,
                 duration: 5
             },
-        });
-    };
+        })
+    }
     run(message) {
-        let guild = message.guild;
+        let guild = message.guild
         const members = guild.members.cache.map(member => member)
         const membersOnline = (members.filter(member => member.user.presence.status !== 'offline')).length
         const membersOffline = members.length - membersOnline
@@ -32,7 +32,7 @@ module.exports = class ServerinfoCommand extends Command {
         const voiceChannelCount = (channels.filter(channel => channel.type === "voice")).length
         const botCount = (members.filter(member => member.user.bot)).length
         const humanCount = members.length - botCount
-        const roles = guild.roles.cache.map(role => "<@&" + role.id + ">");
+        const roles = guild.roles.cache.map(role => "<@&" + role.id + ">")
         const emojis = guild.emojis.cache.map(emoji => emoji)
 		const messageEmbed = new MessageEmbed()
             .setColor(color)
@@ -47,7 +47,7 @@ module.exports = class ServerinfoCommand extends Command {
                 { name: "Humans/Bots", value: humanCount + "/" + botCount, inline: true },
             )
             .setTimestamp()
-            .setFooter(`ID: ${guild.id}`);
+            .setFooter(`ID: ${guild.id}`)
         if (roles) {
             messageEmbed.addField("Roles", roles.length, true)
         }
@@ -55,5 +55,5 @@ module.exports = class ServerinfoCommand extends Command {
             messageEmbed.addField(`Emojis (${emojis.length})`, emojis.slice(0, 20).join(' '))
         }
 		message.say(messageEmbed)
-    };
-};
+    }
+}
