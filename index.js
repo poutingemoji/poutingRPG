@@ -53,7 +53,6 @@ mongoose.connect(MONGODB, {
 	useNewUrlParser: true
 })
 
-
 const talkedRecently = new Set()
 client.on('message', message => {
 	if (message.author.bot) return
@@ -191,7 +190,7 @@ Object.keys(jsonFiles).forEach(function(key) {
 	commandsInfo[jsonFiles[key]] = commands
 	commands = []
 })
-fs.writeFile(`./docs/commandinfo.json`, JSON.stringify(commandsInfo), function() {})
+fs.writeFile(`./docs/commandinfo.json`, JSON.stringify(commandsInfo), function() {console.log('commandinfo.json Refreshed.')})
 
 function secondsToDhms(seconds) {
 	seconds = Number(seconds)

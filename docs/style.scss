@@ -1,9 +1,13 @@
 @import "../docs/node_modules/bulma/sass/utilities/initial-variables.sass";
 @import "../docs/node_modules/bulma/sass/utilities/functions";
 
+//sass --watch style.scss:css/style.css
+//Press Ctrl-C to stop
+
 $transparent: #ffffff00;
 $grey: #2c2f33;
-$light-grey: #b1b5bb;
+$light-grey: #36393f;
+$lighter-grey: #b1b5bb;
 $dark-grey: #23272a;
 $blurple: #8097e8;
 $scheme-main: $grey;
@@ -14,6 +18,7 @@ $text-light: white;
 $text-strong: white;
 
 $primary: $grey;
+$background: $transparent;
 
 $family-primary: "Roboto";
 $family-secondary: "Open Sans";
@@ -31,12 +36,13 @@ $link-active: white;
 $link-focus: white;
 
 $navbar-background-color: $dark-grey;
-$navbar-item-color: $light-grey;
+$navbar-dropdown-background-color: $light-grey;
+$navbar-item-color: $lighter-grey;
 
 $button-background-color: $blurple;
 $button-border-color: $transparent;
 
-$menu-item-color: $light-grey;
+$menu-item-color: $lighter-grey;
 
 @import "../docs/node_modules/bulma/sass/utilities/derived-variables";
 

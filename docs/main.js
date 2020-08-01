@@ -1,32 +1,21 @@
-//Animate Profile Picture
+const currentPage = window.location.pathname.replace('/','').replace('docs','').replace('.html','') || "index"
+
+$(".navbar").load("./_includes/navbar.html")
+$(".footer").load("./_includes/footer.html")
 $(".profile-picture").hover(function() {
     $(this).addClass("animate__animated")
     $(this).addClass("animate__rubberBand")
     $(this).addClass("animate__fast")
-});
+})
 $(".profile-picture").on("webkitAnimationEnd mozAnimationEnd oAnimationEnd animationEnd", function(event) {
     $(this).removeClass("animate__rubberBand")
-});
-
-//AOS Tiles
-$('.tile').each(function() {
-    $(this).attr("data-aos", "zoom-in")
 })
-AOS.init();
-
-//Load Navbar and Footer
-$(".navbar").load("./sections/navbar.html")
-$(".footer").load("./sections/footer.html")
-
-//Make Links Open In Different Tab
 $('a').each(function() {
     console.log(this)
     if( location.hostname === this.hostname || !this.hostname.length ) {
         $(this).addClass('local');
-        console.log(this)
     } else {
         $(this).addClass('external');
-        console.log(this)
         $(this).attr({
             target: "_blank",
             rel: "nofollow"
@@ -34,9 +23,51 @@ $('a').each(function() {
     }
 })
 
+if (currentPage == "shop") {
+    $('.slick-carousel').slick({
+        dots: true,
+        arrows: true,
+        autoplay: false,
+        speed: 1800,
+        responsive: [
+            {
+                breakpoint: 980, // tablet breakpoint
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                }
+            },
+            {
+                breakpoint: 480, // mobile breakpoint
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
+    })
+}
+//nextArrow: '<i class="fa fa-arrow-right"></i> fa-5x',
+//prevArrow: '<i class="fa fa-arrow-left"></i>',
+//Toggle Navbar (MOBILE)
+function toggleNavBar() {
+    $(".navbar-burger").toggleClass("is-active");
+    $(".navbar-menu").toggleClass("is-active");
+}
+
+
+//AOS Tiles
+$('.tile').each(function() {
+    $(this).attr("data-aos", "zoom-in")
+})
+AOS.init()
+
+
 //Load different commands table
-if (document.getElementById("moderation")) {
-    document.addEventListener("DOMContentLoaded", () => {loadCommands("moderation")})
+if (currentPage == "commands") {
+    $(document).ready(function() {
+        loadCommands("moderation")
+    })
 }
 const commandsBody = document.querySelector("#commands-table > tbody")
 function loadCommands(id) {
@@ -52,7 +83,7 @@ function loadCommands(id) {
             const json = JSON.parse(request.responseText)
             populateCommands(json[id])
         } catch(error) {
-        console.warn("Couldn't load commands.")
+            console.warn("Couldn't load commands.")
         }
     }
     request.send()
@@ -73,8 +104,4 @@ function populateCommands(json) {
     console.log(commandsBody)
 }
 
-//Toggle Navbar (MOBILE)
-function toggleNavBar() {
-    $(".navbar-burger").toggleClass("is-active");
-    $(".navbar-menu").toggleClass("is-active");
-}
+

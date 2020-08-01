@@ -9,6 +9,7 @@
   "author": "poutingemoji",
   "license": "ISC",
   "dependencies": {
-    "bulma": "^0.9.0"
+    "bulma": "^0.9.0",
+    "slick-carousel": "^1.8.1"
   }
 }

@@ -1,3 +1,7 @@
+#subtitle {
+  font-size: 1.25rem;
+}
+
 button:hover {
     transition: background-color 100ms linear;
     background-color: #8ca1ea;
@@ -46,9 +50,25 @@ hr {
     width: 100%;
   }
 
-#slideshow {
-    position: relative;
+.card {
+  background-color: #36393f !important;
+  height: 20rem !important;
+}
+
+.slick-dots li button:before {
+    font-size: 1rem !important;
+    color:white !important;
   }
-  #slideshow > div {
-    position: absolute;
+  .slick-dots li.slick-active button:before {
+    color:white !important;
   }
+
+.slick-prev:before {
+  content: '❮' !important;
+  font-size: 2rem !important;
+}
+
+.slick-next:before {
+  content: '❯' !important;
+  font-size: 2rem !important;
+}
