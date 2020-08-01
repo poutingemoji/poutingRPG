@@ -1,0 +1,9 @@
+.vscode/
+node_modules/
+.gitignore
+config.json
+package-lock.json
+Procfile
+
+docs/node_modules/
+docs/package-lock.json

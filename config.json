@@ -1,0 +1,20 @@
+{
+	"prefix": "!",
+	"TOKEN": "SqiqUhz90luQfxrbO6IFM-ACtQOkJ3bJ",
+	"MONGODBKEY": "mongodb+srv://poutingemoji:ILive4God@cluster0-gm8vk.mongodb.net/Userstats",
+	"OPENWEATHERMAPKEY": "3186cf4de84ea7db59df2e96e9510ff9",
+	"GENIUSLYRICSKEY": "pWmblCU0aBV8GNa-JRANQsD0AtW6VyfJEkr8_dx7xz3gpBmty4pSWHPFOON-UwjN",
+	"SYSTRANTRANSLATIONKEY": "03955f37b1msh6ad9210f4e38d66p",
+	"TENORKEY": "SHXHFSNHL9GH",
+	"baseExpMultiplier": 50,
+	"exponentialExpMultiplier": 1.04,
+	"expCooldown": 60000,
+	"color": "#92b096",
+	"positionColors": {
+		"Fisherman": "#a2716b",
+		"Scout": "#92b096",
+		"Spear Bearer": "#604f41",
+		"Light Bearer": "#baa564",
+		"Wave Controller": "#748394"
+	}
+}
