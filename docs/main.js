@@ -1,4 +1,4 @@
-const currentPage = window.location.pathname.split('/').join('').replace('docs','').replace('.html','') || "index"
+const currentPage = window.location.pathname.split('/').join('').replace('poutingbot','').replace('docs','').replace('.html','') || "index"
 
 $(".navbar").load("./includes/navbar.html")
 $(".footer").load("./includes/footer.html")
