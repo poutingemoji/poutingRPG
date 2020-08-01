@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const { prefix, OPENWEATHERMAPKEY } = require("../../config.json")
 const fetch = require("node-fetch")
+require('dotenv').config()
 
 module.exports = class WeatherCommand extends Command {
 	constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class WeatherCommand extends Command {
 			group: 'utility',
 			memberName: 'weather',
             description: 'Displays weather info on the provided city.',
-            examples: [`${prefix}weather [place/postal code]`],
+            examples: [`${process.env.PREFIX}weather [place/postal code]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: false,
@@ -32,9 +32,9 @@ module.exports = class WeatherCommand extends Command {
         try {
             let weatherURL
             if (isNaN(place)) {
-                weatherURL =`https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`
+                weatherURL =`https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`
             } else {
-                weatherURL = `https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${OPENWEATHERMAPKEY}`
+                weatherURL = `https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`
             }
             let weatherInfo = await fetch(weatherURL)
             weatherInfo = await weatherInfo.json()

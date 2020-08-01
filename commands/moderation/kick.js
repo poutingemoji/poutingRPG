@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const { prefix } = require("../../config.json")
+require('dotenv').config()
 
 module.exports = class KickCommand extends Command {
 	constructor(client) {
@@ -9,7 +9,7 @@ module.exports = class KickCommand extends Command {
 			group: 'moderation',
 			memberName: 'kick',
             description: 'Kicks the specified user.',
-            examples: [`${prefix}kick [@user/id]`],
+            examples: [`${process.env.PREFIX}kick [@user/id]`],
             clientPermissions: ['KICK_MEMBERS'],
             userPermissions: ['KICK_MEMBERS'],
             guildOnly: true,

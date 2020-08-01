@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const { prefix } = require("../../config.json")
 const translate = require('@vitalets/google-translate-api')
+require('dotenv').config()
 
 module.exports = class TranslateCommand extends Command {
 	constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class TranslateCommand extends Command {
 			group: 'utility',
 			memberName: 'translate',
             description: 'Translates the text into the specified language.',
-            examples: [`${prefix}translate [language/ISO 639-1] [text]`],
+            examples: [`${process.env.PREFIX}translate [language/ISO 639-1] [text]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: false,

@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando')
-const { prefix } = require("../../config.json")
+require('dotenv').config()
+
 let counter
 module.exports = class PurgeCommand extends Command {
     constructor(client) {
@@ -10,21 +11,21 @@ module.exports = class PurgeCommand extends Command {
             memberName: 'purge',
             description: 'Allows you to mass delete messages in your server. DEFAULT: 25 MSGS',
             examples: [
-                `${prefix}purge @user`,
-                `${prefix}purge [number]`,
-                `${prefix}purge bots [number]`,
-                `${prefix}purge commands [number]`,
-                `${prefix}purge mentions [number]`,
-                `${prefix}purge images [number]`,
-                `${prefix}purge links [number]`,
-                `${prefix}purge invites [number]`,
-                `${prefix}purge text [number]`,
-                `${prefix}purge embeds [number]`,
-                `${prefix}purge emojis [number]`,
-                `${prefix}purge startswith [content]`,
-                `${prefix}purge endswith [content]`,
-                `${prefix}purge includes [content]`,
-                `${prefix}purge match [content]`,
+                `${process.env.PREFIX}purge @user`,
+                `${process.env.PREFIX}purge [number]`,
+                `${process.env.PREFIX}purge bots [number]`,
+                `${process.env.PREFIX}purge commands [number]`,
+                `${process.env.PREFIX}purge mentions [number]`,
+                `${process.env.PREFIX}purge images [number]`,
+                `${process.env.PREFIX}purge links [number]`,
+                `${process.env.PREFIX}purge invites [number]`,
+                `${process.env.PREFIX}purge text [number]`,
+                `${process.env.PREFIX}purge embeds [number]`,
+                `${process.env.PREFIX}purge emojis [number]`,
+                `${process.env.PREFIX}purge startswith [content]`,
+                `${process.env.PREFIX}purge endswith [content]`,
+                `${process.env.PREFIX}purge includes [content]`,
+                `${process.env.PREFIX}purge match [content]`,
             ],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: ['MANAGE_MESSAGES'],
@@ -97,7 +98,7 @@ module.exports = class PurgeCommand extends Command {
                     } else if (typeOfMessages === "bots") {
                         filteredMessages = messages.filter(msg => filterLimit(msg, msg.author.bot, messageFilter))
                     } else if (typeOfMessages === "commands") {
-                        filteredMessages = messages.filter(msg => filterLimit(msg, msg.content.startsWith(message.guild.commandPrefix), messageFilter))
+                        filteredMessages = messages.filter(msg => filterLimit(msg, msg.content.startsWith(message.guild.commandprocess.env.PREFIX), messageFilter))
                     } else if (typeOfMessages === "embeds") {
                         filteredMessages = messages.filter(msg => filterLimit(msg, msg.embeds.length, messageFilter))
                     } else if (typeOfMessages === "emojis") {

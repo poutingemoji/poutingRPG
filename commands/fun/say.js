@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
-const { prefix } = require("../../config.json")
 const translate = require('@vitalets/google-translate-api')
+require('dotenv').config()
 
 module.exports = class SayCommand extends Command {
     constructor(client) {
@@ -10,7 +10,7 @@ module.exports = class SayCommand extends Command {
             group: 'fun',
             memberName: 'say',
             description: 'Makes the bot mimic what you say.',
-            examples: [`${prefix}say [text]`],
+            examples: [`${process.env.PREFIX}say [text]`],
             clientPermissions: ['MANAGE_MESSAGES'],
             userPermissions: [],
             guildOnly: true,

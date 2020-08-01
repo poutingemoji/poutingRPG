@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix, color } = require("../../config.json")
+require('dotenv').config()
 
 module.exports = class ChannelinfoCommand extends Command {
 	constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class ChannelinfoCommand extends Command {
 			group: 'info',
 			memberName: 'channelinfo',
             description: "Displays info about the mentioned channel.",
-            examples: [`${prefix}channelinfo`],
+            examples: [`${process.env.PREFIX}channelinfo`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,
@@ -29,7 +29,7 @@ module.exports = class ChannelinfoCommand extends Command {
             channel = message.mentions.channels.first()
         }
 		const messageEmbed = new MessageEmbed()
-            .setColor(color)
+            .setColor(process.env.COLOR)
             .setThumbnail("https://cdn.discordapp.com/attachments/722720878932262952/729916844017713182/Green_april_hook_shape.png")
             .addFields(
                 { name: "Channel Name", value: "<#" + channel.id + ">"},

@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const { positionColors } = require('../../config.json')
 const userStat = require('../../models/userstat')
+require('dotenv').config()
 
 module.exports = class PositionCommand extends Command {
 	constructor(client) {
@@ -40,11 +40,9 @@ module.exports = class PositionCommand extends Command {
 		} else {
 			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`
 		}
-
 		const badge = Math.floor(Math.random() * 6)
-		
 		const messageEmbed = new MessageEmbed()
-			.setColor(positionColors[position.Name])
+			.setColor(process.env['POSITION_COLOR_' + position.Name.toUpperCase().replace(/ /g, "_")])
 			.setDescription(description)
 			.setImage(position.Image)
 		userStat.findOne({

@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
-const { TENORKEY, prefix } = require("../../config.json")
+require('dotenv').config()
 const Tenor = require("tenorjs").client({
-    "Key": TENORKEY,
+    "Key": process.env.TENORKEY,
     "Filter": "low", 
     "Locale": "en_US", 
     "MediaFilter": "basic",
@@ -16,7 +16,7 @@ module.exports = class GifCommand extends Command {
 			group: 'social',
 			memberName: 'gif',
             description: 'Displays a random gif based on the provided tag or category.',
-            examples: [`${prefix}gif [keyword]`],
+            examples: [`${process.env.PREFIX}gif [keyword]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,

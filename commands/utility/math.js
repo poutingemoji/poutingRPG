@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const Parser = require('expr-eval').Parser
-const { prefix } = require("../../config.json")
+require('dotenv').config()
 
 module.exports = class MathCommand extends Command {
 	constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class MathCommand extends Command {
 			group: 'utility',
 			memberName: 'math',
             description: 'Calculates the provided equation.',
-            examples: [`${prefix}math [equation]`],
+            examples: [`${process.env.PREFIX}math [equation]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: false,

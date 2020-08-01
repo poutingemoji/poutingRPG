@@ -1,9 +1,9 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const { prefix } = require("../../config.json")
 const userStat = require('../../models/userstat')
 const fs = require('fs')
 const items = JSON.parse(fs.readFileSync('items.json', 'utf8'))
+require('dotenv').config()
 
 module.exports = class BuyCommand extends Command {
     constructor(client) {
@@ -13,7 +13,7 @@ module.exports = class BuyCommand extends Command {
             group: 'tower',
             memberName: 'buy',
             description: 'Purchase a weapon from the weapons dealer.',
-            examples: [`${prefix}buy [weapon]`],
+            examples: [`${process.env.PREFIX}buy [weapon]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,

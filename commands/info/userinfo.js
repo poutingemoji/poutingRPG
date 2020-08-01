@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix, color } = require("../../config.json")
+require('dotenv').config()
 
 module.exports = class UserinfoCommand extends Command {
 	constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class UserinfoCommand extends Command {
 			group: 'info',
 			memberName: 'userinfo',
             description: "Display the user mentioned's info.",
-            examples: [`${prefix}userinfo [@user/id]`],
+            examples: [`${process.env.PREFIX}userinfo [@user/id]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,
@@ -35,7 +35,7 @@ module.exports = class UserinfoCommand extends Command {
         const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ")
         const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => titleCase(permission)).join(', ')
 		const messageEmbed = new MessageEmbed()
-            .setColor(color)
+            .setColor(process.env.COLOR)
             .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())
 			.setThumbnail(mentionedUser.displayAvatarURL())
             .setTimestamp()

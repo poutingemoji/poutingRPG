@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const { prefix } = require("../../config.json")
+require('dotenv').config()
 
 module.exports = class OwnerCommand extends Command {
 	constructor(client) {
@@ -9,7 +9,7 @@ module.exports = class OwnerCommand extends Command {
 			group: 'info',
 			memberName: 'owner',
             description: "Shows the owner of this bot.",
-            examples: [`${prefix}owner`],
+            examples: [`${process.env.PREFIX}owner`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,

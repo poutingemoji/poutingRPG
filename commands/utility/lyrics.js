@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const { prefix, GENIUSLYRICSKEY } = require("../../config.json")
-const Genius = new (require("genius-lyrics")).Client(GENIUSLYRICSKEY)
+const Genius = new (require("genius-lyrics")).Client(process.env.GENIUSLYRICSKEY)
+require('dotenv').config()
 
 module.exports = class LyricsCommand extends Command {
 	constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class LyricsCommand extends Command {
 			group: 'utility',
 			memberName: 'lyrics',
             description: 'Display the lyrics of the requested song.',
-            examples: [`${prefix}lyrics [song]`],
+            examples: [`${process.env.PREFIX}lyrics [song]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: false,
@@ -22,7 +22,6 @@ module.exports = class LyricsCommand extends Command {
                     type: 'string',
                 },
             ],
- 
             throttling: {
                 usages: 1,
                 duration: 10

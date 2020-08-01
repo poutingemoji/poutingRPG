@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const { prefix } = require("../../config.json")
 const userStat = require('../../models/userstat')
+require('dotenv').config()
 
 module.exports = class TopCommand extends Command {
 	constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class TopCommand extends Command {
 			group: 'tower',
 			memberName: 'top',
 			description: 'Displays the top players.',
-			examples: [`${prefix}top [level/points]`],
+			examples: [`${process.env.PREFIX}top [level/points]`],
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,

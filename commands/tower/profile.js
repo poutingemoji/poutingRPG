@@ -1,8 +1,8 @@
 const { Command } = require("discord.js-commando")
 const { MessageAttachment } = require("discord.js")
 const { createCanvas, loadImage } = require("canvas")
-const { prefix, positionColors, baseExpMultiplier, exponentialExpMultiplier } = require("../../config.json")
 const userStat = require("../../models/userstat")
+require('dotenv').config()
 
 module.exports = class ProfileCommand extends Command {
 	constructor(client) {
@@ -12,7 +12,7 @@ module.exports = class ProfileCommand extends Command {
 			group: "tower",
 			memberName: "profile",
 			description: "Displays your profile.",
-			examples: [`${prefix}profile [@user/id]`],
+			examples: [`${process.env.PREFIX}profile [@user/id]`],
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
@@ -66,12 +66,12 @@ module.exports = class ProfileCommand extends Command {
 					currentUserstat.position, 
 					currentUserstat.irregular, 
 					`${rankLetter}-RANK ${rankNumber}`, // currentRank
-					Math.floor(baseExpMultiplier * (Math.pow(currentUserstat.level, exponentialExpMultiplier))), // nextLevel
+					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(currentUserstat.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
 					currentUserstat.badges,
 					user,
 					message
 				)
-				console.log(baseExpMultiplier, exponentialExpMultiplier)
+				console.log(process.env.BASE_EXPMULTIPLIER, process.env.EXPONENTIAL_EXPMULTIPLIER)
 			}
 		})
 	}
@@ -83,7 +83,7 @@ async function createImage(currentExp, currentLevel, currentPoints, currentPosit
 	//ctx, x, y, width, height, radius, fill, fillColor
 	roundRect(ctx, 0, 0, canvas.width, canvas.height, 10, "#23272A")
 
-	let currentPositionColor = positionColors[currentPosition]
+	let currentPositionColor = process.env['POSITION_COLOR_' + currentPosition.toUpperCase().replace(/ /g, "_")]
 	if (currentPosition == "No Position") {
 		currentPositionColor = "#ffffff"
 	}

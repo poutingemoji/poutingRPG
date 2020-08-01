@@ -1,8 +1,8 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix } = require("../../config.json")
 const fetch = require("node-fetch")
+require('dotenv').config()
 
 const checkDict = {
     status: "Status",
@@ -21,7 +21,7 @@ module.exports = class AnimeCommand extends Command {
 			group: 'utility',
 			memberName: 'anime',
             description: 'Displays info of the requested anime.',
-            examples: [`${prefix}anime [anime]`],
+            examples: [`${process.env.PREFIX}anime [anime]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: false,

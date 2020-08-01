@@ -1,8 +1,8 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix } = require("../../config.json")
 const fetch = require("node-fetch")
+require('dotenv').config()
 
 module.exports = class UrbanCommand extends Command {
 	constructor(client) {
@@ -12,7 +12,7 @@ module.exports = class UrbanCommand extends Command {
 			group: 'utility',
 			memberName: 'urban',
             description: 'Look up a term on Urban Dictionary.',
-            examples: [`${prefix}urban [term]`],
+            examples: [`${process.env.PREFIX}urban [term]`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: false,

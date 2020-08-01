@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const { prefix, color } = require("../../config.json")
+require('dotenv').config()
 
 module.exports = class ServerinfoCommand extends Command {
 	constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class ServerinfoCommand extends Command {
 			group: 'info',
 			memberName: 'serverinfo',
             description: "Displays info about the server.",
-            examples: [`${prefix}serverinfo`],
+            examples: [`${process.env.PREFIX}serverinfo`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: true,
@@ -35,7 +35,7 @@ module.exports = class ServerinfoCommand extends Command {
         const roles = guild.roles.cache.map(role => "<@&" + role.id + ">")
         const emojis = guild.emojis.cache.map(emoji => emoji)
 		const messageEmbed = new MessageEmbed()
-            .setColor(color)
+            .setColor(process.env.COLOR)
             .setAuthor(guild.name)
 			.setThumbnail(guild.iconURL())
             .addFields(

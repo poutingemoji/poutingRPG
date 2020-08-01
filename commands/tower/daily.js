@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const userStat = require('../../models/userstat')
-const { baseExpMultiplier, exponentialExpMultiplier } = require("../../config.json")
+require('dotenv').config()
+
 module.exports = class DailyCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -30,7 +31,7 @@ module.exports = class DailyCommand extends Command {
 		}, (err, currentUserstat) => {
 			let currentExp = currentUserstat.currentExp
 			let currentLevel = currentUserstat.level
-			let nextLevel = Math.floor(baseExpMultiplier *(Math.pow(currentLevel, exponentialExpMultiplier)))
+			let nextLevel = Math.floor(process.env.BASE_EXPMULTIPLIER *(Math.pow(currentLevel, process.env.EXPONENTIAL_EXPMULTIPLIER)))
 			currentUserstat.totalExp = currentUserstat.totalExp + expAdd
 			currentUserstat.currentExp = currentUserstat.currentExp + expAdd
 			if(nextLevel <= currentExp) {

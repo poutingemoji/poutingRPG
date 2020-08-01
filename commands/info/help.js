@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const { prefix } = require("../../config.json")
+require('dotenv').config()
 
 module.exports = class HelpCommand extends Command {
 	constructor(client) {
@@ -9,7 +9,7 @@ module.exports = class HelpCommand extends Command {
 			group: 'info',
 			memberName: 'help',
             description: "Link to the command list.",
-            examples: [`${prefix}help`],
+            examples: [`${process.env.PREFIX}help`],
             clientPermissions: [],
             userPermissions: [],
             guildOnly: false,

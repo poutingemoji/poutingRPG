@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const { prefix } = require("../../config.json")
+require('dotenv').config()
 
 module.exports = class BanCommand extends Command {
 	constructor(client) {
@@ -9,7 +9,7 @@ module.exports = class BanCommand extends Command {
 			group: 'moderation',
 			memberName: 'ban',
             description: 'Bans the specified user.',
-            examples: [`${prefix}ban [@user/id]`],
+            examples: [`${process.env.PREFIX}ban [@user/id]`],
             clientPermissions: ['BAN_MEMBERS'],
             userPermissions: ['BAN_MEMBERS'],
             guildOnly: true,

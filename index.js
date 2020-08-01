@@ -1,18 +1,11 @@
 const fs = require('fs')
 const { CommandoClient } = require("discord.js-commando")
 const path = require("path")
-const { 
-	prefix, 
-	TOKEN, 
-	MONGODBKEY, 
-	baseExpMultiplier, 
-	exponentialExpMultiplier, 
-	expCooldown 
-} = require("./config.json")
+require('dotenv').config()
 
 //Creating Commando Client
 const client = new CommandoClient({
-	commandPrefix: prefix,
+	commandPrefix: process.env.PREFIX,
 	owner: "257641125135908866",
 	invite: "https://discord.gg/nGVe96h",
 	disableEveryone: true
@@ -36,19 +29,18 @@ client.registry
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`)
-	client.user.setActivity(`${prefix}help`, {
+	client.user.setActivity(`${process.env.PREFIX}help`, {
 		type: "STREAMING",
 		url: "https://www.twitch.tv/rikaaaa_"
 	})
 })
 client.on("error", console.error)
-client.login(TOKEN)
+client.login(process.env.TOKEN)
 
 //Connecting to MongoDB Database
 const mongoose = require("mongoose")
 const Userstat = require("./models/userstat")
-const MONGODB = process.env.MONGODB_URI || MONGODBKEY
-mongoose.connect(MONGODB, {
+mongoose.connect(process.env.MONGODB_URI, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
@@ -63,7 +55,7 @@ client.on('message', message => {
 	talkedRecently.add(message.author.id)
 	setTimeout(() => {
 	  talkedRecently.delete(message.author.id)
-	}, expCooldown)
+	}, process.env.EXPCOOLDOWN)
 	//Random Chance to Get a Tower of God Test
 	if (Math.random() >= 0.99) {
 		const giveaway = giveaways[randomIntFromInterval(0,5)]
@@ -91,7 +83,7 @@ client.on('message', message => {
 		} else {
 			let currentExp = currentUserstat.currentExp
 			let currentLevel = currentUserstat.level
-			let nextLevel = Math.floor(baseExpMultiplier *(Math.pow(currentLevel, exponentialExpMultiplier)))
+			let nextLevel = Math.floor(process.env.BASE_EXPMULTIPLIER *(Math.pow(currentLevel, process.env.EXPONENTIAL_EXPMULTIPLIER)))
 			currentUserstat.totalExp = currentUserstat.totalExp + expAdd
 			currentUserstat.currentExp = currentUserstat.currentExp + expAdd
 
