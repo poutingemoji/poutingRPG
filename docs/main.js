@@ -1,7 +1,7 @@
 const currentPage = window.location.pathname.replace('/','').replace('docs','').replace('.html','') || "index"
 
-$(".navbar").load("./_includes/navbar.html")
-$(".footer").load("./_includes/footer.html")
+$(".navbar").load("_includes/navbar.html")
+$(".footer").load("_includes/footer.html")
 $(".profile-picture").hover(function() {
     $(this).addClass("animate__animated")
     $(this).addClass("animate__rubberBand")
