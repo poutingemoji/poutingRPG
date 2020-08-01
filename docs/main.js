@@ -1,5 +1,5 @@
 const currentPage = window.location.pathname.split('/').join('').replace('poutingbot','').replace('docs','').replace('.html','') || "index"
-
+console.log(window.location.pathname)
 $(".navbar").load("./includes/navbar.html")
 $(".footer").load("./includes/footer.html")
 $(".profile-picture").hover(function() {
