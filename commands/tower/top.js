@@ -46,8 +46,8 @@ module.exports = class TopCommand extends Command {
 			if (res.length < leaderboardMaxUsers) leaderboardMaxUsers = res.length 
 			let topPlayers = ''
 			const messageEmbed = new MessageEmbed()
-			messageEmbed.setTitle(`Global Leaderboard [${titleCase(filter)}]`)
-			messageEmbed.setColor('#2f3136')
+				.setColor('#2f3136')
+				.setTitle(`Global Leaderboard [${titleCase(filter)}]`)
 			async function getUser() {
 				try {
 					for (let i = 0; i < leaderboardMaxUsers; i++) {
@@ -83,7 +83,7 @@ function emoji(message, emojiID) {
 function titleCase(str) {
     str = str.replace(/_/g, " ")
     var splitStr = str.toLowerCase().split(' ')
-    for (var i = 0; i < splitStr.length; i++) {
+    for (let i = 0; i < splitStr.length; i++) {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
     }
     return splitStr.join(' ')

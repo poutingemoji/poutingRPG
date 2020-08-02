@@ -155,7 +155,7 @@ function filterLimit(msg, condition, messageFilter) {
 }
 
 function isDoubleByte(str) {
-    for (var i = 0, n = str.length; i < n; i++) {
+    for (let i = 0, n = str.length; i < n; i++) {
         if (str.charCodeAt( i ) > 255) { return true; }
     }
     return false

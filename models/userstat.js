@@ -12,7 +12,7 @@ const userStatSchema = mongoose.Schema({
     badges: Array,
     inventory: {
         type: Map,
-        of: String
+        of: Number
     }
 })
 

@@ -31,13 +31,13 @@ hr {
   }
 
 .tile .is-child {
-    background-color: #23272a;
+    background-color: #2c2f33;
     padding-left: 2rem; 
     padding-right: 2rem; 
 }
 
 .menu {
-    background-color: #23272a;
+    background-color: #2c2f33;
     padding-top: 1rem;
     padding-left: .6rem;
     padding-right: .6rem;
@@ -51,8 +51,12 @@ hr {
   }
 
 .card {
-  background-color: #36393f !important;
-  height: 20rem !important;
+  background-color: #2c2f33 !important;
+  height: 29rem !important;
+}
+
+.card-image {
+  padding: 0.1rem;
 }
 
 .slick-dots li button:before {
@@ -71,4 +75,15 @@ hr {
 .slick-next:before {
   content: '❯' !important;
   font-size: 2rem !important;
+}
+
+.top-right {
+  position: absolute;
+  top: .4rem;
+  right: .8rem;
+}
+
+.card-content {
+  position: absolute;
+  bottom: 0rem;
 }

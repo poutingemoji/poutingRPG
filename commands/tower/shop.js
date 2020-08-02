@@ -26,14 +26,14 @@ module.exports = class BuyCommand extends Command {
     run(message) {
         let categories = []
         console.log(Object.keys(items))
-        for (const i in items) { 
+        for (let i in items) { 
             if (!categories.includes(items[i].type)) {
                 categories.push(items[i].type)
             }
         }
         const messageEmbed = new MessageEmbed()
-            .setTitle("Weapons Dealer")
             .setColor('#2f3136')
+            .setTitle("Weapons Dealer")
             .setDescription('13 Month Series ─  🗓️\nIgnition ─  🔥\nCompression ─  🗜️\n\n')
 
         for (let i = 0; i < categories.length; i++) { 

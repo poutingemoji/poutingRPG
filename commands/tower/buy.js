@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const userStat = require('../../models/userstat')
 const fs = require('fs')
-const items = JSON.parse(fs.readFileSync('items.json', 'utf8'))
+const json = JSON.parse(fs.readFileSync('items.json', 'utf8'))
 require('dotenv').config()
 
 module.exports = class BuyCommand extends Command {
@@ -32,31 +32,45 @@ module.exports = class BuyCommand extends Command {
     }
 
     run(message, { weapon }) {
-        let itemName = ''
+        let itemID = ''
         let itemPrice = 0
         let itemDesc = ''
 
-        for (let i in items) { 
-            if (weapon.toLowerCase() === items[i].name.toLowerCase()) { 
-                itemName = items[i].name
-                itemPrice = items[i].price
-                itemDesc = items[i].desc
+        for (let i in json) { 
+            if (weapon === i) { 
+                itemID = i
+                itemPrice = json[i].price
+                itemDesc = json[i].desc
             }
         }
 
         itemPrice = 0
 
-        if (itemName === '') {
+        if (itemID === '') {
             return message.say(`Weapons Dealer: I don't have **${weapon}**.`)
         }
+
+        console.log(itemID)
 
         userStat.findOne({
 			userID: message.author.id,
 		}, (err, currentUserstat) => {
             if (err) console.log(err)
-            if (currentUserstat.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${weapon}**.`)
+            if (currentUserstat.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${json[weapon].name}**.`)
+
+            console.log(currentUserstat.inventory.get(itemID))
+
+            
+            if (!(currentUserstat.inventory.get(itemID))) {
+                currentUserstat.inventory.set(itemID, 1)
+            } else {
+                currentUserstat.inventory.set(itemID, currentUserstat.inventory.get(itemID) + 1)
+            }
+            
+            console.log(currentUserstat.inventory.get(itemID))
+
             currentUserstat.points = currentUserstat.points - itemPrice
-            message.channel.send(`Weapons Dealer: **${weapon}** is yours.`)
+            message.channel.send(`Weapons Dealer: **${json[weapon].name}** is yours.`)
 			currentUserstat.save().catch(err => console.log(err))
 		})
     }

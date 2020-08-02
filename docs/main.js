@@ -2,12 +2,12 @@ const currentPage = window.location.pathname.split('/').join('').replace('docs',
 console.log(window.location.pathname)
 $(".navbar").load("./includes/navbar.html")
 $(".footer").load("./includes/footer.html")
-$(".profile-picture").hover(function() {
+$(".poutingbot-icon").hover(function() {
     $(this).addClass("animate__animated")
     $(this).addClass("animate__rubberBand")
     $(this).addClass("animate__fast")
 })
-$(".profile-picture").on("webkitAnimationEnd mozAnimationEnd oAnimationEnd animationEnd", function(event) {
+$(".poutingbot-icon").on("webkitAnimationEnd mozAnimationEnd oAnimationEnd animationEnd", function(event) {
     $(this).removeClass("animate__rubberBand")
 })
 $('a').each(function() {
@@ -26,21 +26,20 @@ $('a').each(function() {
 console.log(currentPage)
 if (currentPage == "shop") {
     $('.slick-carousel').slick({
-        
         dots: true,
         arrows: true,
         autoplay: false,
         speed: 1800,
         responsive: [
             {
-                breakpoint: 980, // tablet breakpoint
+                breakpoint: 980, //TABLET
                 settings: {
                     slidesToShow: 2,
                     slidesToScroll: 1
                 }
             },
             {
-                breakpoint: 480, // mobile breakpoint
+                breakpoint: 480, //MOBILE
                 settings: {
                     slidesToShow: 1,
                     slidesToScroll: 1
@@ -48,10 +47,8 @@ if (currentPage == "shop") {
             }
         ]
     })
-    console.log('test')
 }
-//nextArrow: '<i class="fa fa-arrow-right"></i> fa-5x',
-//prevArrow: '<i class="fa fa-arrow-left"></i>',
+
 //Toggle Navbar (MOBILE)
 function toggleNavBar() {
     $(".navbar-burger").toggleClass("is-active");

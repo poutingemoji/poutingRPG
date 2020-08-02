@@ -65,7 +65,7 @@ module.exports = class TranslateCommand extends Command {
 function titleCase(str) {
     str = str.replace(/_/g, " ")
     var splitStr = str.toLowerCase().split(' ')
-    for (var i = 0; i < splitStr.length; i++) {
+    for (let i = 0; i < splitStr.length; i++) {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)     
     }
     return splitStr.join(' ')

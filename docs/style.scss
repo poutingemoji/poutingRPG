@@ -8,16 +8,17 @@ $transparent: #ffffff00;
 $grey: #2c2f33;
 $light-grey: #36393f;
 $lighter-grey: #b1b5bb;
-$dark-grey: #23272a;
+$dark-grey: #202225;
+$darker-grey: #18191c;
 $blurple: #8097e8;
-$scheme-main: $grey;
-$scheme-main-bis: $dark-grey;
+$scheme-main: $light-grey;
+$scheme-main-bis: $grey;
 
 $text: white; 
 $text-light: white;
 $text-strong: white;
 
-$primary: $grey;
+$primary: $light-grey;
 $background: $transparent;
 
 $family-primary: "Roboto";
@@ -26,6 +27,7 @@ $subtitle-family: $family-secondary;
 
 $title-size: $size-4;
 $title-color: white;
+$title-line-height: 1.4;
 
 $subtitle-size: $size-6;
 
@@ -35,14 +37,16 @@ $link-hover-border: $transparent;
 $link-active: white;
 $link-focus: white;
 
-$navbar-background-color: $dark-grey;
-$navbar-dropdown-background-color: $light-grey;
+$navbar-background-color: $grey;
+$navbar-dropdown-background-color: $grey;
 $navbar-item-color: $lighter-grey;
 
 $button-background-color: $blurple;
 $button-border-color: $transparent;
 
 $menu-item-color: $lighter-grey;
+
+$card-content-padding: 1.3rem;
 
 @import "../docs/node_modules/bulma/sass/utilities/derived-variables";
 
