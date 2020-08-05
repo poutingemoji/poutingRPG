@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando')
-const userStat = require('../../models/userstat')
+const Userstat = require('../../models/userstat')
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class DailyCommand extends Command {
@@ -22,12 +23,25 @@ module.exports = class DailyCommand extends Command {
         })
 	}
 
+	hasPermission(message) {
+        Userstat.findOne({
+			userId: message.author.id,
+		}, (err, currentUserstat) => {
+            if (err) console.log(err)
+			if (!currentUserstat) {
+				message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
+				return false
+			}
+			return true
+        })
+	}
+	
 	run(message) {
-		let expAdd = randomIntFromInterval(250, 400)
-		let pointsAdd = randomIntFromInterval(400, 600)
+		let expAdd = hfuncs.randomIntFromInterval(250, 400)
+		let pointsAdd = hfuncs.randomIntFromInterval(400, 600)
 		
-		userStat.findOne({
-			userID: message.author.id,
+		Userstat.findOne({
+			userId: message.author.id,
 		}, (err, currentUserstat) => {
 			let currentExp = currentUserstat.currentExp
 			let currentLevel = currentUserstat.level
@@ -37,21 +51,13 @@ module.exports = class DailyCommand extends Command {
 			if(nextLevel <= currentExp) {
 				currentUserstat.level++
 				currentUserstat.currentExp = 0
-				message.say(`${emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${emoji(message, "729255637837414450")}`)
+				message.say(`${hfuncs.emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${hfuncs.emoji(message, "729255637837414450")}`)
 			}
 
 			currentUserstat.points = currentUserstat.points + pointsAdd
 
 			currentUserstat.save().catch(err => console.log(err))
 		})
-		message.say(`${emoji(message, "729206897818730567")} **${message.author.username}**, you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`)
+		message.say(`${hfuncs.emoji(message, "729206897818730567")} **${message.author.username}**, you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`)
 	}
-}
-
-function randomIntFromInterval(min, max){
-    return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
 }

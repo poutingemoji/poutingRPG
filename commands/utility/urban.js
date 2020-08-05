@@ -2,6 +2,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
 const fetch = require("node-fetch")
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class UrbanCommand extends Command {
@@ -36,7 +37,7 @@ module.exports = class UrbanCommand extends Command {
             urbanRequest = await urbanRequest.json()
             const urbanList = urbanRequest["list"]
             const urbanInfo = urbanList[Math.floor(Math.random()*urbanList.length)]
-            if (!urbanInfo) throw `${emoji(message, "729190277511905301")} I can't find the term, **${term}**, on Urban Dictionary.`
+            if (!urbanInfo) throw `${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, I can't find the term, **${term}**, on Urban Dictionary.`
             const messageEmbed = new MessageEmbed()
                 .setColor("#199ceb")
                 .setTitle(urbanInfo["word"])
@@ -50,8 +51,3 @@ module.exports = class UrbanCommand extends Command {
         }
     }
 }
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
-}
-

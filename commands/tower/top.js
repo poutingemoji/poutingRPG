@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const userStat = require('../../models/userstat')
+const Userstat = require('../../models/userstat')
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class TopCommand extends Command {
@@ -30,13 +31,26 @@ module.exports = class TopCommand extends Command {
         })
 	}
 
+	hasPermission(message) {
+        Userstat.findOne({
+			userId: message.author.id,
+		}, (err, currentUserstat) => {
+            if (err) console.log(err)
+			if (!currentUserstat) {
+				message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
+				return false
+			}
+			return true
+        })
+	}
+	
 	run(message, filter) {
 		filter = filter['filter']
 		const checkDict = {
 			['level'] : 'totalExp',
 			['points'] : 'points',
 		}
-		userStat.find()
+		Userstat.find()
 		.sort([
 			[checkDict[filter], 'descending']
 		  ]).exec((err, res) => {
@@ -47,7 +61,7 @@ module.exports = class TopCommand extends Command {
 			let topPlayers = ''
 			const messageEmbed = new MessageEmbed()
 				.setColor('#2f3136')
-				.setTitle(`Global Leaderboard [${titleCase(filter)}]`)
+				.setTitle(`Global Leaderboard [${hfuncs.titleCase(filter)}]`)
 			async function getUser() {
 				try {
 					for (let i = 0; i < leaderboardMaxUsers; i++) {
@@ -58,11 +72,11 @@ module.exports = class TopCommand extends Command {
 						} else {
 							leaderboardPosition = i + 1
 						}
-						const user = await message.client.users.fetch(res[i].userID)
+						const user = await message.client.users.fetch(res[i].userId)
 						if (filter === 'level') {
-							topPlayers += leaderboardPosition + ` **${user.username}** ─ ${titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].totalExp}\n`
+							topPlayers += leaderboardPosition + ` **${user.username}** ─ ${hfuncs.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].totalExp}\n`
 						} else {
-							topPlayers += leaderboardPosition + `  **${user.username}** ─ ${titleCase(filter)}: ${res[i].points}\n`
+							topPlayers += leaderboardPosition + `  **${user.username}** ─ ${hfuncs.titleCase(filter)}: ${res[i].points}\n`
 						}
 					}
 					messageEmbed.setDescription(topPlayers)
@@ -74,17 +88,4 @@ module.exports = class TopCommand extends Command {
 			getUser()
 		})
 	}
-}
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
-}
-
-function titleCase(str) {
-    str = str.replace(/_/g, " ")
-    var splitStr = str.toLowerCase().split(' ')
-    for (let i = 0; i < splitStr.length; i++) {
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
-    }
-    return splitStr.join(' ')
 }

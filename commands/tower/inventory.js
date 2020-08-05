@@ -1,10 +1,11 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const userStat = require('../../models/userstat')
+const Userstat = require('../../models/userstat')
 const fs = require('fs')
-const { SlowBuffer } = require('buffer')
-const json = JSON.parse(fs.readFileSync('items.json', 'utf8'))
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
+
+const ITEMSJSON = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
 
 module.exports = class InventoryCommand extends Command {
     constructor(client) {
@@ -30,13 +31,27 @@ module.exports = class InventoryCommand extends Command {
                 usages: 1,
                 duration: 5
             },
+
         })
     }
 
+	hasPermission(message) {
+        Userstat.findOne({
+			userId: message.author.id,
+		}, (err, currentUserstat) => {
+            if (err) console.log(err)
+			if (!currentUserstat) {
+				message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
+				return false
+			}
+			return true
+        })
+	}
+
     run(message, { page }) {
         const itemsPerPage = 4
-        userStat.findOne({
-			userID: message.author.id,
+        Userstat.findOne({
+			userId: message.author.id,
 		}, (err, currentUserstat) => {
             if (err) console.log(err)
             const items = Array.from(currentUserstat.inventory.keys())
@@ -45,20 +60,20 @@ module.exports = class InventoryCommand extends Command {
             if (!(page >= 1 && page <= pageLimit)) {
                 let pluralize = `there are only **${pageLimit}** pages.`
                 if (pageLimit == 1) pluralize = `there is only **1** page.`
-                return message.say(`${emoji(message, "729190277511905301")} Page **${page}** doesn't exist, ` + pluralize)
+                return message.say(`${hfuncs.emoji(message, "729190277511905301")} Page **${page}** doesn't exist, ` + pluralize)
             }
 
             const current = items.slice((page-1)*itemsPerPage, page*itemsPerPage)
             console.log(current)
 
             let description = ''
-            let i = 0
-            current.forEach(itemID => {
-                i++
-                description += `${json[itemID].name} ─ ${currentUserstat.inventory.get(itemID)}\n`
-                description += 'ID: `' + itemID + '`\n'
-                description += (i > 0 && i < itemsPerPage) ? '\n' : ''
-                console.log(i)
+            let counter = 0
+            current.forEach(itemId => {
+                console.log(itemId)
+                counter++
+                description += `**${ITEMSJSON[itemId].name}** ─ ${currentUserstat.inventory.get(itemId)}\n`
+                description += `ID \`${itemId}\` *${ITEMSJSON[itemId].type}*\n`
+                description += (counter > 0 && counter < itemsPerPage) ? '\n' : ''
             })
             const messageEmbed = new MessageEmbed()
                 .setColor('#2f3136')
@@ -70,8 +85,4 @@ module.exports = class InventoryCommand extends Command {
 			currentUserstat.save().catch(err => console.log(err))
 		})
     }
-}
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
 }

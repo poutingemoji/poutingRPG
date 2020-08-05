@@ -2,6 +2,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
 const fetch = require("node-fetch")
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 const checkDict = {
@@ -42,10 +43,10 @@ module.exports = class MangaCommand extends Command {
     async run(message, {manga}) {
         const start = Date.now()
         try {
-            var sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested manga... \:mag_right: `)
+            var sentMessage = await message.say(`${hfuncs.emoji(message,"730597505938620437")} Searching for requested manga... \:mag_right: `)
             var mangaRequest = await fetchMangaInfo(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
             console.log(mangaRequest["data"][1])
-            if (mangaRequest["data"][0] === undefined) return sentMessage.edit(`${emoji(message,"729190277511905301")} Request failed! Could not find info on ${manga}`)
+            if (mangaRequest["data"][0] === undefined) return sentMessage.edit(`${hfuncs.emoji(message,"729190277511905301")} Request failed! Could not find info on ${manga}`)
         } catch(error) {
             console.log(error)
         }
@@ -58,10 +59,10 @@ module.exports = class MangaCommand extends Command {
         console.log(possibleMatches)
         const filter = response => [1,2,3,4,5,6,7,8,9,10].includes(parseInt(response.content))
         let mangaInfo
-        sentMessage.edit(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (${(Date.now() - start)/1000} seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
+        sentMessage.edit(`${hfuncs.emoji(message,"729255616786464848")}${hfuncs.emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (${(Date.now() - start)/1000} seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
             message.channel.awaitMessages(filter, { max: 1, time: 12000 })
-                .then(collected => {
-                    const chosenMangaIndex = (parseInt(collected.first().content))-1
+                .then(result => {
+                    const chosenMangaIndex = (parseInt(result.first().content))-1
                     mangaInfo = mangaRequest["data"][chosenMangaIndex]["attributes"]
                     sentMessage.delete()
                     //console.log(mangaInfo)
@@ -88,9 +89,9 @@ module.exports = class MangaCommand extends Command {
                     }
                     message.say(messageEmbed)
                 })
-                .catch(collected => {
-                    console.log(collected)
-                    message.say(`${emoji(message,"729204396726026262")}**${message.author.username}**, what's taking so long bruh? This search is cancelled.`)
+                .catch(result => {
+                    console.log(result)
+                    message.say(`${hfuncs.emoji(message,"729204396726026262")}**${message.author.username}**, you didn't answer in time. This search is cancelled.`)
                 })
         })
     }
@@ -99,10 +100,6 @@ module.exports = class MangaCommand extends Command {
 async function fetchMangaInfo(URL) {
     const res = await fetch(URL)
     return await res.json()
-}
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
 }
 
 

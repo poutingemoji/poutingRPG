@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const translate = require('@vitalets/google-translate-api')
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class TranslateCommand extends Command {
@@ -37,7 +38,7 @@ module.exports = class TranslateCommand extends Command {
         if (language.toLowerCase() === "chinese" || language.toLowerCase() === "ch") {
             language = "Chinese (Simplified)"
         }
-        if (!translate.languages.getCode(language)) return message.say(`${emoji(message, "729190277511905301")} The language, **${titleCase(language)}**, doesn't exist in my database.`)
+        if (!translate.languages.getCode(language)) return message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, the language, **${hfuncs.titleCase(language)}**, doesn't exist in my database.`)
         const opts = {
             to: translate.languages.getCode(language.toLowerCase()), 
         }
@@ -52,7 +53,7 @@ module.exports = class TranslateCommand extends Command {
                     .setTimestamp()
                     .setFooter("Translated")
                 if (language.length !== 2) {
-                    messageEmbed.addField(titleCase(language), "```\n" + result.text + "\n```")
+                    messageEmbed.addField(hfuncs.titleCase(language), "```\n" + result.text + "\n```")
                 } else {
                     messageEmbed.addField(translate.languages[language], "```\n" + result.text + "\n```")
                 }
@@ -60,17 +61,4 @@ module.exports = class TranslateCommand extends Command {
             })
             .catch(console.error)
     }
-}
-
-function titleCase(str) {
-    str = str.replace(/_/g, " ")
-    var splitStr = str.toLowerCase().split(' ')
-    for (let i = 0; i < splitStr.length; i++) {
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)     
-    }
-    return splitStr.join(' ')
-}
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
 }

@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const Genius = new (require("genius-lyrics")).Client(process.env.GENIUSLYRICSKEY)
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class LyricsCommand extends Command {
@@ -29,7 +30,7 @@ module.exports = class LyricsCommand extends Command {
         })
     }
     async run(message, {song}) {
-        const sentMessage = await message.say(`${emoji(message,"730597505938620437")} Searching for requested song lyrics... \:mag_right: `)
+        const sentMessage = await message.say(`${hfuncs.emoji(message,"730597505938620437")} **${message.author.username}**, searching for requested song lyrics... \:mag_right: `)
         try {
             const songs = await Genius.tracks.search(song, { limit: 10 })
             const lyricsRequest = await songs[0].lyrics()
@@ -40,13 +41,9 @@ module.exports = class LyricsCommand extends Command {
             message.say(messageEmbed)
         } catch(error) {
             console.log(error)
-            sentMessage.edit(`${emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${song}**`)
+            sentMessage.edit(`${hfuncs.emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${song}**`)
         }
     }
-}
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
 }
 
 function truncateText(str) {

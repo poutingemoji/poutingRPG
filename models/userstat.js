@@ -1,13 +1,14 @@
 const mongoose = require('mongoose')
 
-const userStatSchema = mongoose.Schema({
-    userID: String,
-    totalExp: Number,
-    currentExp: Number,
+const UserstatSchema = mongoose.Schema({
+    userId: String,
+    exp: Number,
     level: Number,
     points: Number,
-    position: String,
     irregular: Boolean,
+    surname: String,
+    race: String,
+    position: String,
     rank: Number,
     badges: Array,
     inventory: {
@@ -16,5 +17,5 @@ const userStatSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('Userstat', userStatSchema)
+module.exports = mongoose.model('Userstat', UserstatSchema)
 

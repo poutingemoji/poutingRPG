@@ -36,12 +36,30 @@ module.exports = class PurgeCommand extends Command {
                     prompt: 'What kind of message would you like to purge?',
                     type: 'string',
                     default: false,
+                    validate: typeOfMessages => {
+                        if (isNaN(typeOfMessages)) {
+                            return true
+                        } else {
+                            console.log(typeOfMessages)
+                            if (typeOfMessages > 0 && typeOfMessages < 101) return true
+                            return "Number of messages deleted must be greater than 0 and less than 101."
+                        }
+                    }
                 },
                 {
                     key: 'messageFilter',
                     prompt: 'How many messages would you like to purge?',
                     type: 'string',
                     default: 25,
+                    validate: messageFilter => {
+                        if (isNaN(messageFilter)) {
+                            return true
+                        } else {
+                            console.log(messageFilter)
+                            if (messageFilter > 0 && messageFilter < 101) return true
+                            return "Number of messages deleted must be greater than 0 and less than 101."
+                        }
+                    }
                 },
             ],
             throttling: {
@@ -63,7 +81,7 @@ module.exports = class PurgeCommand extends Command {
                 console.error(error)
             })
             purgeMessage(message, "Deletion of messages successful. Total messages deleted: " + "`" + messageFilter + "`")
-        } else if (["bots", "commands", "embeds", "emojis", "images", "invites", "links", "mentions", "text", "startswith", "endswith", "contains", "match"].includes(typeOfMessages) || message.mentions.users.first()) {
+        } else if (["bots", "commands", "embeds", "emojis", "images", "invites", "links", "pings", "text", "startswith", "endswith", "contains", "match"].includes(typeOfMessages) || message.mentions.users.first()) {
             let filteredMessages
             message.channel.messages.fetch().then(messages => {
                 if (isNaN(messageFilter)) {
@@ -91,7 +109,6 @@ module.exports = class PurgeCommand extends Command {
                     } else
                         purgeMessage(message, `No messages ${promptKeyword} **${messageFilter}** could be found!`)
                 } else {
-                    if (typeOfMessages <= 0 || typeOfMessages > 100) return purgeMessage(message, "Number of messages deleted must be greater than 0 and less than 101.")
                     const user = message.mentions.users.first()
                     if (user) {                         
                         filteredMessages = messages.filter(msg => filterLimit(msg, msg.author.id === user.id, messageFilter))
@@ -109,7 +126,7 @@ module.exports = class PurgeCommand extends Command {
                         filteredMessages = messages.filter(msg => filterLimit(msg, msg.content.includes('discord.gg/'||'discordapp.com/invite/'), messageFilter))
                     } else if (typeOfMessages === "links") {
                         filteredMessages = messages.filter(msg => filterLimit(msg, msg.content.includes('https://'||'www.'||'.com'), messageFilter))
-                    } else if (typeOfMessages === "mentions") {
+                    } else if (typeOfMessages === "pings") {
                         filteredMessages = messages.filter(msg => filterLimit(msg, msg.mentions.users.first() || msg.mentions.roles.first(), messageFilter))
                     } else if (typeOfMessages === "text") {
                         filteredMessages = messages.filter(msg => filterLimit(msg, !(msg.attachments.size > 0) && !msg.embeds.length), messageFilter)
@@ -136,7 +153,6 @@ module.exports = class PurgeCommand extends Command {
                 console.log(error)
             })
         } else if (!isNaN(typeOfMessages)) {
-            if (typeOfMessages <= 0 || typeOfMessages > 100) return purgeMessage(message, "Number of messages deleted must be greater than 0 and less than 101.")
             message.channel.bulkDelete(typeOfMessages, true).catch(error => {
                 console.error(error)
             })

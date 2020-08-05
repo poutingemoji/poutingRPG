@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class BanCommand extends Command {
@@ -38,17 +39,13 @@ module.exports = class BanCommand extends Command {
             .ban({ days: numOfDays })
             .then(() => {
                 if (numOfDays) {
-                    message.say(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} Successfully banned **${user.tag}** for ${numOfDays} day(s).`)
+                    message.say(`${hfuncs.emoji(message,"729255616786464848")}${hfuncs.emoji(message,"729255637837414450")} Successfully banned **${user.tag}** for ${numOfDays} day(s).`)
                 } else {
-                    message.say(`${emoji(message,"729255616786464848")}${emoji(message,"729255637837414450")} Successfully banned **${user.tag}**.`)
+                    message.say(`${hfuncs.emoji(message,"729255616786464848")}${hfuncs.emoji(message,"729255637837414450")} Successfully banned **${user.tag}**.`)
                 }
             })
             .catch(() => {
-                message.say(`${emoji(message, "729190277511905301")} Unable to ban **${user.tag}**.`)
+                message.say(`${hfuncs.emoji(message, "729190277511905301")} Unable to ban **${user.tag}**.`)
             }) 
     }
-}
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
 }

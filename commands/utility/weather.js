@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const fetch = require("node-fetch")
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class WeatherCommand extends Command {
@@ -39,7 +40,7 @@ module.exports = class WeatherCommand extends Command {
             let weatherInfo = await fetch(weatherURL)
             weatherInfo = await weatherInfo.json()
             if (weatherInfo.name === undefined) {
-                throw `${emoji(message, "729190277511905301")} I can't find info on the weather in **${place}**.`
+                throw `${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, I can't find info on the weather in **${place}**.`
             }
             const currentWeather = weatherInfo["weather"][0]
             const messageEmbed = new MessageEmbed()
@@ -48,7 +49,7 @@ module.exports = class WeatherCommand extends Command {
                 .setThumbnail(`http://openweathermap.org/img/wn/${currentWeather["icon"]}@2x.png`)
                 .addFields(
                     {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },
-                    {name: "Current Weather", value: titleCase(currentWeather["description"]) },
+                    {name: "Current Weather", value: hfuncs.titleCase(currentWeather["description"]) },
                     {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
                     {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
                 )
@@ -75,19 +76,7 @@ function getCardinalDirection(angle) {
     return arrows['north']
 }
 
-function titleCase(str) {
-    var splitStr = str.toLowerCase().split(' ')
-    for (let i = 0; i < splitStr.length; i++) {
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)    
-    }
-    return splitStr.join(' ')
-}
-
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
-}
-
-var isoCountries = {
+const isoCountries = {
     'AF' : 'Afghanistan',
     'AX' : 'Aland Islands',
     'AL' : 'Albania',

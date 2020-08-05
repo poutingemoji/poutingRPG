@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class UserinfoCommand extends Command {
@@ -33,7 +34,7 @@ module.exports = class UserinfoCommand extends Command {
         const mentionedUser = user || message.author
         const mentionedMember = message.guild.member(user) || message.member
         const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ")
-        const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => titleCase(permission)).join(', ')
+        const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => hfuncs.titleCase(permission)).join(', ')
 		const messageEmbed = new MessageEmbed()
             .setColor(process.env.COLOR)
             .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())
@@ -53,13 +54,4 @@ module.exports = class UserinfoCommand extends Command {
         }
 		message.say(messageEmbed)
     }
-}
-
-function titleCase(str) {
-    str = str.replace(/_/g, " ")
-    var splitStr = str.toLowerCase().split(' ')
-    for (let i = 0; i < splitStr.length; i++) {
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1) 
-    }
-    return splitStr.join(' ')
 }

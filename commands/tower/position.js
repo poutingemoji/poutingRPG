@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const userStat = require('../../models/userstat')
+const Userstat = require('../../models/userstat')
 require('dotenv').config()
 
 module.exports = class PositionCommand extends Command {
@@ -23,6 +23,19 @@ module.exports = class PositionCommand extends Command {
         })
 	}
 
+	hasPermission(message) {
+        Userstat.findOne({
+			userId: message.author.id,
+		}, (err, currentUserstat) => {
+            if (err) console.log(err)
+			if (!currentUserstat) {
+				message.say(`${emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
+				return false
+			}
+			return true
+        })
+	}
+	
 	run(message) {
         const positionIndex = Math.floor(Math.random() * Object.keys(positions).length)
 		const position = positions[positionIndex]
@@ -45,8 +58,8 @@ module.exports = class PositionCommand extends Command {
 			.setColor(process.env['POSITION_COLOR_' + position.Name.toUpperCase().replace(/ /g, "_")])
 			.setDescription(description)
 			.setImage(position.Image)
-		userStat.findOne({
-			userID: message.author.id,
+		Userstat.findOne({
+			userId: message.author.id,
 		}, (err, currentUserstat) => {
 			if (err) console.log(err)
 			currentUserstat.position = position.Name

@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
 module.exports = class OwnerCommand extends Command {
@@ -21,6 +22,6 @@ module.exports = class OwnerCommand extends Command {
         })
     }
     run(message) {
-        message.say(`${message.client.emojis.cache.get("729209778898862171").toString()} **${message.author.username}**, the Boruto's dad to my Boruto is **poutingemoji#5785**. Nin!`)
+        message.say(`${hfuncs.emoji(message, "729209778898862171")} **${message.author.username}**, the Boruto's dad to my Boruto is **poutingemoji#5785**. Nin!`)
     }
 }

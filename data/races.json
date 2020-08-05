@@ -1,0 +1,48 @@
+{
+    "humanoid": {
+        "human": {
+            "name": "Human"
+        },
+        "redwitch": {
+            "name": "Red Witch"
+        },
+        "silverdwarf": {
+            "name": "Silver Dwarf"
+        },
+        "canineperson": {
+            "name": "Canine Person"
+        },
+        "datahuman": {
+            "name": "Data Human"
+        },
+        "khukum": {
+            "name": "Khukum"
+        },
+        "rabbitear": {
+            "name": "Rabbit Ear"
+        }
+    },
+    "animalistic": {
+        "nativeone": {
+            "name": "Native One"
+        },
+        "dooni": {
+            "name": "Dooni"
+        },
+        "wraithraiser": {
+            "name": "Wraithraiser"
+        }
+    },
+    "unusual": {
+        "manyeyed": {
+            "name": "Many Eyed"
+        },
+        "guardian": {
+            "name": "Guardian"
+        },
+        "fluffydwarf": {
+            "name": "Fluffy Dwarf"
+        }
+    }
+
+}

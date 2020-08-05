@@ -1,7 +1,7 @@
 const { Command } = require("discord.js-commando")
 const { MessageAttachment } = require("discord.js")
 const { createCanvas, loadImage } = require("canvas")
-const userStat = require("../../models/userstat")
+const Userstat = require("../../models/userstat")
 require('dotenv').config()
 
 module.exports = class ProfileCommand extends Command {
@@ -31,11 +31,25 @@ module.exports = class ProfileCommand extends Command {
 		})
 	}
 
+	hasPermission(message) {
+        Userstat.findOne({
+			userId: message.author.id,
+		}, (err, currentUserstat) => {
+			if (err) console.log(err)
+			console.log(currentUserstat)
+			if (!currentUserstat) {
+				message.say(`${emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
+				return false
+			}
+			return true
+        })
+	}
+	
 	async run(message, {user}) {
 		user = user || message.author
 		if (user.bot) return
-		userStat.findOne({
-			userID: user.id,
+		Userstat.findOne({
+			userId: user.id,
 		}, (err, currentUserstat) => {
 			if (err) console.log(err)
 			if (!currentUserstat) {
@@ -52,26 +66,18 @@ module.exports = class ProfileCommand extends Command {
 					message
 				)
 			} else {
-				const ranks = ["A", "B", "C", "D", "E", "F"]
-				const rankIndex = currentUserstat.rank
-				const rankLetter = ranks[Math.ceil(rankIndex/5) - 1]
-				let rankNumber = rankIndex % 5
-				if (rankNumber == 0) {
-					rankNumber = 5
-				}
 				createImage(
 					currentUserstat.currentExp, 
 					currentUserstat.level, 
 					currentUserstat.points, 
 					currentUserstat.position, 
 					currentUserstat.irregular, 
-					`${rankLetter}-RANK ${rankNumber}`, // currentRank
+					`7D-rank`, // currentRank
 					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(currentUserstat.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
 					currentUserstat.badges,
 					user,
 					message
 				)
-				console.log(process.env.BASE_EXPMULTIPLIER, process.env.EXPONENTIAL_EXPMULTIPLIER)
 			}
 		})
 	}

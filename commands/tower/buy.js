@@ -1,9 +1,10 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const userStat = require('../../models/userstat')
+const Userstat = require('../../models/userstat')
 const fs = require('fs')
-const json = JSON.parse(fs.readFileSync('items.json', 'utf8'))
 require('dotenv').config()
+
+const ITEMSJSON = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
 
 module.exports = class BuyCommand extends Command {
     constructor(client) {
@@ -31,16 +32,29 @@ module.exports = class BuyCommand extends Command {
         })
     }
 
+	hasPermission(message) {
+        Userstat.findOne({
+			userId: message.author.id,
+		}, (err, currentUserstat) => {
+            if (err) console.log(err)
+			if (!currentUserstat) {
+				message.say(`${emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
+				return false
+			}
+			return true
+        })
+	}
+
     run(message, { weapon }) {
         let itemID = ''
         let itemPrice = 0
         let itemDesc = ''
 
-        for (let i in json) { 
+        for (let i in ITEMSJSON) { 
             if (weapon === i) { 
                 itemID = i
-                itemPrice = json[i].price
-                itemDesc = json[i].desc
+                itemPrice = ITEMSJSON[i].price
+                itemDesc = ITEMSJSON[i].desc
             }
         }
 
@@ -52,11 +66,12 @@ module.exports = class BuyCommand extends Command {
 
         console.log(itemID)
 
-        userStat.findOne({
-			userID: message.author.id,
+        Userstat.findOne({
+			userId: message.author.id,
 		}, (err, currentUserstat) => {
             if (err) console.log(err)
-            if (currentUserstat.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${json[weapon].name}**.`)
+            console.log(currentUserstat.points)
+            if (currentUserstat.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${ITEMSJSON[weapon].name}**.`)
 
             console.log(currentUserstat.inventory.get(itemID))
 
@@ -70,7 +85,7 @@ module.exports = class BuyCommand extends Command {
             console.log(currentUserstat.inventory.get(itemID))
 
             currentUserstat.points = currentUserstat.points - itemPrice
-            message.channel.send(`Weapons Dealer: **${json[weapon].name}** is yours.`)
+            message.channel.send(`Weapons Dealer: **${ITEMSJSON[weapon].name}** is yours.`)
 			currentUserstat.save().catch(err => console.log(err))
 		})
     }

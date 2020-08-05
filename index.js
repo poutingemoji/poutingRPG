@@ -1,6 +1,7 @@
 const fs = require('fs')
 const { CommandoClient } = require("discord.js-commando")
 const path = require("path")
+const hfuncs = require('./functions/helper-functions')
 require('dotenv').config()
 
 //Creating Commando Client
@@ -39,68 +40,24 @@ client.login(process.env.TOKEN)
 
 //Connecting to MongoDB Database
 const mongoose = require("mongoose")
-const Userstat = require("./models/userstat")
 mongoose.connect(process.env.MONGODB_URI, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
 })
 
-const talkedRecently = new Set()
 client.on('message', message => {
 	if (message.author.bot) return
-	//EXP For Talking (1-min Cooldown)
-	if (talkedRecently.has(message.author.id)) {
-		return
-	}
-	talkedRecently.add(message.author.id)
-	setTimeout(() => {
-	  talkedRecently.delete(message.author.id)
-	}, process.env.EXPCOOLDOWN)
 	//Random Chance to Get a Tower of God Test
 	if (Math.random() >= 0.99) {
-		const giveaway = giveaways[randomIntFromInterval(0,5)]
+		const giveaway = giveaways[hfuncs.randomIntFromInterval(0,5)]
 		messageEvent(message, giveaway[0], giveaway[1], giveaway[2], giveaway[3], giveaway[4], giveaway[5], giveaway[6])
 	}
-	//Adding Random EXP Amt and Checking Level Up
-	let expAdd = randomIntFromInterval(15, 25)
-	Userstat.findOne({
-		userID: message.author.id,
-	}, (err, currentUserstat) => {
-		if (err) console.log(err)
-		if (!currentUserstat) {
-            const userstat = new Userstat({
-                userID: message.author.id,
-                totalExp: expAdd,
-                currentExp: expAdd,
-                level: 1,
-                points: 0,
-                position: 'No Position',
-                irregular: false,
-				rank: 30,
-				inventory: {},
-            })
-			userstat.save().catch(err => console.log(err))
-		} else {
-			let currentExp = currentUserstat.currentExp
-			let currentLevel = currentUserstat.level
-			let nextLevel = Math.floor(process.env.BASE_EXPMULTIPLIER *(Math.pow(currentLevel, process.env.EXPONENTIAL_EXPMULTIPLIER)))
-			currentUserstat.totalExp = currentUserstat.totalExp + expAdd
-			currentUserstat.currentExp = currentUserstat.currentExp + expAdd
-
-			if(nextLevel <= currentExp) {
-				currentUserstat.level++
-				currentUserstat.currentExp = 0
-				message.say(`${emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${emoji(message, "729255637837414450")}`)
-			}
-			currentUserstat.save().catch(err => console.log(err))
-		}
-	})
 })
 
 //Adventure Tests 
 const { GiveawaysManager } = require("discord-giveaways")
 const manager = new GiveawaysManager(client, {
-	storage: "./giveaways.json",
+	storage: "./data/giveaways.json",
 	updateCountdownEvery: 5000,
 	default: {
 		botsCanWin: false,
@@ -145,14 +102,7 @@ function messageEvent(message, time, prize, winnerCount, embedColor, giveawayNam
     })
 }
 
-function randomIntFromInterval(min, max){
-    return Math.floor(Math.random() * (max - min + 1) + min)
-}
-function emoji(message, emojiID) {
-    return message.client.emojis.cache.get(emojiID).toString()
-}
-
-fs.writeFile('./giveaways.json', '[]', function() {console.log('giveaways.json Cleared.')})
+fs.writeFile('./data/giveaways.json', '[]', function() {console.log('giveaways.json Cleared.')})
 
 //Update Commands Table Info (WEBSITE)
 const groups = client.registry.groups
@@ -174,7 +124,7 @@ Object.keys(jsonFiles).forEach(function(key) {
 				`${cmd.description}${cmd.nsfw ? ' (NSFW)' : ''}`,
 				cmd.examples.join("\n"), 
 				cmd.aliases.join("\n"), 
-				secondsToDhms(cmd.throttling.duration)
+				hfuncs.secondsToDhms(cmd.throttling.duration)
 				])
 			)
 		}
@@ -183,17 +133,3 @@ Object.keys(jsonFiles).forEach(function(key) {
 	commands = []
 })
 fs.writeFile(`./docs/commandinfo.json`, JSON.stringify(commandsInfo), function() {console.log('commandinfo.json Refreshed.')})
-
-function secondsToDhms(seconds) {
-	seconds = Number(seconds)
-	var d = Math.floor(seconds / (3600*24))
-	var h = Math.floor(seconds % (3600*24) / 3600)
-	var m = Math.floor(seconds % 3600 / 60)
-	var s = Math.floor(seconds % 60)
-	
-	var dDisplay = d > 0 ? d + (d == 1 ? " day " : " days, ") : ""
-	var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : ""
-	var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : ""
-	var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : ""
-	return dDisplay + hDisplay + mDisplay + sDisplay
-}
