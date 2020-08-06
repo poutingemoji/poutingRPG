@@ -22,19 +22,6 @@ module.exports = class PositionCommand extends Command {
             },
         })
 	}
-
-	hasPermission(message) {
-        Userstat.findOne({
-			userId: message.author.id,
-		}, (err, currentUserstat) => {
-            if (err) console.log(err)
-			if (!currentUserstat) {
-				message.say(`${emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
-				return false
-			}
-			return true
-        })
-	}
 	
 	run(message) {
         const positionIndex = Math.floor(Math.random() * Object.keys(positions).length)
@@ -60,16 +47,16 @@ module.exports = class PositionCommand extends Command {
 			.setImage(position.Image)
 		Userstat.findOne({
 			userId: message.author.id,
-		}, (err, currentUserstat) => {
+		}, (err, USERSTAT) => {
 			if (err) console.log(err)
-			currentUserstat.position = position.Name
-			currentUserstat.irregular = isIrregular
-			currentUserstat.rank = rankIndex
-			if (currentUserstat.badges.includes(badge) === false) {
-				currentUserstat.badges.push(badge)
+			USERSTAT.position = position.Name
+			USERSTAT.irregular = isIrregular
+			USERSTAT.rank = rankIndex
+			if (USERSTAT.badges.includes(badge) === false) {
+				USERSTAT.badges.push(badge)
 				console.log(badge)
 			}
-			currentUserstat.save().catch(err => console.log(err))
+			USERSTAT.save().catch(err => console.log(err))
 		})
 		message.say(messageEmbed)
 	}

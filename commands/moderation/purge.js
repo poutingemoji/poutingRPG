@@ -77,8 +77,8 @@ module.exports = class PurgeCommand extends Command {
             messageFilter = Math.floor(messageFilter)
         }
         if (!typeOfMessages) {
-            message.channel.bulkDelete(messageFilter, true).catch(error => {
-                console.error(error)
+            message.channel.bulkDelete(messageFilter, true).catch(err => {
+                console.error(err)
             })
             purgeMessage(message, "Deletion of messages successful. Total messages deleted: " + "`" + messageFilter + "`")
         } else if (["bots", "commands", "embeds", "emojis", "images", "invites", "links", "pings", "text", "startswith", "endswith", "contains", "match"].includes(typeOfMessages) || message.mentions.users.first()) {
@@ -101,8 +101,8 @@ module.exports = class PurgeCommand extends Command {
                     }
                     messagesDeleted = filteredMessages.array()
                     console.log(typeOfMessages)
-                    message.channel.bulkDelete(messagesDeleted, true).catch(error => {
-                        console.error(error)
+                    message.channel.bulkDelete(messagesDeleted, true).catch(err => {
+                        console.error(err)
                     })
                     if (messagesDeleted.length > 0) {
                         purgeMessage(message, `Deletion of messages ${promptKeyword} **${messageFilter}** was successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
@@ -133,8 +133,8 @@ module.exports = class PurgeCommand extends Command {
                     }
                     messagesDeleted = filteredMessages.array()
 
-                    message.channel.bulkDelete(messagesDeleted, true).catch(error => {
-                        console.error(error)
+                    message.channel.bulkDelete(messagesDeleted, true).catch(err => {
+                        console.error(err)
                     })
 
                     if (!user) {
@@ -149,12 +149,12 @@ module.exports = class PurgeCommand extends Command {
                             purgeMessage(message, `None of **${user.username}** 's messages were found!`)
                     }
                 }
-            }).catch(error => {
-                console.log(error)
+            }).catch(err => {
+                console.error(err)
             })
         } else if (!isNaN(typeOfMessages)) {
-            message.channel.bulkDelete(typeOfMessages, true).catch(error => {
-                console.error(error)
+            message.channel.bulkDelete(typeOfMessages, true).catch(err => {
+                console.error(err)
             })
             purgeMessage(message, "Deletion of messages successful. Total messages deleted: " + "`" + typeOfMessages + "`")
         }
@@ -183,8 +183,8 @@ async function purgeMessage(message, text) {
             setTimeout(function(){
                 sentMessage.delete()
             }, 1500)
-    } catch(error) {
-        console.log(error)
+    } catch(err) {
+        console.error(err)
         return console.log("Didn't edit the message.")
     }
 }

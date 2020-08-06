@@ -56,7 +56,7 @@ module.exports = class WeatherCommand extends Command {
                 .setTimestamp()
                 .setFooter('Weather')
             message.say(messageEmbed)
-        } catch(error) {
+        } catch(err) {
             message.say(error)
         }
     }

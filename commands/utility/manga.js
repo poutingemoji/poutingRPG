@@ -47,8 +47,8 @@ module.exports = class MangaCommand extends Command {
             var mangaRequest = await fetchMangaInfo(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
             console.log(mangaRequest["data"][1])
             if (mangaRequest["data"][0] === undefined) return sentMessage.edit(`${hfuncs.emoji(message,"729190277511905301")} Request failed! Could not find info on ${manga}`)
-        } catch(error) {
-            console.log(error)
+        } catch(err) {
+            console.error(err)
         }
         console.log(sentMessage)
         let i = 0

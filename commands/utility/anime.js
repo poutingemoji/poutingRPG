@@ -46,8 +46,8 @@ module.exports = class AnimeCommand extends Command {
             var sentMessage = await message.say(`${hfuncs.emoji(message,"730597505938620437")} Searching for requested anime... \:mag_right: `)
             var animeRequest = await fetchAnimeInfo(`https://kitsu.io/api/edge/anime?filter[text]=${anime}`)
             if (animeRequest["data"][0] === undefined) return sentMessage.edit(`${hfuncs.emoji(message,"729190277511905301")} Request failed! Could not find info on ${anime}`)
-        } catch(error) {
-            console.log(error)
+        } catch(err) {
+            console.error(err)
         }
         console.log(sentMessage)
         let i = 0

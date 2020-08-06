@@ -3,11 +3,13 @@ const { MessageEmbed } = require('discord.js')
 const Userstat = require('../../models/userstat')
 const fs = require('fs')
 const hfuncs = require('../../functions/helper-functions')
+const lfuncs = require('../../functions/leveling-functions')
+const User = require('../../objects/user')
 require('dotenv').config()
 
-const FAMILIESJSON = JSON.parse(fs.readFileSync('./data/families.json', 'utf8'))
-const RACESJSON = JSON.parse(fs.readFileSync('./data/races.json', 'utf8'))
-const POSITIONSJSON = JSON.parse(fs.readFileSync('./data/positions.json', 'utf8'))
+const sdata = JSON.parse(fs.readFileSync('./data/surnames.json', 'utf8'))
+const rdata = JSON.parse(fs.readFileSync('./data/races.json', 'utf8'))
+const pdata = JSON.parse(fs.readFileSync('./data/positions.json', 'utf8'))
 
 module.exports = class StartCommand extends Command {
 	constructor(client) {
@@ -16,7 +18,7 @@ module.exports = class StartCommand extends Command {
 			aliases: [],
 			group: 'tower',
 			memberName: 'start',
-			description: 'Begin your adventure up the tower. What will you discover?',
+			description: 'Begin your adventure up the tower.',
 			examples: [],
 			clientPermissions: [],
 			userPermissions: [],
@@ -28,114 +30,123 @@ module.exports = class StartCommand extends Command {
             },
         })
 	}
+
 	async run(message) {
-		Userstat.findOne({
-			userId: message.author.id,
-		}, (err, currentUserstat) => {
-			if (err) console.log(err)
-			if (currentUserstat) return
-			const families = Object.keys(FAMILIESJSON)
-			
-			function surnameDescription() {
-				let description = 'Choose your surname:\n'
-				for (let i = 0; i < families.length; i++) {
-					description += `${i+1} - **${FAMILIESJSON[families[i]].name}**\n`
+		function findUserstat() {
+			return Userstat.findOne({
+				userId: message.author.id,
+			}).exec()
+		}
+		const USERSTAT = await findUserstat()
+		if (USERSTAT) return
+
+		const USER = new User(message.author.id)
+
+		let { description, chooseOptions } = surnameDescription()
+		const surnameFilter = response => {
+			return Object.keys(chooseOptions).includes(response.content) && response.author.id === message.author.id
+		}
+		message.say(description)
+
+		message.channel.awaitMessages(surnameFilter, { max: 1, time: 60000 })
+			.then(result => {
+				let surnameOptions = surnameDescription().chooseOptions
+				USER.surname = surnameOptions[parseInt(result.first().content)-1]
+
+				let { description, chooseOptions } = raceDescription()
+				const raceFilter = response => {
+					return Object.keys(chooseOptions).includes(response.content) && response.author.id === message.author.id
 				}
-				return description
-			}
+				message.say(description)
+				return message.channel.awaitMessages(raceFilter, { max: 1, time: 60000 })
+			})
+			.then(async result => {
+				let raceOptions  = raceDescription().chooseOptions
+				USER.race = raceOptions[result.first().content]
 
-			function raceDescription() {
-				let options = {}
-				let i = 0
-				let description = 'Choose your race:\n'
-				for (let c in RACESJSON) {
-					description += `**${hfuncs.titleCase(c)}**\n`
-					for (let r in RACESJSON[c]) {
-						i++
-						options[i] = r
-						description += `${i} - ${RACESJSON[c][r].name}\n`
-					}
+				let { description, chooseOptions } = positionDescription()
+				const positionFilter = (reaction, user) => {
+					return Object.keys(chooseOptions).includes(reaction.emoji.name) && user.id === message.author.id
 				}
-				return {description, options}
-			}
+				const positions = Object.keys(chooseOptions)
+				const positionMessage = await message.say(description)
+				for (let i = 0; i < positions.length; i++) {
+					await positionMessage.react(positions[i])
+				}
+				return positionMessage.awaitReactions(positionFilter, { max: 1, time: 60000 })
+			})
+			.then(async result => {
+				let positionOptions  = positionDescription().chooseOptions
+				USER.position = positionOptions[result.first().emoji.name]
+				
+				const UserstatSchema = new Userstat()
+				const newUSERSTAT = Object.assign(UserstatSchema, USER)
+				newUSERSTAT.save().catch(err => console.log(err))
 
-			function positionDescription(positions, emojiToPosition) {
-				let description = 'Choose your position:\n'
-				let i = 0
-				Object.keys(POSITIONSJSON).map(position => {
-					const emoji = POSITIONSJSON[position].emoji
-					description += `${emoji} - **${POSITIONSJSON[emojiToPosition[emoji]].name}**\n`
-					i++
-				})
-				return description
-			}
-
-			let emojiToPosition
-
-			let newUser = {
-				surname: "",
-				race: "",
-				position: "",
-			}
-
-			const surnameFilter = response => {
-				return parseInt(response.content) > 0 && parseInt(response.content) <= families.length && response.author.id === message.author.id
-			}
-			message.say(surnameDescription())
-			message.channel.awaitMessages(surnameFilter, { max: 1, time: 60000 })
-				.then(result => {
-					console.log(families[parseInt(result.first().content)-1])
-					newUser.surname = families[parseInt(result.first().content)-1]
-					let { description, options } = raceDescription()
-					const raceFilter = response => {
-						return Object.keys(options).includes(response.content) && response.author.id === message.author.id
-					}
-					message.say(description)
-					return message.channel.awaitMessages(raceFilter, { max: 1, time: 60000 })
-				})
-				.then(async result => {
-					let { options } = raceDescription()
-					console.log(options[result.first().content])
-					newUser.race = options[result.first().content]
-					const positions = []
-					emojiToPosition = {}
-					Object.keys(POSITIONSJSON).map(position => {
-						const emoji = POSITIONSJSON[position].emoji
-						positions.push(emoji)
-						emojiToPosition[POSITIONSJSON[position].emoji] = position
-					})
-					
-					const positionFilter = (reaction, user) => {
-						return positions.includes(reaction.emoji.name) && user.id === message.author.id
-					}
-					const sentMessage = await message.say(positionDescription(positions, emojiToPosition))
-					for (let i = 0; i < positions.length; i++) {
-						await sentMessage.react(positions[i])
-					}
-					return sentMessage.awaitReactions(positionFilter, { max: 1, time: 60000 })
-				})
-				.then(result => {
-					newUser.position = emojiToPosition[result.first().emoji.name]
-					const userstat = new Userstat({
-						userId: message.author.id,
-						exp: 0,
-						level: 1,
-						points: 10000,
-						surname: newUser.surname,
-						race: newUser.race,
-						position: newUser.position,
-						irregular: false,
-						rank: 30,
-						inventory: {},
-					})
-					userstat.save().catch(err => console.log(err))
-				})
-				.catch(result => {
-					console.log(result)
-					message.say(`${hfuncs.emoji(message,"729204396726026262")} **${message.author.username}**, you didn't answer in time. Your registration into the Tower is cancelled.`)
-				})
-
-		})
-
+				message.say(`${hfuncs.emoji(message,"740795617726693435")} [**${showPosition(USER.position).toUpperCase()}**] ${message.author.username} **${showSurname(USER.surname)}** of the **${showRace(USER.race)}** race, I sincerely welcome you to the Tower.`)
+			})
+			.catch(result => {
+				console.log(result)
+				message.say(`${hfuncs.emoji(message,"729204396726026262")} **${message.author.username}**, you didn't answer in time. Your registration into the Tower is cancelled.`)
+			})
 	}
+}
+
+//Show Userstats
+function showSurname(surname) {
+	return sdata[surname].name
+}
+
+function showRace(race) {
+	for (let c in rdata) {
+        if (rdata[c][race]) return rdata[c][race].name
+	}
+}
+
+function showPosition(position) {
+	return pdata[position].name
+}
+
+//Descriptions
+function surnameDescription() {
+	const surnames = Object.keys(sdata)
+	let chooseOptions = {}
+	let description = 'Choose your surname:\n'
+	for (let i = 0; i < surnames.length; i++) {
+		const index = i+1
+		const surname = surnames[i]
+		description += `${index} - **${sdata[surname].name}**\n`
+		chooseOptions[index] = surname
+	}
+	return {description, chooseOptions}
+}
+
+function raceDescription() {
+	let chooseOptions = {}
+	let description = 'Choose your race:\n'
+	let i = 0
+	for (let c in rdata) {
+		description += `**${hfuncs.titleCase(c)}**\n`
+		console.log()
+		for (let r in rdata[c]) {
+			i++
+			description += `${i} - ${rdata[c][r].name}\n`
+			chooseOptions[i] = r
+		}
+	}
+	return {description, chooseOptions}
+}
+
+function positionDescription() {
+	const positions = Object.keys(pdata)
+	let chooseOptions = {}
+	let description = 'Choose your position:\n'
+	let i = 0
+	for (let i = 0; i < positions.length; i++) {
+		const index = pdata[positions[i]].emoji
+		const position = positions[i]
+		description += `${index} - **${pdata[position].name}**\n`
+		chooseOptions[index] = position
+	}
+	return {description, chooseOptions}
 }

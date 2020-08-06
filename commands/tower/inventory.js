@@ -5,7 +5,7 @@ const fs = require('fs')
 const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 
-const ITEMSJSON = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
+const idata = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
 
 module.exports = class InventoryCommand extends Command {
     constructor(client) {
@@ -35,26 +35,13 @@ module.exports = class InventoryCommand extends Command {
         })
     }
 
-	hasPermission(message) {
-        Userstat.findOne({
-			userId: message.author.id,
-		}, (err, currentUserstat) => {
-            if (err) console.log(err)
-			if (!currentUserstat) {
-				message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
-				return false
-			}
-			return true
-        })
-	}
-
     run(message, { page }) {
         const itemsPerPage = 4
         Userstat.findOne({
 			userId: message.author.id,
-		}, (err, currentUserstat) => {
+		}, (err, USERSTAT) => {
             if (err) console.log(err)
-            const items = Array.from(currentUserstat.inventory.keys())
+            const items = Array.from(USERSTAT.inventory.keys())
             const pageLimit = Math.ceil(items.length/itemsPerPage)
             
             if (!(page >= 1 && page <= pageLimit)) {
@@ -71,8 +58,8 @@ module.exports = class InventoryCommand extends Command {
             current.forEach(itemId => {
                 console.log(itemId)
                 counter++
-                description += `**${ITEMSJSON[itemId].name}** ─ ${currentUserstat.inventory.get(itemId)}\n`
-                description += `ID \`${itemId}\` *${ITEMSJSON[itemId].type}*\n`
+                description += `**${idata[itemId].name}** ─ ${USERSTAT.inventory.get(itemId)}\n`
+                description += `ID \`${itemId}\` *${idata[itemId].type}*\n`
                 description += (counter > 0 && counter < itemsPerPage) ? '\n' : ''
             })
             const messageEmbed = new MessageEmbed()
@@ -82,7 +69,7 @@ module.exports = class InventoryCommand extends Command {
                 .setFooter(`Owned Items ─ Page ${page} of ${pageLimit}`)
             message.say(messageEmbed) 
         
-			currentUserstat.save().catch(err => console.log(err))
+			USERSTAT.save().catch(err => console.log(err))
 		})
     }
 }

@@ -30,29 +30,15 @@ module.exports = class ProfileCommand extends Command {
 			},
 		})
 	}
-
-	hasPermission(message) {
-        Userstat.findOne({
-			userId: message.author.id,
-		}, (err, currentUserstat) => {
-			if (err) console.log(err)
-			console.log(currentUserstat)
-			if (!currentUserstat) {
-				message.say(`${emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
-				return false
-			}
-			return true
-        })
-	}
 	
 	async run(message, {user}) {
 		user = user || message.author
 		if (user.bot) return
 		Userstat.findOne({
 			userId: user.id,
-		}, (err, currentUserstat) => {
+		}, (err, USERSTAT) => {
 			if (err) console.log(err)
-			if (!currentUserstat) {
+			if (!USERSTAT) {
 				createImage(
 					0, // currentExp
 					1, // currentLevel
@@ -67,14 +53,14 @@ module.exports = class ProfileCommand extends Command {
 				)
 			} else {
 				createImage(
-					currentUserstat.currentExp, 
-					currentUserstat.level, 
-					currentUserstat.points, 
-					currentUserstat.position, 
-					currentUserstat.irregular, 
+					USERSTAT.currentExp, 
+					USERSTAT.level, 
+					USERSTAT.points, 
+					USERSTAT.position, 
+					USERSTAT.irregular, 
 					`7D-rank`, // currentRank
-					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(currentUserstat.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
-					currentUserstat.badges,
+					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(USERSTAT.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
+					USERSTAT.badges,
 					user,
 					message
 				)

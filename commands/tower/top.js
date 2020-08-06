@@ -30,19 +30,6 @@ module.exports = class TopCommand extends Command {
             },
         })
 	}
-
-	hasPermission(message) {
-        Userstat.findOne({
-			userId: message.author.id,
-		}, (err, currentUserstat) => {
-            if (err) console.log(err)
-			if (!currentUserstat) {
-				message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
-				return false
-			}
-			return true
-        })
-	}
 	
 	run(message, filter) {
 		filter = filter['filter']
@@ -81,8 +68,8 @@ module.exports = class TopCommand extends Command {
 					}
 					messageEmbed.setDescription(topPlayers)
 					message.say(messageEmbed)
-				} catch(error) {
-					console.log(error)
+				} catch(err) {
+					console.error(err)
 				}
 			}
 			getUser()

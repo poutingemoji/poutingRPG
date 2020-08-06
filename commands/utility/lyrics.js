@@ -39,8 +39,8 @@ module.exports = class LyricsCommand extends Command {
                 .setDescription(truncateText(lyricsRequest))
             sentMessage.delete()
             message.say(messageEmbed)
-        } catch(error) {
-            console.log(error)
+        } catch(err) {
+            console.error(err)
             sentMessage.edit(`${hfuncs.emoji(message, "729190277511905301")} I couldn't find lyrics for the song, **${song}**`)
         }
     }

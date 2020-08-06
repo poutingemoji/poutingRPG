@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js')
 const fs = require('fs')
 const hfuncs = require('../../functions/helper-functions')
 
-const ITEMSJSON = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
+const idata = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
 
 module.exports = class BuyCommand extends Command {
     constructor(client) {
@@ -25,34 +25,21 @@ module.exports = class BuyCommand extends Command {
         })
     }
 
-	hasPermission(message) {
-        Userstat.findOne({
-			userId: message.author.id,
-		}, (err, currentUserstat) => {
-            if (err) console.log(err)
-			if (!currentUserstat) {
-				message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
-				return false
-			}
-			return true
-        })
-	}
-
     run(message) {
         let categories = []
-        console.log(Object.keys(ITEMSJSON))
+        console.log(Object.keys(idata))
         const messageEmbed = new MessageEmbed()
             .setColor('#2f3136')
             .setTitle("Weapons Dealer")
             .setDescription('13 Month Series ─  🗓️\nIgnition ─  🔥\nCompression ─  🗜️\n\n')
 
-        for (let c in ITEMSJSON) { 
+        for (let c in idata) { 
             categories.push(category)
             let tempDesc = ''
-            for (let i in ITEMSJSON[c]) { 
-                const item = ITEMSJSON[c][i]
-                if (categories[c] === ITEMSJSON[i].type) {
-                    tempDesc += `${hfuncs.emoji(message, ITEMSJSON[i].emojiId)}**${ITEMSJSON[i].name}** ─ __${hfuncs.numberWithCommas(ITEMSJSON[i].price)} points__ ─ ${ITEMSJSON[i].month ? ' 🗓️' : ''}${ITEMSJSON[i].ignition ? ' 🔥': ''}${ITEMSJSON[i].compression ? ' 🗜️' : ''}\n${ITEMSJSON[i].description}\n`
+            for (let i in idata[c]) { 
+                const item = idata[c][i]
+                if (categories[c] === idata[i].type) {
+                    tempDesc += `${hfuncs.emoji(message, idata[i].emojiId)}**${idata[i].name}** ─ __${hfuncs.numberWithCommas(idata[i].price)} points__ ─ ${idata[i].month ? ' 🗓️' : ''}${idata[i].ignition ? ' 🔥': ''}${idata[i].compression ? ' 🗜️' : ''}\n${idata[i].description}\n`
                 }
             }
             messageEmbed.addField(categories[c], tempDesc)

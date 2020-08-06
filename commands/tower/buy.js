@@ -4,7 +4,7 @@ const Userstat = require('../../models/userstat')
 const fs = require('fs')
 require('dotenv').config()
 
-const ITEMSJSON = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
+const idata = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
 
 module.exports = class BuyCommand extends Command {
     constructor(client) {
@@ -32,29 +32,16 @@ module.exports = class BuyCommand extends Command {
         })
     }
 
-	hasPermission(message) {
-        Userstat.findOne({
-			userId: message.author.id,
-		}, (err, currentUserstat) => {
-            if (err) console.log(err)
-			if (!currentUserstat) {
-				message.say(`${emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
-				return false
-			}
-			return true
-        })
-	}
-
     run(message, { weapon }) {
         let itemID = ''
         let itemPrice = 0
         let itemDesc = ''
 
-        for (let i in ITEMSJSON) { 
+        for (let i in idata) { 
             if (weapon === i) { 
                 itemID = i
-                itemPrice = ITEMSJSON[i].price
-                itemDesc = ITEMSJSON[i].desc
+                itemPrice = idata[i].price
+                itemDesc = idata[i].desc
             }
         }
 
@@ -68,25 +55,25 @@ module.exports = class BuyCommand extends Command {
 
         Userstat.findOne({
 			userId: message.author.id,
-		}, (err, currentUserstat) => {
+		}, (err, USERSTAT) => {
             if (err) console.log(err)
-            console.log(currentUserstat.points)
-            if (currentUserstat.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${ITEMSJSON[weapon].name}**.`)
+            console.log(USERSTAT.points)
+            if (USERSTAT.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${idata[weapon].name}**.`)
 
-            console.log(currentUserstat.inventory.get(itemID))
+            console.log(USERSTAT.inventory.get(itemID))
 
             
-            if (!(currentUserstat.inventory.get(itemID))) {
-                currentUserstat.inventory.set(itemID, 1)
+            if (!(USERSTAT.inventory.get(itemID))) {
+                USERSTAT.inventory.set(itemID, 1)
             } else {
-                currentUserstat.inventory.set(itemID, currentUserstat.inventory.get(itemID) + 1)
+                USERSTAT.inventory.set(itemID, USERSTAT.inventory.get(itemID) + 1)
             }
             
-            console.log(currentUserstat.inventory.get(itemID))
+            console.log(USERSTAT.inventory.get(itemID))
 
-            currentUserstat.points = currentUserstat.points - itemPrice
-            message.channel.send(`Weapons Dealer: **${ITEMSJSON[weapon].name}** is yours.`)
-			currentUserstat.save().catch(err => console.log(err))
+            USERSTAT.points = USERSTAT.points - itemPrice
+            message.channel.send(`Weapons Dealer: **${idata[weapon].name}** is yours.`)
+			USERSTAT.save().catch(err => console.log(err))
 		})
     }
 }

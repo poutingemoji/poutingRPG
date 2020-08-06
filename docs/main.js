@@ -82,7 +82,7 @@ function loadCommands(id) {
         try {
             const json = JSON.parse(request.responseText)
             populateCommands(json[id])
-        } catch(error) {
+        } catch(err) {
             console.warn("Couldn't load commands.")
         }
     }

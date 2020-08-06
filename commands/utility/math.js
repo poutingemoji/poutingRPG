@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const Parser = require('expr-eval').Parser
+const { Parser } = require('expr-eval')
 const hfuncs = require('../../functions/helper-functions')
 require('dotenv').config()
 

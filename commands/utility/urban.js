@@ -46,7 +46,7 @@ module.exports = class UrbanCommand extends Command {
                 .addField('Example', urbanInfo["example"])
                 .setFooter(`by ${urbanInfo["author"]} • ${dateFormat(urbanInfo["written_on"], "mmmm dS, yyyy" )}`)
             message.say(messageEmbed)
-        } catch(error) {
+        } catch(err) {
             message.say(error)
         }
     }

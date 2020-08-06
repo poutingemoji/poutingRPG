@@ -22,19 +22,6 @@ module.exports = class DailyCommand extends Command {
             },
         })
 	}
-
-	hasPermission(message) {
-        Userstat.findOne({
-			userId: message.author.id,
-		}, (err, currentUserstat) => {
-            if (err) console.log(err)
-			if (!currentUserstat) {
-				message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, you haven't been registered into the Tower. Use \`${message.client.commandPrefix}start\` to begin your climb.`)
-				return false
-			}
-			return true
-        })
-	}
 	
 	run(message) {
 		let expAdd = hfuncs.randomIntFromInterval(250, 400)
@@ -42,21 +29,21 @@ module.exports = class DailyCommand extends Command {
 		
 		Userstat.findOne({
 			userId: message.author.id,
-		}, (err, currentUserstat) => {
-			let currentExp = currentUserstat.currentExp
-			let currentLevel = currentUserstat.level
+		}, (err, USERSTAT) => {
+			let currentExp = USERSTAT.currentExp
+			let currentLevel = USERSTAT.level
 			let nextLevel = Math.floor(process.env.BASE_EXPMULTIPLIER *(Math.pow(currentLevel, process.env.EXPONENTIAL_EXPMULTIPLIER)))
-			currentUserstat.totalExp = currentUserstat.totalExp + expAdd
-			currentUserstat.currentExp = currentUserstat.currentExp + expAdd
+			USERSTAT.totalExp = USERSTAT.totalExp + expAdd
+			USERSTAT.currentExp = USERSTAT.currentExp + expAdd
 			if(nextLevel <= currentExp) {
-				currentUserstat.level++
-				currentUserstat.currentExp = 0
+				USERSTAT.level++
+				USERSTAT.currentExp = 0
 				message.say(`${hfuncs.emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${hfuncs.emoji(message, "729255637837414450")}`)
 			}
 
-			currentUserstat.points = currentUserstat.points + pointsAdd
+			USERSTAT.points = USERSTAT.points + pointsAdd
 
-			currentUserstat.save().catch(err => console.log(err))
+			USERSTAT.save().catch(err => console.log(err))
 		})
 		message.say(`${hfuncs.emoji(message, "729206897818730567")} **${message.author.username}**, you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`)
 	}
