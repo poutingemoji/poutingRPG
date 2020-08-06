@@ -2,8 +2,8 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const Userstat = require('../../models/userstat')
 const fs = require('fs')
-const hfuncs = require('../../functions/helper-functions')
-const lfuncs = require('../../functions/leveling-functions')
+const typ = require('../../helpers/typ')
+const lvl = require('../../helpers/lvl')
 const User = require('../../objects/user')
 require('dotenv').config()
 
@@ -83,11 +83,11 @@ module.exports = class StartCommand extends Command {
 				const newUSERSTAT = Object.assign(UserstatSchema, USER)
 				newUSERSTAT.save().catch(err => console.log(err))
 
-				message.say(`${hfuncs.emoji(message,"740795617726693435")} [**${showPosition(USER.position).toUpperCase()}**] ${message.author.username} **${showSurname(USER.surname)}** of the **${showRace(USER.race)}** race, I sincerely welcome you to the Tower.`)
+				message.say(`${typ.emoji(message,"740795617726693435")} [**${showPosition(USER.position).toUpperCase()}**] ${message.author.username} **${showSurname(USER.surname)}** of the **${showRace(USER.race)}** race, I sincerely welcome you to the Tower.`)
 			})
 			.catch(result => {
 				console.log(result)
-				message.say(`${hfuncs.emoji(message,"729204396726026262")} **${message.author.username}**, you didn't answer in time. Your registration into the Tower is cancelled.`)
+				message.say(typ.err(message, "You didn't answer in time. Your registration into the Tower is cancelled."))
 			})
 	}
 }
@@ -126,7 +126,7 @@ function raceDescription() {
 	let description = 'Choose your race:\n'
 	let i = 0
 	for (let c in rdata) {
-		description += `**${hfuncs.titleCase(c)}**\n`
+		description += `**${typ.titleCase(c)}**\n`
 		console.log()
 		for (let r in rdata[c]) {
 			i++

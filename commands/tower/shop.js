@@ -1,7 +1,8 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const fs = require('fs')
-const hfuncs = require('../../functions/helper-functions')
+const typ = require('../../helpers/typ')
+const int = require('../../helpers/int')
 
 const idata = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
 
@@ -39,7 +40,7 @@ module.exports = class BuyCommand extends Command {
             for (let i in idata[c]) { 
                 const item = idata[c][i]
                 if (categories[c] === idata[i].type) {
-                    tempDesc += `${hfuncs.emoji(message, idata[i].emojiId)}**${idata[i].name}** ─ __${hfuncs.numberWithCommas(idata[i].price)} points__ ─ ${idata[i].month ? ' 🗓️' : ''}${idata[i].ignition ? ' 🔥': ''}${idata[i].compression ? ' 🗜️' : ''}\n${idata[i].description}\n`
+                    tempDesc += `${typ.emoji(message, idata[i].emojiId)}**${idata[i].name}** ─ __${int.numberWithCommas(idata[i].price)} points__ ─ ${idata[i].month ? ' 🗓️' : ''}${idata[i].ignition ? ' 🔥': ''}${idata[i].compression ? ' 🗜️' : ''}\n${idata[i].description}\n`
                 }
             }
             messageEmbed.addField(categories[c], tempDesc)

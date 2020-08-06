@@ -1,23 +1,15 @@
-const functions = {
-    emoji(message, emojiId) {
-        return message.client.emojis.cache.get(emojiId).toString()
-    },
-    titleCase(str) {
-        str = str.replace(/_/g, " ")
-        var splitStr = str.toLowerCase().split(' ')
-        for (let i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)     
-        }
-        return splitStr.join(' ')
-    },
+module.exports = {
     randomIntFromInterval(min, max){
+        min = parseInt(min)
+        max = parseInt(max)
         return Math.floor(Math.random() * (max - min + 1) + min)
     },
-    numberWithCommas(x) {
+    numberWithCommas(int) {
+        int = parseInt(int)
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     },
     secondsToDhms(seconds) {
-        seconds = Number(seconds)
+        seconds = parseInt(seconds)
         var d = Math.floor(seconds / (3600*24))
         var h = Math.floor(seconds % (3600*24) / 3600)
         var m = Math.floor(seconds % 3600 / 60)
@@ -30,5 +22,3 @@ const functions = {
         return dDisplay + hDisplay + mDisplay + sDisplay
     }
 }
-
-module.exports = functions

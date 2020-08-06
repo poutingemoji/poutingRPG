@@ -1,7 +1,8 @@
 const fs = require('fs')
 const { CommandoClient } = require("discord.js-commando")
 const path = require("path")
-const hfuncs = require('./functions/helper-functions')
+const typ = require('./helpers/typ')
+const int = require('./helpers/int')
 require('dotenv').config()
 
 //Creating Commando Client
@@ -49,7 +50,7 @@ client.on('message', message => {
 	if (message.author.bot) return
 	//Random Chance to Get a Tower of God Test
 	if (Math.random() >= 0.99) {
-		const giveaway = giveaways[hfuncs.randomIntFromInterval(0,5)]
+		const giveaway = giveaways[int.randomIntFromInterval(0,5)]
 		messageEvent(message, giveaway[0], giveaway[1], giveaway[2], giveaway[3], giveaway[4], giveaway[5], giveaway[6])
 	}
 })
@@ -124,7 +125,7 @@ Object.keys(jsonFiles).forEach(function(key) {
 				`${cmd.description}${cmd.nsfw ? ' (NSFW)' : ''}`,
 				cmd.examples.join("\n"), 
 				cmd.aliases.join("\n"), 
-				hfuncs.secondsToDhms(cmd.throttling.duration)
+				int.secondsToDhms(cmd.throttling.duration)
 				])
 			)
 		}

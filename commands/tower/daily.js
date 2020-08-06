@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const Userstat = require('../../models/userstat')
-const hfuncs = require('../../functions/helper-functions')
+const typ = require('../../helpers/typ')
+const int = require('../../helpers/int')
 require('dotenv').config()
 
 module.exports = class DailyCommand extends Command {
@@ -24,8 +25,8 @@ module.exports = class DailyCommand extends Command {
 	}
 	
 	run(message) {
-		let expAdd = hfuncs.randomIntFromInterval(250, 400)
-		let pointsAdd = hfuncs.randomIntFromInterval(400, 600)
+		let expAdd = int.randomIntFromInterval(250, 400)
+		let pointsAdd = int.randomIntFromInterval(400, 600)
 		
 		Userstat.findOne({
 			userId: message.author.id,
@@ -38,13 +39,13 @@ module.exports = class DailyCommand extends Command {
 			if(nextLevel <= currentExp) {
 				USERSTAT.level++
 				USERSTAT.currentExp = 0
-				message.say(`${hfuncs.emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${hfuncs.emoji(message, "729255637837414450")}`)
+				message.say(`${typ.emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${typ.emoji(message, "729255637837414450")}`)
 			}
 
 			USERSTAT.points = USERSTAT.points + pointsAdd
 
 			USERSTAT.save().catch(err => console.log(err))
 		})
-		message.say(`${hfuncs.emoji(message, "729206897818730567")} **${message.author.username}**, you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`)
+		message.say(`${typ.emoji(message, "729206897818730567")} **${message.author.username}**, you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`)
 	}
 }

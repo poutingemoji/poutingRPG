@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const { Parser } = require('expr-eval')
-const hfuncs = require('../../functions/helper-functions')
+const typ = require('../../helpers/typ')
 require('dotenv').config()
 
 module.exports = class MathCommand extends Command {
@@ -43,7 +43,7 @@ module.exports = class MathCommand extends Command {
                 .setFooter("Calculated")
             message.say(messageEmbed)
         } catch (error) {
-            return message.say(`${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, the equation provided could not be evaluated.`)
+            return message.say(typ.err(message, `The equation provided could not be evaluated.`))
         }
     }
 }

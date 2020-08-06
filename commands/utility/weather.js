@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const fetch = require("node-fetch")
-const hfuncs = require('../../functions/helper-functions')
+const typ = require('../../helpers/typ')
 require('dotenv').config()
 
 module.exports = class WeatherCommand extends Command {
@@ -40,7 +40,7 @@ module.exports = class WeatherCommand extends Command {
             let weatherInfo = await fetch(weatherURL)
             weatherInfo = await weatherInfo.json()
             if (weatherInfo.name === undefined) {
-                throw `${hfuncs.emoji(message, "729190277511905301")} **${message.author.username}**, I can't find info on the weather in **${place}**.`
+                throw typ.err(message, `Can't find info on the weather in **${place}**.`)
             }
             const currentWeather = weatherInfo["weather"][0]
             const messageEmbed = new MessageEmbed()
@@ -49,7 +49,7 @@ module.exports = class WeatherCommand extends Command {
                 .setThumbnail(`http://openweathermap.org/img/wn/${currentWeather["icon"]}@2x.png`)
                 .addFields(
                     {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },
-                    {name: "Current Weather", value: hfuncs.titleCase(currentWeather["description"]) },
+                    {name: "Current Weather", value: typ.titleCase(currentWeather["description"]) },
                     {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
                     {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
                 )

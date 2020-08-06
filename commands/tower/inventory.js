@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const Userstat = require('../../models/userstat')
 const fs = require('fs')
-const hfuncs = require('../../functions/helper-functions')
+const typ = require('../../helpers/typ')
 require('dotenv').config()
 
 const idata = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
@@ -47,7 +47,7 @@ module.exports = class InventoryCommand extends Command {
             if (!(page >= 1 && page <= pageLimit)) {
                 let pluralize = `there are only **${pageLimit}** pages.`
                 if (pageLimit == 1) pluralize = `there is only **1** page.`
-                return message.say(`${hfuncs.emoji(message, "729190277511905301")} Page **${page}** doesn't exist, ` + pluralize)
+                return message.say(typ.err(message, `Page **${page}** doesn't exist, ${pluralize}`))
             }
 
             const current = items.slice((page-1)*itemsPerPage, page*itemsPerPage)

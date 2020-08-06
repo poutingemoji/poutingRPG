@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const hfuncs = require('../../functions/helper-functions')
+const typ = require('../../helpers/typ')
 require('dotenv').config()
 
 module.exports = class BanCommand extends Command {
@@ -34,18 +34,17 @@ module.exports = class BanCommand extends Command {
         })
     }
     run(message, {user, numOfDays}) {
-        console.log(numOfDays)
         message.guild.member(user)
             .ban({ days: numOfDays })
             .then(() => {
                 if (numOfDays) {
-                    message.say(`${hfuncs.emoji(message,"729255616786464848")}${hfuncs.emoji(message,"729255637837414450")} Successfully banned **${user.tag}** for ${numOfDays} day(s).`)
+                    message.say(`${typ.emoji(message,"729255616786464848")}${typ.emoji(message,"729255637837414450")} Successfully banned **${user.tag}** for ${numOfDays} day(s).`)
                 } else {
-                    message.say(`${hfuncs.emoji(message,"729255616786464848")}${hfuncs.emoji(message,"729255637837414450")} Successfully banned **${user.tag}**.`)
+                    message.say(`${typ.emoji(message,"729255616786464848")}${typ.emoji(message,"729255637837414450")} Successfully banned **${user.tag}**.`)
                 }
             })
             .catch(() => {
-                message.say(`${hfuncs.emoji(message, "729190277511905301")} Unable to ban **${user.tag}**.`)
+                message.say(typ.err(message, `Unable to ban **${user.tag}**.`))
             }) 
     }
 }

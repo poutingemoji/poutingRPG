@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
 const fetch = require("node-fetch")
-const hfuncs = require('../../functions/helper-functions')
+const typ = require('../../helpers/typ')
 require('dotenv').config()
 
 const checkDict = {
@@ -29,7 +29,7 @@ module.exports = class MangaCommand extends Command {
             args: [
                 {
                     key: 'manga',
-                    prompt: "What's the name of the manga you would like to know more about?",
+                    prompt: "What manga you would like to know more about?",
                     type: 'string',
                 },
             ],
@@ -43,10 +43,10 @@ module.exports = class MangaCommand extends Command {
     async run(message, {manga}) {
         const start = Date.now()
         try {
-            var sentMessage = await message.say(`${hfuncs.emoji(message,"730597505938620437")} Searching for requested manga... \:mag_right: `)
+            var sentMessage = await message.say(`${typ.emoji(message,"730597505938620437")} Searching for requested manga... \:mag_right: `)
             var mangaRequest = await fetchMangaInfo(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
             console.log(mangaRequest["data"][1])
-            if (mangaRequest["data"][0] === undefined) return sentMessage.edit(`${hfuncs.emoji(message,"729190277511905301")} Request failed! Could not find info on ${manga}`)
+            if (mangaRequest["data"][0] === undefined) return sentMessage.edit(typ.err(message, `Could not find info on ${manga}`))
         } catch(err) {
             console.error(err)
         }
@@ -59,7 +59,7 @@ module.exports = class MangaCommand extends Command {
         console.log(possibleMatches)
         const filter = response => [1,2,3,4,5,6,7,8,9,10].includes(parseInt(response.content))
         let mangaInfo
-        sentMessage.edit(`${hfuncs.emoji(message,"729255616786464848")}${hfuncs.emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (${(Date.now() - start)/1000} seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
+        sentMessage.edit(`${typ.emoji(message,"729255616786464848")}${typ.emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (${(Date.now() - start)/1000} seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
             message.channel.awaitMessages(filter, { max: 1, time: 12000 })
                 .then(result => {
                     const chosenMangaIndex = (parseInt(result.first().content))-1
@@ -91,7 +91,7 @@ module.exports = class MangaCommand extends Command {
                 })
                 .catch(result => {
                     console.log(result)
-                    message.say(`${hfuncs.emoji(message,"729204396726026262")}**${message.author.username}**, you didn't answer in time. This search is cancelled.`)
+                    message.say(typ.err(message, "you didn't answer in time. This search is cancelled.", true))
                 })
         })
     }
