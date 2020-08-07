@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const Userstat = require('../../models/userstat')
+const UserSchema = require('../../models/userschema')
 const fs = require('fs')
 const typ = require('../../helpers/typ')
 require('dotenv').config()
@@ -37,11 +37,11 @@ module.exports = class InventoryCommand extends Command {
 
     run(message, { page }) {
         const itemsPerPage = 4
-        Userstat.findOne({
+        UserSchema.findOne({
 			userId: message.author.id,
-		}, (err, USERSTAT) => {
+		}, (err, USER) => {
             if (err) console.log(err)
-            const items = Array.from(USERSTAT.inventory.keys())
+            const items = Array.from(USER.inventory.keys())
             const pageLimit = Math.ceil(items.length/itemsPerPage)
             
             if (!(page >= 1 && page <= pageLimit)) {
@@ -56,7 +56,7 @@ module.exports = class InventoryCommand extends Command {
             current.forEach(itemId => {
                 console.log(itemId)
                 counter++
-                description += `**${idata[itemId].name}** ─ ${USERSTAT.inventory.get(itemId)}\n`
+                description += `**${idata[itemId].name}** ─ ${USER.inventory.get(itemId)}\n`
                 description += `ID \`${itemId}\` *${idata[itemId].type}*\n`
                 description += (counter > 0 && counter < itemsPerPage) ? '\n' : ''
             })
@@ -67,7 +67,7 @@ module.exports = class InventoryCommand extends Command {
                 .setFooter(`Owned Items ─ Page ${page} of ${pageLimit}`)
             message.say(messageEmbed) 
         
-			USERSTAT.save().catch(err => console.log(err))
+			USER.save().catch(err => console.log(err))
 		})
     }
 }

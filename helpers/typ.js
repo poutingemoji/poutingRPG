@@ -1,10 +1,6 @@
 const fs = require('fs')
 const edata = JSON.parse(fs.readFileSync('./data/emojis.json', 'utf8'))
 
-function includeAuthor(message, str, author, emoji) {
-
-}
-
 const funcs = {
     olcb(str) {
         return `\`${str}`

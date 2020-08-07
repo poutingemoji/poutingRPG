@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const Userstat = require('../../models/userstat')
+const UserSchema = require('../../models/userschema')
 const fs = require('fs')
 require('dotenv').config()
 
@@ -53,27 +53,27 @@ module.exports = class BuyCommand extends Command {
 
         console.log(itemID)
 
-        Userstat.findOne({
+        UserSchema.findOne({
 			userId: message.author.id,
-		}, (err, USERSTAT) => {
+		}, (err, USER) => {
             if (err) console.log(err)
-            console.log(USERSTAT.points)
-            if (USERSTAT.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${idata[weapon].name}**.`)
+            console.log(USER.points)
+            if (USER.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${idata[weapon].name}**.`)
 
-            console.log(USERSTAT.inventory.get(itemID))
+            console.log(USER.inventory.get(itemID))
 
             
-            if (!(USERSTAT.inventory.get(itemID))) {
-                USERSTAT.inventory.set(itemID, 1)
+            if (!(USER.inventory.get(itemID))) {
+                USER.inventory.set(itemID, 1)
             } else {
-                USERSTAT.inventory.set(itemID, USERSTAT.inventory.get(itemID) + 1)
+                USER.inventory.set(itemID, USER.inventory.get(itemID) + 1)
             }
             
-            console.log(USERSTAT.inventory.get(itemID))
+            console.log(USER.inventory.get(itemID))
 
-            USERSTAT.points = USERSTAT.points - itemPrice
+            USER.points = USER.points - itemPrice
             message.channel.send(`Weapons Dealer: **${idata[weapon].name}** is yours.`)
-			USERSTAT.save().catch(err => console.log(err))
+			USER.save().catch(err => console.log(err))
 		})
     }
 }

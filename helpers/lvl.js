@@ -1,17 +1,17 @@
 const { Parser } = require('expr-eval')
-const Userstat = require('../models/userstat')
+const UserSchema = require('../models/userschema')
 require('dotenv').config()
 
 const funcs = {
     addExp(userId, addExp) {
-        Userstat.findOne({
+        UserSchema.findOne({
 			userId: userId,
-		}, (err, USERSTAT) => {
+		}, (err, USER) => {
             if (err) console.log(err)
-            if (!USERSTAT) return
-            USERSTAT.exp += addExp
-            USERSTAT.level = Parser.evaluate(process.env.EXP_TO_LEVEL, { n: USERSTAT.exp })
-			USERSTAT.save().catch(err => console.log(err))
+            if (!USER) return
+            USER.exp += addExp
+            USER.level = Parser.evaluate(process.env.EXP_TO_LEVEL, { n: USER.exp })
+			USER.save().catch(err => console.log(err))
 		})
     }
 

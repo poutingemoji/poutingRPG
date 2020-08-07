@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const Userstat = require('../../models/userstat')
+const UserSchema = require('../../models/userschema')
 const typ = require('../../helpers/typ')
 require('dotenv').config()
 
@@ -37,7 +37,7 @@ module.exports = class TopCommand extends Command {
 			['level'] : 'totalExp',
 			['points'] : 'points',
 		}
-		Userstat.find()
+		UserSchema.find()
 		.sort([
 			[checkDict[filter], 'descending']
 		  ]).exec((err, res) => {

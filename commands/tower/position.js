@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const Userstat = require('../../models/userstat')
+const UserSchema = require('../../models/userschema')
 require('dotenv').config()
 
 module.exports = class PositionCommand extends Command {
@@ -45,18 +45,18 @@ module.exports = class PositionCommand extends Command {
 			.setColor(process.env['POSITION_COLOR_' + position.Name.toUpperCase().replace(/ /g, "_")])
 			.setDescription(description)
 			.setImage(position.Image)
-		Userstat.findOne({
+		UserSchema.findOne({
 			userId: message.author.id,
-		}, (err, USERSTAT) => {
+		}, (err, USER) => {
 			if (err) console.log(err)
-			USERSTAT.position = position.Name
-			USERSTAT.irregular = isIrregular
-			USERSTAT.rank = rankIndex
-			if (USERSTAT.badges.includes(badge) === false) {
-				USERSTAT.badges.push(badge)
+			USER.position = position.Name
+			USER.irregular = isIrregular
+			USER.rank = rankIndex
+			if (USER.badges.includes(badge) === false) {
+				USER.badges.push(badge)
 				console.log(badge)
 			}
-			USERSTAT.save().catch(err => console.log(err))
+			USER.save().catch(err => console.log(err))
 		})
 		message.say(messageEmbed)
 	}

@@ -1,7 +1,7 @@
 const { Command } = require("discord.js-commando")
 const { MessageAttachment } = require("discord.js")
 const { createCanvas, loadImage } = require("canvas")
-const Userstat = require("../../models/userstat")
+const UserSchema = require("../../models/userschema")
 require('dotenv').config()
 
 module.exports = class ProfileCommand extends Command {
@@ -34,11 +34,11 @@ module.exports = class ProfileCommand extends Command {
 	async run(message, {user}) {
 		user = user || message.author
 		if (user.bot) return
-		Userstat.findOne({
+		UserSchema.findOne({
 			userId: user.id,
-		}, (err, USERSTAT) => {
+		}, (err, USER) => {
 			if (err) console.log(err)
-			if (!USERSTAT) {
+			if (!USER) {
 				createImage(
 					0, // currentExp
 					1, // currentLevel
@@ -53,14 +53,14 @@ module.exports = class ProfileCommand extends Command {
 				)
 			} else {
 				createImage(
-					USERSTAT.currentExp, 
-					USERSTAT.level, 
-					USERSTAT.points, 
-					USERSTAT.position, 
-					USERSTAT.irregular, 
+					USER.currentExp, 
+					USER.level, 
+					USER.points, 
+					USER.position, 
+					USER.irregular, 
 					`7D-rank`, // currentRank
-					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(USERSTAT.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
-					USERSTAT.badges,
+					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(USER.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
+					USER.badges,
 					user,
 					message
 				)
