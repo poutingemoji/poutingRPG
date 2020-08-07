@@ -37,7 +37,7 @@ module.exports = class UrbanCommand extends Command {
             urbanRequest = await urbanRequest.json()
             const urbanList = urbanRequest["list"]
             const urbanInfo = urbanList[Math.floor(Math.random()*urbanList.length)]
-            if (!urbanInfo) throw typ.err(message, `Can't find the term, **${term}**, on Urban Dictionary.`)
+            if (!urbanInfo) throw typ.emojiMsg(message, ["err"], `Can't find the term, **${term}**, on Urban Dictionary.`)
             const messageEmbed = new MessageEmbed()
                 .setColor("#199ceb")
                 .setTitle(urbanInfo["word"])
@@ -47,7 +47,8 @@ module.exports = class UrbanCommand extends Command {
                 .setFooter(`by ${urbanInfo["author"]} • ${dateFormat(urbanInfo["written_on"], "mmmm dS, yyyy" )}`)
             message.say(messageEmbed)
         } catch(err) {
-            message.say(error)
+            console.error(err)
+            message.say(err)
         }
     }
 }

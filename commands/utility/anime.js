@@ -41,36 +41,32 @@ module.exports = class AnimeCommand extends Command {
         })
     }
     async run(message, {anime}) {
-        const start = Date.now()
         try {
-            var sentMessage = await message.say(`${typ.emoji(message,"730597505938620437")} Searching for requested anime... \:mag_right: `)
+            var sentMessage = await message.say(typ.emojiMsg(message, ["loading"], `Searching for requested anime... \:mag_right:`))
             var animeRequest = await fetchAnimeInfo(`https://kitsu.io/api/edge/anime?filter[text]=${anime}`)
-            if (animeRequest["data"][0] === undefined) return sentMessage.edit(typ.err(message, `Could not find info on ${anime}`))
+            if (animeRequest["data"][0] === undefined) return sentMessage.edit(typ.emojiMsg(message, ["err"], `Could not find info on ${anime}`))
         } catch(err) {
             console.error(err)
         }
+        anime = animeRequest["data"]
         console.log(sentMessage)
-        let i = 0
-        const possibleMatches = animeRequest["data"].map(anime => {
-            i++
-            return `**${i}** : ${anime["attributes"]['canonicalTitle']}`
-        })
-        console.log(possibleMatches)
-        const filter = response => [1,2,3,4,5,6,7,8,9,10].includes(parseInt(response.content))
+        let options = []
+        let possibleMatches = ''
+        for (let i = 0; i < anime.length; i++) {
+            const index = i+1
+            options.push(index)
+            possibleMatches += `**${index}** : ${anime[i]["attributes"]['canonicalTitle']}\n`
+        }
+        const filter = response => options.includes(parseInt(response.content))
         let animeInfo
-        sentMessage.edit(`${typ.emoji(message,"729255616786464848")}${typ.emoji(message,"729255637837414450")} **${message.author.username}**, I have found about 10 results (${(Date.now() - start)/1000} seconds), please pick the one you meant.\n${possibleMatches.join("\n")}`).then(() => {
+        sentMessage.edit(typ.emojiMsg(message, ["prompt1", "prompt2"], `I have found about ${animeRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`, true)).then(() => {
             message.channel.awaitMessages(filter, { max: 1, time: 12000 })
                 .then(result => {
-                    const chosenAnimeIndex = (parseInt(result.first().content))-1
+                    const chosenAnimeIndex = result.first().content-1
                     animeInfo = animeRequest["data"][chosenAnimeIndex]["attributes"]
                     sentMessage.delete()
                     //console.log(animeInfo)
-                    let title
-                    if (!animeInfo["titles"]["ja_jp"]) {
-                        title = animeInfo["canonicalTitle"]
-                    } else {
-                        title = `${animeInfo["titles"]["ja_jp"]} - ${animeInfo["canonicalTitle"]}`
-                    }
+                    const title = animeInfo["titles"]["ja_jp"] ? `${animeInfo["titles"]["ja_jp"]} - ${animeInfo["canonicalTitle"]}` : animeInfo["canonicalTitle"]
                     const messageEmbed = new MessageEmbed()
                         .setColor('#ed7220')
                         .setTitle(title)
@@ -88,8 +84,9 @@ module.exports = class AnimeCommand extends Command {
                     }
                     message.say(messageEmbed)   
                 })
-                .catch(result => {
-                    message.say(typ.err(message, "you didn't answer in time. This search is cancelled.", true))
+                .catch(err => {
+                    console.error(err)
+                    message.say(typ.emojiMsg(message, ["err"], "you didn't answer in time. This search is cancelled.", true))
                 })
         })
     }

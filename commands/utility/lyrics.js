@@ -41,7 +41,7 @@ module.exports = class LyricsCommand extends Command {
             message.say(messageEmbed)
         } catch(err) {
             console.error(err)
-            sentMessage.edit(typ.err(message, `Couldn't find lyrics for the song, **${song}**`))
+            sentMessage.edit(typ.emojiMsg(message, ["err"], `Couldn't find lyrics for the song, **${song}**`))
         }
     }
 }

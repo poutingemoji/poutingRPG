@@ -87,7 +87,7 @@ module.exports = class StartCommand extends Command {
 			})
 			.catch(result => {
 				console.log(result)
-				message.say(typ.err(message, "You didn't answer in time. Your registration into the Tower is cancelled."))
+				message.say(typ.emojiMsg(message, ["err"], "You didn't answer in time. Your registration into the Tower is cancelled."))
 			})
 	}
 }
@@ -126,7 +126,7 @@ function raceDescription() {
 	let description = 'Choose your race:\n'
 	let i = 0
 	for (let c in rdata) {
-		description += `**${typ.tcase(c)}**\n`
+		description += `**${typ.titleCase(c)}**\n`
 		console.log()
 		for (let r in rdata[c]) {
 			i++

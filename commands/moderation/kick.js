@@ -31,10 +31,10 @@ module.exports = class KickCommand extends Command {
         message.guild.member(user)
             .kick()
             .then(() => {
-                message.say(`${typ.emoji(message,"729255616786464848")}${typ.emoji(message,"729255637837414450")} Successfully kicked **${user.tag}**.`)
+                message.say(typ.emojiMsg(message, ["result"], `Successfully kicked **${user.tag}**.`))
             })
             .catch(() => {
-                message.say(typ.err(message, `Unable to kick **${user.tag}**.`))
+                message.say(typ.emojiMsg(message, ["err"], `Unable to kick **${user.tag}**.`))
             }) 
     }
 }

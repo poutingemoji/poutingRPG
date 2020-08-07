@@ -42,8 +42,9 @@ module.exports = class MathCommand extends Command {
                 .setTimestamp()
                 .setFooter("Calculated")
             message.say(messageEmbed)
-        } catch (error) {
-            return message.say(typ.err(message, `The equation provided could not be evaluated.`))
+        } catch (err) {
+            console.error(err)
+            return message.say(typ.emojiMsg(message, ["err"], `The equation provided could not be evaluated.`))
         }
     }
 }

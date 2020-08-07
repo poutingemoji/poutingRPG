@@ -35,10 +35,8 @@ module.exports = class TranslateCommand extends Command {
         })
     }
     run(message, {language, content}) {
-        if (language.toLowerCase() === "chinese" || language.toLowerCase() === "ch") {
-            language = "Chinese (Simplified)"
-        }
-        if (!translate.languages.getCode(language)) return message.say(typ.err(message, `the language, **${typ.tcase(language)}**, doesn't exist in my database.`, true))
+        if (language.toLowerCase() === "chinese" || language.toLowerCase() === "ch") language = "Chinese (Simplified)"
+        if (!translate.languages.getCode(language)) return message.say(typ.err(message, `the language, **${typ.titleCase(language)}**, doesn't exist in my database.`, true))
         const opts = {
             to: translate.languages.getCode(language.toLowerCase()), 
         }
@@ -47,18 +45,12 @@ module.exports = class TranslateCommand extends Command {
                 const messageEmbed = new MessageEmbed()
                     .setColor("#4c8cf5")
                     .setAuthor(message.author.tag, message.author.displayAvatarURL())
-                    .addFields(
-                        {name: translate.languages[result.from.language.iso], value: typ.mlcb(content)},
-                    )
+                    .addField(translate.languages[result.from.language.iso], typ.mlcb(content))
                     .setTimestamp()
                     .setFooter("Translated")
-                if (language.length !== 2) {
-                    messageEmbed.addField(typ.tcase(language), typ.mlcb(result.text))
-                } else {
-                    messageEmbed.addField(translate.languages[language], typ.mlcb(result.text))
-                }
+                language.length !== 2 ? messageEmbed.addField(typ.titleCase(language), typ.mlcb(result.text)) : messageEmbed.addField(translate.languages[language], typ.mlcb(result.text))
                 message.say(messageEmbed)
             })
-            .catch(console.error)
+            .catch(console.error(err))
     }
 }

@@ -37,14 +37,12 @@ module.exports = class BanCommand extends Command {
         message.guild.member(user)
             .ban({ days: numOfDays })
             .then(() => {
-                if (numOfDays) {
-                    message.say(`${typ.emoji(message,"729255616786464848")}${typ.emoji(message,"729255637837414450")} Successfully banned **${user.tag}** for ${numOfDays} day(s).`)
-                } else {
-                    message.say(`${typ.emoji(message,"729255616786464848")}${typ.emoji(message,"729255637837414450")} Successfully banned **${user.tag}**.`)
-                }
+                let bannedMsg = `Successfully banned **${user.tag}**`
+                bannedMsg += numOfDays ? ` for ${numOfDays} day(s).` : `.`
+                message.say(typ.emojiMsg(message, ["result"], bannedMsg))
             })
             .catch(() => {
-                message.say(typ.err(message, `Unable to ban **${user.tag}**.`))
+                message.say(typ.emojiMsg(message, ["err"], `Unable to ban **${user.tag}**.`))
             }) 
     }
 }

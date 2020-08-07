@@ -22,6 +22,6 @@ module.exports = class OwnerCommand extends Command {
         })
     }
     run(message) {
-        message.say(`${typ.emoji(message, "729209778898862171")} **${message.author.username}**, the Boruto's dad to my Boruto is **poutingemoji#5785**. Nin!`)
+        message.say(typ.emojiMsg(message, ["result"], `my owner is **poutingemoji#5785**.`, true))
     }
 }

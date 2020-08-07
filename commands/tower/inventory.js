@@ -45,9 +45,7 @@ module.exports = class InventoryCommand extends Command {
             const pageLimit = Math.ceil(items.length/itemsPerPage)
             
             if (!(page >= 1 && page <= pageLimit)) {
-                let pluralize = `there are only **${pageLimit}** pages.`
-                if (pageLimit == 1) pluralize = `there is only **1** page.`
-                return message.say(typ.err(message, `Page **${page}** doesn't exist, ${pluralize}`))
+                return message.say(typ.emojiMsg(message, ["err"], `Page **${page}** doesn't exist.`))
             }
 
             const current = items.slice((page-1)*itemsPerPage, page*itemsPerPage)

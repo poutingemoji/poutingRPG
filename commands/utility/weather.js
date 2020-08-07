@@ -31,16 +31,11 @@ module.exports = class WeatherCommand extends Command {
     }
     async run(message, {place}) {
         try {
-            let weatherURL
-            if (isNaN(place)) {
-                weatherURL =`https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`
-            } else {
-                weatherURL = `https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`
-            }
+            const weatherURL = isNaN(place) ? `https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}` : `https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`
             let weatherInfo = await fetch(weatherURL)
             weatherInfo = await weatherInfo.json()
             if (weatherInfo.name === undefined) {
-                throw typ.err(message, `Can't find info on the weather in **${place}**.`)
+                throw `Can't find info on the weather in **${place}**.`
             }
             const currentWeather = weatherInfo["weather"][0]
             const messageEmbed = new MessageEmbed()
@@ -49,7 +44,7 @@ module.exports = class WeatherCommand extends Command {
                 .setThumbnail(`http://openweathermap.org/img/wn/${currentWeather["icon"]}@2x.png`)
                 .addFields(
                     {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },
-                    {name: "Current Weather", value: typ.tcase(currentWeather["description"]) },
+                    {name: "Current Weather", value: typ.titleCase(currentWeather["description"]) },
                     {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
                     {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
                 )
@@ -57,7 +52,8 @@ module.exports = class WeatherCommand extends Command {
                 .setFooter('Weather')
             message.say(messageEmbed)
         } catch(err) {
-            message.say(error)
+            console.log(err)
+            message.say(typ.emojiMsg(message, ["err"], err))   
         }
     }
 }

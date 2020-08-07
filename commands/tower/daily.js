@@ -46,6 +46,6 @@ module.exports = class DailyCommand extends Command {
 
 			USERSTAT.save().catch(err => console.log(err))
 		})
-		message.say(`${typ.emoji(message, "729206897818730567")} **${message.author.username}**, you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`)
+		message.say(typ.emojiMsg(message, ["result"], `you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`, true))
 	}
 }
