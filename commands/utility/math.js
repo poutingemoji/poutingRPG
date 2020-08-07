@@ -36,8 +36,8 @@ module.exports = class MathCommand extends Command {
                 .setColor('#ed7220')
                 .setAuthor(message.author.tag, message.author.displayAvatarURL())
                 .addFields(
-                    { name: 'Equation', value: "```py\n" + equation + "\n```"},
-                    { name: 'Result', value: "```py\n" + evaluatedEquation + "\n```"},
+                    { name: 'Equation', value: typ.mlcb(equation, "py")},
+                    { name: 'Result', value: typ.mlcb(evaluatedEquation, "py")},
                 )
                 .setTimestamp()
                 .setFooter("Calculated")

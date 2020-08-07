@@ -34,7 +34,7 @@ module.exports = class UserinfoCommand extends Command {
         const mentionedUser = user || message.author
         const mentionedMember = message.guild.member(user) || message.member
         const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ")
-        const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => typ.titleCase(permission)).join(', ')
+        const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => typ.tcase(permission)).join(', ')
 		const messageEmbed = new MessageEmbed()
             .setColor(process.env.COLOR)
             .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())

@@ -1,3 +1,5 @@
-module.exports = {
+const funcs = {
 
 }
+
+module.exports = funcs

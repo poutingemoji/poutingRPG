@@ -2,7 +2,7 @@ const { Parser } = require('expr-eval')
 const Userstat = require('../models/userstat')
 require('dotenv').config()
 
-module.exports = {
+const funcs = {
     addExp(userId, addExp) {
         Userstat.findOne({
 			userId: userId,
@@ -16,6 +16,8 @@ module.exports = {
     }
 
 }
+
+module.exports = funcs
 
 /*
 userstatSchema.virtual('addexp').set(function(addexp) {

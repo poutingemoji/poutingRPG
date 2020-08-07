@@ -49,7 +49,7 @@ module.exports = class WeatherCommand extends Command {
                 .setThumbnail(`http://openweathermap.org/img/wn/${currentWeather["icon"]}@2x.png`)
                 .addFields(
                     {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },
-                    {name: "Current Weather", value: typ.titleCase(currentWeather["description"]) },
+                    {name: "Current Weather", value: typ.tcase(currentWeather["description"]) },
                     {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
                     {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
                 )

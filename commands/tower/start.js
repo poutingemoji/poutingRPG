@@ -126,7 +126,7 @@ function raceDescription() {
 	let description = 'Choose your race:\n'
 	let i = 0
 	for (let c in rdata) {
-		description += `**${typ.titleCase(c)}**\n`
+		description += `**${typ.tcase(c)}**\n`
 		console.log()
 		for (let r in rdata[c]) {
 			i++

@@ -1,12 +1,9 @@
-module.exports = {
+const funcs = {
     randomIntFromInterval(min, max){
-        min = parseInt(min)
-        max = parseInt(max)
         return Math.floor(Math.random() * (max - min + 1) + min)
     },
     numberWithCommas(int) {
-        int = parseInt(int)
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     },
     secondsToDhms(seconds) {
         seconds = parseInt(seconds)
@@ -22,3 +19,5 @@ module.exports = {
         return dDisplay + hDisplay + mDisplay + sDisplay
     }
 }
+
+module.exports = funcs
