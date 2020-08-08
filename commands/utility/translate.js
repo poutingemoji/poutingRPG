@@ -51,6 +51,8 @@ module.exports = class TranslateCommand extends Command {
                 language.length !== 2 ? messageEmbed.addField(typ.titleCase(language), typ.mlcb(result.text)) : messageEmbed.addField(translate.languages[language], typ.mlcb(result.text))
                 message.say(messageEmbed)
             })
-            .catch(console.error(err))
+            .catch(err => {
+                console.error(err)
+            })
     }
 }
