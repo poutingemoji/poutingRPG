@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const typ = require('../../helpers/typ')
+const typ = require('../../utils/typ')
 require('dotenv').config()
 
 module.exports = class BanCommand extends Command {
@@ -39,10 +39,10 @@ module.exports = class BanCommand extends Command {
             .then(() => {
                 let bannedMsg = `Successfully banned **${user.tag}**`
                 bannedMsg += numOfDays ? ` for ${numOfDays} day(s).` : `.`
-                message.say(typ.emojiMsg(message, ["result"], bannedMsg))
+                message.say(typ.emojiMsg(message, "left", ["result"], bannedMsg))
             })
             .catch(() => {
-                message.say(typ.emojiMsg(message, ["err"], `Unable to ban **${user.tag}**.`))
+                message.say(typ.emojiMsg(message, "left", ["err"], `Unable to ban **${user.tag}**.`))
             }) 
     }
 }

@@ -1,7 +1,7 @@
 const { Command } = require("discord.js-commando")
 const { MessageAttachment } = require("discord.js")
 const { createCanvas, loadImage } = require("canvas")
-const UserSchema = require("../../models/userschema")
+const playerSchema = require("../../database/schemas/player")
 require('dotenv').config()
 
 module.exports = class ProfileCommand extends Command {
@@ -16,14 +16,14 @@ module.exports = class ProfileCommand extends Command {
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
-            args: [
-                {
-                    key: 'user',
-                    prompt: `Who's profile would you like to see?`,
+      args: [
+        {
+          key: 'user',
+          prompt: `Who's profile would you like to see?`,
 					type: 'user',
 					default: false,
-                },
-            ],
+        },
+      ],
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -34,11 +34,11 @@ module.exports = class ProfileCommand extends Command {
 	async run(message, {user}) {
 		user = user || message.author
 		if (user.bot) return
-		UserSchema.findOne({
-			userId: user.id,
-		}, (err, USER) => {
+		playerSchema.findOne({
+			discordId: user.id,
+		}, (err, player) => {
 			if (err) console.log(err)
-			if (!USER) {
+			if (!player) {
 				createImage(
 					0, // currentExp
 					1, // currentLevel
@@ -53,14 +53,14 @@ module.exports = class ProfileCommand extends Command {
 				)
 			} else {
 				createImage(
-					USER.currentExp, 
-					USER.level, 
-					USER.points, 
-					USER.position, 
-					USER.irregular, 
+					player.currentExp, 
+					player.level, 
+					player.points, 
+					player.position, 
+					player.irregular, 
 					`7D-rank`, // currentRank
-					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(USER.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
-					USER.badges,
+					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(player.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
+					player.badges,
 					user,
 					message
 				)

@@ -1,79 +1,79 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const UserSchema = require('../../models/userschema')
+const playerSchema = require('../../database/schemas/player')
 const fs = require('fs')
 require('dotenv').config()
 
-const idata = JSON.parse(fs.readFileSync('./data/items.json', 'utf8'))
+const items = require('../../data/items.js')
 
 module.exports = class BuyCommand extends Command {
-    constructor(client) {
-        super(client, {
-            name: 'buy',
-            aliases: [],
-            group: 'tower',
-            memberName: 'buy',
-            description: 'Purchase a weapon from the weapons dealer.',
-            examples: [`${process.env.PREFIX}buy [weapon]`],
-            clientPermissions: [],
-            userPermissions: [],
-            guildOnly: true,
-            args: [
-                {
-                    key: 'weapon',
-                    prompt: 'What weapon would you like to purchase?',
-                    type: 'string'
-                }
-            ],
-            throttling: {
-                usages: 1,
-                duration: 5
-            },
-        })
+  constructor(client) {
+    super(client, {
+      name: 'buy',
+      aliases: [],
+      group: 'tower',
+      memberName: 'buy',
+      description: 'Purchase a weapon from the weapons dealer.',
+      examples: [`${process.env.PREFIX}buy [weapon]`],
+      clientPermissions: [],
+      userPermissions: [],
+      guildOnly: true,
+      args: [
+        {
+          key: 'weapon',
+          prompt: 'What weapon would you like to purchase?',
+          type: 'string'
+        }
+      ],
+      throttling: {
+        usages: 1,
+        duration: 5
+      },
+    })
+  }
+
+  run(message, { weapon }) {
+    let itemID = ''
+    let itemPrice = 0
+    let itemDesc = ''
+
+    for (let i in items) { 
+      if (weapon === i) { 
+        itemID = i
+        itemPrice = items[i].price
+        itemDesc = items[i].desc
+      }
     }
 
-    run(message, { weapon }) {
-        let itemID = ''
-        let itemPrice = 0
-        let itemDesc = ''
+    itemPrice = 0
 
-        for (let i in idata) { 
-            if (weapon === i) { 
-                itemID = i
-                itemPrice = idata[i].price
-                itemDesc = idata[i].desc
-            }
-        }
+    if (itemID === '') {
+      return message.say(`Weapons Dealer: I don't have **${weapon}**.`)
+    }
 
-        itemPrice = 0
+    console.log(itemID)
 
-        if (itemID === '') {
-            return message.say(`Weapons Dealer: I don't have **${weapon}**.`)
-        }
+    playerSchema.findOne({
+			discordId: message.author.id,
+		}, (err, player) => {
+      if (err) console.log(err)
+      console.log(player.points)
+      if (player.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${items[weapon].name}**.`)
 
-        console.log(itemID)
+      console.log(player.inventory.get(itemID))
 
-        UserSchema.findOne({
-			userId: message.author.id,
-		}, (err, USER) => {
-            if (err) console.log(err)
-            console.log(USER.points)
-            if (USER.points <= itemPrice) return message.say(`Weapons Dealer: You don't have enough money for **${idata[weapon].name}**.`)
+      
+      if (!(player.inventory.get(itemID))) {
+        player.inventory.set(itemID, 1)
+      } else {
+        player.inventory.set(itemID, player.inventory.get(itemID) + 1)
+      }
+      
+      console.log(player.inventory.get(itemID))
 
-            console.log(USER.inventory.get(itemID))
-
-            
-            if (!(USER.inventory.get(itemID))) {
-                USER.inventory.set(itemID, 1)
-            } else {
-                USER.inventory.set(itemID, USER.inventory.get(itemID) + 1)
-            }
-            
-            console.log(USER.inventory.get(itemID))
-
-            USER.points = USER.points - itemPrice
-            message.channel.send(`Weapons Dealer: **${idata[weapon].name}** is yours.`)
-			USER.save().catch(err => console.log(err))
+      player.points = player.points - itemPrice
+      message.channel.send(`Weapons Dealer: **${items[weapon].name}** is yours.`)
+			player.save().catch(err => console.log(err))
 		})
-    }
+  }
 }

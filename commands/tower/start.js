@@ -1,10 +1,10 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const UserSchema = require('../../models/userschema')
+const Database = require('../../database/Database');
 const fs = require('fs')
-const typ = require('../../helpers/typ')
-const lvl = require('../../helpers/lvl')
-const User = require('../../objects/user')
+const typ = require('../../utils/typ')
+const lvl = require('../../utils/lvl')
+
 require('dotenv').config()
 
 const sdata = JSON.parse(fs.readFileSync('./data/surnames.json', 'utf8'))
@@ -23,58 +23,40 @@ module.exports = class StartCommand extends Command {
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
-            args: [
-                {
-                    key: 'restart',
-                    prompt: "New Character or Reset?",
+      args: [
+        {
+          key: 'restart',
+          prompt: "Would you like to create a new character?",
 					type: 'string',
-					oneOf: ['new', 'reset'],
+					oneOf: ['new'],
 					default: false
-                },
-            ],
-            throttling: {
-                usages: 1,
-                duration: 43200
-            },
-        })
+        },
+      ],
+      throttling: {
+        usages: 1,
+        duration: 43200
+      },
+    })
+
+    this.Database = new Database(client)
 	}
 
 	async run(message, {restart}) {
-		function findUserstat() {
-			return UserSchema.findOne({
-				userId: message.author.id,
-			}).exec()
-		}
-		var USER = await findUserstat()
-		if (USER && !restart) return
+		var player = await this.Database.findPlayer(message.author.id)
+		if (player && !restart) return
 		
-		var newUSER = new User(message.author.id)
-		function startOver() {
-			UserSchema.findOne({
-				userId: message.author.id,
-			}, (err, USER) => {
-				if (restart == "reset") {
-					newUSER.surname = USER.surname
-					newUSER.race = USER.race
-					newUSER.position = USER.position
-				}
-				USER = Object.assign(USER, newUSER)
-				USER.save().catch(err => console.log(err))
-			})
-		}
-		const confirmMsgs = {
-			"new": "I want to create a new character, I will lose all current progress",
-			"reset": "I want to reset my stats, I will only keep my surname, race and position"
-		}
-		if (confirmMsgs[restart]) {
-			message.say(typ.emojiMsg(message, ["prompt1", "prompt2"], `Type the message below to **confirm**. ${typ.mlcb(confirmMsgs[restart], "css")}`))
+		let surname
+		let race
+		let position
+
+		const confirmMsg = "I want to create a new character, I will lose all current progress"
+		if (restart) {
+			message.say(typ.emojiMsg(message, "left", ["prompt1", "prompt2"], `Type the message below to **confirm**. ${typ.mlcb(confirmMsg, "css")}`))
 			const confirmFilter = response => {
-				return confirmMsgs[restart].toLowerCase() == response.content.toLowerCase() && response.author.id === message.author.id
+				return confirmMsg.toLowerCase() == response.content.toLowerCase() && response.author.id === message.author.id
 			}
 			const confirmed = await message.channel.awaitMessages(confirmFilter, { max: 1, time: 60000 })
 		}
-		
-		if (restart == "reset") return startOver()
 
 		let { description, chooseOptions } = surnameDescription()
 		const surnameFilter = response => {
@@ -85,7 +67,7 @@ module.exports = class StartCommand extends Command {
 		message.channel.awaitMessages(surnameFilter, { max: 1, time: 60000 })
 			.then(result => {
 				const surnameOptions = surnameDescription().chooseOptions
-				newUSER.surname = surnameOptions[parseInt(result.first().content)-1]
+				surname = surnameOptions[parseInt(result.first().content)-1]
 
 				let { description, chooseOptions } = raceDescription()
 				const raceFilter = response => {
@@ -96,7 +78,7 @@ module.exports = class StartCommand extends Command {
 			})
 			.then(async result => {
 				const raceOptions  = raceDescription().chooseOptions
-				newUSER.race = raceOptions[result.first().content]
+				race = raceOptions[result.first().content]
 
 				let { description, chooseOptions } = positionDescription()
 				const positionFilter = (reaction, user) => {
@@ -111,42 +93,36 @@ module.exports = class StartCommand extends Command {
 			})
 			.then(async result => {
 				const positionOptions  = positionDescription().chooseOptions
-				newUSER.position = positionOptions[result.first().emoji.name]
+				position = positionOptions[result.first().emoji.name]
 				console.log(positionOptions[result.first().emoji.name])
 
-				if (restart = "new") {
-					startOver()
-				} else {
-					var USERSCHEMA = new UserSchema()
-					var newUSERSCHEMA = Object.assign(USERSCHEMA, newUSER)
-					newUSERSCHEMA.save().catch(err => console.log(err))
-				}
+				this.Database.createNewPlayer(message.author.id, surname, race, position)
 
 				createCharMsg.reactions.removeAll()
-				createCharMsg.edit(`${typ.emoji(message,"740795617726693435")} [**${showPosition(newUSER.position).toUpperCase()}**] ${message.author.username} **${showSurname(newUSER.surname)}** of the **${showRace(newUSER.race)}** race, I sincerely welcome you to the Tower.`)
+				createCharMsg.edit(`${typ.emoji(message,"740795617726693435")} [**${showPosition(position).toUpperCase()}**] ${message.author.username} **${showSurname(surname)}** of the **${showRace(race)}** race, I sincerely welcome you to the Tower.`)
 			})
 			.catch(result => {
 				console.log(result)
-				message.say(typ.emojiMsg(message, ["err"], "You didn't answer in time. Your registration into the Tower is cancelled."))
+				message.say(typ.emojiMsg(message, "left", ["err"], "You didn't answer in time. Your registration into the Tower is cancelled."))
 			})
 	}
 }
 
-//Show Userstats
+//Show User Info
 function showSurname(surname) {
 	return sdata[surname].name
 }
 
 function showRace(race) {
 	for (let c in rdata) {
-        if (rdata[c][race]) return rdata[c][race].name
+    if (rdata[c][race]) return rdata[c][race].name
 	}
 }
 
 function showPosition(position) {
 	return pdata[position].name
 }
-
+	
 //Descriptions
 function surnameDescription() {
 	const surnames = Object.keys(sdata)

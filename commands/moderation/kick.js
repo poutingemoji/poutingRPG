@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const typ = require('../../helpers/typ')
+const typ = require('../../utils/typ')
 require('dotenv').config()
 
 module.exports = class KickCommand extends Command {
@@ -31,10 +31,10 @@ module.exports = class KickCommand extends Command {
         message.guild.member(user)
             .kick()
             .then(() => {
-                message.say(typ.emojiMsg(message, ["result"], `Successfully kicked **${user.tag}**.`))
+                message.say(typ.emojiMsg(message, "left", ["result"], `Successfully kicked **${user.tag}**.`))
             })
             .catch(() => {
-                message.say(typ.emojiMsg(message, ["err"], `Unable to kick **${user.tag}**.`))
+                message.say(typ.emojiMsg(message, "left", ["err"], `Unable to kick **${user.tag}**.`))
             }) 
     }
 }

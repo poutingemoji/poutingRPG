@@ -1,22 +1,22 @@
 {
     "fisherman": {
-        "name": "Fisherman",
-        "emoji": "🎣"
-    },
+    "name": "Fisherman",
+    "emoji": "🎣"
+  },
     "spearbearer": {
-        "name": "Spear Bearer",
-        "emoji": "🏹"
-    },
+    "name": "Spear Bearer",
+    "emoji": "🏹"
+  },
     "scout": {
-        "name": "Scout",
-        "emoji": "🏃"
-    },
+    "name": "Scout",
+    "emoji": "🏃"
+  },
     "lightbearer": {
-        "name": "Light Bearer",
-        "emoji": "💡"
-    },
+    "name": "Light Bearer",
+    "emoji": "💡"
+  },
     "wavecontroller": {
-        "name": "Wave Controller",
-        "emoji": "🌊"
-    }
+    "name": "Wave Controller",
+    "emoji": "🌊"
+  }
 }

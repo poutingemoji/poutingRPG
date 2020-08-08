@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const typ = require('../../helpers/typ')
+const typ = require('../../utils/typ')
 require('dotenv').config()
 
 module.exports = class OwnerCommand extends Command {
@@ -22,6 +22,6 @@ module.exports = class OwnerCommand extends Command {
         })
     }
     run(message) {
-        message.say(typ.emojiMsg(message, ["result"], `my owner is **poutingemoji#5785**.`, true))
+        message.say(typ.emojiMsg(message, "left", ["result"], `my owner is **poutingemoji#5785**.`, true))
     }
 }

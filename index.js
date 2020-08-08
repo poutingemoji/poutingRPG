@@ -1,8 +1,8 @@
 const fs = require('fs')
 const { CommandoClient } = require("discord.js-commando")
 const path = require("path")
-const typ = require('./helpers/typ')
-const int = require('./helpers/int')
+const typ = require('./utils/typ')
+const int = require('./utils/int')
 require('dotenv').config()
 
 //Creating Commando Client
@@ -39,13 +39,6 @@ client.once("ready", () => {
 client.on("error", console.error)
 client.login(process.env.TOKEN)
 
-//Connecting to MongoDB Database
-const mongoose = require("mongoose")
-mongoose.connect(process.env.MONGODB_URI, {
-	useUnifiedTopology: true,
-	useNewUrlParser: true
-})
-
 client.on('message', message => {
 	if (message.author.bot) return
 	//Random Chance to Get a Tower of God Test
@@ -78,29 +71,29 @@ const giveaways = [
 ]
 function messageEvent(message, time, prize, winnerCount, embedColor, giveawayName, emoji, reaction) {
 	manager.start(message.channel, {
-        time: time,
-        prize: prize,
+    time: time,
+    prize: prize,
 		winnerCount: parseInt(winnerCount),
 		embedColor: embedColor,
 		reaction: reaction,
-        messages: {
-            giveaway: `${emoji} **${giveawayName}** ${emoji}`,
-            giveawayEnded: `${emoji} **${giveawayName} ENDED** ${emoji}`,
-            timeRemaining: "Time remaining: **{duration}**!",
-            inviteToParticipate: `React with ${reaction} to participate!`,
-            winMessage: "Congratulations, {winners}! You won **{prize}**!",
-            noWinner: "Test cancelled, no Regulars participated.",
-            winners: "winner(s)",
+    messages: {
+      giveaway: `${emoji} **${giveawayName}** ${emoji}`,
+      giveawayEnded: `${emoji} **${giveawayName} ENDED** ${emoji}`,
+      timeRemaining: "Time remaining: **{duration}**!",
+      inviteToParticipate: `React with ${reaction} to participate!`,
+      winMessage: "Congratulations, {winners}! You won **{prize}**!",
+      noWinner: "Test cancelled, no Regulars participated.",
+      winners: "winner(s)",
 			endedAt: "Ended at",
-            units: {
-                seconds: "seconds",
-                minutes: "minutes",
-                hours: "hours",
-                days: "days",
-                pluralS: false
-            }
-        }
-    })
+      units: {
+        seconds: "seconds",
+        minutes: "minutes",
+        hours: "hours",
+        days: "days",
+        pluralS: false
+      }
+    }
+  })
 }
 
 fs.writeFile('./data/giveaways.json', '[]', function() {console.log('giveaways.json Cleared.')})

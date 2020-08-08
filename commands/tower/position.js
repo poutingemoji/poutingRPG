@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const UserSchema = require('../../models/userschema')
+const playerSchema = require('../../database/schemas/player')
 require('dotenv').config()
 
 module.exports = class PositionCommand extends Command {
@@ -16,15 +16,15 @@ module.exports = class PositionCommand extends Command {
 			userPermissions: [],
 			guildOnly: true,
 			args: [],
-            throttling: {
-                usages: 1,
-                duration: 5
-            },
-        })
+      throttling: {
+        usages: 1,
+        duration: 5
+      },
+    })
 	}
 	
 	run(message) {
-        const positionIndex = Math.floor(Math.random() * Object.keys(positions).length)
+    const positionIndex = Math.floor(Math.random() * Object.keys(positions).length)
 		const position = positions[positionIndex]
 		const ranks = ['A', 'B', 'C', 'D', 'E', 'F']
 		const rankIndex = Math.floor(Math.random() * 30) + 1
@@ -36,51 +36,51 @@ module.exports = class PositionCommand extends Command {
 		const isIrregular = Math.random() >= 0.95
 		let description
 		if (isIrregular) {
-			description = `You will bring great change and chaos to the tower, ${rankLetter}-Rank ${rankNumber} ${position.Name}.`;
+			description = `You will bring great change and chaos to the tower, ${rankLetter}-Rank ${rankNumber} ${position.name}.`;
 		} else {
-			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.Name}.`
+			description = `You are ${rankLetter}-Rank ${rankNumber} ${position.name}.`
 		}
 		const badge = Math.floor(Math.random() * 6)
 		const messageEmbed = new MessageEmbed()
-			.setColor(process.env['POSITION_COLOR_' + position.Name.toUpperCase().replace(/ /g, "_")])
+			.setColor(process.env['POSITION_COLOR_' + position.name.toUpperCase().replace(/ /g, "_")])
 			.setDescription(description)
-			.setImage(position.Image)
-		UserSchema.findOne({
-			userId: message.author.id,
-		}, (err, USER) => {
+			.setImage(position.image)
+		playerSchema.findOne({
+			discordId: message.author.id,
+		}, (err, player) => {
 			if (err) console.log(err)
-			USER.position = position.Name
-			USER.irregular = isIrregular
-			USER.rank = rankIndex
-			if (USER.badges.includes(badge) === false) {
-				USER.badges.push(badge)
+			player.position = position.name
+			player.irregular = isIrregular
+			player.rank = rankIndex
+			if (player.badges.includes(badge) === false) {
+				player.badges.push(badge)
 				console.log(badge)
 			}
-			USER.save().catch(err => console.log(err))
+			player.save().catch(err => console.log(err))
 		})
 		message.say(messageEmbed)
 	}
 }
 
 const positions = {
-    [0] : {
-        Name: "Fisherman",
-        Image: "https://cdn.discordapp.com/attachments/722720878932262952/723017703581024346/Main_position_7.png",
-    },
-    [1] : {
-        Name: "Scout",
-        Image: "https://cdn.discordapp.com/attachments/722720878932262952/723017470788763659/Main_position_6.png",
-    },
-    [2] : {
-        Name: "Spear Bearer",
-        Image: "https://cdn.discordapp.com/attachments/722720878932262952/723017114872578098/Main_position_3.png",
-    },
-    [3] : {
-        Name: "Light Bearer",
-        Image: "https://cdn.discordapp.com/attachments/722720878932262952/723016426264461393/unknown.png",
-    },
-    [4] : {
-        Name: "Wave Controller",
-        Image: "https://cdn.discordapp.com/attachments/722720878932262952/723016677834489906/Main_position_2.png",
-    }
+	[0] : {
+			name: "Fisherman",
+			image: "https://cdn.discordapp.com/attachments/722720878932262952/723017703581024346/Main_position_7.png",
+	},
+	[1] : {
+			name: "Scout",
+			image: "https://cdn.discordapp.com/attachments/722720878932262952/723017470788763659/Main_position_6.png",
+	},
+	[2] : {
+			name: "Spear Bearer",
+			image: "https://cdn.discordapp.com/attachments/722720878932262952/723017114872578098/Main_position_3.png",
+	},
+	[3] : {
+			name: "Light Bearer",
+			image: "https://cdn.discordapp.com/attachments/722720878932262952/723016426264461393/unknown.png",
+	},
+	[4] : {
+			name: "Wave Controller",
+			image: "https://cdn.discordapp.com/attachments/722720878932262952/723016677834489906/Main_position_2.png",
+	}
 }

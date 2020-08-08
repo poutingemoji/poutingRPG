@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const UserSchema = require('../../models/userschema')
-const typ = require('../../helpers/typ')
+const playerSchema = require('../../database/schemas/player')
+const typ = require('../../utils/typ')
 require('dotenv').config()
 
 module.exports = class TopCommand extends Command {
@@ -16,19 +16,19 @@ module.exports = class TopCommand extends Command {
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
-            args: [
-                {
-                    key: 'filter',
-                    prompt: "Level or Points?",
+      args: [
+        {
+          key: 'filter',
+          prompt: "Level or Points?",
 					type: 'string',
 					oneOf: ['level', 'points'],
-                },
-            ],
-            throttling: {
-                usages: 1,
-                duration: 4
-            },
-        })
+        },
+      ],
+      throttling: {
+        usages: 1,
+        duration: 4
+      },
+    })
 	}
 	
 	run(message, filter) {
@@ -37,7 +37,7 @@ module.exports = class TopCommand extends Command {
 			['level'] : 'totalExp',
 			['points'] : 'points',
 		}
-		UserSchema.find()
+		playerSchema.find()
 		.sort([
 			[checkDict[filter], 'descending']
 		  ]).exec((err, res) => {
@@ -59,7 +59,7 @@ module.exports = class TopCommand extends Command {
 						} else {
 							leaderboardPosition = i + 1
 						}
-						const user = await message.client.users.fetch(res[i].userId)
+						const user = await message.client.users.fetch(res[i].discordId)
 						if (filter === 'level') {
 							topPlayers += leaderboardPosition + ` **${user.username}** ─ ${typ.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].totalExp}\n`
 						} else {

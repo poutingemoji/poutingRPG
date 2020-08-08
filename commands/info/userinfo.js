@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const typ = require('../../helpers/typ')
+const typ = require('../../utils/typ')
 require('dotenv').config()
 
 module.exports = class UserinfoCommand extends Command {
