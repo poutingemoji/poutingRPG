@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-const { playerSchema, newPlayerObj, resetPlayerObj } = require('./schemas/player');
+const { playerSchema, newPlayerObj } = require('./schemas/player');
 
 const Player = mongoose.model('Player', playerSchema);
 
@@ -65,8 +65,7 @@ class Database {
       console.log(result._id);
       return resolve(result);
     })
-    );
-  }
+  )};
 }
 
 module.exports = Database;

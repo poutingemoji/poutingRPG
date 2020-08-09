@@ -2,8 +2,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const Database = require('../../database/Database');
 const fs = require('fs')
-const typ = require('../../utils/typ')
-const lvl = require('../../utils/lvl')
+const Helper = require('../../utils/Helper')
 
 require('dotenv').config()
 
@@ -51,7 +50,7 @@ module.exports = class StartCommand extends Command {
 
 		const confirmMsg = "I want to create a new character, I will lose all current progress"
 		if (restart) {
-			message.say(typ.emojiMsg(message, "left", ["prompt1", "prompt2"], `Type the message below to **confirm**. ${typ.mlcb(confirmMsg, "css")}`))
+			message.say(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `Type the message below to **confirm**. ${Helper.mlcb(confirmMsg, "css")}`))
 			const confirmFilter = response => {
 				return confirmMsg.toLowerCase() == response.content.toLowerCase() && response.author.id === message.author.id
 			}
@@ -99,11 +98,11 @@ module.exports = class StartCommand extends Command {
 				this.Database.createNewPlayer(message.author.id, surname, race, position)
 
 				createCharMsg.reactions.removeAll()
-				createCharMsg.edit(`${typ.emoji(message,"740795617726693435")} [**${showPosition(position).toUpperCase()}**] ${message.author.username} **${showSurname(surname)}** of the **${showRace(race)}** race, I sincerely welcome you to the Tower.`)
+				createCharMsg.edit(`${Helper.emoji(message,"740795617726693435")} [**${showPosition(position).toUpperCase()}**] ${message.author.username} **${showSurname(surname)}** of the **${showRace(race)}** race, I sincerely welcome you to the Tower.`)
 			})
 			.catch(result => {
 				console.log(result)
-				message.say(typ.emojiMsg(message, "left", ["err"], "You didn't answer in time. Your registration into the Tower is cancelled."))
+				message.say(Helper.emojiMsg(message, "left", ["err"], "You didn't answer in time. Your registration into the Tower is cancelled."))
 			})
 	}
 }
@@ -142,7 +141,7 @@ function raceDescription() {
 	let description = 'Choose your race:\n'
 	let i = 0
 	for (let c in rdata) {
-		description += `**${typ.titleCase(c)}**\n`
+		description += `**${Helper.titleCase(c)}**\n`
 		console.log()
 		for (let r in rdata[c]) {
 			i++

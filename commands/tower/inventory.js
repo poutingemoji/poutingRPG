@@ -2,7 +2,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const playerSchema = require('../../database/schemas/player')
 const fs = require('fs')
-const typ = require('../../utils/typ')
+const Helper = require('../../utils/Helper')
 require('dotenv').config()
 
 const items = require('../../data/items')
@@ -45,7 +45,7 @@ module.exports = class InventoryCommand extends Command {
       const pageLimit = Math.ceil(items.length/itemsPerPage)
       
       if (!(page >= 1 && page <= pageLimit)) {
-        return message.say(typ.emojiMsg(message, "left", ["err"], `Page **${page}** doesn't exist.`))
+        return message.say(Helper.emojiMsg(message, "left", ["err"], `Page **${page}** doesn't exist.`))
       }
 
       const current = items.slice((page-1)*itemsPerPage, page*itemsPerPage)

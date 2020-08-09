@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const fetch = require("node-fetch")
-const typ = require('../../utils/typ')
+const Helper = require('../../utils/Helper')
+const Requester = require('../../utils/Requester')
 require('dotenv').config()
 
 module.exports = class WeatherCommand extends Command {
@@ -32,8 +32,8 @@ module.exports = class WeatherCommand extends Command {
   async run(message, {place}) {
     try {
       const weatherURL = isNaN(place) ? `https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}` : `https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`
-      let weatherInfo = await fetch(weatherURL)
-      weatherInfo = await weatherInfo.json()
+      let weatherInfo = await Requester.request(weatherURL)
+      console.log(weatherInfo)
       if (weatherInfo.name === undefined) {
         throw `Can't find info on the weather in **${place}**.`
       }
@@ -44,7 +44,7 @@ module.exports = class WeatherCommand extends Command {
         .setThumbnail(`http://openweathermap.org/img/wn/${currentWeather["icon"]}@2x.png`)
         .addFields(
           {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },
-          {name: "Current Weather", value: typ.titleCase(currentWeather["description"]) },
+          {name: "Current Weather", value: Helper.titleCase(currentWeather["description"]) },
           {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
           {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
         )
@@ -53,7 +53,7 @@ module.exports = class WeatherCommand extends Command {
       message.say(messageEmbed)
     } catch(err) {
       console.log(err)
-      message.say(typ.emojiMsg(message, "left", ["err"], err))   
+      message.say(Helper.emojiMsg(message, "left", ["err"], err))   
     }
   }
 }

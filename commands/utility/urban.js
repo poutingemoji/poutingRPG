@@ -1,8 +1,8 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const fetch = require("node-fetch")
-const typ = require('../../utils/typ')
+const Helper = require('../../utils/Helper')
+const Requester = require('../../utils/Requester')
 require('dotenv').config()
 
 module.exports = class UrbanCommand extends Command {
@@ -33,11 +33,10 @@ module.exports = class UrbanCommand extends Command {
   }
   async run(message, {term}) {
     try {
-      let urbanRequest = await fetch(`https://api.urbandictionary.com/v0/define?term=${term}`)
-      urbanRequest = await urbanRequest.json()
+      let urbanRequest = await Requester.request(`https://api.urbandictionary.com/v0/define?term=${term}`)
       const urbanList = urbanRequest["list"]
       const urbanInfo = urbanList[Math.floor(Math.random()*urbanList.length)]
-      if (!urbanInfo) throw typ.emojiMsg(message, "left", ["err"], `Can't find the term, **${term}**, on Urban Dictionary.`)
+      if (!urbanInfo) throw Helper.emojiMsg(message, "left", ["err"], `Can't find the term, **${term}**, on Urban Dictionary.`)
       const messageEmbed = new MessageEmbed()
         .setColor("#199ceb")
         .setTitle(urbanInfo["word"])

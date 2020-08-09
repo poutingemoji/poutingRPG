@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const playerSchema = require('../../database/schemas/player')
-const typ = require('../../utils/typ')
+const Helper = require('../../utils/Helper')
 require('dotenv').config()
 
 module.exports = class TopCommand extends Command {
@@ -48,7 +48,7 @@ module.exports = class TopCommand extends Command {
 			let topPlayers = ''
 			const messageEmbed = new MessageEmbed()
 				.setColor('#2f3136')
-				.setTitle(`Global Leaderboard [${typ.titleCase(filter)}]`)
+				.setTitle(`Global Leaderboard [${Helper.titleCase(filter)}]`)
 			async function getUser() {
 				try {
 					for (let i = 0; i < leaderboardMaxUsers; i++) {
@@ -61,9 +61,9 @@ module.exports = class TopCommand extends Command {
 						}
 						const user = await message.client.users.fetch(res[i].discordId)
 						if (filter === 'level') {
-							topPlayers += leaderboardPosition + ` **${user.username}** ─ ${typ.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].totalExp}\n`
+							topPlayers += leaderboardPosition + ` **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].totalExp}\n`
 						} else {
-							topPlayers += leaderboardPosition + `  **${user.username}** ─ ${typ.titleCase(filter)}: ${res[i].points}\n`
+							topPlayers += leaderboardPosition + `  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].points}\n`
 						}
 					}
 					messageEmbed.setDescription(topPlayers)

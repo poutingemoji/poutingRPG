@@ -1,7 +1,6 @@
 const { Command } = require('discord.js-commando')
 const playerSchema = require('../../database/schemas/player')
-const typ = require('../../utils/typ')
-const int = require('../../utils/int')
+const Helper = require('../../utils/Helper')
 require('dotenv').config()
 
 module.exports = class DailyCommand extends Command {
@@ -25,8 +24,8 @@ module.exports = class DailyCommand extends Command {
 	}
 	
 	run(message) {
-		let expAdd = int.randomIntFromInterval(250, 400)
-		let pointsAdd = int.randomIntFromInterval(400, 600)
+		let expAdd = Helper.randomIntFromInterval(250, 400)
+		let pointsAdd = Helper.randomIntFromInterval(400, 600)
 		
 		playerSchema.findOne({
 			discordId: message.author.id,
@@ -39,13 +38,13 @@ module.exports = class DailyCommand extends Command {
 			if(nextLevel <= currentExp) {
 				player.level++
 				player.currentExp = 0
-				message.say(`${typ.emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${typ.emoji(message, "729255637837414450")}`)
+				message.say(`${Helper.emoji(message, "729255616786464848")} You are now **Level ${currentLevel + 1}**! ${Helper.emoji(message, "729255637837414450")}`)
 			}
 
 			player.points = player.points + pointsAdd
 
 			player.save().catch(err => console.log(err))
 		})
-		message.say(typ.emojiMsg(message, "left", ["result"], `you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`, true))
+		message.say(Helper.emojiMsg(message, "left", ["result"], `you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`, true))
 	}
 }

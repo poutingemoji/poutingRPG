@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const { Parser } = require('expr-eval')
-const typ = require('../../utils/typ')
+const Helper = require('../../utils/Helper')
 require('dotenv').config()
 
 module.exports = class MathCommand extends Command {
@@ -36,15 +36,15 @@ module.exports = class MathCommand extends Command {
         .setColor('#ed7220')
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .addFields(
-          { name: 'Equation', value: typ.mlcb(equation, "py")},
-          { name: 'Result', value: typ.mlcb(evaluatedEquation, "py")},
+          { name: 'Equation', value: Helper.mlcb(equation, "py")},
+          { name: 'Result', value: Helper.mlcb(evaluatedEquation, "py")},
         )
         .setTimestamp()
         .setFooter("Calculated")
       message.say(messageEmbed)
     } catch (err) {
       console.error(err)
-      return message.say(typ.emojiMsg(message, "left", ["err"], `The equation provided could not be evaluated.`))
+      return message.say(Helper.emojiMsg(message, "left", ["err"], `The equation provided could not be evaluated.`))
     }
   }
 }

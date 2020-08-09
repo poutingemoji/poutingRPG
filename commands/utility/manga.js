@@ -1,8 +1,8 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const dateFormat = require('dateformat')
-const fetch = require("node-fetch")
-const typ = require('../../utils/typ')
+const Helper = require('../../utils/Helper')
+const Requester = require('../../utils/Requester')
 require('dotenv').config()
 
 const checkDict = {
@@ -33,7 +33,6 @@ module.exports = class MangaCommand extends Command {
           type: 'string',
         },
       ],
- 
       throttling: {
         usages: 1,
         duration: 10
@@ -42,10 +41,10 @@ module.exports = class MangaCommand extends Command {
   }
   async run(message, {manga}) {
     try {
-      var sentMessage = await message.say(typ.emojiMsg(message, "left", ["loading"], `Searching for requested anime... \:mag_right:`))
-      var mangaRequest = await fetchMangaInfo(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
+      var sentMessage = await message.say(Helper.emojiMsg(message, "left", ["loading"], `Searching for requested anime... \:mag_right:`))
+      var mangaRequest = await Requester.request(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
       console.log(mangaRequest["data"][1])
-      if (mangaRequest["data"][0] === undefined) return sentMessage.edit(typ.emojiMsg(message, "left", ["err"], `Could not find info on ${manga}`))
+      if (mangaRequest["data"][0] === undefined) return sentMessage.edit(Helper.emojiMsg(message, "left", ["err"], `Could not find info on ${manga}`))
     } catch(err) {
       console.error(err)
     }
@@ -60,7 +59,7 @@ module.exports = class MangaCommand extends Command {
     }
     const filter = response => options.includes(parseInt(response.content))
     let mangaInfo
-    sentMessage.edit(typ.emojiMsg(message, "left", ["prompt1", "prompt2"], `I have found about ${mangaRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`, true)).then(() => {
+    sentMessage.edit(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `I have found about ${mangaRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`, true)).then(() => {
       message.channel.awaitMessages(filter, { max: 1, time: 12000 })
         .then(result => {
           const chosenMangaIndex = result.first().content-1
@@ -87,16 +86,9 @@ module.exports = class MangaCommand extends Command {
         })
         .catch(err => {
           console.error(err)
-          message.say(typ.emojiMsg(message, "left", ["err"], "you didn't answer in time. This search is cancelled.", true))
+          message.say(Helper.emojiMsg(message, "left", ["err"], "you didn't answer in time. This search is cancelled.", true))
         })
     })
   }
 }
-
-async function fetchMangaInfo(URL) {
-  const res = await fetch(URL)
-  return await res.json()
-}
-
-
  

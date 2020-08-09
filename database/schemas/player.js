@@ -43,16 +43,16 @@ const playerSchema = new mongoose.Schema({
 const newPlayerObj = (discordId, surname, race, position) => {
   return {
     playerId: discordId,
-    exp: 0,
-    level: 1,
-    points: 0,
-    irregular: Math.random() >= 0.5,
+    exp: playerSchema.obj.exp.default,
+    level: playerSchema.obj.level.default,
+    points: playerSchema.obj.points.default,
+    irregular: playerSchema.obj.irregular.default,
     surname: surname,
     race: race,
     position: position,
-    rank: 30,
-    badges: [],
-    inventory: {},
+    rank: playerSchema.obj.rank.default,
+    badges: playerSchema.obj.badges.default,
+    inventory: playerSchema.obj.inventory.default,
   }
 }
 
