@@ -1,7 +1,6 @@
 const fs = require('fs');
 const edata = JSON.parse(fs.readFileSync('./data/emojis.json', 'utf8'));
 
-
 class Helper {
 
   olcb(str) {
@@ -31,7 +30,7 @@ class Helper {
     let content = '';
     if (align == "left") {
       for (let i = 0; i < emoji.length; i++) {
-        content += emoji(message, edata[emoji[i]]);
+        content += this.emoji(message, edata[emoji[i]]);
       }
       author ? content += ` **${message.author.username}**,` : content += '';
       return content + ` ${str}`;
@@ -40,9 +39,9 @@ class Helper {
       content += `${str} `;
       for (let i = 0; i < emoji.length; i++) {
         if (i % 2 == 0) {
-          content = emoji(message, edata[emoji[i]]) + content;
+          content = this.emoji(message, edata[emoji[i]]) + content;
         } else {
-          content += emoji(message, edata[emoji[i]]);
+          content += this.emoji(message, edata[emoji[i]]);
         }
       }
       return content;
@@ -75,6 +74,3 @@ class Helper {
 
 module.exports = new Helper();
 
-emoji(message, emojiId) {
-  return message.client.emojis.cache.get(emojiId).toString();
-}
