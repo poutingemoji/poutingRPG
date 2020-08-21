@@ -33,7 +33,8 @@ client.once("ready", () => {
 	client.user.setActivity(`${process.env.PREFIX}help`, {
 		type: "STREAMING",
 		url: "https://www.twitch.tv/rikaaaa_"
-	})
+  })
+  console.log(client.guilds.cache.size)
 })
 client.on("error", console.error)
 client.login(process.env.TOKEN)
