@@ -30,7 +30,7 @@ class Helper {
     let content = '';
     if (align == "left") {
       for (let i = 0; i < emoji.length; i++) {
-        content += funcs.emoji(message, edata[emoji[i]]);
+        content += Helper.emoji(message, edata[emoji[i]]);
       }
       author ? content += ` **${message.author.username}**,` : content += '';
       return content + ` ${str}`;
@@ -39,9 +39,9 @@ class Helper {
       content += `${str} `;
       for (let i = 0; i < emoji.length; i++) {
         if (i % 2 == 0) {
-          content = funcs.emoji(message, edata[emoji[i]]) + content;
+          content = Helper.emoji(message, edata[emoji[i]]) + content;
         } else {
-          content += funcs.emoji(message, edata[emoji[i]]);
+          content += Helper.emoji(message, edata[emoji[i]]);
         }
       }
       return content;
