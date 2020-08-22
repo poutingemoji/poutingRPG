@@ -41,14 +41,14 @@ module.exports = class TranslateCommand extends Command {
       to: translate.languages.getCode(language.toLowerCase()), 
     }
     translate(content, opts)
-      .then(result => {
+      .then(res => {
         const messageEmbed = new MessageEmbed()
           .setColor("#4c8cf5")
           .setAuthor(message.author.tag, message.author.displayAvatarURL())
-          .addField(translate.languages[result.from.language.iso], Helper.mlcb(content))
+          .addField(translate.languages[res.from.language.iso], Helper.mlcb(content))
           .setTimestamp()
           .setFooter("Translated")
-        language.length !== 2 ? messageEmbed.addField(Helper.titleCase(language), Helper.mlcb(result.text)) : messageEmbed.addField(translate.languages[language], Helper.mlcb(result.text))
+        language.length !== 2 ? messageEmbed.addField(Helper.titleCase(language), Helper.mlcb(res.text)) : messageEmbed.addField(translate.languages[language], Helper.mlcb(res.text))
         message.say(messageEmbed)
       })
       .catch(err => {

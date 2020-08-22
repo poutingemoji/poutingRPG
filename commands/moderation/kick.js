@@ -31,7 +31,7 @@ module.exports = class KickCommand extends Command {
         message.guild.member(user)
             .kick()
             .then(() => {
-                message.say(Helper.emojiMsg(message, "left", ["result"], `Successfully kicked **${user.tag}**.`))
+                message.say(Helper.emojiMsg(message, "left", ["res"], `Successfully kicked **${user.tag}**.`))
             })
             .catch(() => {
                 message.say(Helper.emojiMsg(message, "left", ["err"], `Unable to kick **${user.tag}**.`))

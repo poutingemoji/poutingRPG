@@ -1,5 +1,4 @@
-const fs = require('fs');
-const edata = JSON.parse(fs.readFileSync('./data/emojis.json', 'utf8'));
+const edata = require('../data/emojis.js')
 
 class Helper {
 

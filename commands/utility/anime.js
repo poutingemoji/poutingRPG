@@ -61,8 +61,8 @@ module.exports = class AnimeCommand extends Command {
     let animeInfo
     sentMessage.edit(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `I have found about ${animeRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`, true)).then(() => {
       message.channel.awaitMessages(filter, { max: 1, time: 12000 })
-        .then(result => {
-          const chosenAnimeIndex = result.first().content-1
+        .then(res => {
+          const chosenAnimeIndex = res.first().content-1
           animeInfo = animeRequest["data"][chosenAnimeIndex]["attributes"]
           sentMessage.delete()
           //console.log(animeInfo)

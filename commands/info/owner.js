@@ -22,6 +22,6 @@ module.exports = class OwnerCommand extends Command {
         })
     }
     run(message) {
-        message.say(Helper.emojiMsg(message, "left", ["result"], `my owner is **poutingemoji#5785**.`, true))
+        message.say(Helper.emojiMsg(message, "left", ["res"], `my owner is **poutingemoji#5785**.`, true))
     }
 }

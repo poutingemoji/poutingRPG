@@ -45,6 +45,6 @@ module.exports = class DailyCommand extends Command {
 
 			player.save().catch(err => console.log(err))
 		})
-		message.say(Helper.emojiMsg(message, "left", ["result"], `you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`, true))
+		message.say(Helper.emojiMsg(message, "left", ["res"], `you received your daily reward of **${pointsAdd}** points and **${expAdd}** experience.`, true))
 	}
 }

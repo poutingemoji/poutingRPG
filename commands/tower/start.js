@@ -1,14 +1,12 @@
 const { Command } = require('discord.js-commando')
-const { MessageEmbed } = require('discord.js')
-const Database = require('../../database/Database');
-const fs = require('fs')
+const Database = require('../../database/Database.js');
 const Helper = require('../../utils/Helper')
 
 require('dotenv').config()
 
-const sdata = JSON.parse(fs.readFileSync('./data/surnames.json', 'utf8'))
-const rdata = JSON.parse(fs.readFileSync('./data/races.json', 'utf8'))
-const pdata = JSON.parse(fs.readFileSync('./data/positions.json', 'utf8'))
+const sdata = require('../../data/surnames.js')
+const rdata = require('../../data/races.js')
+const pdata = require('../../data/positions.js')
 
 module.exports = class StartCommand extends Command {
 	constructor(client) {
@@ -37,7 +35,7 @@ module.exports = class StartCommand extends Command {
       },
     })
 
-    this.Database = new Database(client)
+    this.Database = new Database(Helper)
 	}
 
 	async run(message, {restart}) {
@@ -57,27 +55,26 @@ module.exports = class StartCommand extends Command {
 			const confirmed = await message.channel.awaitMessages(confirmFilter, { max: 1, time: 60000 })
 		}
 
-		let { description, chooseOptions } = surnameDescription()
+		let description = surnameDescription()
 		const surnameFilter = response => {
-			return Object.keys(chooseOptions).includes(response.content) && response.author.id === message.author.id
+			return Object.keys(sdata).includes(response.content) && response.author.id === message.author.id
 		}
 		var createCharMsg = await message.say(description)
 
 		message.channel.awaitMessages(surnameFilter, { max: 1, time: 60000 })
-			.then(result => {
-				const surnameOptions = surnameDescription().chooseOptions
-				surname = surnameOptions[parseInt(result.first().content)-1]
+			.then(res => {
+				surname = res.first().content
 
-				let { description, chooseOptions } = raceDescription()
+				let description = raceDescription()
 				const raceFilter = response => {
-					return Object.keys(chooseOptions).includes(response.content) && response.author.id === message.author.id
-				}
+					return Object.keys(rdata).includes(response.content) && response.author.id === message.author.id
+        }
+        console.log(rdata)
 				createCharMsg.edit(description)
 				return message.channel.awaitMessages(raceFilter, { max: 1, time: 60000 })
 			})
-			.then(async result => {
-				const raceOptions  = raceDescription().chooseOptions
-				race = raceOptions[result.first().content]
+			.then(async res => {
+				race = res.first().content
 
 				let { description, chooseOptions } = positionDescription()
 				const positionFilter = (reaction, user) => {
@@ -90,66 +87,43 @@ module.exports = class StartCommand extends Command {
 				}
 				return positionMessage.awaitReactions(positionFilter, { max: 1, time: 60000 })
 			})
-			.then(async result => {
-				const positionOptions  = positionDescription().chooseOptions
-				position = positionOptions[result.first().emoji.name]
-				console.log(positionOptions[result.first().emoji.name])
+			.then(async res => {
+				position = positionDescription().chooseOptions[res.first().emoji.name]
 
+        console.log(surname, race, position)
 				this.Database.createNewPlayer(message.author.id, surname, race, position)
 
 				createCharMsg.reactions.removeAll()
-				createCharMsg.edit(`${Helper.emoji(message,"740795617726693435")} [**${showPosition(position).toUpperCase()}**] ${message.author.username} **${showSurname(surname)}** of the **${showRace(race)}** race, I sincerely welcome you to the Tower.`)
+				createCharMsg.edit(`${Helper.emoji(message,"740795617726693435")} [**${pdata[position].name.toUpperCase()}**] ${message.author.username} **${sdata[surname].name}** of the **${rdata[race].name}** race, I sincerely welcome you to the Tower.`)
 			})
-			.catch(result => {
-				console.log(result)
+			.catch(res => {
+				console.log(res)
 				message.say(Helper.emojiMsg(message, "left", ["err"], "You didn't answer in time. Your registration into the Tower is cancelled."))
 			})
 	}
 }
 
-//Show User Info
-function showSurname(surname) {
-	return sdata[surname].name
-}
-
-function showRace(race) {
-	for (let c in rdata) {
-    if (rdata[c][race]) return rdata[c][race].name
-	}
-}
-
-function showPosition(position) {
-	return pdata[position].name
-}
-	
 //Descriptions
 function surnameDescription() {
 	const surnames = Object.keys(sdata)
-	let chooseOptions = {}
 	let description = 'Choose your surname:\n'
 	for (let i = 0; i < surnames.length; i++) {
-		const index = i+1
-		const surname = surnames[i]
-		description += `${index} - **${sdata[surname].name}**\n`
-		chooseOptions[index] = surname
+		description += `${i} - **${sdata[i].name}**\n`
 	}
-	return {description, chooseOptions}
+	return description
 }
 
 function raceDescription() {
-	let chooseOptions = {}
 	let description = 'Choose your race:\n'
-	let i = 0
-	for (let c in rdata) {
-		description += `**${Helper.titleCase(c)}**\n`
-		console.log()
-		for (let r in rdata[c]) {
-			i++
-			description += `${i} - ${rdata[c][r].name}\n`
-			chooseOptions[i] = r
-		}
-	}
-	return {description, chooseOptions}
+  let categories = []
+  for (var i = 0; i < rdata.length; i++) {
+    if (!categories.includes(rdata[i].type)) {
+      categories.push(rdata[i].type)
+      description += `**${Helper.titleCase(rdata[i].type)}**\n`
+    }
+    description += `${i} - ${rdata[i].name}\n`
+  }
+	return description
 }
 
 function positionDescription() {
@@ -158,10 +132,8 @@ function positionDescription() {
 	let description = 'Choose your position:\n'
 	let i = 0
 	for (let i = 0; i < positions.length; i++) {
-		const index = pdata[positions[i]].emoji
-		const position = positions[i]
-		description += `${index} - **${pdata[position].name}**\n`
-		chooseOptions[index] = position
+		description += `${pdata[i].emoji} - **${pdata[i].name}**\n`
+		chooseOptions[pdata[i].emoji] = i
 	}
 	return {description, chooseOptions}
 }

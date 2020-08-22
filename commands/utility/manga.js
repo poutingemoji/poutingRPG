@@ -61,8 +61,8 @@ module.exports = class MangaCommand extends Command {
     let mangaInfo
     sentMessage.edit(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `I have found about ${mangaRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`, true)).then(() => {
       message.channel.awaitMessages(filter, { max: 1, time: 12000 })
-        .then(result => {
-          const chosenMangaIndex = result.first().content-1
+        .then(res => {
+          const chosenMangaIndex = res.first().content-1
           mangaInfo = mangaRequest["data"][chosenMangaIndex]["attributes"]
           sentMessage.delete()
           //console.log(mangaInfo)

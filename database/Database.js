@@ -44,12 +44,12 @@ class Database {
   }
 
   findPlayer(discordId) {
-  return new Promise((resolve, reject) => Player.findOne({ playerId: discordId }, (err, result) => {
+  return new Promise((resolve, reject) => Player.findOne({ playerId: discordId }, (err, res) => {
     if (err) {
     return reject(err);
     }
 
-    return resolve(result);
+    return resolve(res);
   }));
   }
 
@@ -57,13 +57,13 @@ class Database {
     return new Promise((resolve, reject) => Player.replaceOne({ playerId: discordId },
     newPlayerObj(discordId, surname, race, position),
     { upsert: true },
-    (err, result) => {
+    (err, res) => {
       if (err) {
       return reject(err);
       }
-      console.log(result);
-      console.log(result._id);
-      return resolve(result);
+      console.log(res);
+      console.log(res._id);
+      return resolve(res);
     })
   )};
 }

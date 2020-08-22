@@ -39,7 +39,7 @@ module.exports = class BanCommand extends Command {
             .then(() => {
                 let bannedMsg = `Successfully banned **${user.tag}**`
                 bannedMsg += numOfDays ? ` for ${numOfDays} day(s).` : `.`
-                message.say(Helper.emojiMsg(message, "left", ["result"], bannedMsg))
+                message.say(Helper.emojiMsg(message, "left", ["res"], bannedMsg))
             })
             .catch(() => {
                 message.say(Helper.emojiMsg(message, "left", ["err"], `Unable to ban **${user.tag}**.`))
