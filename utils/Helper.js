@@ -16,6 +16,7 @@ class Helper {
   }
 
   titleCase(str) {
+    str = String(str)
     str = str.replace(/_/g, " ");
     var splitStr = str.toLowerCase().split(' ');
     for (let i = 0; i < splitStr.length; i++) {

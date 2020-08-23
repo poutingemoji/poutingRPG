@@ -67,9 +67,10 @@ class Database {
   )};
 
   loadTop10(type) {
-    return new Player.find()
+    return Player.find()
       .sort(type)
-      .limit(10);
+      .limit(10)
+      .exec()
   }
 
 }
