@@ -36,9 +36,9 @@ const playerSchema = new mongoose.Schema({
   },
 })
 
-const newPlayerObj = (discordId, surname, race, position) => {
+const newPlayerObj = (playerId, surname, race, position) => {
   return {
-    playerId: discordId,
+    playerId: playerId,
     surname: surname,
     race: race,
     position: position,

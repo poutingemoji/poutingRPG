@@ -21,6 +21,7 @@ module.exports = class DailyCommand extends Command {
         duration: 82800
       },
     })
+
 	}
 	
 	run(message) {
@@ -28,7 +29,7 @@ module.exports = class DailyCommand extends Command {
 		let pointsAdd = Helper.randomIntFromInterval(400, 600)
 		
 		playerSchema.findOne({
-			discordId: message.author.id,
+			playerId: message.author.id,
 		}, (err, player) => {
 			let currentExp = player.currentExp
 			let currentLevel = player.level

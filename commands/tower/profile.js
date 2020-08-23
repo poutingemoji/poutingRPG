@@ -28,14 +28,15 @@ module.exports = class ProfileCommand extends Command {
 				usages: 1,
 				duration: 5
 			},
-		})
+    })
+    
 	}
 	
 	async run(message, {user}) {
 		user = user || message.author
 		if (user.bot) return
 		playerSchema.findOne({
-			discordId: user.id,
+			playerId: user.id,
 		}, (err, player) => {
 			if (err) console.log(err)
 			if (!player) {

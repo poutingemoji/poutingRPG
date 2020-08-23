@@ -30,6 +30,7 @@ module.exports = class BuyCommand extends Command {
         duration: 5
       },
     })
+
   }
 
   run(message, { weapon }) {
@@ -54,7 +55,7 @@ module.exports = class BuyCommand extends Command {
     console.log(itemID)
 
     playerSchema.findOne({
-			discordId: message.author.id,
+			playerId: message.author.id,
 		}, (err, player) => {
       if (err) console.log(err)
       console.log(player.points)

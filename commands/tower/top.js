@@ -2,6 +2,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 const playerSchema = require('../../database/schemas/player')
 const Helper = require('../../utils/Helper')
+const Database = require('../../database/Database');
 require('dotenv').config()
 
 module.exports = class TopCommand extends Command {
@@ -32,6 +33,7 @@ module.exports = class TopCommand extends Command {
 	}
 	
 	run(message, filter) {
+    
 		filter = filter['filter']
 		const checkDict = {
 			['level'] : 'totalExp',
@@ -59,7 +61,7 @@ module.exports = class TopCommand extends Command {
 						} else {
 							leaderboardPosition = i + 1
 						}
-						const user = await message.client.users.fetch(res[i].discordId)
+						const user = await message.client.users.fetch(res[i].playerId)
 						if (filter === 'level') {
 							topPlayers += leaderboardPosition + ` **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].totalExp}\n`
 						} else {

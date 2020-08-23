@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const Database = require('../../database/Database.js');
+const Database = require('../../database/Database');
 const Helper = require('../../utils/Helper')
 
 require('dotenv').config()
@@ -35,11 +35,10 @@ module.exports = class StartCommand extends Command {
       },
     })
 
-    this.Database = new Database(Helper)
 	}
 
 	async run(message, {restart}) {
-		var player = await this.Database.findPlayer(message.author.id)
+		var player = await Database.findPlayer(message.author.id)
 		if (player && !restart) return
 		
 		let surname
@@ -91,7 +90,7 @@ module.exports = class StartCommand extends Command {
 				position = positionDescription().chooseOptions[res.first().emoji.name]
 
         console.log(surname, race, position)
-				this.Database.createNewPlayer(message.author.id, surname, race, position)
+				Database.createNewPlayer(message.author.id, surname, race, position)
 
 				createCharMsg.reactions.removeAll()
 				createCharMsg.edit(`${Helper.emoji(message,"740795617726693435")} [**${pdata[position].name.toUpperCase()}**] ${message.author.username} **${sdata[surname].name}** of the **${rdata[race].name}** race, I sincerely welcome you to the Tower.`)

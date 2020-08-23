@@ -32,9 +32,11 @@ client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`)
 	client.user.setActivity(`${process.env.PREFIX}help`, {
 		type: "STREAMING",
-		url: "https://www.twitch.tv/rikaaaa_"
+		url: "https://www.twitch.tv/pokimane"
   })
-  console.log(client.guilds.cache.size)
+  console.log("Guilds: " + client.guilds.cache.size)
+  console.log("Users: " + client.users.cache.size)
+  client.guilds.cache.map(guild => console.log(guild.memberCount))
 })
 client.on("error", console.error)
 client.login(process.env.TOKEN)

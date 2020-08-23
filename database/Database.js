@@ -40,11 +40,11 @@ mongoose.connection.on('error', (err) => {
 
 class Database {
   constructor() {
-  connect();
+    connect();
   }
 
-  findPlayer(discordId) {
-  return new Promise((resolve, reject) => Player.findOne({ playerId: discordId }, (err, res) => {
+  findPlayer(playerId) {
+  return new Promise((resolve, reject) => Player.findOne({ playerId: playerId }, (err, res) => {
     if (err) {
     return reject(err);
     }
@@ -53,19 +53,25 @@ class Database {
   }));
   }
 
-  createNewPlayer(discordId, surname, race, position) {
-    return new Promise((resolve, reject) => Player.replaceOne({ playerId: discordId },
-    newPlayerObj(discordId, surname, race, position),
+  createNewPlayer(playerId, surname, race, position) {
+    return new Promise((resolve, reject) => Player.replaceOne({ playerId: playerId },
+    newPlayerObj(playerId, surname, race, position),
     { upsert: true },
     (err, res) => {
       if (err) {
       return reject(err);
       }
-      console.log(res);
-      console.log(res._id);
+
       return resolve(res);
     })
   )};
+
+  loadTop10(type) {
+    return new Player.find()
+      .sort(type)
+      .limit(10);
+  }
+
 }
 
-module.exports = Database;
+module.exports = new Database();
