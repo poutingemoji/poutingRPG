@@ -9,7 +9,7 @@ module.exports = class ProfileCommand extends Command {
 		super(client, {
 			name: "profile",
 			aliases: [],
-			group: "tower",
+			group: "game",
 			memberName: "profile",
 			description: "Displays your profile.",
 			examples: [`${process.env.PREFIX}profile [@user/id]`],

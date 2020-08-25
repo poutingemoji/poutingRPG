@@ -1,19 +1,21 @@
 const edata = require('../data/emojis.js')
+const { MessageEmbed } = require('discord.js')
 
 class Helper {
-
-  olcb(str) {
-    return `\`${str}`;
-  }
-
+  messageEmbed(desc, color) {
+    const messageEmbed = new MessageEmbed()
+    .setColor(color || '#2f3136')
+    .setDescription(desc)
+    return messageEmbed;
+  };
   mlcb(str, syntax) {
     syntax = typeof syntax !== 'undefined' ? syntax : '';
     return "```" + `${syntax}\n${str}` + "```\n";
-  }
+  };
   
   emoji(message, emojiId) {
     return message.client.emojis.cache.get(emojiId).toString();
-  }
+  };
 
   titleCase(str) {
     str = String(str)
@@ -23,7 +25,7 @@ class Helper {
       splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
     }
     return splitStr.join(' ');
-  }
+  };
 
   emojiMsg(message, align, emoji, str, author) {
     author = typeof author !== 'undefined' ? author : false;
@@ -45,16 +47,12 @@ class Helper {
         }
       }
       return content;
-    }
-  }
-
-  randomIntFromInterval(min, max){
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
+    };
+  };
 
   numberWithCommas(int) {
     return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+  };
 
   secondsToDhms(seconds) {
     seconds = parseInt(seconds);
@@ -63,13 +61,38 @@ class Helper {
     var m = Math.floor(seconds % 3600 / 60);
     var s = Math.floor(seconds % 60);
     
-    var dDisplay = d > 0 ? d + (d == 1 ? " day " : " days ") : "";
-    var hDisplay = h > 0 ? h + (h == 1 ? " hour " : " hours ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " minute " : " minutes ") : "";
-    var sDisplay = s > 0 ? s + (s == 1 ? " second " : " seconds ") : "";
-    return dDisplay + hDisplay + mDisplay + sDisplay;
-  }
+    var Display = [
+      d > 0 ? d + (d == 1 ? " day" : " days") : false, 
+      h > 0 ? h + (h == 1 ? " hour" : " hours") : false, 
+      m > 0 ? m + (m == 1 ? " minute" : " minutes") : false, 
+      s > 0 ? s + (s == 1 ? " second" : " seconds") : false
+    ]
 
+    return Display.filter(Boolean).join(', ');
+  };
+
+  randomIntFromInterval(min, max){
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
+
+  arrayShuffle(array) {
+    for ( var i = 0, length = array.length, swap = 0, temp = ''; i < length; i++ ) {
+       swap        = Math.floor(Math.random() * (i + 1));
+       temp        = array[swap];
+       array[swap] = array[i];
+       array[i]    = temp;
+    }
+    return array;
+ };
+ 
+ percentageChance(values, chances) {
+    for ( var i = 0, pool = []; i < chances.length; i++ ) {
+       for ( var i2 = 0; i2 < chances[i]; i2++ ) {
+          pool.push(i);
+       }
+    }
+    return values[arrayShuffle(pool)['0']];
+ };
 }
 
 module.exports = new Helper();

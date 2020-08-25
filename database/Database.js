@@ -38,19 +38,42 @@ mongoose.connection.on('error', (err) => {
   disconnect();
 });
 
+var Parser = require('expr-eval').Parser;
+
+const formulas = {
+  'fast': 'floor(((4*n)^3)/5)',
+  'mediumfast': 'floor(n^3)',
+  'mediumslow': 'floor((6/5*n^3)-(15*n^2)+(100*n)-140)',
+  'slow': 'floor(((5*n)^3)/4)'
+}
+
 class Database {
   constructor() {
     connect();
   }
 
-  findPlayer(playerId) {
-  return new Promise((resolve, reject) => Player.findOne({ playerId: playerId }, (err, res) => {
-    if (err) {
-    return reject(err);
-    }
+  async addExp(playerId, value) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      res.exp += value
+      while (res.exp >= res.expMax) {
+        res.level++
+        res.exp -= res.expMax
+        res.expMax = Parser.evaluate(formulas['mediumslow'], { n: res.level })
+      }
+      console.log(res.exp)
+      console.log(res.expMax)
+      res.save().catch(err => console.log(err))
+    });
+  }
 
-    return resolve(res);
-  }));
+  findPlayer(playerId) {
+    return new Promise((resolve, reject) => Player.findOne({ playerId: playerId }, (err, res) => {
+      if (err) {
+      return reject(err);
+      }
+
+      return resolve(res);
+    }));
   }
 
   createNewPlayer(playerId, surname, race, position) {

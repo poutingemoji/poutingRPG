@@ -8,7 +8,7 @@ module.exports = class DailyCommand extends Command {
 		super(client, {
 			name: 'daily',
 			aliases: [],
-			group: 'tower',
+			group: 'game',
 			memberName: 'daily',
 			description: 'Claim your daily reward.',
 			examples: [],
@@ -18,7 +18,7 @@ module.exports = class DailyCommand extends Command {
 			args: [],
       throttling: {
         usages: 1,
-        duration: 82800
+        duration: 86000
       },
     })
 

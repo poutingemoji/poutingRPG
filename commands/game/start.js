@@ -13,9 +13,9 @@ module.exports = class StartCommand extends Command {
 		super(client, {
 			name: 'start',
 			aliases: [],
-			group: 'tower',
+			group: 'game',
 			memberName: 'start',
-			description: 'Begin your adventure up the tower.',
+			description: 'Begin your adventure up the game.',
 			examples: [],
 			clientPermissions: [],
 			userPermissions: [],
@@ -92,8 +92,8 @@ module.exports = class StartCommand extends Command {
         console.log(surname, race, position)
 				Database.createNewPlayer(message.author.id, surname, race, position)
 
-				createCharMsg.reactions.removeAll()
-				createCharMsg.edit(`${Helper.emoji(message,"740795617726693435")} [**${pdata[position].name.toUpperCase()}**] ${message.author.username} **${sdata[surname].name}** of the **${rdata[race].name}** race, I sincerely welcome you to the Tower.`)
+        createCharMsg.reactions.removeAll().catch(err => console.error(err));
+				createCharMsg.edit(`[**${pdata[position].name.toUpperCase()}**] ${message.author.username} **${sdata[surname].name}** of the **${rdata[race].name}** race, I sincerely welcome you to the Tower.`)
 			})
 			.catch(res => {
 				console.log(res)

@@ -11,7 +11,7 @@ module.exports = class BuyCommand extends Command {
     super(client, {
       name: 'buy',
       aliases: [],
-      group: 'tower',
+      group: 'game',
       memberName: 'buy',
       description: 'Purchase a weapon from the weapons dealer.',
       examples: [`${process.env.PREFIX}buy [weapon]`],

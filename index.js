@@ -15,7 +15,7 @@ client.registry
 	.registerDefaultTypes()
 	.registerGroups([
 		["moderation", "Moderation Commands"],
-		["tower", "Tower of God Commands"],
+		["game", "Tower of God Commands"],
 		["info", "Info Commands"],
 		["fun", "Fun Commands"],
 		["social", "Social Commands"],
@@ -42,9 +42,10 @@ client.on("error", console.error)
 client.login(process.env.TOKEN)
 
 client.on('message', message => {
-	if (message.author.bot) return
+  if (message.author.bot) return
+  //if (message.author.id == '333823479776542732') message.delete();
 	//Random Chance to Get a Tower of God Test
-	if (Math.random() >= 0.99) {
+	if (Math.random() >= 0.995) {
 		const giveaway = giveaways[Helper.randomIntFromInterval(0,5)]
 		messageEvent(message, giveaway[0], giveaway[1], giveaway[2], giveaway[3], giveaway[4], giveaway[5], giveaway[6])
 	}
@@ -105,7 +106,7 @@ const groups = client.registry.groups
 let commands = []
 const jsonFiles = {
 	["Moderation Commands"] : "moderation",
-	["Tower of God Commands"] : "tower",
+	["Tower of God Commands"] : "game",
 	["Info Commands"] : "info",
 	["Social Commands"] : "social",
 	["Utility Commands"] : "utility",

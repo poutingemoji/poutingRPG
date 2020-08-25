@@ -2,13 +2,17 @@ const mongoose = require('mongoose')
 
 const playerSchema = new mongoose.Schema({
   playerId: String,
+  level: {
+    type: Number,
+    default: 1
+  },
   exp: {
     type: Number,
     default: 0
   },
-  level: {
+  expMax: {
     type: Number,
-    default: 1
+    default: 0,
   },
   points: {
     type: Number,

@@ -11,7 +11,7 @@ module.exports = class TopCommand extends Command {
 		super(client, {
 			name: 'top',
 			aliases: ['leaderboard'],
-			group: 'tower',
+			group: 'game',
 			memberName: 'top',
 			description: 'Displays the top players.',
 			examples: [`${process.env.PREFIX}top [level/points]`],
@@ -51,14 +51,14 @@ module.exports = class TopCommand extends Command {
           if (i < 3) {
             leaderboardPosition = medals[i]
           } else {
-            leaderboardPosition = i + 1
+            leaderboardPosition = `${i + 1})`
           }
           
           const user = await message.client.users.fetch(res[i].playerId)
           if (filter === 'level') {
-            topPlayers += leaderboardPosition + `  [${pdata[res[i].position].name.substring(0,2)}]  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].exp}\n`
+            topPlayers += `${leaderboardPosition}    ${pdata[res[i].position].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].exp}\n`
           } else {
-            topPlayers += leaderboardPosition + `  [${pdata[res[i].position].name.substring(0,2)}]  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].points}\n`
+            topPlayers += `${leaderboardPosition}    ${pdata[res[i].position].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].points}\n`
           }
         }
         
