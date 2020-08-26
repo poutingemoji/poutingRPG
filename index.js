@@ -43,63 +43,7 @@ client.login(process.env.TOKEN)
 
 client.on('message', message => {
   if (message.author.bot) return
-  //if (message.author.id == '333823479776542732') message.delete();
-	//Random Chance to Get a Tower of God Test
-	if (Math.random() >= 0.995) {
-		const giveaway = giveaways[Helper.randomIntFromInterval(0,5)]
-		messageEvent(message, giveaway[0], giveaway[1], giveaway[2], giveaway[3], giveaway[4], giveaway[5], giveaway[6])
-	}
 })
-
-//Adventure Tests 
-const { GiveawaysManager } = require("discord-giveaways")
-const manager = new GiveawaysManager(client, {
-	storage: "./data/giveaways.json",
-	updateCountdownEvery: 5000,
-	default: {
-		botsCanWin: false,
-		exemptPermissions: [],
-		embedColor: "#FF0000",
-		reaction: "🎉"
-	}
-})
-const giveaways = [
-	//time, prize, winnerCount, embedColor, giveawayName, emoji, reaction
-	[5000, "Deathmatch Badge", 1, "#f2f2f2", "Deathmatch Test", "💀", "⚔️"],
-	[5000, "Endurance Badge", 2, "#54adef", "Lero-Ro's Test", "🌊", "💪"],
-	[5000, "Door Badge", 3, "#ff5446", "Door Test", "🚪", "🧠"],
-	[5000, "Crown Badge", 1, "#ffaf2c", "Crown Game [BONUS]", "👑", "⚔️"],
-	[5000, "Hide-and-Seek Badge", 3, "#c16a50", "Hide-and-Seek", "🙈", "🏃"],
-	[5000, "Submerged Fish Badge", 1, "#54adef", "Submerged Fish Hunt Test [GUARDIAN]", "🐟", "🎣"],
-]
-function messageEvent(message, time, prize, winnerCount, embedColor, giveawayName, emoji, reaction) {
-	manager.start(message.channel, {
-    time: time,
-    prize: prize,
-		winnerCount: parseInt(winnerCount),
-		embedColor: embedColor,
-		reaction: reaction,
-    messages: {
-      giveaway: `${emoji} **${giveawayName}** ${emoji}`,
-      giveawayEnded: `${emoji} **${giveawayName} ENDED** ${emoji}`,
-      timeRemaining: "Time remaining: **{duration}**!",
-      inviteToParticipate: `React with ${reaction} to participate!`,
-      winMessage: "Congratulations, {winners}! You won **{prize}**!",
-      noWinner: "Test cancelled, no Regulars participated.",
-      winners: "winner(s)",
-			endedAt: "Ended at",
-      units: {
-        seconds: "seconds",
-        minutes: "minutes",
-        hours: "hours",
-        days: "days",
-        pluralS: false
-      }
-    }
-  })
-}
-
-fs.writeFile('./data/giveaways.json', '[]', function() {console.log('giveaways.json Cleared.')})
 
 //Update Commands Table Info (WEBSITE)
 const groups = client.registry.groups

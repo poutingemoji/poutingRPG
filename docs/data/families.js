@@ -1,4 +1,4 @@
-const surnames = [
+const families = [
   ari = {
     name: 'Ari'
   },
@@ -31,4 +31,17 @@ const surnames = [
   }
 ]
 
-module.exports = surnames
+module.exports = families
+
+/*
+ari = 0
+arie = 1
+eurasia = 2
+ha = 3
+hendolok = 4
+khun = 5
+lopobia = 6
+pobidau = 7
+tuperie = 8
+yeon = 9
+*/

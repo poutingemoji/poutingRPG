@@ -4,9 +4,9 @@ const Helper = require('../../utils/Helper')
 
 require('dotenv').config()
 
-const sdata = require('../../data/surnames.js')
-const rdata = require('../../data/races.js')
-const pdata = require('../../data/positions.js')
+const sdata = require('../../docs/data/families.js')
+const rdata = require('../../docs/data/races.js')
+const pdata = require('../../docs/data/positions.js')
 
 module.exports = class StartCommand extends Command {
 	constructor(client) {
@@ -41,7 +41,7 @@ module.exports = class StartCommand extends Command {
 		var player = await Database.findPlayer(message.author.id)
 		if (player && !restart) return
 		
-		let surname
+		let family
 		let race
 		let position
 
@@ -54,15 +54,15 @@ module.exports = class StartCommand extends Command {
 			const confirmed = await message.channel.awaitMessages(confirmFilter, { max: 1, time: 60000 })
 		}
 
-		let description = surnameDescription()
-		const surnameFilter = response => {
+		let description = familyDescription()
+		const familyFilter = response => {
 			return Object.keys(sdata).includes(response.content) && response.author.id === message.author.id
 		}
 		var createCharMsg = await message.say(description)
 
-		message.channel.awaitMessages(surnameFilter, { max: 1, time: 60000 })
+		message.channel.awaitMessages(familyFilter, { max: 1, time: 60000 })
 			.then(res => {
-				surname = res.first().content
+				family = res.first().content
 
 				let description = raceDescription()
 				const raceFilter = response => {
@@ -89,11 +89,11 @@ module.exports = class StartCommand extends Command {
 			.then(async res => {
 				position = positionDescription().chooseOptions[res.first().emoji.name]
 
-        console.log(surname, race, position)
-				Database.createNewPlayer(message.author.id, surname, race, position)
+        console.log(family, race, position)
+				Database.createNewPlayer(message.author.id, family, race, position)
 
         createCharMsg.reactions.removeAll().catch(err => console.error(err));
-				createCharMsg.edit(`[**${pdata[position].name.toUpperCase()}**] ${message.author.username} **${sdata[surname].name}** of the **${rdata[race].name}** race, I sincerely welcome you to the Tower.`)
+				createCharMsg.edit(`[**${pdata[position].name.toUpperCase()}**] ${message.author.username} **${sdata[family].name}** of the **${rdata[race].name}** race, I sincerely welcome you to the Tower.`)
 			})
 			.catch(res => {
 				console.log(res)
@@ -103,10 +103,10 @@ module.exports = class StartCommand extends Command {
 }
 
 //Descriptions
-function surnameDescription() {
-	const surnames = Object.keys(sdata)
-	let description = 'Choose your surname:\n'
-	for (let i = 0; i < surnames.length; i++) {
+function familyDescription() {
+	const families = Object.keys(sdata)
+	let description = 'Choose your family:\n'
+	for (let i = 0; i < families.length; i++) {
 		description += `${i} - **${sdata[i].name}**\n`
 	}
 	return description

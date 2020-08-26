@@ -4,7 +4,7 @@ const Helper = require('../../utils/Helper')
 const Database = require('../../database/Database');
 require('dotenv').config()
 
-const pdata = require('../../data/positions.js')
+const pdata = require('../../docs/data/positions.js')
 
 module.exports = class TopCommand extends Command {
 	constructor(client) {

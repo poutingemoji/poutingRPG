@@ -12,7 +12,6 @@
     "bluebird": "^3.7.2",
     "canvas": "^2.6.1",
     "dateformat": "^3.0.3",
-    "discord-giveaways": "^4.2.1",
     "discord.js": "^12.2.0",
     "discord.js-commando": "github:discordjs/Commando",
     "dotenv": "^8.2.0",

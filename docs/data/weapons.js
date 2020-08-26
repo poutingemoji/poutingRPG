@@ -1,4 +1,4 @@
-const items = [
+const weapons = [
   fisherman = [
     basic = {
       name: 'Basic Hook',
@@ -119,4 +119,4 @@ const items = [
   ]
 ]
 
-module.exports = items
+module.exports = weapons

@@ -1,4 +1,4 @@
-const edata = require('../data/emojis.js')
+const edata = require('../docs/data/emojis.js')
 const { MessageEmbed } = require('discord.js')
 
 class Helper {

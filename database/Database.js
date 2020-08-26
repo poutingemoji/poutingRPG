@@ -76,9 +76,9 @@ class Database {
     }));
   }
 
-  createNewPlayer(playerId, surname, race, position) {
+  createNewPlayer(playerId, family, race, position) {
     return new Promise((resolve, reject) => Player.replaceOne({ playerId: playerId },
-    newPlayerObj(playerId, surname, race, position),
+    newPlayerObj(playerId, family, race, position),
     { upsert: true },
     (err, res) => {
       if (err) {

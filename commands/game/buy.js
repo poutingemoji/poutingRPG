@@ -1,10 +1,9 @@
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const playerSchema = require('../../database/schemas/player')
-const fs = require('fs')
+const playerSchema = require('../../database/schemas/player.js')
 require('dotenv').config()
 
-const items = require('../../data/items.js')
+const weapons = require('../../docs/data/weapons.js')
 
 module.exports = class BuyCommand extends Command {
   constructor(client) {
@@ -38,11 +37,11 @@ module.exports = class BuyCommand extends Command {
     let itemPrice = 0
     let itemDesc = ''
 
-    for (let i in items) { 
+    for (let i in weapons) { 
       if (weapon === i) { 
         itemID = i
-        itemPrice = items[i].price
-        itemDesc = items[i].desc
+        itemPrice = weapons[i].price
+        itemDesc = weapons[i].desc
       }
     }
 
