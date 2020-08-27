@@ -65,7 +65,7 @@ Object.keys(jsonFiles).forEach(function(key) {
 				`${cmd.description}${cmd.nsfw ? ' (NSFW)' : ''}`,
 				cmd.examples.join("\n"), 
 				cmd.aliases.join("\n"), 
-				Helper.secondsToDhms(cmd.throttling.duration)
+				Helper.secondsToDhms(cmd.throttling.duration, ', ')
 				])
 			)
 		}

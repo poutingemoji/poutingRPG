@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-const { playerSchema, newPlayerObj } = require('./schemas/player');
+const playerSchema = require('./schemas/player');
+
+const Objects = require('./Objects');
 
 const Player = mongoose.model('Player', playerSchema);
 
@@ -38,27 +40,20 @@ mongoose.connection.on('error', (err) => {
   disconnect();
 });
 
-var Parser = require('expr-eval').Parser;
-
-const formulas = {
-  'fast': 'floor(((4*n)^3)/5)',
-  'mediumfast': 'floor(n^3)',
-  'mediumslow': 'floor((6/5*n^3)-(15*n^2)+(100*n)-140)',
-  'slow': 'floor(((5*n)^3)/4)'
-}
+const Parser = require('expr-eval').Parser;
 
 class Database {
   constructor() {
     connect();
   }
 
-  async addExp(playerId, value) {
+  addExpPlayer(playerId, value) {
     Player.findOne({ playerId: playerId }, (err, res) => { 
       res.exp += value
       while (res.exp >= res.expMax) {
         res.level++
         res.exp -= res.expMax
-        res.expMax = Parser.evaluate(formulas['mediumslow'], { n: res.level })
+        res.expMax = Parser.evaluate(Objects.formulas['mediumslow'], { n: res.level+1 })
       }
       console.log(res.exp)
       console.log(res.expMax)
@@ -66,10 +61,13 @@ class Database {
     });
   }
 
-  findPlayer(playerId) {
-    return new Promise((resolve, reject) => Player.findOne({ playerId: playerId }, (err, res) => {
+  findPlayer(message, noMessage) {
+    return new Promise((resolve, reject) => Player.findOne({ playerId: message.author.id }, (err, res) => {
       if (err) {
       return reject(err);
+      }
+      if (!res && !noMessage) {
+      return message.say(`Please type \`${message.client.commandPrefix}start\` to begin.`);
       }
 
       return resolve(res);
@@ -78,7 +76,7 @@ class Database {
 
   createNewPlayer(playerId, family, race, position) {
     return new Promise((resolve, reject) => Player.replaceOne({ playerId: playerId },
-    newPlayerObj(playerId, family, race, position),
+    Objects.newPlayer(playerId, family, race, position),
     { upsert: true },
     (err, res) => {
       if (err) {
@@ -96,6 +94,27 @@ class Database {
       .exec()
   }
 
+  createNewPet(playerId, id, nickname) {
+    return new Promise((resolve, reject) => Player.updateOne({ playerId: playerId },
+      Objects.newPet(id, nickname),
+      { upsert: true },
+      (err, res) => {
+        if (err) {
+        return reject(err);
+        }
+  
+        return resolve(res);
+      })
+    )}
+    updateMoodPet(playerId, mood) {
+      Player.findOne({ playerId: playerId }, (err, res) => { 
+        res.pet.hunger += mood[0]
+        res.pet.hygiene += mood[1]
+        res.pet.fun += mood[2]
+        res.pet.energy += mood[3]
+        res.save().catch(err => console.log(err))
+      });
+    }
 }
 
 module.exports = new Database();

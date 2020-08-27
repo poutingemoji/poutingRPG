@@ -17,7 +17,7 @@ const playerSchema = new mongoose.Schema({
 
   pet: {
     id: Number,
-    lastUpdated: Date,
+    updatedAt: Date,
     nickname: String,
 
     level: Number,
@@ -35,52 +35,11 @@ const playerSchema = new mongoose.Schema({
   quests: {},
   weapon: {
     id: {type: Number, default: 0},
-    tier: {type: Number, default: 1},
+    mastery: {type: Number, default: 1},
   },
 })
 
-const newPlayerObj = (playerId, family, race, position) => {
-  return {
-    playerId: playerId,
-    family: family,
-    race: race,
-    position: position,
-  }
-}
-
-const newPetObj = (id, nickname) => {
-  return {
-    pet: {
-      id: id,
-      lastUpdated: new Date(),
-      nickname: nickname,
-
-      level: 1, exp: 0, expMax: 0,
-      hunger: 100, hygiene: 100, fun: 100, energy: 100,
-    }
-  }
-}
-
-const newWeaponObj = (id) => {
-  return {
-    weapon: {
-      id: id,
-      tier: 1,
-    }
-  }
-}
-
-const newQuestObj = (id) => {
-  return {
-    questObjectiveType: '',
-    task: '',
-    rewards: {
-      points: 1, xp: 1,
-    }
-  }
-}
-
-module.exports = { playerSchema, newPlayerObj }
+module.exports = playerSchema
 
 
 

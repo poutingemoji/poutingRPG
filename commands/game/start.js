@@ -4,9 +4,9 @@ const Helper = require('../../utils/Helper')
 
 require('dotenv').config()
 
-const sdata = require('../../docs/data/families.js')
-const rdata = require('../../docs/data/races.js')
-const pdata = require('../../docs/data/positions.js')
+const families = require('../../docs/data/families.js')
+const races = require('../../docs/data/races.js')
+const positions = require('../../docs/data/positions.js')
 
 module.exports = class StartCommand extends Command {
 	constructor(client) {
@@ -38,14 +38,14 @@ module.exports = class StartCommand extends Command {
 	}
 
 	async run(message, {restart}) {
-		var player = await Database.findPlayer(message.author.id)
-		if (player && !restart) return
+    const player = await Database.findPlayer(message, true)
+    if (!restart && player) return 
 		
 		let family
 		let race
 		let position
 
-		const confirmMsg = "I want to create a new character, I will lose all current progress"
+		const confirmMsg = "yes"
 		if (restart) {
 			message.say(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `Type the message below to **confirm**. ${Helper.mlcb(confirmMsg, "css")}`))
 			const confirmFilter = response => {
@@ -56,7 +56,8 @@ module.exports = class StartCommand extends Command {
 
 		let description = familyDescription()
 		const familyFilter = response => {
-			return Object.keys(sdata).includes(response.content) && response.author.id === message.author.id
+      console.log(families)
+			return Object.keys(families).includes(response.content) && response.author.id === message.author.id
 		}
 		var createCharMsg = await message.say(description)
 
@@ -66,9 +67,9 @@ module.exports = class StartCommand extends Command {
 
 				let description = raceDescription()
 				const raceFilter = response => {
-					return Object.keys(rdata).includes(response.content) && response.author.id === message.author.id
+					return Object.keys(races).includes(response.content) && response.author.id === message.author.id
         }
-        console.log(rdata)
+        console.log(races)
 				createCharMsg.edit(description)
 				return message.channel.awaitMessages(raceFilter, { max: 1, time: 60000 })
 			})
@@ -93,7 +94,7 @@ module.exports = class StartCommand extends Command {
 				Database.createNewPlayer(message.author.id, family, race, position)
 
         createCharMsg.reactions.removeAll().catch(err => console.error(err));
-				createCharMsg.edit(`[**${pdata[position].name.toUpperCase()}**] ${message.author.username} **${sdata[family].name}** of the **${rdata[race].name}** race, I sincerely welcome you to the Tower.`)
+				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${message.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
 			})
 			.catch(res => {
 				console.log(res)
@@ -104,10 +105,9 @@ module.exports = class StartCommand extends Command {
 
 //Descriptions
 function familyDescription() {
-	const families = Object.keys(sdata)
 	let description = 'Choose your family:\n'
 	for (let i = 0; i < families.length; i++) {
-		description += `${i} - **${sdata[i].name}**\n`
+		description += `${i} - **${families[i].name}**\n`
 	}
 	return description
 }
@@ -115,24 +115,23 @@ function familyDescription() {
 function raceDescription() {
 	let description = 'Choose your race:\n'
   let categories = []
-  for (var i = 0; i < rdata.length; i++) {
-    if (!categories.includes(rdata[i].type)) {
-      categories.push(rdata[i].type)
-      description += `**${Helper.titleCase(rdata[i].type)}**\n`
+  for (var i = 0; i < races.length; i++) {
+    if (!categories.includes(races[i].type)) {
+      categories.push(races[i].type)
+      description += `**${Helper.titleCase(races[i].type)}**\n`
     }
-    description += `${i} - ${rdata[i].name}\n`
+    description += `${i} - ${races[i].name}\n`
   }
 	return description
 }
 
 function positionDescription() {
-	const positions = Object.keys(pdata)
 	let chooseOptions = {}
 	let description = 'Choose your position:\n'
 	let i = 0
 	for (let i = 0; i < positions.length; i++) {
-		description += `${pdata[i].emoji} - **${pdata[i].name}**\n`
-		chooseOptions[pdata[i].emoji] = i
+		description += `${positions[i].emoji} - **${positions[i].name}**\n`
+		chooseOptions[positions[i].emoji] = i
 	}
 	return {description, chooseOptions}
 }

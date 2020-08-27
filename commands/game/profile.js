@@ -1,8 +1,10 @@
 const { Command } = require("discord.js-commando")
 const { MessageAttachment } = require("discord.js")
 const { createCanvas, loadImage } = require("canvas")
-const playerSchema = require("../../database/schemas/player")
+const Database = require('../../database/Database');
 require('dotenv').config()
+
+const positions = require('../../docs/data/positions.js')
 
 module.exports = class ProfileCommand extends Command {
 	constructor(client) {
@@ -34,49 +36,31 @@ module.exports = class ProfileCommand extends Command {
 	
 	async run(message, {user}) {
 		user = user || message.author
-		if (user.bot) return
-		playerSchema.findOne({
-			playerId: user.id,
-		}, (err, player) => {
-			if (err) console.log(err)
-			if (!player) {
-				createImage(
-					0, // currentExp
-					1, // currentLevel
-					0, // currentPoints
-					"No Position", // currentPosition
-					false, // currentIrregular
-					"F-RANK 5", // currentRank
-					2, // nextLevel
-					[],
-					user,
-					message
-				)
-			} else {
-				createImage(
-					player.currentExp, 
-					player.level, 
-					player.points, 
-					player.position, 
-					player.irregular, 
-					`7D-rank`, // currentRank
-					Math.floor(process.env.BASE_EXPMULTIPLIER * (Math.pow(player.level, process.env.EXPONENTIAL_EXPMULTIPLIER))), // nextLevel
-					player.badges,
-					user,
-					message
-				)
-			}
-		})
-	}
+    if (user.bot) return
+    const player = await Database.findPlayer(user)
+    createImage(
+      player.exp, 
+      player.level, 
+      player.points, 
+      player.position, 
+      player.irregular, 
+      `7D-rank`, // currentRank
+      player.expMax, // nextLevel
+      user,
+      message
+    )
+  }
 }
 
-async function createImage(currentExp, currentLevel, currentPoints, currentPosition, currentIrregular, currentRank, nextLevel, currentBadges, user, message) {
+async function createImage(currentExp, currentLevel, currentPoints, currentPosition, currentIrregular, currentRank, nextLevel, user, message) {
 	const canvas = createCanvas(934, 282)
 	const ctx = canvas.getContext("2d")
 	//ctx, x, y, width, height, radius, fill, fillColor
 	roundRect(ctx, 0, 0, canvas.width, canvas.height, 10, "#23272A")
 
-	let currentPositionColor = process.env['POSITION_COLOR_' + currentPosition.toUpperCase().replace(/ /g, "_")]
+  currentPosition = positions[currentPosition].name
+
+	let currentPositionColor = process.env['POSITION_COLOR_' + currentPosition]
 	if (currentPosition == "No Position") {
 		currentPositionColor = "#ffffff"
 	}
@@ -85,21 +69,12 @@ async function createImage(currentExp, currentLevel, currentPoints, currentPosit
 
 	//ctx, x, y, text, font, textAlignment, color
 	textBox(ctx, 270, 197, user.tag, "32px Arial", "left", "white")
-	textBox(ctx, 270, 45, currentPosition.toUpperCase(), "bold 32px Arial", "left", currentPositionColor)
+	textBox(ctx, 270, 45, currentPosition, "bold 32px Arial", "left", currentPositionColor)
 	textBox(ctx, 270, 80, currentRank, "32px Arial", "left", "white")
 	if (currentIrregular) {
 		textBox(ctx, 270, 166, "IRREGULAR", "oblique 32px Arial", "left", "#525252")
-	}
-
-	let badgePosition = 267
-	for (let badge = 0; badge < 6; badge++) {
-		let badgeState = badges[badge][1]
-		if (currentBadges.includes(badge)) badgeState = badges[badge][0]
-		const badgeImage = await loadImage(badgeState)
-		ctx.drawImage(badgeImage, badgePosition, 91, 40, 40)
-		badgePosition = badgePosition + 44
-	}
-
+  }
+  
 	textBox(ctx, 895, 45, `LEVEL ${currentLevel}`, "32px Arial", "right", "white")
 	textBox(ctx, 895, 80, `POINTS ${currentPoints}`, "32px Arial", "right", "white")
 	textBox(ctx, 895, 197, `${currentExp} / ${nextLevel} XP`, "25px Arial", "right", "white")
@@ -112,21 +87,6 @@ async function createImage(currentExp, currentLevel, currentPoints, currentPosit
 	const attachment = new MessageAttachment(canvas.toBuffer(), "rank.png")
 	message.say(attachment)
 }
-
-const badges = [
-	['https://cdn.discordapp.com/attachments/722720878932262952/733574768749576202/Skull.png',
-	'https://cdn.discordapp.com/attachments/722720878932262952/733582850015756316/NoSkull.png'],
-	['https://cdn.discordapp.com/attachments/722720878932262952/733575603298631771/Wave.png',
-	'https://cdn.discordapp.com/attachments/722720878932262952/733583567237677086/NoWave.png'],
-	['https://cdn.discordapp.com/attachments/722720878932262952/733574457490145330/Door.png',
-	'https://cdn.discordapp.com/attachments/722720878932262952/733582480044720197/NoDoor.png'],
-	['https://media.discordapp.net/attachments/722720878932262952/733574476280758403/Crown.png',
-	'https://cdn.discordapp.com/attachments/722720878932262952/733581893832015983/NoCrown.png'],
-	['https://cdn.discordapp.com/attachments/722720878932262952/733575199898861628/Monkey.png',
-	'https://cdn.discordapp.com/attachments/722720878932262952/733583104974782524/NoMonkey.png'],
-	['https://cdn.discordapp.com/attachments/722720878932262952/733575390731173938/FishingPole.png',
-	'https://cdn.discordapp.com/attachments/722720878932262952/733583373238534164/NoFishingPole.png'],
-]
 
 function roundRect(ctx, x, y, width, height, radius, fillStyle) {
 	stroke = true
@@ -171,15 +131,13 @@ function circleAvatar(ctx, x, y, diameter, avatar, status) {
 	ctx.strokeStyle = "#23272A"
 	ctx.stroke()
 
-	if (status === "online") {
-		ctx.fillStyle = "#44b37f"
-	} else if (status === "idle") {
-		ctx.fillStyle = "#f9a51c"
-	} else if (status === "dnd") {
-		ctx.fillStyle = "#f04848"
-	} else if (status === "offline") {
-		ctx.fillStyle = "#747f8d"
-	}
+  const statuses = {
+    'online': '#44b37f',
+    'idle': '#f9a51c',
+    'dnd': '#f04848',
+    'offline': '#747f8d',
+  }
+	ctx.fillStyle = statuses[status]
 	ctx.fill()
 }
 
