@@ -3,6 +3,8 @@ mongoose.Promise = require('bluebird');
 
 const playerSchema = require('./schemas/player');
 
+const enumHelper = require('../utils/enumHelper')
+const Helper = require('../utils/Helper')
 const Objects = require('./Objects');
 
 const Player = mongoose.model('Player', playerSchema);
@@ -106,13 +108,14 @@ class Database {
         return resolve(res);
       })
     )}
-    updateMoodPet(playerId, mood) {
-      Player.findOne({ playerId: playerId }, (err, res) => { 
-        res.pet.hunger += mood[0]
-        res.pet.hygiene += mood[1]
-        res.pet.fun += mood[2]
-        res.pet.energy += mood[3]
+    async updatePetNeeds(playerId, difference) {
+      return await Player.findOne({ playerId: playerId }, (err, res) => { 
+        console.log(difference)
+        const needs =  enumHelper.needs
+        for (var i = 0; i < needs.length; i++) res.pet[needs[i]] = Helper.clamp(res.pet[needs[i]] += difference[i], 0, 100)
+        res.pet.updatedAt = new Date();
         res.save().catch(err => console.log(err))
+        console.log([res.pet.hunger, res.pet.hygiene, res.pet.fun, res.pet.energy])
       });
     }
 }

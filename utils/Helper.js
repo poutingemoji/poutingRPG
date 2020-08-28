@@ -58,8 +58,9 @@ class Helper {
     return num <= min ? min : num >= max ? max : num;
   };
 
-  secondsToDhms(seconds, conjunction, abbreviate) {
+  secondsToDhms(seconds, conjunction, abbreviate, splice) {
     seconds = parseInt(seconds);
+    
     var d = Math.floor(seconds / (3600*24));
     var h = Math.floor(seconds % (3600*24) / 3600);
     var m = Math.floor(seconds % 3600 / 60);
@@ -71,7 +72,8 @@ class Helper {
       m > 0 ? m + (abbreviate ? "m" : (m == 1 ? " minute" : " minutes")) : false, 
       s > 0 ? s + (abbreviate ? "s" : (s == 1 ? " second" : " seconds")) : false
     ]
-
+    if (!splice) splice = Display.length
+    Display.splice(-1,splice)
     return Display.filter(Boolean).join(conjunction);
   };
 

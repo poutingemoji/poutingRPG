@@ -1,22 +1,16 @@
 const pets = require('../docs/data/pets.js');
 const Parser = require('expr-eval').Parser;
 
-class Objects {
-  formulas = {
-    fast: 'floor(((4*n)^3)/5)',
-    mediumfast: 'floor(n^3)',
-    mediumslow: 'floor((6/5*n^3)-(15*n^2)+(100*n)-140)',
-    slow: 'floor(((5*n)^3)/4)'
-  }
-  newPlayer = (playerId, family, race, position) => {
+const Objects = {
+  newPlayer(playerId, family, race, position) {
     return {
       playerId: playerId,
       family: family,
       race: race,
       position: position,
     }
-  }
-  newPet = (id, nickname) => {
+  },
+  newPet(id, nickname) {
     return {
       pet: {
         id: id,
@@ -27,16 +21,16 @@ class Objects {
         hunger: 100, hygiene: 100, fun: 100, energy: 100,
       }
     }
-  }
-  newWeapon = (id) => {
+  },
+  newWeapon(id) {
     return {
       weapon: {
         id: id,
         tier: 1,
       }
     }
-  }
-  newQuest = (objectiveType, objective, rewards) => {
+  },
+  newQuest(objectiveType, objective, rewards) {
     console.log(objective)
     const objectives = {
       Collect: {
@@ -62,4 +56,4 @@ class Objects {
   }
 }
 
-module.exports = new Objects();
+module.exports = Objects;

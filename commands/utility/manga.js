@@ -41,7 +41,7 @@ module.exports = class MangaCommand extends Command {
   }
   async run(message, {manga}) {
     try {
-      var sentMessage = await message.say(Helper.emojiMsg(message, "left", ["loading"], `Searching for requested anime... \:mag_right:`))
+      var sentMessage = await message.say(Helper.emojiMsg(message, "left", ["loading"], `Searching for requested manga... \:mag_right:`))
       var mangaRequest = await Requester.request(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
       console.log(mangaRequest["data"][1])
       if (mangaRequest["data"][0] === undefined) return sentMessage.edit(Helper.emojiMsg(message, "left", ["err"], `Could not find info on ${manga}`))

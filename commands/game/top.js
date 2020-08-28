@@ -35,7 +35,7 @@ module.exports = class TopCommand extends Command {
 	
 	async run(message, filter) {
     const checkDict = {
-			['level'] : 'totalExp',
+			['level'] : 'exp',
 			['points'] : 'points',
     }
     filter = filter["filter"]

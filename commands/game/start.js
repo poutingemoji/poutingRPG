@@ -31,7 +31,7 @@ module.exports = class StartCommand extends Command {
       ],
       throttling: {
         usages: 1,
-        duration: 43200
+        duration: 2
       },
     })
 
@@ -96,8 +96,8 @@ module.exports = class StartCommand extends Command {
         createCharMsg.reactions.removeAll().catch(err => console.error(err));
 				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${message.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
 			})
-			.catch(res => {
-				console.log(res)
+			.catch(err => {
+				console.error(err)
 				message.say(Helper.emojiMsg(message, "left", ["err"], "You didn't answer in time. Your registration into the Tower is cancelled."))
 			})
 	}
