@@ -2,7 +2,9 @@ const fs = require('fs')
 const { CommandoClient } = require("discord.js-commando")
 const path = require("path")
 const Helper = require('./utils/Helper')
+const dbl = require("dblposter")
 require('dotenv').config()
+
 
 //Creating Commando Client
 const client = new CommandoClient({
@@ -27,6 +29,15 @@ client.registry
 		help: false
 	})
 	.registerCommandsIn(path.join(__dirname, "commands"))
+  
+const poster = new dbl(process.env.DISCORDBOTLISTKEY, client);
+poster.bind();
+client.dblPoster.on("posted", () => {
+	console.log("Woop! My stats were posted");
+});
+client.dblPoster.on("error", err => {
+	console.log(err);
+});
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`)

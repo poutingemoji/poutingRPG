@@ -48,30 +48,6 @@ module.exports = class petCommand extends Command {
     .setThumbnail(pets[pet.id].image)
 
     player = await Database.updatePetNeeds(message.author.id, difference)
-    const moodDict = {
-      hunger: ['Starving', 'Hungry', 'Fine'],
-      hygiene: ['Stinky', 'Dirty', 'Clean'],
-      fun: ['Dreary', 'Bored', 'Glad'],
-      energy: ['Exhausted', 'Tired', 'Energized']
-    }
-    const needColors = {
-      hunger: {
-        positive: '#d3d3d3',
-        negative: '#fe532e',
-      },
-      hygiene: {
-        positive: '#6ee4f4',
-        negative: '#ce961f',
-      },
-      fun: {
-        positive: '#2fd352',
-        negative: '#e77dec',
-      },
-      energy: {
-        positive: '#ffb3b3',
-        negative: '#000000',
-      },
-    }
     var mood
     var roundedNeeds = []
     for (var i = 0; i < needs.length; i++) {
@@ -80,31 +56,11 @@ module.exports = class petCommand extends Command {
       var roundedNeed = Math.round(player.pet[need])
       roundedNeeds.push(roundedNeed)
       messageEmbed.addField(`${Helper.titleCase(need)} (${roundedNeed}%)`, `[${progressBar(roundedNeed/100)}](https://www.youtube.com/user/pokimane)\n${player.pet[need] !== 0 ? `\`${Helper.secondsToDhms((player.pet[need]/100)*pets[player.pet.id].empty[need], ' and ', true, 2)} until empty\`` : ''}`, true)
-      if (roundedNeed < 46) {
-        mood = moodDict[need][1]
-        messageEmbed.setColor(needColors[need].negative)
-      }
-      if (roundedNeed < 16) {
-        mood = moodDict[needs[i]][0]
-        messageEmbed.setColor(needColors[need].negative)
-      }
-    }
-    
-    if (roundedNeeds.every(need => need < 80 && need >= 46)) {
-      mood = 'Fine'
-      messageEmbed.setColor(needColors.hunger.negative)
-      var highestNeed = needs[roundedNeeds.findIndex(need => need == Math.max.apply(null, roundedNeeds))]
-      mood = moodDict[highestNeed][2]
-      messageEmbed.setColor(needColors[highestNeed].positive)
-    }
-    if (roundedNeeds.every(need => need >= 80)) {
-      messageEmbed.setColor('#208ff3')
-      mood = 'Great'
     }
 
     messageEmbed.addFields(
       { name: `Experience`, value: `[${progressBar(pet.exp/pet.expMax)}](https://www.youtube.com/user/pokimane)\n\`Level ${pet.level} (${pet.exp}/${pet.expMax})\``, inline: true },
-      { name: `Mood`, value: mood, inline: true }
+      { name: `Mood`, value: 'Great', inline: true }
     )
     message.say(messageEmbed);
 
