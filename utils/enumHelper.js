@@ -5,12 +5,18 @@ const enumHelper = {
     mediumslow: 'floor((6/5*n^3)-(15*n^2)+(100*n)-140)',
     slow: 'floor(((5*n)^3)/4)'
   },
-  needs: [
+  petNeeds: [
     'hunger', 
     'hygiene', 
     'fun', 
     'energy'
-  ]
+  ],
+  petActions: {
+    feed: 'hunger',
+    wash: 'hygiene',
+    play: 'fun',
+    pat: 'energy',
+  }
 }
 
 module.exports = enumHelper

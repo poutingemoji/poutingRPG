@@ -15,10 +15,10 @@ const pets = [
   whitesteeleel = {
     name: 'White Steel Eel',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -27,10 +27,10 @@ const pets = [
   zygaena = {
     name: 'Zygaena',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -40,10 +40,10 @@ const pets = [
   shadowfox = {
     name: 'Shadow Fox',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -53,10 +53,10 @@ const pets = [
   fenryl = {
     name: 'Fenryl',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -66,10 +66,10 @@ const pets = [
   submergedfish = {
     name: 'Submerged Fish',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -78,10 +78,10 @@ const pets = [
   pollack = {
     name: 'Pollack',
     empty: {
-      hunger: 1000,
-      hygiene: 1000,
-      fun: 1000,
-      energy: 1000,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -90,10 +90,10 @@ const pets = [
   octocrab = {
     name: 'Octo-Crab',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -103,10 +103,10 @@ const pets = [
   giantcat = {
     name: 'Giant Cat',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -116,10 +116,10 @@ const pets = [
   sixwingedgiantwindbird = {
     name: 'Six-Winged Windbird',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -129,10 +129,10 @@ const pets = [
   ancientoddeyedgiantcobra = {
     name: 'Ancient Odd-Eyed Cobra',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -142,10 +142,10 @@ const pets = [
   treasureeatingstingray = {
     name: 'Treasure Eating Stingray',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -155,10 +155,10 @@ const pets = [
   killerwhale = {
     name: 'Killer Whale',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,
@@ -167,10 +167,10 @@ const pets = [
   redthryssa = {
     name: 'Red Thryssa',
     empty: {
-      hunger: 123,
-      hygiene: 321,
-      fun: 231,
-      energy: 221,
+      hunger: 50000,
+      hygiene: 50000,
+      fun: 50000,
+      energy: 50000,
     },
     exprate: 'mediumfast',
     price: 0,

@@ -33,12 +33,11 @@ module.exports = class TopCommand extends Command {
     })
 	}
 	
-	async run(message, filter) {
+	async run(message, { filter }) {
     const checkDict = {
 			['level'] : 'exp',
 			['points'] : 'points',
     }
-    filter = filter["filter"]
     const res = await Database.loadTop10([[checkDict[filter], 'descending']])
     
     async function getUser() {

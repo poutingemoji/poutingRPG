@@ -7,6 +7,8 @@ const enumHelper = require('../utils/enumHelper')
 const Helper = require('../utils/Helper')
 const Objects = require('./Objects');
 
+const pets = require('../docs/data/pets.js');
+
 const Player = mongoose.model('Player', playerSchema);
 
 process.on('close', () => {
@@ -55,10 +57,8 @@ class Database {
       while (res.exp >= res.expMax) {
         res.level++
         res.exp -= res.expMax
-        res.expMax = Parser.evaluate(Objects.formulas['mediumslow'], { n: res.level+1 })
+        res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
       }
-      console.log(res.exp)
-      console.log(res.expMax)
       res.save().catch(err => console.log(err))
     });
   }
@@ -108,16 +108,41 @@ class Database {
         return resolve(res);
       })
     )}
-    async updatePetNeeds(playerId, difference) {
-      return await Player.findOne({ playerId: playerId }, (err, res) => { 
-        console.log(difference)
-        const needs =  enumHelper.needs
-        for (var i = 0; i < needs.length; i++) res.pet[needs[i]] = Helper.clamp(res.pet[needs[i]] += difference[i], 0, 100)
-        res.pet.updatedAt = new Date();
-        res.save().catch(err => console.log(err))
-        console.log([res.pet.hunger, res.pet.hygiene, res.pet.fun, res.pet.energy])
-      });
-    }
+
+  updatePetNeeds(playerId, differences) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      const needs =  enumHelper.petNeeds
+      for (var i in differences) res.pet[needs[i]] = Helper.clamp(res.pet[needs[i]] += differences[i], 0, 100)
+      res.pet.updatedAt = new Date();
+      res.save().catch(err => console.log(err))
+    });
+  }
+
+  renamePet(playerId, nickname) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      res.pet.nickname = nickname;
+      res.save().catch(err => console.log(err))
+    });
+  }
+
+  removePet(playerId) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      res.pet = {};
+      res.save().catch(err => console.log(err))
+    });
+  }
+
+  addExpPet(playerId, value) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      res.pet.exp += value
+      while (res.pet.exp >= res.pet.expMax) {
+        res.pet.level++
+        res.pet.exp -= res.pet.expMax
+        res.pet.expMax = Parser.evaluate(enumHelper.expFormulas[pets[res.pet.id].exprate], { n: res.pet.level+1 })
+      }
+      res.save().catch(err => console.log(err))
+    });
+  }
 }
 
 module.exports = new Database();
