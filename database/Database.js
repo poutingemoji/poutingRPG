@@ -109,13 +109,13 @@ class Database {
       })
     )}
 
-  updatePetNeeds(playerId, differences) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
+  async updatePetNeeds(playerId, differences) {
+    return await Player.findOne({ playerId: playerId }, (err, res) => { 
       const needs =  enumHelper.petNeeds
       for (var i in differences) res.pet[needs[i]] = Helper.clamp(res.pet[needs[i]] += differences[i], 0, 100)
       res.pet.updatedAt = new Date();
       res.save().catch(err => console.log(err))
-    });
+    }).exec();
   }
 
   renamePet(playerId, nickname) {

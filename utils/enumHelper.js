@@ -15,7 +15,7 @@ const enumHelper = {
     feed: 'hunger',
     wash: 'hygiene',
     play: 'fun',
-    pat: 'energy',
+    walk: 'energy',
   }
 }
 

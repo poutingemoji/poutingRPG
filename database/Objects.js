@@ -1,5 +1,6 @@
 const pets = require('../docs/data/pets.js');
 const Parser = require('expr-eval').Parser;
+const enumHelper = require('../utils/enumHelper')
 
 const Objects = {
   newPlayer(playerId, family, race, position) {
@@ -14,10 +15,10 @@ const Objects = {
     return {
       pet: {
         id: id,
-        updatedAt: new Date(),
+        updatedAt: Date.now(),
         nickname: nickname,
   
-        level: 1, exp: 0, expMax: Parser.evaluate(this.formulas[pets[id].exprate], { n: 2 }),
+        level: 1, exp: 0, expMax: Parser.evaluate(enumHelper.expFormulas[pets[id].exprate], { n: 2 }),
         hunger: 100, hygiene: 100, fun: 100, energy: 100,
       }
     }
