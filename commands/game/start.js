@@ -38,12 +38,10 @@ module.exports = class StartCommand extends Command {
 	}
 
 	async run(message, {restart}) {
-    const player = await Database.findPlayer(message, true)
+    const player = await Database.findPlayer(message, message.author, true)
     if (!restart && player) return 
 		
-		let family
-		let race
-		let position
+		let family, race, position
 
 		const confirmMsg = "yes"
 		if (restart) {
@@ -76,19 +74,15 @@ module.exports = class StartCommand extends Command {
 			.then(async res => {
 				race = res.first().content
 
-				let { description, chooseOptions } = positionDescription()
-				const positionFilter = (reaction, user) => {
-					return Object.keys(chooseOptions).includes(reaction.emoji.name) && user.id === message.author.id
+				let description = positionDescription()
+				const positionFilter = response => {
+          return Object.keys(positions).includes(response.content) && response.author.id === message.author.id
 				}
-				const positions = Object.keys(chooseOptions)
-				const positionMessage = await createCharMsg.edit(description)
-				for (let i = 0; i < positions.length; i++) {
-					await positionMessage.react(positions[i])
-				}
-				return positionMessage.awaitReactions(positionFilter, { max: 1, time: 60000 })
+        createCharMsg.edit(description)
+				return message.channel.awaitMessages(positionFilter, { max: 1, time: 60000 })
 			})
 			.then(async res => {
-				position = positionDescription().chooseOptions[res.first().emoji.name]
+				position = res.first().content
 
         console.log(family, race, position)
 				Database.createNewPlayer(message.author.id, family, race, position)
@@ -107,7 +101,7 @@ module.exports = class StartCommand extends Command {
 function familyDescription() {
 	let description = 'Choose your family:\n'
 	for (let i = 0; i < families.length; i++) {
-		description += `${i} - **${families[i].name}**\n`
+		description += `${i} - **${families[i].name}** ${families[i].emoji}\n`
 	}
 	return description
 }
@@ -120,18 +114,15 @@ function raceDescription() {
       categories.push(races[i].type)
       description += `**${Helper.titleCase(races[i].type)}**\n`
     }
-    description += `${i} - ${races[i].name}\n`
+    description += `${i} - ${races[i].name} ${races[i].emoji}\n`
   }
 	return description
 }
 
 function positionDescription() {
-	let chooseOptions = {}
 	let description = 'Choose your position:\n'
-	let i = 0
 	for (let i = 0; i < positions.length; i++) {
-		description += `${positions[i].emoji} - **${positions[i].name}**\n`
-		chooseOptions[positions[i].emoji] = i
+		description += `${i} - **${positions[i].name}** ${positions[i].emoji}\n`
 	}
-	return {description, chooseOptions}
+	return description
 }

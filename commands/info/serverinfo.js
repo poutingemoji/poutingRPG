@@ -35,7 +35,7 @@ module.exports = class ServerinfoCommand extends Command {
         const roles = guild.roles.cache.map(role => "<@&" + role.id + ">")
         const emojis = guild.emojis.cache.map(emoji => emoji)
         const messageEmbed = new MessageEmbed()
-          .setColor(process.env.COLOR)
+          .setColor('#92b096')
           .setAuthor(guild.name)
           .setThumbnail(guild.iconURL())
           .addFields(

@@ -72,9 +72,7 @@ class Helper {
       m > 0 ? m + (abbreviate ? "m" : (m == 1 ? " minute" : " minutes")) : false, 
       s > 0 ? s + (abbreviate ? "s" : (s == 1 ? " second" : " seconds")) : false
     ]
-    if(d == 0 && h == 0 && 1 > m) return Display[3]
-    if (!splice) splice = Display.length
-    Display.splice(-1,splice)
+    if (splice) Display.splice(-1,splice)
     return Display.filter(Boolean).join(conjunction);
   };
 

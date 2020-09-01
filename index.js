@@ -2,7 +2,7 @@ const fs = require('fs')
 const { CommandoClient } = require("discord.js-commando")
 const path = require("path")
 const Helper = require('./utils/Helper')
-const dbl = require("dblposter")
+const DBL = require("dblapi.js");
 require('dotenv').config()
 
 
@@ -11,7 +11,8 @@ const client = new CommandoClient({
 	commandPrefix: process.env.PREFIX,
 	owner: "257641125135908866",
 	invite: "https://discord.gg/nGVe96h",
-	disableEveryone: true
+  disableEveryone: true,
+  shards: 'auto',
 })
 client.registry
 	.registerDefaultTypes()
@@ -30,14 +31,15 @@ client.registry
 	})
 	.registerCommandsIn(path.join(__dirname, "commands"))
   
-const poster = new dbl(process.env.DISCORDBOTLISTKEY, client);
-poster.bind();
-client.dblPoster.on("posted", () => {
-	console.log("Woop! My stats were posted");
-});
-client.dblPoster.on("error", err => {
-	console.log(err);
-});
+const dbl = new DBL(process.env.DISCORDBOTLISTKEY, client);
+
+dbl.on('posted', () => {
+  console.log('Server count posted!');
+})
+
+dbl.on('error', err => {
+ console.error(err);
+})
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`)
@@ -47,7 +49,6 @@ client.once("ready", () => {
   })
   console.log("Guilds: " + client.guilds.cache.size)
   console.log("Users: " + client.users.cache.size)
-  client.guilds.cache.map(guild => console.log(guild.memberCount))
 })
 client.on("error", console.error)
 client.login(process.env.TOKEN)

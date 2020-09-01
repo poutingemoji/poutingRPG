@@ -63,8 +63,8 @@ class Database {
     });
   }
 
-  findPlayer(message, noMessage) {
-    return new Promise((resolve, reject) => Player.findOne({ playerId: message.author.id }, (err, res) => {
+  findPlayer(message, user, noMessage) {
+    return new Promise((resolve, reject) => Player.findOne({ playerId: user.id }, (err, res) => {
       if (err) {
       return reject(err);
       }
@@ -77,6 +77,7 @@ class Database {
   }
 
   createNewPlayer(playerId, family, race, position) {
+    console.log(playerId, family, race, position)
     return new Promise((resolve, reject) => Player.replaceOne({ playerId: playerId },
     Objects.newPlayer(playerId, family, race, position),
     { upsert: true },

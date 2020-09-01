@@ -29,8 +29,7 @@ module.exports = class ChannelinfoCommand extends Command {
             channel = message.mentions.channels.first()
         }
 		const messageEmbed = new MessageEmbed()
-            .setColor(process.env.COLOR)
-            .setThumbnail("https://cdn.discordapp.com/attachments/722720878932262952/729916844017713182/Green_april_hook_shape.png")
+            .setColor('#92b096')
             .addFields(
                 { name: "Channel Name", value: "<#" + channel.id + ">"},
                 { name: "Created", value: dateFormat(channel.createdAt, "dddd, mmmm dS, yyyy, h:MM:ss TT") },

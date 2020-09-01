@@ -18,14 +18,14 @@ module.exports = class DailyCommand extends Command {
 			args: [],
       throttling: {
         usages: 1,
-        duration: 86000
+        duration: 123412
       },
     })
 
 	}
 	
 	async run(message) {
-    const player = await Database.findPlayer(message)
+    const player = await Database.findPlayer(message, message.author)
 
 		let expAdd = Helper.randomIntFromInterval(250, 400)
 		let pointsAdd = Helper.randomIntFromInterval(400, 600)

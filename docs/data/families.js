@@ -1,33 +1,43 @@
 const families = [
   ari = {
-    name: 'Ari'
+    name: 'Ari',
+    emoji: '🕊️',
   },
   arie = {
-    name: 'Arie'
+    name: 'Arie',
+    emoji: '🤺',
   },
   eurasia = {
-    name: 'Eurasia'
+    name: 'Eurasia',
+    emoji: '💤',
   },
   ha = {
-    name: 'Ha'
+    name: 'Ha',
+    emoji: '🛡️',
   },
   hendolok = {
-   name: 'Hendo Lok'
+   name: 'Hendo Lok',
+   emoji: '⚰️',
   },
   khun = {
-    name: 'Khun'
+    name: 'Khun',
+    emoji: '⚡',
   },
   lopobia = {
-   name: 'Lo Po Bia'
+   name: 'Lo Po Bia',
+   emoji: '🦮',
   },
   pobidau = {
-    name: 'Po Bidau'
+    name: 'Po Bidau',
+    emoji: '🔬',
   },
   tuperie = {
-    name: 'Tu Perie'
+    name: 'Tu Perie',
+    emoji: '💡',
   },
   yeon = {
-    name: 'Yeon'
+    name: 'Yeon',
+    emoji: '🔥',
   }
 ]
 

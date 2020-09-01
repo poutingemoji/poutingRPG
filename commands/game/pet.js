@@ -48,9 +48,12 @@ module.exports = class petCommand extends Command {
   //console.log(Objects.newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
 
 	async run(message, { actionChosen, nickname }) {
-    var player = await Database.findPlayer(message)
+    var player = await Database.findPlayer(message, message.author)
     var pet = player.pet
-    if (!pets[pet.id] || actionChosen == 'new') await Database.createNewPet(message.author.id, Math.floor(Math.random()*pets.length), '')
+    if (!pets[pet.id] || actionChosen == 'new') {
+      await Database.createNewPet(message.author.id, Math.floor(Math.random()*pets.length), '')
+      return message.say('New pet has been created. Please run the command again.')
+    }
     
     var differences = []
     if (Object.keys(enumHelper.petActions).includes(actionChosen)) {

@@ -36,7 +36,7 @@ module.exports = class UserinfoCommand extends Command {
         const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ")
         const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => Helper.titleCase(permission)).join(', ')
 		const messageEmbed = new MessageEmbed()
-            .setColor(process.env.COLOR)
+            .setColor('#92b096')
             .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())
 			.setThumbnail(mentionedUser.displayAvatarURL())
             .setTimestamp()
