@@ -4,8 +4,6 @@ const { MessageEmbed } = require('discord.js')
 
 const Database = require('../../database/Database');
 
-const weapons = require('../../docs/data/weapons.js')
-
 module.exports = class BuyCommand extends Command {
   constructor(client) {
     super(client, {

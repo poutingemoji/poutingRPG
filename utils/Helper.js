@@ -2,17 +2,11 @@ const edata = require('../docs/data/emojis.js')
 const { MessageEmbed } = require('discord.js')
 
 class Helper {
-  messageEmbed(desc, color) {
-    const messageEmbed = new MessageEmbed()
-    .setColor(color || '#2f3136')
-    .setDescription(desc)
-    return messageEmbed;
-  };
   codeBlock(str, syntax) {
     syntax = typeof syntax !== 'undefined' ? syntax : '';
-    return "```" + `${syntax}\n${str}` + "```\n";
+    return `\`\`\`${syntax}\n${str}\n\`\`\`\n`;
   };
-  
+
   emoji(message, emojiId) {
     return message.client.emojis.cache.get(emojiId).toString();
   };
@@ -82,22 +76,22 @@ class Helper {
 
   arrayShuffle(array) {
     for ( var i = 0, length = array.length, swap = 0, temp = ''; i < length; i++ ) {
-       swap        = Math.floor(Math.random() * (i + 1));
-       temp        = array[swap];
-       array[swap] = array[i];
-       array[i]    = temp;
+      swap = Math.floor(Math.random() * (i + 1));
+      temp = array[swap];
+      array[swap] = array[i];
+      array[i] = temp;
     }
     return array;
- };
+  };
  
- percentageChance(values, chances) {
+  percentageChance(values, chances) {
     for ( var i = 0, pool = []; i < chances.length; i++ ) {
-       for ( var i2 = 0; i2 < chances[i]; i2++ ) {
-          pool.push(i);
-       }
+      for ( var i2 = 0; i2 < chances[i]; i2++ ) {
+        pool.push(i);
+      }
     }
     return values[arrayShuffle(pool)['0']];
- };
+  };
 }
 
 module.exports = new Helper();

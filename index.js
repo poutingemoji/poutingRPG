@@ -30,16 +30,18 @@ client.registry
 		help: false
 	})
 	.registerCommandsIn(path.join(__dirname, "commands"))
+
+if (!process.env.DEVPREFIX) {
+  const dbl = new DBL(process.env.DISCORDBOTLISTKEY, client);
+
+  dbl.on('posted', () => {
+    console.log('Server count posted!');
+  })
   
-const dbl = new DBL(process.env.DISCORDBOTLISTKEY, client);
-
-dbl.on('posted', () => {
-  console.log('Server count posted!');
-})
-
-dbl.on('error', err => {
- console.error(err);
-})
+  dbl.on('error', err => {
+   console.error(err);
+  })
+}
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`)
