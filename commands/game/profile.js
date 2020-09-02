@@ -42,6 +42,7 @@ module.exports = class ProfileCommand extends Command {
     user = user || message.author
     const player = await Database.findPlayer(message, user)
     const [family, race, position] = [families[player.family], races[player.race], positions[player.position]]
+    console.log(family.name, race.name, position.name)
     const profile = [
       {
         [`${family.emoji} Family`]: family.name,
@@ -64,15 +65,15 @@ module.exports = class ProfileCommand extends Command {
         ['🗺️ Arc']: player.arc,
         ['📖 Chapter']: player.chapter,
         ['🥋 Technique']: player.chapter,
-        ['📖 Pet']: `${pets[player.pet.id].name}${player.pet.nickname !== '' ? ` (${player.pet.nickname})`: ''}`,
       },
       {
         ['⛩️ Reputation']: player.reputation,
       },
     ]
+    if (pets[player.pet.id]) profile[4]['📖 Pet'] = `${pets[player.pet.id].name}${player.pet.nickname !== '' ? ` (${player.pet.nickname})`: ''}`
     var profileMessage = ''
     profile.forEach(category => {
-      profileMessage += `▬▬▬▬▬▬▬▬▬▬▬\n`
+      profileMessage += `─────────────\n`
       for (var key in category) {
         profileMessage += `${key}: **${category[key]}**\n`
       }
@@ -80,6 +81,7 @@ module.exports = class ProfileCommand extends Command {
     const messageEmbed = new MessageEmbed()
     .setColor(enumHelper.positionColors[player.position])
     .setTitle(`${user.username}'s Profile`)
+    .setThumbnail('https://cdn.discordapp.com/attachments/722720878932262952/750441484435849236/247.png')
     .setDescription(profileMessage)
     message.say(messageEmbed)
   }

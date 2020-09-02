@@ -8,7 +8,7 @@ require('dotenv').config()
 
 //Creating Commando Client
 const client = new CommandoClient({
-	commandPrefix: process.env.PREFIX,
+	commandPrefix: process.env.DEVPREFIX || process.env.PREFIX,
 	owner: "257641125135908866",
 	invite: "https://discord.gg/nGVe96h",
   disableEveryone: true,
@@ -43,7 +43,7 @@ dbl.on('error', err => {
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`)
-	client.user.setActivity(`${process.env.PREFIX}help`, {
+	client.user.setActivity(`${process.env.DEVPREFIX || process.env.PREFIX}help`, {
 		type: "STREAMING",
 		url: "https://www.twitch.tv/pokimane"
   })
