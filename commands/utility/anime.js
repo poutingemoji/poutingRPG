@@ -1,9 +1,11 @@
+require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const dateFormat = require('dateformat')
+
 const Helper = require('../../utils/Helper')
 const Requester = require('../../utils/Requester')
-require('dotenv').config()
+
+const dateFormat = require('dateformat')
 
 const checkDict = {
   status: "Status",
@@ -33,7 +35,6 @@ module.exports = class AnimeCommand extends Command {
           type: 'string',
         },
       ],
- 
       throttling: {
         usages: 1,
         duration: 10

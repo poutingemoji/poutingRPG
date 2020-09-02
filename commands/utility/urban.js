@@ -1,9 +1,11 @@
+require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const dateFormat = require('dateformat')
+
 const Helper = require('../../utils/Helper')
 const Requester = require('../../utils/Requester')
-require('dotenv').config()
+
+const dateFormat = require('dateformat')
 
 module.exports = class UrbanCommand extends Command {
 	constructor(client) {

@@ -1,8 +1,8 @@
+require('dotenv').config()
 const { Command } = require('discord.js-commando')
+
 const Database = require('../../database/Database');
 const Helper = require('../../utils/Helper')
-
-require('dotenv').config()
 
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
@@ -45,7 +45,7 @@ module.exports = class StartCommand extends Command {
 
 		const confirmMsg = "yes"
 		if (restart) {
-			message.say(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `Type the message below to **confirm**. ${Helper.mlcb(confirmMsg, "css")}`))
+			message.say(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `Type the message below to **confirm**. ${Helper.codeBlock(confirmMsg, "css")}`))
 			const confirmFilter = response => {
 				return confirmMsg.toLowerCase() == response.content.toLowerCase() && response.author.id === message.author.id
 			}
@@ -87,7 +87,6 @@ module.exports = class StartCommand extends Command {
         console.log(family, race, position)
 				Database.createNewPlayer(message.author.id, family, race, position)
 
-        createCharMsg.reactions.removeAll().catch(err => console.error(err));
 				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${message.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
 			})
 			.catch(err => {

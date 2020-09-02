@@ -1,8 +1,8 @@
+require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const Database = require('../../database/Database');
-require('dotenv').config()
 
+const Database = require('../../database/Database');
 const Helper = require('../../utils/Helper')
 
 module.exports = class ShopCommand extends Command {

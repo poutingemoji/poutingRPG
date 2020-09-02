@@ -1,8 +1,10 @@
+require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const Genius = new (require("genius-lyrics")).Client(process.env.GENIUSLYRICSKEY)
+
 const Helper = require('../../utils/Helper')
-require('dotenv').config()
+
+const Genius = new (require("genius-lyrics")).Client(process.env.GENIUSLYRICSKEY)
 
 module.exports = class LyricsCommand extends Command {
 	constructor(client) {

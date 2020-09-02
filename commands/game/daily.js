@@ -1,7 +1,8 @@
-const { Command } = require('discord.js-commando')
-const Database = require('../../database/Database');
-const Helper = require('../../utils/Helper')
 require('dotenv').config()
+const { Command } = require('discord.js-commando')
+
+const Database = require('../../database/Database');
+const Helper = require('../../utils/Helper');
 
 module.exports = class DailyCommand extends Command {
 	constructor(client) {
@@ -21,7 +22,6 @@ module.exports = class DailyCommand extends Command {
         duration: 123412
       },
     })
-
 	}
 	
 	async run(message) {

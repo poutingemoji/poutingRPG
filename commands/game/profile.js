@@ -1,9 +1,10 @@
+require('dotenv').config()
 const { Command } = require("discord.js-commando")
 const { MessageEmbed } = require('discord.js')
+
 const Database = require('../../database/Database');
 const Helper = require('../../utils/Helper');
 const enumHelper = require('../../utils/enumHelper');
-require('dotenv').config()
 
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')

@@ -1,8 +1,10 @@
+require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const { Parser } = require('expr-eval')
+
 const Helper = require('../../utils/Helper')
-require('dotenv').config()
+
+const { Parser } = require('expr-eval')
 
 module.exports = class MathCommand extends Command {
 	constructor(client) {
@@ -36,8 +38,8 @@ module.exports = class MathCommand extends Command {
         .setColor('#ed7220')
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .addFields(
-          { name: 'Equation', value: Helper.mlcb(equation, "py")},
-          { name: 'Result', value: Helper.mlcb(evaluatedEquation, "py")},
+          { name: 'Equation', value: Helper.codeBlock(equation, "py")},
+          { name: 'Result', value: Helper.codeBlock(evaluatedEquation, "py")},
         )
         .setTimestamp()
         .setFooter("Calculated")

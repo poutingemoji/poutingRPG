@@ -1,7 +1,8 @@
+require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
+
 const Database = require('../../database/Database');
-require('dotenv').config()
 
 const weapons = require('../../docs/data/weapons.js')
 
@@ -23,7 +24,6 @@ module.exports = class BuyCommand extends Command {
         duration: 5
       },
     })
-
   }
 
   async run(message, { weapon }) {

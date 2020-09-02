@@ -1,5 +1,5 @@
-const { Command } = require('discord.js-commando')
 require('dotenv').config()
+const { Command } = require('discord.js-commando')
 
 module.exports = class HelpCommand extends Command {
 	constructor(client) {
@@ -8,19 +8,19 @@ module.exports = class HelpCommand extends Command {
 			aliases: [],
 			group: 'info',
 			memberName: 'help',
-            description: "Link to the command list.",
-            examples: [`${process.env.PREFIX}help`],
-            clientPermissions: [],
-            userPermissions: [],
-            guildOnly: false,
-            args: [],
-            throttling: {
-                usages: 1,
-                duration: 5
-            },
-        })
-    }
-    run(message) {
-        message.say("https://poutingemoji.github.io/poutingbot/commands.html")
-    }
+      description: "Link to the command list.",
+      examples: [`${process.env.PREFIX}help`],
+      clientPermissions: [],
+      userPermissions: [],
+      guildOnly: false,
+      args: [],
+      throttling: {
+        usages: 1,
+        duration: 5
+      },
+    })
+  }
+  run(message) {
+    message.say("https://poutingemoji.github.io/poutingbot/commands.html")
+  }
 }

@@ -1,8 +1,10 @@
+require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
-const translate = require('@vitalets/google-translate-api')
+
 const Helper = require('../../utils/Helper')
-require('dotenv').config()
+
+const translate = require('@vitalets/google-translate-api')
 
 module.exports = class TranslateCommand extends Command {
 	constructor(client) {
@@ -45,10 +47,10 @@ module.exports = class TranslateCommand extends Command {
         const messageEmbed = new MessageEmbed()
           .setColor("#4c8cf5")
           .setAuthor(message.author.tag, message.author.displayAvatarURL())
-          .addField(translate.languages[res.from.language.iso], Helper.mlcb(content))
+          .addField(translate.languages[res.from.language.iso], Helper.codeBlock(content))
           .setTimestamp()
           .setFooter("Translated")
-        language.length !== 2 ? messageEmbed.addField(Helper.titleCase(language), Helper.mlcb(res.text)) : messageEmbed.addField(translate.languages[language], Helper.mlcb(res.text))
+        language.length !== 2 ? messageEmbed.addField(Helper.titleCase(language), Helper.codeBlock(res.text)) : messageEmbed.addField(translate.languages[language], Helper.codeBlock(res.text))
         message.say(messageEmbed)
       })
       .catch(err => {

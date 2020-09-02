@@ -8,7 +8,7 @@ class Helper {
     .setDescription(desc)
     return messageEmbed;
   };
-  mlcb(str, syntax) {
+  codeBlock(str, syntax) {
     syntax = typeof syntax !== 'undefined' ? syntax : '';
     return "```" + `${syntax}\n${str}` + "```\n";
   };
