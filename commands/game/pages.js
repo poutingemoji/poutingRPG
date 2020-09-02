@@ -55,8 +55,6 @@ module.exports = class PagesCommand extends Command {
           } else {
 
           }
-
-  
           
           messageEmbed.setDescription(pages[page-1]);
           messageEmbed.setFooter(`Page ${page} of ${pages.length}`)

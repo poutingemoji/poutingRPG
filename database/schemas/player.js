@@ -19,16 +19,18 @@ const playerSchema = new mongoose.Schema({
   healthMax: {type: Number, default: 0},
   shinsu: {type: Number, default: 0},
   shinsuMax: {type: Number, default: 0},
+  
   baang: {type: Number, default: 0},
   myun: {type: Number, default: 0},
   soo: {type: Number, default: 0},
+  shape: {type: Number},
 
   points: {type: Number, default: 0},
   dallars: {type: Number, default: 0},
   
   arc: {type: Number, default: 0},
   chapter: {type: Number, default: 0},
-  weapon: {
+  technique: {
     id: {type: Number, default: 0},
     mastery: {type: Number, default: 1},
   },

@@ -61,7 +61,7 @@ module.exports = class ShopCommand extends Command {
     current.forEach(itemCurrent => {
       console.log(itemCurrent)
       itemCurrent = categoryChosen[categoryChosen.findIndex(item => item.name == itemCurrent.name)]
-      description += `**${itemCurrent.name}**\n${itemCurrent.price} points\n`
+      description += `${itemCurrent.emoji} **${itemCurrent.name}**\n${itemCurrent.price} points\n`
     })
     messageEmbed.addField(`${Helper.titleCase(category)} Store`, description)
     message.say(messageEmbed) 

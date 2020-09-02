@@ -42,7 +42,7 @@ module.exports = class ProfileCommand extends Command {
 	async run(message, {user}) {
     user = user || message.author
     const player = await Database.findPlayer(message, user)
-    const [family, race, position] = [families[player.family], races[player.race], positions[player.position]]
+    const [family, race, position, pet] = [families[player.family], races[player.race], positions[player.position], pets[player.pet.id]]
     console.log(family.name, race.name, position.name)
     const profile = [
       {
@@ -59,8 +59,8 @@ module.exports = class ProfileCommand extends Command {
         ['🌊 Shinsu']: player.shinsu,
       },
       {
-        ['💯 Points']: player.points,
-        ['🟠 Dallars']: player.dallars,
+        ['⛳ Points']: player.points,
+        ['🟡 Dallars']: player.dallars,
       },
       {
         ['🗺️ Arc']: player.arc,
@@ -68,10 +68,10 @@ module.exports = class ProfileCommand extends Command {
         ['🥋 Technique']: player.chapter,
       },
       {
-        ['⛩️ Reputation']: player.reputation,
+        ['🏔️ Reputation']: player.reputation,
       },
     ]
-    if (pets[player.pet.id]) profile[4]['📖 Pet'] = `${pets[player.pet.id].name}${player.pet.nickname !== '' ? ` (${player.pet.nickname})`: ''}`
+    pets[player.pet.id] ? profile[4][`${pet.emoji} Pet`] = `${pet.name}` : profile[4]['❓ Pet'] = 'None';
     var profileMessage = ''
     profile.forEach(category => {
       profileMessage += `─────────────\n`

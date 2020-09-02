@@ -90,7 +90,7 @@ module.exports = class petCommand extends Command {
       await Database.updatePetNeeds(message.author.id, differences)
       console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
       const messageEmbed = new MessageEmbed()
-      .setTitle(`${message.member.nickname || message.author.username}'s ${pets[pet.id].name}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)
+      .setTitle(`${message.member.nickname || message.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)
       .setThumbnail(pets[pet.id].image)
 
       var mood

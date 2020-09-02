@@ -18,11 +18,11 @@ const enumHelper = {
     walk: 'energy',
   },
   positionColors: [
-    fisherman = '#a2716b',
-    spearbearer = '#604f41',
-    scout = '#92b096',
-    lightbearer = '#baa564',
-    wavecontroller = '#748394',
+    fisherman = '#db3043',
+    spearbearer = '#c06850',
+    scout = '#79b15a',
+    lightbearer = '#ffd984',
+    wavecontroller = '#50a5e6',
   ]
   
 }
