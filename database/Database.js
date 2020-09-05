@@ -95,33 +95,6 @@ class Database {
     });
   }
 
-  addPositionPlayer(playerId, position, subcategory) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
-      const newPositions = {}
-      newPositions = Object.assign(newPositions, res.positions)
-      if (!positions[position]) return; //position doesnt exist
-      if (subcategory) {
-        if (!positions[position].hasOwnProperty('subcategories')) return; //position doesnt have subcategories
-        if (!positions[position]['subcategories'][subcategory]) return; //position doesnt have this subcategory
-        if (!newPositions[position]) return; //player doesnt have the base position so cant get subcategory
-        if (!newPositions[position].includes(subcategory)) {
-          newPositions[position].push(subcategory); //if player doesnt have subcategory, add it
-        } else {
-          //player has subcategory already
-        }
-      } else {
-        if (newPositions[position]) {
-          return false //player already has position
-        } else {
-          newPositions[position] = []; //create new position for player
-        }
-      }
-      res.position = position;
-      res.positions = newPositions;
-      res.save().catch(err => console.log(err))
-    });
-  }
-
   loadTop10(type) {
     return Player.find()
       .sort(type)

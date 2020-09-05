@@ -6,8 +6,7 @@ const Helper = require('../../utils/Helper')
 
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
-const positions = require('../../docs/data/positions.js')
-positions.splice(5)
+const positions = require('../../docs/data/positions.js').slice(0, 5)
 
 module.exports = class StartCommand extends Command {
 	constructor(client) {
@@ -41,7 +40,8 @@ module.exports = class StartCommand extends Command {
 	async run(message, {restart}) {
     const player = await Database.findPlayer(message, message.author, true)
     if (!restart && player) return 
-		
+    
+   
 		let family, race, position
 
 		const confirmMsg = "yes"

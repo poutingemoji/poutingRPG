@@ -18,12 +18,10 @@ const positions = [
   wavecontroller = {
     name: 'Wave Controller',
     emoji: '🌊',
-    subcategories: [
-      dansulsa = {
-        name: 'Dansulsa',
-        emoji: '🧱',
-      },
-    ]
+  },
+  dansulsa = {
+    name: 'Dansulsa',
+    emoji: '🧱',
   },
   defender = {
     name: 'Defender',

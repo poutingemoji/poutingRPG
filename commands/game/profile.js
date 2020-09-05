@@ -46,12 +46,11 @@ module.exports = class ProfileCommand extends Command {
 	async run(message, {user}) {
     user = user || message.author
     const player = await Database.findPlayer(message, user)
-    const [family, race, position, pet, technique, arc] = [families[player.family], races[player.race], positions[player.position], pets[player.pet.id], techniques[player.technique.id], volumes[player.volume][player.arc]]
+    const [family, race, pet, technique, arc] = [families[player.family], races[player.race], pets[player.pet.id], techniques[player.technique.id], volumes[player.volume][player.arc]]
     const profile = [
       {
         [`${family.emoji} Family`]: family.name,
         [`${race.emoji} Race`]: race.name,
-        [`${position.emoji} Position`]: position.name,
       },
       {
         ['⛩️ Level']: player.level,
@@ -74,6 +73,15 @@ module.exports = class ProfileCommand extends Command {
         ['🏔️ Reputation']: player.reputation,
       },
     ]
+    if (player.position[1]) {
+      var i = 0;
+      player.position.forEach(res => { 
+        i++
+        profile[0][`${positions[res].emoji} Position ${i}`] = positions[res].name
+      })
+    } else {
+      profile[0][`${positions[player.position[0]].emoji} Position`] = positions[player.position[0]].name
+    }
     pets[player.pet.id] ? profile[4][`${pet.emoji} Pet`] = `${pet.name}` : profile[4]['❓ Pet'] = 'None';
     var profileMessage = ''
     profile.forEach(category => {
@@ -84,7 +92,7 @@ module.exports = class ProfileCommand extends Command {
     })
     //await Database.addPositionPlayer(message.author.id, 4, 0)
     const messageEmbed = new MessageEmbed()
-    .setColor(enumHelper.positionColors[player.position])
+    .setColor(enumHelper.positionColors[player.position[0]])
     .setTitle(`${user.username}'s Profile`)
     .setThumbnail(arc.image)
     .setDescription(profileMessage)

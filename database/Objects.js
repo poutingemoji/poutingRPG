@@ -8,8 +8,7 @@ const Objects = {
       playerId: playerId,
       family: family,
       race: race,
-      position: position,
-      positions: {[position]: []},
+      position: [position],
     }
   },
   newPet(id, nickname) {

@@ -8,8 +8,7 @@ const playerSchema = new mongoose.Schema({
 
   family: Number,
   race: Number,
-  position: Number,
-  positions: Object,
+  position: Array,
   irregular: {type: Boolean, default: Math.random() >= 0.5},
 
   level: {type: Number, default: 1},

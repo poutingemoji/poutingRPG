@@ -30,7 +30,6 @@ module.exports = class PagesCommand extends Command {
 	}
 	
 	run(message) {
-
     let pages = ['Page 1', 'two', 'tres', 'si', 'wu', 'seis', 'seven'];
     let page = 1;
 
