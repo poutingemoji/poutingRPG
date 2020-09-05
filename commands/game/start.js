@@ -7,7 +7,7 @@ const Helper = require('../../utils/Helper')
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
 const positions = require('../../docs/data/positions.js')
-positions.splice(4)
+positions.splice(5)
 
 module.exports = class StartCommand extends Command {
 	constructor(client) {

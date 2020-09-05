@@ -39,9 +39,10 @@ module.exports = class WeatherCommand extends Command {
         throw `Can't find info on the weather in **${place}**.`
       }
       const currentWeather = weatherInfo["weather"][0]
+      console.log(weatherInfo["sys"]["country"])
       const messageEmbed = new MessageEmbed()
         .setColor('#99ccff')
-        .setAuthor(weatherInfo["name"] + ", " + getCountryName(weatherInfo["sys"]["country"]))
+        .setAuthor(`${weatherInfo["name"]}${!weatherInfo["sys"]["country"] ? '' : `, ${getCountryName(weatherInfo["sys"]["country"])}`}`)
         .setThumbnail(`http://openweathermap.org/img/wn/${currentWeather["icon"]}@2x.png`)
         .addFields(
           {name: "Temperature\n(Actual/Feels Like)", value: `${weatherInfo["main"]["temp"]}°F/${weatherInfo["main"]["feels_like"]}°F` },

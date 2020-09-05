@@ -7,6 +7,7 @@ const enumHelper = require('../utils/enumHelper')
 const Helper = require('../utils/Helper')
 const Objects = require('./Objects');
 
+const positions = require('../docs/data/positions.js');
 const pets = require('../docs/data/pets.js');
 
 const Player = mongoose.model('Player', playerSchema);
@@ -51,29 +52,19 @@ class Database {
     connect();
   }
 
-  addExpPlayer(playerId, value) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
-      res.exp += value
-      while (res.exp >= res.expMax) {
-        res.level++
-        res.exp -= res.expMax
-        res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
+  createNewPlayer(playerId, family, race, position) {
+    console.log(playerId, family, race, position)
+    return new Promise((resolve, reject) => Player.replaceOne({ playerId: playerId },
+    Objects.newPlayer(playerId, family, race, position),
+    { upsert: true },
+    (err, res) => {
+      if (err) {
+      return reject(err);
       }
-      res.save().catch(err => console.log(err))
-    });
-  }
 
-  addPositionPlayer(playerId) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
-      res.exp += value
-      while (res.exp >= res.expMax) {
-        res.level++
-        res.exp -= res.expMax
-        res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
-      }
-      res.save().catch(err => console.log(err))
-    });
-  }
+      return resolve(res);
+    })
+  )};
 
   findPlayer(message, user, noMessage) {
     return new Promise((resolve, reject) => Player.findOne({ playerId: user.id }, (err, res) => {
@@ -92,19 +83,44 @@ class Database {
     }));
   }
 
-  createNewPlayer(playerId, family, race, position) {
-    console.log(playerId, family, race, position)
-    return new Promise((resolve, reject) => Player.replaceOne({ playerId: playerId },
-    Objects.newPlayer(playerId, family, race, position),
-    { upsert: true },
-    (err, res) => {
-      if (err) {
-      return reject(err);
+  addExpPlayer(playerId, value) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      res.exp += value
+      while (res.exp >= res.expMax) {
+        res.level++
+        res.exp -= res.expMax
+        res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
       }
+      res.save().catch(err => console.log(err))
+    });
+  }
 
-      return resolve(res);
-    })
-  )};
+  addPositionPlayer(playerId, position, subcategory) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      const newPositions = {}
+      newPositions = Object.assign(newPositions, res.positions)
+      if (!positions[position]) return; //position doesnt exist
+      if (subcategory) {
+        if (!positions[position].hasOwnProperty('subcategories')) return; //position doesnt have subcategories
+        if (!positions[position]['subcategories'][subcategory]) return; //position doesnt have this subcategory
+        if (!newPositions[position]) return; //player doesnt have the base position so cant get subcategory
+        if (!newPositions[position].includes(subcategory)) {
+          newPositions[position].push(subcategory); //if player doesnt have subcategory, add it
+        } else {
+          //player has subcategory already
+        }
+      } else {
+        if (newPositions[position]) {
+          return false //player already has position
+        } else {
+          newPositions[position] = []; //create new position for player
+        }
+      }
+      res.position = position;
+      res.positions = newPositions;
+      res.save().catch(err => console.log(err))
+    });
+  }
 
   loadTop10(type) {
     return Player.find()
@@ -126,13 +142,25 @@ class Database {
       })
     )}
 
-  async updatePetNeeds(playerId, differences) {
-    return await Player.findOne({ playerId: playerId }, (err, res) => { 
+  updatePetNeeds(playerId, differences) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
       const needs =  enumHelper.petNeeds
       for (var i in differences) res.pet[needs[i]] = Helper.clamp(res.pet[needs[i]] += differences[i], 0, 100)
       res.pet.updatedAt = new Date();
       res.save().catch(err => console.log(err))
     }).exec();
+  }
+
+  addExpPet(playerId, value) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      res.pet.exp += value
+      while (res.pet.exp >= res.pet.expMax) {
+        res.pet.level++
+        res.pet.exp -= res.pet.expMax
+        res.pet.expMax = Parser.evaluate(enumHelper.expFormulas[pets[res.pet.id].exprate], { n: res.pet.level+1 })
+      }
+      res.save().catch(err => console.log(err))
+    });
   }
 
   renamePet(playerId, nickname) {
@@ -145,18 +173,6 @@ class Database {
   removePet(playerId) {
     Player.findOne({ playerId: playerId }, (err, res) => { 
       res.pet = {};
-      res.save().catch(err => console.log(err))
-    });
-  }
-
-  addExpPet(playerId, value) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
-      res.pet.exp += value
-      while (res.pet.exp >= res.pet.expMax) {
-        res.pet.level++
-        res.pet.exp -= res.pet.expMax
-        res.pet.expMax = Parser.evaluate(enumHelper.expFormulas[pets[res.pet.id].exprate], { n: res.pet.level+1 })
-      }
       res.save().catch(err => console.log(err))
     });
   }

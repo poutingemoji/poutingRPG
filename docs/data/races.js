@@ -1,74 +1,74 @@
 const races = [
   human = {
     name: 'Human',
-    type: 'humanoid',
     emoji: '👨',
+    type: 'humanoid',
   },
   redwitch = {
     name: 'Red Witch',
-    type: 'humanoid',
     emoji: '🧙',
+    type: 'humanoid',
   },
   silverdwarf = {
     name: 'Silver Dwarf',
-    type: 'humanoid',
     emoji: '🧭',
+    type: 'humanoid',
   },
   canineperson = {
     name: 'Canine Person',
-    type: 'humanoid',
     emoji: '🐶',
+    type: 'humanoid',
   },
   datahuman = {
     name: 'Data Human',
-    type: 'humanoid',
     emoji: '📈',
+    type: 'humanoid',
   },
   khukum = {
     name: 'Khukum',
-    type: 'humanoid',
     emoji: '☣️',
+    type: 'humanoid',
   },
   rabbitear = {
     name: 'Rabbit Ear',
-    type: 'humanoid',
     emoji: '🐰',
+    type: 'humanoid',
   },
 
 
 
   nativeone = {
     name: 'Native One',
-    type: 'animalistic',
     emoji: '☄️',
+    type: 'animalistic',
   },
   dooni = {
     name: 'Dooni',
-    type: 'animalistic',
     emoji: '🐷',
+    type: 'animalistic',
   },
   wraithraiser = {
     name: 'Wraithraiser',
-    type: 'animalistic',
     emoji: '🐊',
+    type: 'animalistic',
   },
 
 
 
   manyeyed = {
     name: 'Many Eyed',
-    type: 'unusual',
     emoji: '👀',
+    type: 'unusual',
   },
   guardian = {
     name: 'Guardian',
-    type: 'unusual',
     emoji: '🗿',
+    type: 'unusual',
   },
   fluffydwarf = {
     name: 'Fluffy Dwarf',
-    type: 'unusual',
     emoji: '💦',
+    type: 'unusual',
   }
 ]
 

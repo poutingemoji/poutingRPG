@@ -9,7 +9,7 @@ const playerSchema = new mongoose.Schema({
   family: Number,
   race: Number,
   position: Number,
-  positions: {},
+  positions: Object,
   irregular: {type: Boolean, default: Math.random() >= 0.5},
 
   level: {type: Number, default: 1},
@@ -27,6 +27,7 @@ const playerSchema = new mongoose.Schema({
   points: {type: Number, default: 0},
   dallars: {type: Number, default: 0},
   
+  volume: {type: Number, default: 0},
   arc: {type: Number, default: 0},
   chapter: {type: Number, default: 0},
   technique: {

@@ -11,6 +11,7 @@ const races = require('../../docs/data/races.js')
 const positions = require('../../docs/data/positions.js')
 const techniques = require('../../docs/data/techniques.js')
 const pets = require('../../docs/data/pets.js')
+const volumes = require('../../docs/data/volumes.js')
 
 const dateFormat = require('dateformat')
 
@@ -45,8 +46,7 @@ module.exports = class ProfileCommand extends Command {
 	async run(message, {user}) {
     user = user || message.author
     const player = await Database.findPlayer(message, user)
-    const [family, race, position, pet, technique] = [families[player.family], races[player.race], positions[player.position], pets[player.pet.id], techniques[player.technique.id]]
-    console.log()
+    const [family, race, position, pet, technique, arc] = [families[player.family], races[player.race], positions[player.position], pets[player.pet.id], techniques[player.technique.id], volumes[player.volume][player.arc]]
     const profile = [
       {
         [`${family.emoji} Family`]: family.name,
@@ -66,8 +66,8 @@ module.exports = class ProfileCommand extends Command {
         ['🟡 Dallars']: player.dallars,
       },
       {
-        ['🗺️ Arc']: player.arc,
-        ['📖 Chapter']: player.chapter,
+        ['🗺️ Arc']: arc.name,
+        ['📖 Chapter']: player.chapter+1,
         ['🥋 Technique']: `${technique.name} (${Helper.romanize(player.technique.mastery)})`,
       },
       {
@@ -77,17 +77,18 @@ module.exports = class ProfileCommand extends Command {
     pets[player.pet.id] ? profile[4][`${pet.emoji} Pet`] = `${pet.name}` : profile[4]['❓ Pet'] = 'None';
     var profileMessage = ''
     profile.forEach(category => {
-      profileMessage += `─────────────\n`
+      profileMessage += `───────────────\n`
       for (var key in category) {
         profileMessage += `${key}: **${category[key]}**\n`
       }
     })
+    //await Database.addPositionPlayer(message.author.id, 4, 0)
     const messageEmbed = new MessageEmbed()
     .setColor(enumHelper.positionColors[player.position])
     .setTitle(`${user.username}'s Profile`)
-    .setThumbnail('https://cdn.discordapp.com/attachments/722720878932262952/750441484435849236/247.png')
+    .setThumbnail(arc.image)
     .setDescription(profileMessage)
-    .setFooter(`Created: ${dateFormat(player._id.getTimestamp(), "dddd, mmmm dS, yyyy, h:MM TT")}`);
+    .setFooter(`Born: ${dateFormat(player._id.getTimestamp(), "dddd, mmmm dS, yyyy, h:MM TT")}`);
     message.say(messageEmbed)
   }
 }
