@@ -63,13 +63,29 @@ class Database {
     });
   }
 
+  addPositionPlayer(playerId) {
+    Player.findOne({ playerId: playerId }, (err, res) => { 
+      res.exp += value
+      while (res.exp >= res.expMax) {
+        res.level++
+        res.exp -= res.expMax
+        res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
+      }
+      res.save().catch(err => console.log(err))
+    });
+  }
+
   findPlayer(message, user, noMessage) {
     return new Promise((resolve, reject) => Player.findOne({ playerId: user.id }, (err, res) => {
       if (err) {
       return reject(err);
       }
       if (!res && !noMessage) {
-      return message.say(`Please type \`${message.client.commandPrefix}start\` to begin.`);
+        if (message.id == user.id) {
+          return message.say(`Please type \`${message.client.commandPrefix}start\` to begin.`);
+        } else {
+          return message.say(`${user.username} hasn't started climbing the Tower.`);
+        }
       }
 
       return resolve(res);

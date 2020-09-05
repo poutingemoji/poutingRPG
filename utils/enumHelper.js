@@ -5,6 +5,12 @@ const enumHelper = {
     mediumslow: 'floor((6/5*n^3)-(15*n^2)+(100*n)-140)',
     slow: 'floor(((5*n)^3)/4)',
   },
+  maxHealth: (level) => {
+    return 100 + (level * 5);
+  },
+  maxShinsu: (level) => {
+    return 50 + (level * 5);
+  },
   petNeeds: [
     'hunger', 
     'hygiene', 

@@ -9,6 +9,11 @@ const Objects = {
       family: family,
       race: race,
       position: position,
+      positions: {
+        [position]: {
+          [0]: true,
+        }
+      },
     }
   },
   newPet(id, nickname) {

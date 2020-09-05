@@ -48,7 +48,7 @@ module.exports = class ShopCommand extends Command {
     const argLimit = Math.ceil(categoryChosen.length/itemsPerPage)
 
     if (!(argLimit >= page && page >= 1)) {
-      return message.say(Helper.emojiMsg(message, "left", ["err"], `Page **${page}** doesn't exist.`))
+      return message.say(Helper.emojiMsg(message, "left", ["err"], `Page ${page} doesn't exist.`))
     }
 
     const current = categoryChosen.slice((page-1)*itemsPerPage, page*itemsPerPage)

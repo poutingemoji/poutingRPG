@@ -9,7 +9,10 @@ const enumHelper = require('../../utils/enumHelper');
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
 const positions = require('../../docs/data/positions.js')
+const techniques = require('../../docs/data/techniques.js')
 const pets = require('../../docs/data/pets.js')
+
+const dateFormat = require('dateformat')
 
 module.exports = class ProfileCommand extends Command {
 	constructor(client) {
@@ -42,8 +45,8 @@ module.exports = class ProfileCommand extends Command {
 	async run(message, {user}) {
     user = user || message.author
     const player = await Database.findPlayer(message, user)
-    const [family, race, position, pet] = [families[player.family], races[player.race], positions[player.position], pets[player.pet.id]]
-    console.log(family.name, race.name, position.name)
+    const [family, race, position, pet, technique] = [families[player.family], races[player.race], positions[player.position], pets[player.pet.id], techniques[player.technique.id]]
+    console.log()
     const profile = [
       {
         [`${family.emoji} Family`]: family.name,
@@ -55,8 +58,8 @@ module.exports = class ProfileCommand extends Command {
         ['✨ Exp']: `${player.exp}/${player.expMax}`,
       },
       {
-        ['💗 Health']: player.health,
-        ['🌊 Shinsu']: player.shinsu,
+        ['💗 Health']: `${player.health}/${enumHelper.maxHealth(player.level)}`,
+        ['🌊 Shinsu']: `${player.shinsu}/${enumHelper.maxShinsu(player.level)}`,
       },
       {
         ['⛳ Points']: player.points,
@@ -65,7 +68,7 @@ module.exports = class ProfileCommand extends Command {
       {
         ['🗺️ Arc']: player.arc,
         ['📖 Chapter']: player.chapter,
-        ['🥋 Technique']: player.chapter,
+        ['🥋 Technique']: `${technique.name} (${Helper.romanize(player.technique.mastery)})`,
       },
       {
         ['🏔️ Reputation']: player.reputation,
@@ -84,6 +87,7 @@ module.exports = class ProfileCommand extends Command {
     .setTitle(`${user.username}'s Profile`)
     .setThumbnail('https://cdn.discordapp.com/attachments/722720878932262952/750441484435849236/247.png')
     .setDescription(profileMessage)
+    .setFooter(`Created: ${dateFormat(player._id.getTimestamp(), "dddd, mmmm dS, yyyy, h:MM TT")}`);
     message.say(messageEmbed)
   }
 }

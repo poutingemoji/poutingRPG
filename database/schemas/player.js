@@ -9,6 +9,7 @@ const playerSchema = new mongoose.Schema({
   family: Number,
   race: Number,
   position: Number,
+  positions: {},
   irregular: {type: Boolean, default: Math.random() >= 0.5},
 
   level: {type: Number, default: 1},
@@ -16,9 +17,7 @@ const playerSchema = new mongoose.Schema({
   expMax: {type: Number, default: Parser.evaluate(enumHelper.expFormulas['mediumfast'], { n: 2 })},
 
   health: {type: Number, default: 0},
-  healthMax: {type: Number, default: 0},
   shinsu: {type: Number, default: 0},
-  shinsuMax: {type: Number, default: 0},
   
   baang: {type: Number, default: 0},
   myun: {type: Number, default: 0},

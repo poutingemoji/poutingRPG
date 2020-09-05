@@ -75,7 +75,7 @@ module.exports = class petCommand extends Command {
 
     if (actionChosen == 'disown') {
       await Database.removePet(message.author.id)
-      message.say(`You have disowned your **${pets[pet.id].name}(${pet.nickname})**.`)
+      message.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
     }
 
     if (!actionChosen) {
