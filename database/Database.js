@@ -93,12 +93,14 @@ class Database {
   addExpPlayer(message, user, value) {
     Player.findOne({ playerId: user.id }, (err, res) => { 
       res.exp += value
+      let description = ''
       while (res.exp >= res.expMax) {
         res.level++
         res.exp -= res.expMax
         res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
-        message.say(`🆙 Congratulations ${user.toString()}, you've reached level **${res.level}**!`)
+        description += `🆙 Congratulations ${user.toString()}, you've reached level **${res.level}**!`;
       }
+      if (description !== '') message.say(description)
       res.save().catch(err => console.log(err))
     });
   }
