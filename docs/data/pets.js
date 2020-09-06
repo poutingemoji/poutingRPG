@@ -179,6 +179,7 @@ const pets = [
   },
   killerwhale = {
     name: 'Killer Whale',
+    emoji: '🦈',
     empty: {
       hunger: 50000,
       hygiene: 50000,
@@ -187,7 +188,6 @@ const pets = [
     },
     exprate: 'mediumfast',
     price: 0,
-    emoji: '🦈',
     image: 'https://cdn.discordapp.com/attachments/722720878932262952/747949489138040952/Killer_Whale.png',
     family: false,
     race: false,

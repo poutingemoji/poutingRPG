@@ -40,6 +40,7 @@ module.exports = class ShopCommand extends Command {
   }
 
   run(message, { category, page }) {
+    return message.say('WIP')
     const categoryColors = {
       pet: '#ee2446'
     }

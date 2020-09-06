@@ -104,7 +104,7 @@ class Helper {
         pool.push(i);
       }
     }
-    return values[arrayShuffle(pool)['0']];
+    return values[this.arrayShuffle(pool)['0']];
   };
 }
 

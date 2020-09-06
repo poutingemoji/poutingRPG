@@ -63,7 +63,7 @@ module.exports = class petCommand extends Command {
       if (needIncrease == 0) return message.say(`Your ${needs[actionIndex]} is maxed. Please wait for it to go down.`)
       message.say(`You ${actionChosen} your pet.`)
       differences[actionIndex] = 20
-      await Database.updatePetNeeds(message.author.id, differences)
+      await Database.updateNeedsPet(message.author.id, differences)
       await Database.addExpPet(message.author.id, Math.round(needIncrease), 0, 100)
     }
 
@@ -87,7 +87,7 @@ module.exports = class petCommand extends Command {
         pet[needs[i]] += difference
       }
 
-      await Database.updatePetNeeds(message.author.id, differences)
+      await Database.updateNeedsPet(message.author.id, differences)
       console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
       const messageEmbed = new MessageEmbed()
       .setTitle(`${message.member.nickname || message.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)

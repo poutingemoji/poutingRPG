@@ -56,9 +56,9 @@ module.exports = class TopCommand extends Command {
           
           const user = await message.client.users.fetch(res[i].playerId)
           if (filter === 'level') {
-            topPlayers += `${leaderboardPosition}    ${positions[res[i].position].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].exp}\n`
+            topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].exp}\n`
           } else {
-            topPlayers += `${leaderboardPosition}    ${positions[res[i].position].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].points}\n`
+            topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].points}\n`
           }
         }
         

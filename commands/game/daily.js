@@ -19,16 +19,17 @@ module.exports = class DailyCommand extends Command {
 			args: [],
       throttling: {
         usages: 1,
-        duration: 123412
+        duration: 82800
       },
     })
 	}
 	
 	async run(message) {
     const player = await Database.findPlayer(message, message.author)
-
-		let expAdd = Helper.randomIntFromInterval(250, 400)
-		let pointsAdd = Helper.randomIntFromInterval(400, 600)
-    
+    const exp = Helper.randomIntFromInterval(250, 400)
+    const points = Helper.randomIntFromInterval(400, 600)
+    await Database.addExpPlayer(message, message.author, exp)
+    await Database.incrementValuePlayer(message.author.id, 'points', points)
+    message.say(`${message.author.username}, you've received your daily **${exp}** ✨ exp & your daily **${points}** ⛳ points.`)
 	}
 }

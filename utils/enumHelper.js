@@ -29,8 +29,17 @@ const enumHelper = {
     scout = '#79b15a',
     lightbearer = '#ffd984',
     wavecontroller = '#50a5e6',
+  ],
+  currencies: [
+    points = {
+      name: 'points',
+      emoji: '⛳',
+    },
+    dallars = {
+      name: 'dallars',
+      emoji: '🟡',
+    },
   ]
-  
 }
 
 module.exports = enumHelper

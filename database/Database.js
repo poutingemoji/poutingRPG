@@ -83,13 +83,21 @@ class Database {
     }));
   }
 
-  addExpPlayer(playerId, value) {
+  incrementValuePlayer(playerId, key, value) {
     Player.findOne({ playerId: playerId }, (err, res) => { 
+      res[key] += value
+      res.save().catch(err => console.log(err))
+    });
+  }
+
+  addExpPlayer(message, user, value) {
+    Player.findOne({ playerId: user.id }, (err, res) => { 
       res.exp += value
       while (res.exp >= res.expMax) {
         res.level++
         res.exp -= res.expMax
         res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
+        message.say(`🆙 Congratulations ${user.toString()}, you've reached level **${res.level}**!`)
       }
       res.save().catch(err => console.log(err))
     });
@@ -115,7 +123,7 @@ class Database {
       })
     )}
 
-  updatePetNeeds(playerId, differences) {
+  updateNeedsPet(playerId, differences) {
     Player.findOne({ playerId: playerId }, (err, res) => { 
       const needs =  enumHelper.petNeeds
       for (var i in differences) res.pet[needs[i]] = Helper.clamp(res.pet[needs[i]] += differences[i], 0, 100)
