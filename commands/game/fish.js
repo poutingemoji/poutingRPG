@@ -63,7 +63,7 @@ module.exports = class FishCommand extends Command {
         description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
         description += `*You earned experience:* **+ ${exp}** ✨`
         await Database.incrementValuePlayer(message.author.id, cur, fishes[fish][cur.name])
-        await Database.addExpPlayer(message, message.author.id, exp)
+        await Database.addExpPlayer(message, message.author, exp)
       }
     }
     

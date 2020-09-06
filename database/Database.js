@@ -98,7 +98,7 @@ class Database {
         res.level++
         res.exp -= res.expMax
         res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
-        description += `🆙 Congratulations ${user.toString()}, you've reached level **${res.level}**!`;
+        description += `🆙 Congratulations ${user.toString()}, you've reached level **${res.level}**!\n`;
       }
       if (description !== '') message.say(description)
       res.save().catch(err => console.log(err))
