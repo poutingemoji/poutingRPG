@@ -28,8 +28,8 @@ module.exports = class DailyCommand extends Command {
     const player = await Database.findPlayer(message, message.author)
     const exp = Helper.randomIntFromInterval(250, 400)
     const points = Helper.randomIntFromInterval(400, 600)
-    await Database.addExpPlayer(message, message.author, exp)
-    await Database.incrementValuePlayer(message.author.id, 'points', points)
+    await Database.addExpPlayer(message.author, message, exp)
+    await Database.incrementValuePlayer(message.author, 'points', points)
     message.say(`${message.author.username}, you've received your daily **${exp}** ✨ exp & your daily **${points}** ⛳ points.`)
 	}
 }

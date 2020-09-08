@@ -15,7 +15,7 @@ module.exports = class StartCommand extends Command {
 			aliases: [],
 			group: 'game',
 			memberName: 'start',
-			description: 'Begin your adventure up the game.',
+			description: 'Begin your adventure up the Tower.',
 			examples: [],
 			clientPermissions: [],
 			userPermissions: [],
@@ -86,7 +86,7 @@ module.exports = class StartCommand extends Command {
 				position = res.first().content
 
         console.log(family, race, position)
-				Database.createNewPlayer(message.author.id, family, race, position)
+				Database.createNewPlayer(message.author, family, race, position)
 
 				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${message.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
 			})

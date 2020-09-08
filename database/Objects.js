@@ -9,6 +9,23 @@ const Objects = {
       family: family,
       race: race,
       position: [position],
+      fishes: {
+        ['Shrimp']: 0,
+        ['Fish']: 0,
+        ['Tropical Fish']: 0,
+        ['Blowfish']: 0,
+        ['Squid']: 0,
+        ['Octopus']: 0,
+        ['Metalfish']: 0,
+        ['Silver Fish']: 0,
+        ['Crystal Shard']: 0,
+        ['Valuable Object']: 0,
+        ['Baby Zygaena']: 0,
+        ['Sweetfish']: 0,
+        ['Boot']: 0,
+        ['Brick']: 0,
+      },
+      quests: {},
     }
   },
   newPet(id, nickname) {
@@ -33,26 +50,15 @@ const Objects = {
   },
   newQuest(objectiveType, objective, rewards) {
     console.log(objective)
-    const objectives = {
-      Collect: {
-        name: objective[0],
-        goal: objective[1]
-      },
-      Defeat: {
-        name: objective[0], 
-        total: objective[1],
-        waves: objective[2],
-      },
-      Fish: {
-        name: objective[0],
-        goal: objective[1]
-      }
-    }
     return {
       objectiveType: objectiveType,
-      objective: objectives[objectiveType],
+      objective: {
+        name: objective[0],
+        goal: objective[1],
+      },
       progress: 0,
       rewards: rewards
+      //defeat, fish, collect, train
     }
   }
 }

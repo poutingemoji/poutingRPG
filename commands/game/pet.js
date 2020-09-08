@@ -52,29 +52,29 @@ module.exports = class petCommand extends Command {
     var player = await Database.findPlayer(message, message.author)
     var pet = player.pet
     if (!pets[pet.id] || actionChosen == 'new') {
-      await Database.createNewPet(message.author.id, Math.floor(Math.random()*pets.length), '')
+      await Database.createNewPet(message.author, Math.floor(Math.random()*pets.length), '')
       return message.say('New pet has been created. Please run the command again.')
     }
     
     var differences = []
     if (Object.keys(enumHelper.petActions).includes(actionChosen)) {
       const actionIndex = Object.keys(enumHelper.petActions).findIndex(action => action == actionChosen)
-      const needIncrease = Helper.clamp((pet[needs[actionIndex]] + 20), 0, 100) - pet[needs[actionIndex]]
+      const needIncrease = Helper.clamp((pet[needs[actionIndex]] + 33), 0, 100) - pet[needs[actionIndex]]
       if (needIncrease == 0) return message.say(`Your ${needs[actionIndex]} is maxed. Please wait for it to go down.`)
       message.say(`You ${actionChosen} your pet.`)
-      differences[actionIndex] = 20
-      await Database.updateNeedsPet(message.author.id, differences)
-      await Database.addExpPet(message.author.id, Math.round(needIncrease), 0, 100)
+      differences[actionIndex] = 33
+      await Database.updateNeedsPet(message.author, differences)
+      await Database.addExpPet(message.author, Math.round(needIncrease), 0, 100)
     }
 
     if (actionChosen == 'name') {
       if (nickname.length > 32 || !nickname) return message.say('Please keep your nickname at 32 characters or under.')
-      await Database.renamePet(message.author.id, nickname)
+      await Database.renamePet(message.author, nickname)
       message.say(`Your pet's name is now **${nickname}**.`)
     }
 
     if (actionChosen == 'disown') {
-      await Database.removePet(message.author.id)
+      await Database.removePet(message.author)
       message.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
     }
 
@@ -87,7 +87,7 @@ module.exports = class petCommand extends Command {
         pet[needs[i]] += difference
       }
 
-      await Database.updateNeedsPet(message.author.id, differences)
+      await Database.updateNeedsPet(message.author, differences)
       console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
       const messageEmbed = new MessageEmbed()
       .setTitle(`${message.member.nickname || message.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)

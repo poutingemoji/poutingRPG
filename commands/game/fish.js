@@ -8,29 +8,6 @@ const enumHelper = require('../../utils/enumHelper');
 
 const currencies = enumHelper.currencies
 
-const fishes = {
-  ['Silver Fish ⛓️']: {
-    points: 20,
-    rarity: 50,
-  },
-  ['Crystal Shard 💠']: {
-    points: 45,
-    rarity: 30,
-  },
-  ['Sweetfish 🦈']: {
-    dallars: 5,
-    rarity: 15,
-  },
-  ['Metalfish ⚙️']: {
-    points: 60,
-    rarity: 10,
-  },
-  ['Baby Zygaena 💮']: {
-    points: 125,
-    rarity: 5,
-  },
-}
-
 module.exports = class FishCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -39,37 +16,131 @@ module.exports = class FishCommand extends Command {
 			group: 'game',
 			memberName: 'fish',
 			description: 'Do your fishing.',
-			examples: [],
+			examples: [
+        `${process.env.PREFIX}fish`,
+        `${process.env.PREFIX}fish stats`,
+      ],
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
-			args: [],
+			args: [
+        {
+          key: 'stats',
+          prompt: "Would you like to see your fishing stats?",
+					type: 'string',
+          default: false
+        },
+      ],
       throttling: {
         usages: 1,
-        duration: 5
+        duration: 3
       },
     })
 	}
 	
-	async run(message) {
-    const player = await Database.findPlayer(message, message.author)
-    const fish = Helper.percentageChance(Object.keys(fishes), Object.values(fishes).map(res => res.rarity))
+	async run(message, {stats}) {
+    const player = await Database.findPlayer(message, message.author);
+    const messageEmbed = new MessageEmbed()
+    .setColor('#2f3136')
 
-    let description = `🎣 ${message.author.username} fished out: **${fish}** !\n\n`
-    for (var i = 0; i < currencies.length; i++) {
-      const cur = currencies[i]
-      const exp = Math.ceil(fishes[fish][cur.name]/20)
-      if (fishes[fish].hasOwnProperty(cur.name)) {
-        description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
-        description += `*You earned experience:* **+ ${exp}** ✨`
-        await Database.incrementValuePlayer(message.author.id, cur, fishes[fish][cur.name])
-        await Database.addExpPlayer(message, message.author, exp)
+    let description = '';
+    if (stats == 'stats') {
+      messageEmbed.setTitle(`${message.author.username}'s Fishing Statistics 🎣`)
+      var totalAmt = 0
+      player.fishes.forEach((value, key) => {
+        description += `${fishes[key].emoji} ${key}: **${value}**\n`
+        totalAmt += value
+      })
+      description += `\nTotal Amount: **${totalAmt}**`
+    } else {
+      const fish = Helper.percentageChance(Object.keys(fishes), Object.values(fishes).map(res => res.rarity))
+      description = `🎣 ${message.author.username} fished out: **${fish} ${fishes[fish].emoji}** !\n\n`
+      for (var i = 0; i < currencies.length; i++) {
+        const cur = currencies[i]
+        const exp = Math.ceil(fishes[fish][cur.name]/20)
+        if (fishes[fish].hasOwnProperty(cur.name)) {
+          description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
+          description += `*You earned experience:* **+ ${exp}** ✨`
+          await Database.incrementValuePlayer(message.author, cur.name, fishes[fish][cur.name])
+          await Database.addExpPlayer(message.author, message, exp)
+          await Database.addFishPlayer(message.author, fish)
+        }
       }
     }
-    
-    const messageEmbed = new MessageEmbed()
-      .setColor('#2f3136')
-      .setDescription(description)
+    messageEmbed.setDescription(description)
     message.say(messageEmbed)
 	}
+}
+
+const fishes = {
+  ['Shrimp']: {
+    emoji: '🦐',
+    points: 100,
+    rarity: 50,
+  },
+  ['Fish']: {
+    emoji: '🐟',
+    points: 150,
+    rarity: 50,
+  },
+  ['Tropical Fish']: {
+    emoji: '🐠',
+    points: 200,
+    rarity: 40,
+  },
+  ['Blowfish']: {
+    emoji: '🐡',
+    points: 200,
+    rarity: 35,
+  },
+  ['Squid']: {
+    emoji: '🦑',
+    points: 300,
+    rarity: 30,
+  },
+  ['Octopus']: {
+    emoji: '🐙',
+    points: 300,
+    rarity: 30,
+  },
+  ['Metalfish']: {
+    emoji: '⚙️',
+    points: 400,
+    rarity: 20,
+  },
+  ['Silver Fish']: {
+    emoji: '⛓️',
+    points: 500,
+    rarity: 15,
+  },
+  ['Crystal Shard']: {
+    emoji: '💠',
+    points: 900,
+    rarity: 10,
+  },
+  ['Valuable Object']: {
+    emoji: '🏺',
+    points: 1000,
+    rarity: 5,
+  },
+  ['Baby Zygaena']: {
+    emoji: '💮',
+    points: 1500,
+    rarity: 1,
+  },
+  ['Sweetfish']: {
+    emoji: '🦈',
+    dallars: 5,
+    rarity: 5,
+  },
+  ['Boot']: {
+    emoji: '👢',
+    points: 0,
+    rarity: 3,
+  },
+  ['Brick']: {
+    emoji: '🧱',
+    points: 0,
+    rarity: 3,
+  },
 }

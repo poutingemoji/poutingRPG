@@ -8,7 +8,7 @@ const playerSchema = new mongoose.Schema({
 
   family: Number,
   race: Number,
-  position: Array,
+  position: [Number],
   irregular: {type: Boolean, default: Math.random() >= 0.5},
 
   level: {type: Number, default: 1},
@@ -18,10 +18,10 @@ const playerSchema = new mongoose.Schema({
   health: {type: Number, default: 0},
   shinsu: {type: Number, default: 0},
   
+  quality: [Number],
   baang: {type: Number, default: 0},
   myun: {type: Number, default: 0},
   soo: {type: Number, default: 0},
-  shape: {type: Number},
 
   points: {type: Number, default: 0},
   dallars: {type: Number, default: 0},
@@ -49,7 +49,14 @@ const playerSchema = new mongoose.Schema({
   },
 
   reputation: {type: Number, default: 0},
-  quests: {},
+  quest: {
+    type: Map,
+    of: Map,
+  },
+  fishes: {
+    type: Map,
+    of: Number,
+  }
 })
 
 module.exports = playerSchema

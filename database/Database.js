@@ -52,9 +52,9 @@ class Database {
     connect();
   }
 
-  createNewPlayer(playerId, family, race, position) {
-    console.log(playerId, family, race, position)
-    return new Promise((resolve, reject) => Player.replaceOne({ playerId: playerId },
+  createNewPlayer(player, family, race, position) {
+    console.log(player.id, family, race, position)
+    return new Promise((resolve, reject) => Player.replaceOne({ playerId: player.id },
     Objects.newPlayer(playerId, family, race, position),
     { upsert: true },
     (err, res) => {
@@ -66,16 +66,16 @@ class Database {
     })
   )};
 
-  findPlayer(message, user, noMessage) {
-    return new Promise((resolve, reject) => Player.findOne({ playerId: user.id }, (err, res) => {
+  findPlayer(message, player, noMessage) {
+    return new Promise((resolve, reject) => Player.findOne({ playerId: player.id }, (err, res) => {
       if (err) {
       return reject(err);
       }
       if (!res && !noMessage) {
-        if (message.id == user.id) {
+        if (message.author.id == player.id) {
           return message.say(`Please type \`${message.client.commandPrefix}start\` to begin.`);
         } else {
-          return message.say(`${user.username} hasn't started climbing the Tower.`);
+          return message.say(`${player.username} hasn't started climbing the Tower.`);
         }
       }
 
@@ -83,24 +83,33 @@ class Database {
     }));
   }
 
-  incrementValuePlayer(playerId, key, value) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
+  incrementValuePlayer(player, key, value) {
+    Player.findOne({ playerId: player.id }, (err, res) => { 
+      console.log(key, value)
       res[key] += value
       res.save().catch(err => console.log(err))
     });
   }
 
-  addExpPlayer(message, user, value) {
-    Player.findOne({ playerId: user.id }, (err, res) => { 
+  addExpPlayer(player, message, value) {
+    Player.findOne({ playerId: player.id }, (err, res) => { 
       res.exp += value
       let description = ''
       while (res.exp >= res.expMax) {
         res.level++
         res.exp -= res.expMax
         res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
-        description += `🆙 Congratulations ${user.toString()}, you've reached level **${res.level}**!\n`;
+        description += `🆙 Congratulations ${player.toString()}, you've reached level **${res.level}**!\n`;
       }
       if (description !== '') message.say(description)
+      res.save().catch(err => console.log(err))
+    });
+  }
+
+  addFishPlayer(player, fish) {
+    Player.findOne({ playerId: player.id }, (err, res) => { 
+      if(!res.fishes) res.fishes = {}
+      res.fishes.set(fish, res.fishes.get(fish)+1 || 1);
       res.save().catch(err => console.log(err))
     });
   }
@@ -112,8 +121,8 @@ class Database {
       .exec()
   }
 
-  createNewPet(playerId, id, nickname) {
-    return new Promise((resolve, reject) => Player.updateOne({ playerId: playerId },
+  createNewPet(player, id, nickname) {
+    return new Promise((resolve, reject) => Player.updateOne({ playerId: player.id },
       Objects.newPet(id, nickname),
       { upsert: true },
       (err, res) => {
@@ -125,8 +134,8 @@ class Database {
       })
     )}
 
-  updateNeedsPet(playerId, differences) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
+  updateNeedsPet(player, differences) {
+    Player.findOne({ playerId: player.id }, (err, res) => { 
       const needs =  enumHelper.petNeeds
       for (var i in differences) res.pet[needs[i]] = Helper.clamp(res.pet[needs[i]] += differences[i], 0, 100)
       res.pet.updatedAt = new Date();
@@ -134,8 +143,8 @@ class Database {
     }).exec();
   }
 
-  addExpPet(playerId, value) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
+  addExpPet(player, value) {
+    Player.findOne({ playerId: player.id }, (err, res) => { 
       res.pet.exp += value
       while (res.pet.exp >= res.pet.expMax) {
         res.pet.level++
@@ -146,15 +155,15 @@ class Database {
     });
   }
 
-  renamePet(playerId, nickname) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
+  renamePet(player, nickname) {
+    Player.findOne({ playerId: player.id }, (err, res) => { 
       res.pet.nickname = nickname;
       res.save().catch(err => console.log(err))
     });
   }
 
-  removePet(playerId) {
-    Player.findOne({ playerId: playerId }, (err, res) => { 
+  removePet(player) {
+    Player.findOne({ playerId: player.id }, (err, res) => { 
       res.pet = {};
       res.save().catch(err => console.log(err))
     });
