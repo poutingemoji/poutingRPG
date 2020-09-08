@@ -27,8 +27,8 @@ module.exports = class FishCommand extends Command {
         {
           key: 'stats',
           prompt: "Would you like to see your fishing stats?",
-					type: 'string',
-          default: false
+          type: 'string',
+          default: false,
         },
       ],
       throttling: {

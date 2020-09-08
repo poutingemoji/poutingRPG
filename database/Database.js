@@ -55,7 +55,7 @@ class Database {
   createNewPlayer(player, family, race, position) {
     console.log(player.id, family, race, position)
     return new Promise((resolve, reject) => Player.replaceOne({ playerId: player.id },
-    Objects.newPlayer(playerId, family, race, position),
+    Objects.newPlayer(player.id, family, race, position),
     { upsert: true },
     (err, res) => {
       if (err) {
@@ -108,7 +108,6 @@ class Database {
 
   addFishPlayer(player, fish) {
     Player.findOne({ playerId: player.id }, (err, res) => { 
-      if(!res.fishes) res.fishes = {}
       res.fishes.set(fish, res.fishes.get(fish)+1 || 1);
       res.save().catch(err => console.log(err))
     });
