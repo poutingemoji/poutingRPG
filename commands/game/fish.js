@@ -57,7 +57,7 @@ module.exports = class FishCommand extends Command {
       description = `🎣 ${message.author.username} fished out: **${fish} ${fishes[fish].emoji}** !\n\n`
       for (var i = 0; i < currencies.length; i++) {
         const cur = currencies[i]
-        const exp = Math.ceil(fishes[fish][cur.name]/20)
+        const exp = Math.ceil(fishes[fish][cur.name]/1.5)
         if (fishes[fish].hasOwnProperty(cur.name)) {
           description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
           description += `*You earned experience:* **+ ${exp}** ✨`
@@ -75,57 +75,57 @@ module.exports = class FishCommand extends Command {
 const fishes = {
   ['Shrimp']: {
     emoji: '🦐',
-    points: 100,
-    rarity: 50,
+    points: 15,
+    rarity: 60,
   },
   ['Fish']: {
     emoji: '🐟',
-    points: 150,
+    points: 20,
     rarity: 50,
   },
   ['Tropical Fish']: {
     emoji: '🐠',
-    points: 200,
+    points: 20,
     rarity: 40,
   },
   ['Blowfish']: {
     emoji: '🐡',
-    points: 200,
+    points: 25,
     rarity: 35,
   },
   ['Squid']: {
     emoji: '🦑',
-    points: 300,
+    points: 30,
     rarity: 30,
   },
   ['Octopus']: {
     emoji: '🐙',
-    points: 300,
+    points: 30,
     rarity: 30,
   },
   ['Metalfish']: {
     emoji: '⚙️',
-    points: 400,
+    points: 40,
     rarity: 20,
   },
   ['Silver Fish']: {
     emoji: '⛓️',
-    points: 500,
+    points: 50,
     rarity: 15,
   },
   ['Crystal Shard']: {
     emoji: '💠',
-    points: 900,
+    points: 90,
     rarity: 10,
   },
   ['Valuable Object']: {
     emoji: '🏺',
-    points: 1000,
+    points: 100,
     rarity: 5,
   },
   ['Baby Zygaena']: {
     emoji: '💮',
-    points: 1500,
+    points: 150,
     rarity: 1,
   },
   ['Sweetfish']: {

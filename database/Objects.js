@@ -3,12 +3,49 @@ const Parser = require('expr-eval').Parser;
 const enumHelper = require('../utils/enumHelper')
 
 const Objects = {
+  newTechnique(id) {
+    return {
+      technique: {
+        id: id,
+        mastery: 1,
+      }
+    }
+  },
   newPlayer(playerId, family, race, position) {
+    console.log(t)
     return {
       playerId: playerId,
+
       family: family,
       race: race,
+      irregular: Math.random() >= .1,
+
       position: [position],
+
+      level: 1,
+      exp: 0,
+      expMax: Parser.evaluate(enumHelper.expFormulas['mediumfast'], { n: 2 }),
+
+      health: enumHelper.maxHealth(1),
+      shinsu: enumHelper.maxShinsu(1),
+
+      quality: [],
+      baang: 0,
+      myun: 0,
+      soo: 0,
+
+      points: 0,
+      dallars: 0,
+
+      arc: 0,
+      chapter: 0,
+      technique: {
+        id: 0,
+        mastery: 1,
+      },
+
+      reputation: 0,
+      quests: {},
       fishes: {
         ['Shrimp']: 0,
         ['Fish']: 0,
@@ -25,7 +62,6 @@ const Objects = {
         ['Boot']: 0,
         ['Brick']: 0,
       },
-      quests: {},
     }
   },
   newPet(id, nickname) {
@@ -40,14 +76,7 @@ const Objects = {
       }
     }
   },
-  newWeapon(id) {
-    return {
-      weapon: {
-        id: id,
-        tier: 1,
-      }
-    }
-  },
+ 
   newQuest(objectiveType, objective, rewards) {
     console.log(objective)
     return {
@@ -57,7 +86,6 @@ const Objects = {
         goal: objective[1],
       },
       progress: 0,
-      rewards: rewards
       //defeat, fish, collect, train
     }
   }

@@ -59,10 +59,10 @@ module.exports = class petCommand extends Command {
     var differences = []
     if (Object.keys(enumHelper.petActions).includes(actionChosen)) {
       const actionIndex = Object.keys(enumHelper.petActions).findIndex(action => action == actionChosen)
-      const needIncrease = Helper.clamp((pet[needs[actionIndex]] + 33), 0, 100) - pet[needs[actionIndex]]
+      const needIncrease = Helper.clamp((pet[needs[actionIndex]] + 42), 0, 100) - pet[needs[actionIndex]]
       if (needIncrease == 0) return message.say(`Your ${needs[actionIndex]} is maxed. Please wait for it to go down.`)
       message.say(`You ${actionChosen} your pet.`)
-      differences[actionIndex] = 33
+      differences[actionIndex] = 42
       await Database.updateNeedsPet(message.author, differences)
       await Database.addExpPet(message.author, Math.round(needIncrease), 0, 100)
     }

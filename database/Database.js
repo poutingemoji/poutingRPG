@@ -9,6 +9,7 @@ const Objects = require('./Objects');
 
 const positions = require('../docs/data/positions.js');
 const pets = require('../docs/data/pets.js');
+const arcs = require('../docs/data/arcs.js');
 
 const Player = mongoose.model('Player', playerSchema);
 
@@ -51,6 +52,19 @@ class Database {
   constructor() {
     connect();
   }
+
+  addQuestsPlayer(player) {
+    return new Promise((resolve, reject) => Player.updateOne({ playerId: player.id },
+      {quests: arcs[0].chapters[0].quests},
+      { upsert: true },
+      (err, res) => {
+        if (err) {
+        return reject(err);
+        }
+  
+        return resolve(res);
+      })
+    )}
 
   createNewPlayer(player, family, race, position) {
     console.log(player.id, family, race, position)

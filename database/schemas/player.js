@@ -8,30 +8,30 @@ const playerSchema = new mongoose.Schema({
 
   family: Number,
   race: Number,
+  irregular: Boolean,
+
   position: [Number],
-  irregular: {type: Boolean, default: Math.random() >= 0.5},
 
-  level: {type: Number, default: 1},
-  exp: {type: Number, default: 0 },
-  expMax: {type: Number, default: Parser.evaluate(enumHelper.expFormulas['mediumfast'], { n: 2 })},
+  level: Number,
+  exp: Number,
+  expMax: Number,
 
-  health: {type: Number, default: 0},
-  shinsu: {type: Number, default: 0},
+  health: Number,
+  shinsu: Number,
   
   quality: [Number],
-  baang: {type: Number, default: 0},
-  myun: {type: Number, default: 0},
-  soo: {type: Number, default: 0},
+  baang: Number,
+  myun: Number,
+  soo: Number,
 
-  points: {type: Number, default: 0},
-  dallars: {type: Number, default: 0},
+  points: Number,
+  dallars: Number,
   
-  volume: {type: Number, default: 0},
-  arc: {type: Number, default: 0},
-  chapter: {type: Number, default: 0},
+  arc: Number,
+  chapter: Number,
   technique: {
-    id: {type: Number, default: 0},
-    mastery: {type: Number, default: 1},
+    id: Number,
+    mastery: Number,
   },
   pet: {
     id: Number,
@@ -48,11 +48,8 @@ const playerSchema = new mongoose.Schema({
     energy: Number,
   },
 
-  reputation: {type: Number, default: 0},
-  quest: {
-    type: Map,
-    of: Map,
-  },
+  reputation: Number,
+  quests: [Map],
   fishes: {
     type: Map,
     of: Number,

@@ -31,7 +31,7 @@ module.exports = class StartCommand extends Command {
       ],
       throttling: {
         usages: 1,
-        duration: 2
+        duration: 60
       },
     })
 
@@ -80,7 +80,7 @@ module.exports = class StartCommand extends Command {
           return Object.keys(positions).includes(response.content) && response.author.id === message.author.id
 				}
         createCharMsg.edit(description)
-				return message.channel.awaitMessages(positionFilter, { max: 1, time: 60000 })
+				return message.channel.awaitMessages(positionFilter, { max: 1, time: 30000 })
 			})
 			.then(async res => {
 				position = res.first().content
