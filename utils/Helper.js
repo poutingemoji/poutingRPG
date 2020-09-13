@@ -8,7 +8,7 @@ const Helper = {
     return `Multiple ${label} found, please be more specific: ${itemList}`;
   },
     
-  paginate(items, page = 1, pageLength = 1) {
+  paginate(items, page = 1, pageLength = 10) {
     const maxPage = Math.ceil(items.length / pageLength);
     if(page < 1) page = 1;
     if(page > maxPage) page = maxPage;
