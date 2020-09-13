@@ -7,6 +7,7 @@ const { paginate, titleCase } = require('../../utils/Helper')
 const { embedColors } = require('../../utils/enumHelper')
 
 const positions = require('../../docs/data/positions.js')
+const { cross } = require('../../docs/data/emojis.js')
 
 const Pagination = require('discord-paginationembed');
 
@@ -94,6 +95,12 @@ module.exports = class TopCommand extends Command {
       .setAuthorizedUsers([msg.author.id])
       .setChannel(msg.channel)
       .setClientAssets({ msg, prompt: '{{user}}, which page would you like to see?' })
+      .setNavigationEmojis({
+        back: '⬅️',
+        delete: cross,
+        forward: '➡️',
+        jump: '🔢',
+      })
       .setDisabledNavigationEmojis(['delete'])
       .setColor(embedColors.game)
       .setFooter(`Your position: ${yourPosition ?  `${yourPosition}/${res.length} [Page ${yourPage}]` : 'Undefined'}`)
