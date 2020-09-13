@@ -5,7 +5,7 @@ const playerSchema = require('./schemas/player');
 
 const { clamp } = require('../utils/Helper')
 const { expFormulas, petNeeds } = require('../utils/enumHelper')
-const { newPlayer, newPet, newTechnique } = require('./Objects');
+const { updatedPlayer, newPlayer, newPet, newTechnique } = require('./Objects');
 
 const positions = require('../docs/data/positions.js');
 const pets = require('../docs/data/pets.js');
@@ -184,6 +184,19 @@ class Database {
       res.save().catch(err => console.log(err))
     });
   }
+
+  updateAllPlayers() {
+    return new Promise((resolve, reject) => Player.updateMany({ reputation: 0 },
+      updatedPlayer(),
+      { upsert: true },
+      (err, res) => {
+        if (err) {
+        return reject(err);
+        }
+  
+        return resolve(res);
+      })
+    )}
 }
 
 module.exports = new Database();

@@ -65,6 +65,42 @@ const Objects = {
       },
     }
   },
+  updatedPlayer() {
+    return {
+      baang: 0,
+      myun: 0,
+      soo: 0,
+
+      arc: 0,
+      chapter: 0,
+      technique: {
+        id: 0,
+        mastery: 1,
+      },
+
+      reputation: 0,
+      quests: [],
+      pet: {},
+      fishes: {
+        ['Shrimp']: 0,
+        ['Fish']: 0,
+        ['Tropical Fish']: 0,
+        ['Blowfish']: 0,
+        ['Squid']: 0,
+        ['Octopus']: 0,
+        ['Metalfish']: 0,
+        ['Silver Fish']: 0,
+        ['Crystal Shard']: 0,
+        ['Valuable Object']: 0,
+        ['Baby Zygaena']: 0,
+        ['Sweetfish']: 0,
+        ['Boot']: 0,
+        ['Brick']: 0,
+        ['\nTotal Amount']: 0,
+      },
+    }
+  },
+  
   newPet(id, nickname) {
     return {
       pet: {
