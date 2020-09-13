@@ -27,7 +27,6 @@ module.exports = class DailyCommand extends Command {
 	}
 	
 	async run(msg) {
-    console.log(arcs[0].chapters[0].quests)
     const player = await findPlayer(msg, msg.author)
     const exp = randomIntFromInterval(250, 400)
     const points = randomIntFromInterval(375, 600)

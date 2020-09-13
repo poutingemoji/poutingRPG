@@ -92,9 +92,11 @@ module.exports = class StartCommand extends Command {
           }
         }
     
-				createNewPlayer(msg.author, family, race, position, quality)
+				
 
-				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${msg.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
+        createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${msg.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
+        return msg.say(`Not accepting new entries right now, working on the storyline of this Tower of God RPG and I don't want any new data while I'm making it. Thank you for understanding and hope you look forward to the finished product! :)`)
+        createNewPlayer(msg.author, family, race, position, quality)
 			})
 			.catch(err => {
 				console.error(err)

@@ -12,8 +12,8 @@ module.exports = class BuyCommand extends Command {
       aliases: [],
       group: 'game',
       memberName: 'buy',
-      description: 'Purchase a weapon from the weapons dealer.',
-      examples: [`${client.commandPrefix}buy [weapon]`],
+      description: 'Purchase an item from the shop.',
+      examples: [`${client.commandPrefix}buy [category] [item]`],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
@@ -25,9 +25,10 @@ module.exports = class BuyCommand extends Command {
     })
   }
 
-  async run(msg, { weapon }) {
-    console.log(await confirmation(msg, 'yes'))
+  async run(msg, { category, item }) {
     const player = await findPlayer(msg, msg.author)
+    return
+    console.log(arcs[0].chapters[0].quests)
     addQuestsPlayer(msg.author)
     return msg.say('WIP')
   }
