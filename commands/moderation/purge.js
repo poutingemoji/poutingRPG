@@ -17,7 +17,6 @@ module.exports = class PurgeCommand extends Command {
       clientPermissions: ['MANAGE_MESSAGES'],
       userPermissions: ['MANAGE_MESSAGES'],
       guildOnly: true,
-      nsfw: false,
       args: [
         {
           key: 'numOfMsgs',

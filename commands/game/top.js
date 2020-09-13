@@ -2,10 +2,13 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Database = require('../../database/Database');
-const { titleCase } = require('../../utils/Helper')
+const { loadTop10 } = require('../../database/Database');
+const { paginate, titleCase } = require('../../utils/Helper')
+const { embedColors } = require('../../utils/enumHelper')
 
 const positions = require('../../docs/data/positions.js')
+
+const Pagination = require('discord-paginationembed');
 
 module.exports = class TopCommand extends Command {
 	constructor(client) {
@@ -15,16 +18,19 @@ module.exports = class TopCommand extends Command {
 			group: 'game',
 			memberName: 'top',
 			description: 'Displays the top players.',
-			examples: [`${process.env.PREFIX}top [level/points]`],
+      examples: [
+        `${process.env.PREFIX}top`,
+        `${process.env.PREFIX}top points`,
+    ],
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
       args: [
         {
           key: 'filter',
-          prompt: "Level or Points?",
-					type: 'string',
-					oneOf: ['level', 'points'],
+          prompt: "What would you like to filter the leaderboard by?",
+          type: 'string',
+          default: false,
         },
       ],
       throttling: {
@@ -35,42 +41,65 @@ module.exports = class TopCommand extends Command {
 	}
 	
 	async run(msg, { filter }) {
-    const checkDict = {
-			['level'] : 'exp',
-			['points'] : 'points',
+    const filters = {
+			[false] : {level: -1, exp: -1},
+			['points'] : {points: -1},
     }
-    const res = await Database.loadTop10([[checkDict[filter], 'descending']])
-    
-    async function getUser() {
-      try {
-        let leaderboardMaxUsers = res.length 
-        let topPlayers = ''
-        for (let i = 0; i < leaderboardMaxUsers; i++) {
-          let leaderboardPosition
-          const medals = ['🥇','🥈','🥉']
-          if (i < 3) {
-            leaderboardPosition = medals[i]
-          } else {
-            leaderboardPosition = `${i + 1})`
-          }
-          
-          const user = await msg.client.users.fetch(res[i].playerId)
-          if (filter === 'level') {
-            topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].exp}\n`
-          } else {
-            topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${titleCase(filter)}: ${res[i].points}\n`
-          }
+    const res = await loadTop10(filters[filter])
+    var yourPosition = false
+    var yourPage
+
+    const embeds = [];
+
+    var { maxPage } = paginate(res)
+    for (let page = 0; page < maxPage; page++) {
+      var { items, maxPage } = paginate(res, page+1)
+      let topPlayers = ''
+      for (let item = 0; item < items.length; item++) {
+        const player = items[item]
+        const user = await msg.client.users.fetch(player.playerId)
+
+        let lbPosition = page*10+item
+        if (player.playerId == msg.author.id) {
+          console.log(lbPosition)
+          yourPosition = lbPosition+1
+          yourPage = page+1
         }
         
-        const messageEmbed = new MessageEmbed()
-        .setColor('#2f3136')
-        .setTitle(`Global Leaderboard [${titleCase(filter)}]`)
-        .setDescription(topPlayers)
-        msg.say(messageEmbed)
-      } catch(err) {
-        console.error(err)
+
+        const medals = ['🥇','🥈','🥉']
+        if (player.playerId == res[lbPosition].playerId) {
+          lbPosition = medals[lbPosition]
+        } else {
+          lbPosition = `${lbPosition+1})`
+        }
+        topPlayers += `${lbPosition}    ${positions[player.position[0]].emoji}  **${user.username}** ─ `
+        
+        switch(filter) {
+          case 'points':
+            topPlayers += `${titleCase(filter)}: ${player.points}\n`
+            break;
+          default:
+            topPlayers += `Lvl: ${player.level} ─ Exp: ${player.exp}\n`
+        }
       }
+      embeds.push(
+        new MessageEmbed()
+        .setTitle(`[Page ${page+1}/${maxPage}]`)
+        .setDescription(topPlayers)
+        
+      )
     }
-    getUser()
+    
+    const Embeds = new Pagination.Embeds()
+      .setArray(embeds)
+      .setAuthorizedUsers([msg.author.id])
+      .setChannel(msg.channel)
+      .setClientAssets({ msg, prompt: '{{user}}, which page would you like to see?' })
+      .setDisabledNavigationEmojis(['delete'])
+      .setColor(embedColors.game)
+      .setFooter(`Your position: ${yourPosition ?  `${yourPosition}/${res.length} [Page ${yourPage}]` : 'Undefined'}`)
+    
+    await Embeds.build();
   }
 }

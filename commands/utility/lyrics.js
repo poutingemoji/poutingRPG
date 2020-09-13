@@ -17,7 +17,6 @@ module.exports = class LyricsCommand extends Command {
       examples: [`${process.env.PREFIX}lyrics [song]`],
       clientPermissions: [],
       userPermissions: [],
-      guildOnly: false,
       args: [
         {
           key: 'song',

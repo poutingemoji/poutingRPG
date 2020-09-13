@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require("discord.js-commando")
 const { MessageEmbed } = require('discord.js')
 
-const Database = require('../../database/Database');
+const { findPlayer } = require('../../database/Database');
 const { romanize } = require('../../utils/Helper');
 const { maxHealth, maxShinsu, positionColors } = require('../../utils/enumHelper');
 
@@ -40,12 +40,11 @@ module.exports = class ProfileCommand extends Command {
 				duration: 5
 			},
     })
-    
 	}
 	
 	async run(msg, {user}) {
     user = user || msg.author
-    const player = await Database.findPlayer(msg, user)
+    const player = await findPlayer(msg, user)
     const [family, race, pet, technique, arc] = [families[player.family], races[player.race], pets[player.pet.id], techniques[player.technique.id], arcs[player.volume][player.arc]]
     console.log(technique.name)
     const profile = [

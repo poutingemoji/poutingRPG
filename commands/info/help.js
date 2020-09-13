@@ -16,7 +16,6 @@ module.exports = class HelpCommand extends Command {
       examples: [`${process.env.PREFIX}help`],
       clientPermissions: [],
       userPermissions: [],
-      guildOnly: false,
       args: [
         {
           key: 'command',

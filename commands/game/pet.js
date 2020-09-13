@@ -2,8 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Objects = require('../../database/Objects');
-const Database = require('../../database/Database');
+const { findPlayer, createNewPet, updateNeedsPet, addExpPet, renamePet, removePet } = require('../../database/Database');
 const { clamp, titleCase, secondsToDhms } = require('../../utils/Helper');
 const { petNeeds, petActions } = require('../../utils/enumHelper');
 
@@ -21,7 +20,7 @@ module.exports = class petCommand extends Command {
 			examples: [`${process.env.PREFIX}pet`],
 			clientPermissions: [],
 			userPermissions: [],
-			guildOnly: true,
+      guildOnly: true,
       args: [
         {
           key: 'actionChosen',
@@ -44,13 +43,13 @@ module.exports = class petCommand extends Command {
     })
 	}
   
-  //console.log(Objects.newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
+  //console.log(newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
 
 	async run(msg, { actionChosen, nickname }) {
-    var player = await Database.findPlayer(msg, msg.author)
+    var player = await findPlayer(msg, msg.author)
     var pet = player.pet
     if (!pets[pet.id] || actionChosen == 'new') {
-      await Database.createNewPet(msg.author, Math.floor(Math.random()*pets.length), '')
+      await createNewPet(msg.author, Math.floor(Math.random()*pets.length), '')
       return msg.say('New pet has been created. Please run the command again.')
     }
     
@@ -61,18 +60,18 @@ module.exports = class petCommand extends Command {
       if (needIncrease == 0) return msg.say(`Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`)
       msg.say(`You ${actionChosen} your pet.`)
       differences[actionIndex] = 42
-      await Database.updateNeedsPet(msg.author, differences)
-      await Database.addExpPet(msg.author, Math.round(needIncrease), 0, 100)
+      await updateNeedsPet(msg.author, differences)
+      await addExpPet(msg.author, Math.round(needIncrease), 0, 100)
     }
 
     switch (actionChosen) {
       case 'name':
         if (nickname.length > 32 || !nickname) return msg.say('Please keep your nickname at 32 characters or under.')
-        await Database.renamePet(msg.author, nickname)
+        await renamePet(msg.author, nickname)
         msg.say(`Your pet's name is now **${nickname}**.`)
         break;
       case 'disown':
-        await Database.removePet(msg.author)
+        await removePet(msg.author)
         msg.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
         break;
       default: 
@@ -84,7 +83,7 @@ module.exports = class petCommand extends Command {
           pet[petNeeds[i]] += difference
         }
 
-        await Database.updateNeedsPet(msg.author, differences)
+        await updateNeedsPet(msg.author, differences)
         console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
         const messageEmbed = new MessageEmbed()
         .setTitle(`${msg.member.nickname || msg.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)

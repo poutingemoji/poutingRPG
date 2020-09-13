@@ -27,7 +27,6 @@ module.exports = class MangaCommand extends Command {
       examples: [`${process.env.PREFIX}manga [manga]`],
       clientPermissions: [],
       userPermissions: [],
-      guildOnly: false,
       args: [
         {
           key: 'manga',

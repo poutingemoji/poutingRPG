@@ -18,7 +18,6 @@ module.exports = class UrbanCommand extends Command {
       examples: [`${process.env.PREFIX}urban [term]`],
       clientPermissions: [],
       userPermissions: [],
-      guildOnly: false,
       nsfw: true,
       args: [
         {

@@ -1,8 +1,9 @@
 require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
-const Database = require('../../database/Database');
+const { findPlayer, addExpPlayer, incrementValuePlayer } = require('../../database/Database');
 const { randomIntFromInterval } = require('../../utils/Helper');
+
 const arcs = require('../../docs/data/arcs');
 
 module.exports = class DailyCommand extends Command {
@@ -16,7 +17,7 @@ module.exports = class DailyCommand extends Command {
 			examples: [],
 			clientPermissions: [],
 			userPermissions: [],
-			guildOnly: true,
+      guildOnly: true,
 			args: [],
       throttling: {
         usages: 1,
@@ -27,11 +28,11 @@ module.exports = class DailyCommand extends Command {
 	
 	async run(msg) {
     console.log(arcs[0][0].chapters[0].quests)
-    const player = await Database.findPlayer(msg, msg.author)
+    const player = await findPlayer(msg, msg.author)
     const exp = randomIntFromInterval(250, 400)
     const points = randomIntFromInterval(375, 600)
-    await Database.addExpPlayer(msg.author, msg, exp)
-    await Database.incrementValuePlayer(msg.author, 'points', points)
+    await addExpPlayer(msg.author, msg, exp)
+    await incrementValuePlayer(msg.author, 'points', points)
     msg.say(`${msg.author.username}, you've received your daily **${exp}** ✨ exp & your daily **${points}** ⛳ points.`)
 	}
 }

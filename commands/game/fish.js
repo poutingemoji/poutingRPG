@@ -2,7 +2,7 @@ require('dotenv').config();
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 
-const Database = require('../../database/Database');
+const { findPlayer, addExpPlayer, incrementValuePlayer, addFishPlayer } = require('../../database/Database');
 const { percentageChance } = require('../../utils/Helper');
 const { currencies } = require('../../utils/enumHelper');
 
@@ -20,7 +20,7 @@ module.exports = class FishCommand extends Command {
       ],
 			clientPermissions: [],
 			userPermissions: [],
-			guildOnly: true,
+      guildOnly: true,
 			args: [
         {
           key: 'stats',
@@ -37,7 +37,7 @@ module.exports = class FishCommand extends Command {
 	}
 	
 	async run(msg, {stats}) {
-    const player = await Database.findPlayer(msg, msg.author);
+    const player = await findPlayer(msg, msg.author);
     const messageEmbed = new MessageEmbed()
     .setColor('#2f3136')
 
@@ -59,9 +59,9 @@ module.exports = class FishCommand extends Command {
         if (fishes[fish].hasOwnProperty(cur.name)) {
           description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
           description += `*You earned experience:* **+ ${exp}** ✨`
-          await Database.incrementValuePlayer(msg.author, cur.name, fishes[fish][cur.name])
-          await Database.addExpPlayer(msg.author, msg, exp)
-          await Database.addFishPlayer(msg.author, fish)
+          await incrementValuePlayer(msg.author, cur.name, fishes[fish][cur.name])
+          await addExpPlayer(msg.author, msg, exp)
+          await addFishPlayer(msg.author, fish)
         }
       }
     }

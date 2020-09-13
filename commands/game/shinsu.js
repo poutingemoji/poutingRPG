@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Database = require('../../database/Database');
+const { findPlayer } = require('../../database/Database');
 const { clamp } = require('../../utils/Helper');
 const { maxShinsu } = require('../../utils/enumHelper');
 
@@ -20,7 +20,7 @@ module.exports = class ShinsuCommand extends Command {
 			examples: [],
 			clientPermissions: [],
 			userPermissions: [],
-			guildOnly: true,
+      guildOnly: true,
 			args: [],
       throttling: {
         usages: 1,
@@ -30,7 +30,7 @@ module.exports = class ShinsuCommand extends Command {
 	}
 	
 	async run(msg) {
-    const player = await Database.findPlayer(msg, msg.author)
+    const player = await findPlayer(msg, msg.author)
     const technique = techniques[player.technique.id]
     const shinsu = [
       {

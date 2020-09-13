@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
-const Database = require('../../database/Database');
+const { findPlayer, createNewPlayer } = require('../../database/Database');
 const { emoji, codeBlock } = require('../../utils/Helper')
 
 const families = require('../../docs/data/families.js')
@@ -34,11 +34,10 @@ module.exports = class StartCommand extends Command {
         duration: 60
       },
     })
-
 	}
 
 	async run(msg, {restart}) {
-    const player = await Database.findPlayer(msg, msg.author, true)
+    const player = await findPlayer(msg, msg.author, true)
     if (!restart && player) return 
     
    
@@ -86,7 +85,7 @@ module.exports = class StartCommand extends Command {
 				position = res.first().content
 
         console.log(family, race, position)
-				Database.createNewPlayer(msg.author, family, race, position)
+				createNewPlayer(msg.author, family, race, position)
 
 				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${msg.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
 			})

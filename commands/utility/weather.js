@@ -16,7 +16,6 @@ module.exports = class WeatherCommand extends Command {
       examples: [`${process.env.PREFIX}weather [place/postal code]`],
       clientPermissions: [],
       userPermissions: [],
-      guildOnly: false,
       args: [
         {
           key: 'place',

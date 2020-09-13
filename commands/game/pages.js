@@ -2,12 +2,9 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Helper = require('../../utils/Helper')
 const Database = require('../../database/Database');
 
-const positions = require('../../docs/data/positions.js')
-
-const fs = require('fs');
+const Pagination = require('discord-paginationembed');
 
 module.exports = class PagesCommand extends Command {
 	constructor(client) {
@@ -20,7 +17,8 @@ module.exports = class PagesCommand extends Command {
 			examples: [`${process.env.PREFIX}pages`],
 			clientPermissions: [],
 			userPermissions: [],
-			guildOnly: true,
+      guildOnly: true,
+      hidden: true,
       args: [],
       throttling: {
         usages: 1,
@@ -29,46 +27,23 @@ module.exports = class PagesCommand extends Command {
     })
 	}
 	
-	run(msg) {
-    let pages = ['Page 1', 'two', 'tres', 'si', 'wu', 'seis', 'seven'];
-    let page = 1;
+	async run(msg) {
+    const embeds = [];
 
-    const messageEmbed = new MessageEmbed()
-    .setColor('#2f3136')
-    .setTitle(`React to cycle`)
-    .setFooter(`Page ${page} of ${pages.length}`)
-    .setDescription(pages[page-1])
-
-    msg.say(messageEmbed).then(msg => {
-      msg.react('⬅️').then(r => {
-        msg.react('➡️')
-        const filter = (reaction, user) => {
-          return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === msg.author.id;
-        }
-        const reactionCollector = msg.createReactionCollector(filter, {time: 60000});
-        reactionCollector.on('collect', async r => {
-          if (r.emoji.name == '⬅️') {
-            page == 1 ? page = pages.length : page--
-          } else if (r.emoji.name == '➡️'){
-            page == pages.length ? page = 1 : page++
-          } else {
-
-          }
-          
-          messageEmbed.setDescription(pages[page-1]);
-          messageEmbed.setFooter(`Page ${page} of ${pages.length}`)
-          msg.edit(messageEmbed)
-
-          const userReactions = msg.reactions.cache.filter(reaction => reaction.users.cache.has(msg.author.id));
-          try {
-            for (const reaction of userReactions.values()) {
-              await reaction.users.remove(msg.author.id);
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        })
-      })
-    })
+    for (let i = 1; i <= 5; ++i)
+      embeds.push(new MessageEmbed().setFooter(`Page ${i} of ${5}`));
+    
+    const Embeds = new Pagination.Embeds()
+      .setArray(embeds)
+      .setColor(0xFF00AE)
+      .setTitle('Test Title')
+      .setDescription('Test Description')
+      
+      .setAuthorizedUsers([msg.author.id])
+      .setChannel(msg.channel)
+      .setClientAssets({ msg, prompt: '{{user}}, which page would you like to see?' })
+      .setDeleteOnTimeout(true)
+    
+    await Embeds.build();
   }
 }

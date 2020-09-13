@@ -2,7 +2,8 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Database = require('../../database/Database');
+const { findPlayer, addQuestsPlayer } = require('../../database/Database');
+const { confirmation } = require('../../utils/Helper');
 
 module.exports = class BuyCommand extends Command {
   constructor(client) {
@@ -25,8 +26,9 @@ module.exports = class BuyCommand extends Command {
   }
 
   async run(msg, { weapon }) {
-    const player = await Database.findPlayer(msg, msg.author)
-    Database.addQuestsPlayer(msg.author)
+    console.log(await confirmation(msg, 'yes'))
+    const player = await findPlayer(msg, msg.author)
+    addQuestsPlayer(msg.author)
     return msg.say('WIP')
   }
 }

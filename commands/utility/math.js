@@ -17,7 +17,6 @@ module.exports = class MathCommand extends Command {
       examples: [`${process.env.PREFIX}math [equation]`],
       clientPermissions: [],
       userPermissions: [],
-      guildOnly: false,
       args: [
         {
           key: 'equation',

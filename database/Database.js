@@ -5,7 +5,7 @@ const playerSchema = require('./schemas/player');
 
 const { clamp } = require('../utils/Helper')
 const { expFormulas, petNeeds } = require('../utils/enumHelper')
-const Objects = require('./Objects');
+const { newPlayer, newPet, newTechnique } = require('./Objects');
 
 const positions = require('../docs/data/positions.js');
 const pets = require('../docs/data/pets.js');
@@ -69,7 +69,7 @@ class Database {
   createNewPlayer(player, family, race, position) {
     console.log(player.id, family, race, position)
     return new Promise((resolve, reject) => Player.replaceOne({ playerId: player.id },
-    Objects.newPlayer(player.id, family, race, position),
+    newPlayer(player.id, family, race, position),
     { upsert: true },
     (err, res) => {
       if (err) {
@@ -127,16 +127,16 @@ class Database {
     });
   }
 
-  loadTop10(type) {
+  loadTop10(filter) {
     return Player.find()
-      .sort(type)
+      .sort(filter)
       .limit(10)
       .exec()
   }
 
   createNewPet(player, id, nickname) {
     return new Promise((resolve, reject) => Player.updateOne({ playerId: player.id },
-      Objects.newPet(id, nickname),
+      newPet(id, nickname),
       { upsert: true },
       (err, res) => {
         if (err) {

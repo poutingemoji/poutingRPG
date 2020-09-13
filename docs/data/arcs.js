@@ -1,4 +1,4 @@
-const Objects = require('../../database/Objects');
+const { newQuest } = require('../../database/Objects');
 
 const arcs = [
   headonsfloor = {
@@ -9,7 +9,7 @@ const arcs = [
         emoji: '',
         location: '',
         quests: [
-          Objects.newQuest('Defeat', ['Big Nose', 6]),
+          newQuest('Defeat', ['Big Nose', 6]),
         ],
       },
     ],

@@ -27,7 +27,6 @@ module.exports = class AnimeCommand extends Command {
       examples: [`${process.env.PREFIX}anime [anime]`],
       clientPermissions: [],
       userPermissions: [],
-      guildOnly: false,
       args: [
         {
           key: 'anime',

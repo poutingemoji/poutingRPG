@@ -36,7 +36,6 @@ module.exports = class ShopCommand extends Command {
         duration: 5
       },
     })
-
   }
 
   run(msg, { category, page }) {
