@@ -11,6 +11,12 @@ const { cross } = require('../../docs/data/emojis.js')
 
 const Pagination = require('discord-paginationembed');
 
+const pageLength = 10;
+const filters = {
+  [false] : {level: -1, exp: -1},
+  ['points'] : {points: -1},
+}
+
 module.exports = class TopCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -42,25 +48,22 @@ module.exports = class TopCommand extends Command {
 	}
 	
 	async run(msg, { filter }) {
-    const filters = {
-			[false] : {level: -1, exp: -1},
-			['points'] : {points: -1},
-    }
+  
     const res = await loadTop10(filters[filter])
     var yourPosition = false
     var yourPage
 
     const embeds = [];
 
-    var { maxPage } = paginate(res)
+    var { maxPage } = paginate(res, 1, pageLength)
     for (let page = 0; page < maxPage; page++) {
-      var { items, maxPage } = paginate(res, page+1)
+      var { items, maxPage } = paginate(res, page+1, pageLength)
       let topPlayers = ''
       for (let item = 0; item < items.length; item++) {
         const player = items[item]
         const user = await msg.client.users.fetch(player.playerId)
 
-        let lbPosition = page*10+item
+        let lbPosition = page*pageLength+item
         if (player.playerId == msg.author.id) {
           yourPosition = lbPosition+1
           yourPage = page+1
@@ -103,7 +106,7 @@ module.exports = class TopCommand extends Command {
       })
       .setDisabledNavigationEmojis(['delete'])
       .setColor(embedColors.game)
-      .setFooter(`Your position: ${yourPosition ?  `${yourPosition}/${res.length} [Page ${yourPage}]` : 'Undefined'}`)
+      .setFooter(`Your position: ${yourPosition ?  `${yourPosition}/${res.length} [Page ${yourPage}]` : 'Unranked'}`)
     
     await Embeds.build();
   }
