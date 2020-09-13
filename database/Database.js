@@ -66,10 +66,10 @@ class Database {
       })
     )}
 
-  createNewPlayer(player, family, race, position) {
-    console.log(player.id, family, race, position)
+  createNewPlayer(player, family, race, position, quality) {
+    console.log(player.id, family, race, position, quality)
     return new Promise((resolve, reject) => Player.replaceOne({ playerId: player.id },
-    newPlayer(player.id, family, race, position),
+    newPlayer(player.id, family, race, position, quality),
     { upsert: true },
     (err, res) => {
       if (err) {

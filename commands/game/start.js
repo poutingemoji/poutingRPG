@@ -83,9 +83,15 @@ module.exports = class StartCommand extends Command {
 			})
 			.then(async res => {
 				position = res.first().content
-
-        console.log(family, race, position)
-				createNewPlayer(msg.author, family, race, position)
+        const qualities = [families[family].quality, races[race].quality]
+        const quality = []
+        for (var i = 0; i < qualities.length; i++) {
+          if (Math.random() >= 0.5) {
+            quality.push(qualities[i][Math.floor(Math.random()*qualities[i].length)]);
+          }
+        }
+    
+				createNewPlayer(msg.author, family, race, position, quality)
 
 				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${msg.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
 			})

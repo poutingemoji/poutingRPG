@@ -47,7 +47,7 @@ const playerSchema = new mongoose.Schema({
   },
 
   reputation: Number,
-  quests: [Map],
+  quests: Array,
   fishes: {
     type: Map,
     of: Number,

@@ -11,7 +11,8 @@ const Objects = {
       }
     }
   },
-  newPlayer(playerId, family, race, position) {
+  newPlayer(playerId, family, race, position, quality) {
+    console.log(quality)
     return {
       playerId: playerId,
 
@@ -28,7 +29,7 @@ const Objects = {
       health: maxHealth(1),
       shinsu: maxShinsu(1),
 
-      quality: [],
+      quality: quality,
       baang: 0,
       myun: 0,
       soo: 0,
@@ -44,7 +45,7 @@ const Objects = {
       },
 
       reputation: 0,
-      quests: {},
+      quests: [],
       fishes: {
         ['Shrimp']: 0,
         ['Fish']: 0,
