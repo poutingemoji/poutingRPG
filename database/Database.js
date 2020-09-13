@@ -130,7 +130,6 @@ class Database {
   loadTop10(filter) {
     return Player.find()
       .sort(filter)
-      .limit(10)
       .exec()
   }
 
