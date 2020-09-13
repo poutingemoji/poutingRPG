@@ -61,14 +61,12 @@ module.exports = class TopCommand extends Command {
 
         let lbPosition = page*10+item
         if (player.playerId == msg.author.id) {
-          console.log(lbPosition)
           yourPosition = lbPosition+1
           yourPage = page+1
         }
         
-
         const medals = ['🥇','🥈','🥉']
-        if (player.playerId == res[lbPosition].playerId) {
+        if (medals[lbPosition]) {
           lbPosition = medals[lbPosition]
         } else {
           lbPosition = `${lbPosition+1})`

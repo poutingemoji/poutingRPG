@@ -12,7 +12,6 @@ const Objects = {
     }
   },
   newPlayer(playerId, family, race, position) {
-    console.log(t)
     return {
       playerId: playerId,
 
