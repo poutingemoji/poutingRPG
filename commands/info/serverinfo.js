@@ -12,7 +12,7 @@ module.exports = class ServerinfoCommand extends Command {
 			group: 'info',
 			memberName: 'serverinfo',
       description: "Displays info about the server.",
-      examples: [`${process.env.PREFIX}serverinfo`],
+      examples: [`${client.commandPrefix}serverinfo`],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

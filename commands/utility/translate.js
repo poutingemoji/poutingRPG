@@ -14,7 +14,7 @@ module.exports = class TranslateCommand extends Command {
 			group: 'utility',
 			memberName: 'translate',
       description: 'Translates the text into the specified language.',
-      examples: [`${process.env.PREFIX}translate [language/ISO 639-1] [text]`],
+      examples: [`${client.commandPrefix}translate [language/ISO 639-1] [text]`],
       clientPermissions: [],
       userPermissions: [],
       args: [

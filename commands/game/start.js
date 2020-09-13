@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
 const { findPlayer, createNewPlayer } = require('../../database/Database');
-const { emoji, titleCase, codeBlock } = require('../../utils/Helper')
+const { emoji, titleCase, codeBlock, confirmation } = require('../../utils/Helper')
 
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
@@ -16,7 +16,10 @@ module.exports = class StartCommand extends Command {
 			group: 'game',
 			memberName: 'start',
 			description: 'Begin your adventure up the Tower.',
-			examples: [],
+      examples: [
+        `${client.commandPrefix}start`,
+        `${client.commandPrefix}start new`,
+      ],
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
@@ -45,11 +48,8 @@ module.exports = class StartCommand extends Command {
 
 		const confirmMsg = "yes"
 		if (restart) {
-			msg.say(`Type the message below to **confirm**. ${codeBlock(confirmMsg, "css")}`)
-			const confirmFilter = response => {
-				return confirmMsg.toLowerCase() == response.content.toLowerCase() && response.author.id === msg.author.id
-			}
-			const confirmed = await msg.channel.awaitMessages(confirmFilter, { max: 1, time: 60000 })
+      const res = await confirmation(msg, `${msg.author}, do you want to start over?`);
+      if (!res) return;
 		}
 
 		let description = familyDescription()

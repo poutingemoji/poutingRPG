@@ -26,8 +26,8 @@ module.exports = class TopCommand extends Command {
 			memberName: 'top',
 			description: 'Displays the top players.',
       examples: [
-        `${process.env.PREFIX}top`,
-        `${process.env.PREFIX}top points`,
+        `${client.commandPrefix}top`,
+        `${client.commandPrefix}top points`,
     ],
 			clientPermissions: [],
 			userPermissions: [],

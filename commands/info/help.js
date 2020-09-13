@@ -13,7 +13,7 @@ module.exports = class HelpCommand extends Command {
 			group: 'info',
 			memberName: 'help',
       description: "Shows the command list.",
-      examples: [`${process.env.PREFIX}help`],
+      examples: [`${client.commandPrefix}help`],
       clientPermissions: [],
       userPermissions: [],
       args: [

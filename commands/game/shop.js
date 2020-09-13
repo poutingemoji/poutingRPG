@@ -13,7 +13,7 @@ module.exports = class ShopCommand extends Command {
       group: 'game',
       memberName: 'shop',
       description: 'Displays what is for sale.',
-      examples: [`${process.env.PREFIX}shop [category] [page]`],
+      examples: [`${client.commandPrefix}shop [category] [page]`],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

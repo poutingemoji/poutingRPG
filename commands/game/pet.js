@@ -17,7 +17,7 @@ module.exports = class petCommand extends Command {
 			group: 'game',
 			memberName: 'pet',
 			description: 'Displays your pet.',
-			examples: [`${process.env.PREFIX}pet`],
+			examples: [`${client.commandPrefix}pet`],
 			clientPermissions: [],
 			userPermissions: [],
       guildOnly: true,

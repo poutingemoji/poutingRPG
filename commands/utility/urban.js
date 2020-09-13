@@ -15,7 +15,7 @@ module.exports = class UrbanCommand extends Command {
 			group: 'utility',
 			memberName: 'urban',
       description: 'Look up a term on Urban Dictionary.',
-      examples: [`${process.env.PREFIX}urban [term]`],
+      examples: [`${client.commandPrefix}urban [term]`],
       clientPermissions: [],
       userPermissions: [],
       nsfw: true,

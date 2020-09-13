@@ -11,7 +11,7 @@ module.exports = class KickCommand extends Command {
 			group: 'moderation',
 			memberName: 'kick',
       description: 'Kicks the specified user.',
-      examples: [`${process.env.PREFIX}kick [user]`],
+      examples: [`${client.commandPrefix}kick [user]`],
       clientPermissions: ['KICK_MEMBERS'],
       userPermissions: ['KICK_MEMBERS'],
       guildOnly: true,

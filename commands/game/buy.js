@@ -13,7 +13,7 @@ module.exports = class BuyCommand extends Command {
       group: 'game',
       memberName: 'buy',
       description: 'Purchase a weapon from the weapons dealer.',
-      examples: [`${process.env.PREFIX}buy [weapon]`],
+      examples: [`${client.commandPrefix}buy [weapon]`],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

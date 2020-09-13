@@ -19,7 +19,7 @@ module.exports = class GifCommand extends Command {
       group: 'social',
       memberName: 'gif',
       description: 'Displays a random gif based on the provided tag or category.',
-      examples: [`${process.env.PREFIX}gif [keyword]`],
+      examples: [`${client.commandPrefix}gif [keyword]`],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

@@ -48,7 +48,7 @@ if (!process.env.DEVPREFIX) {
 
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}! (${client.user.id})`)
-	client.user.setActivity(`${process.env.DEVPREFIX || process.env.PREFIX}help`, {
+	client.user.setActivity(`${process.env.DEVPREFIX || client.commandPrefix}help`, {
 		type: "STREAMING",
 		url: "https://www.twitch.tv/pokimane"
   })

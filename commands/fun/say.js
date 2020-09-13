@@ -11,7 +11,7 @@ module.exports = class SayCommand extends Command {
       group: 'fun',
       memberName: 'say',
       description: 'Makes the bot mimic what you say.',
-      examples: [`${process.env.PREFIX}say [text]`],
+      examples: [`${client.commandPrefix}say [text]`],
       clientPermissions: ['MANAGE_MESSAGES'],
       userPermissions: [],
       guildOnly: true,

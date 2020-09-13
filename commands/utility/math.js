@@ -14,7 +14,7 @@ module.exports = class MathCommand extends Command {
 			group: 'utility',
 			memberName: 'math',
       description: 'Calculates the provided equation.',
-      examples: [`${process.env.PREFIX}math [equation]`],
+      examples: [`${client.commandPrefix}math [equation]`],
       clientPermissions: [],
       userPermissions: [],
       args: [

@@ -12,7 +12,7 @@ module.exports = class PurgeCommand extends Command {
       memberName: 'purge',
       description: 'Allows you to mass delete messages in your server.',
       examples: [
-        `${process.env.PREFIX}purge [number]`,
+        `${client.commandPrefix}purge [number]`,
       ],
       clientPermissions: ['MANAGE_MESSAGES'],
       userPermissions: ['MANAGE_MESSAGES'],

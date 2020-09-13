@@ -15,8 +15,8 @@ module.exports = class FishCommand extends Command {
 			memberName: 'fish',
 			description: 'Do your fishing.',
 			examples: [
-        `${process.env.PREFIX}fish`,
-        `${process.env.PREFIX}fish stats`,
+        `${client.commandPrefix}fish`,
+        `${client.commandPrefix}fish stats`,
       ],
 			clientPermissions: [],
 			userPermissions: [],

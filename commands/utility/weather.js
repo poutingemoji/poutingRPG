@@ -13,7 +13,7 @@ module.exports = class WeatherCommand extends Command {
 			group: 'utility',
 			memberName: 'weather',
       description: 'Displays weather info on the provided city.',
-      examples: [`${process.env.PREFIX}weather [place/postal code]`],
+      examples: [`${client.commandPrefix}weather [place/postal code]`],
       clientPermissions: [],
       userPermissions: [],
       args: [

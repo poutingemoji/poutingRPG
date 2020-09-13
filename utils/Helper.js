@@ -114,6 +114,7 @@ const Helper = {
 
       return msgSent.awaitReactions(filter, { max: 1, time: 10000, errors: ['time'] })
         .then(collected => {
+          msgSent.delete();
           if (collected.first().emoji.name == 'check') return true
           else return false
         })
