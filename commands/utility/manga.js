@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 const Requester = require('../../utils/Requester')
 
 const dateFormat = require('dateformat')
@@ -41,12 +41,12 @@ module.exports = class MangaCommand extends Command {
       },
     })
   }
-  async run(message, {manga}) {
+  async run(msg, {manga}) {
     try {
-      var sentMessage = await message.say(Helper.emojiMsg(message, "left", ["loading"], `Searching for requested manga... \:mag_right:`))
+      var sentMessage = await msg.say(`${emoji(msg,'loading')} Searching for requested manga... \:mag_right:`)
       var mangaRequest = await Requester.request(`https://kitsu.io/api/edge/manga?filter[text]=${manga}`)
       console.log(mangaRequest["data"][1])
-      if (mangaRequest["data"][0] === undefined) return sentMessage.edit(Helper.emojiMsg(message, "left", ["err"], `Could not find info on ${manga}`))
+      if (mangaRequest["data"][0] === undefined) return sentMessage.edit(`${emoji(msg,'err')} Could not find info on ${manga}`)
     } catch(err) {
       console.error(err)
     }
@@ -61,8 +61,8 @@ module.exports = class MangaCommand extends Command {
     }
     const filter = response => options.includes(parseInt(response.content))
     let mangaInfo
-    sentMessage.edit(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `I have found about ${mangaRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`, true)).then(() => {
-      message.channel.awaitMessages(filter, { max: 1, time: 12000 })
+    sentMessage.edit(`${msg.author}, I have found about ${mangaRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`).then(() => {
+      msg.channel.awaitMessages(filter, { max: 1, time: 12000 })
         .then(res => {
           const chosenMangaIndex = res.first().content-1
           mangaInfo = mangaRequest["data"][chosenMangaIndex]["attributes"]
@@ -84,11 +84,11 @@ module.exports = class MangaCommand extends Command {
           if (mangaInfo["nextRelease"]) {
             messageEmbed.setFooter(`Next Release: ${dateFormat(mangaInfo["nextRelease"], "dddd, mmmm dS, yyyy, h:MM TT")}`)
           }
-          message.say(messageEmbed)
+          msg.say(messageEmbed)
         })
         .catch(err => {
           console.error(err)
-          message.say(Helper.emojiMsg(message, "left", ["err"], "you didn't answer in time. This search is cancelled.", true))
+          msg.say(`${emoji(msg,'err')} ${msg.author}, you didn't answer in time. This search is cancelled.`)
         })
     })
   }

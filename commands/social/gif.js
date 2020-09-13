@@ -36,12 +36,12 @@ module.exports = class GifCommand extends Command {
       },
     })
   }
-  run(message, {gif}) { 
+  run(msg, {gif}) { 
     Tenor.Search.Random("anime" + gif, "1").then(Results => {
       Results.forEach(Post => {
         Post.title ? Post.title : "Untitled"
         console.log(`Item ${Post.id} (Created: ${Post.created}) @ ${Post.url}`)
-        message.say(Post.url)
+        msg.say(Post.url)
       })
     }).catch(console.error)
   }

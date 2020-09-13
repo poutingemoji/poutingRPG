@@ -3,7 +3,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const Database = require('../../database/Database');
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 
 module.exports = class ShopCommand extends Command {
   constructor(client) {
@@ -39,8 +39,8 @@ module.exports = class ShopCommand extends Command {
 
   }
 
-  run(message, { category, page }) {
-    return message.say('WIP')
+  run(msg, { category, page }) {
+    return msg.say('WIP')
     const categoryColors = {
       pet: '#ee2446'
     }
@@ -49,7 +49,7 @@ module.exports = class ShopCommand extends Command {
     const argLimit = Math.ceil(categoryChosen.length/itemsPerPage)
 
     if (!(argLimit >= page && page >= 1)) {
-      return message.say(Helper.emojiMsg(message, "left", ["err"], `Page ${page} doesn't exist.`))
+      return msg.say(`${emoji(msg,'err')} Page ${page} doesn't exist.`)
     }
 
     const current = categoryChosen.slice((page-1)*itemsPerPage, page*itemsPerPage)
@@ -65,6 +65,6 @@ module.exports = class ShopCommand extends Command {
       description += `${itemCurrent.emoji} **${itemCurrent.name}**\n${itemCurrent.price} points\n`
     })
     messageEmbed.addField(`${Helper.titleCase(category)} Store`, description)
-    message.say(messageEmbed) 
+    msg.say(messageEmbed) 
   }
 }

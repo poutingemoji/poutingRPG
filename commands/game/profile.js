@@ -26,7 +26,7 @@ module.exports = class ProfileCommand extends Command {
 			examples: [`${process.env.PREFIX}profile [@user/id]`],
 			clientPermissions: [],
 			userPermissions: [],
-			guildOnly: true,
+      guildOnly: true,
       args: [
         {
           key: 'user',
@@ -43,9 +43,9 @@ module.exports = class ProfileCommand extends Command {
     
 	}
 	
-	async run(message, {user}) {
-    user = user || message.author
-    const player = await Database.findPlayer(message, user)
+	async run(msg, {user}) {
+    user = user || msg.author
+    const player = await Database.findPlayer(msg, user)
     const [family, race, pet, technique, arc] = [families[player.family], races[player.race], pets[player.pet.id], techniques[player.technique.id], arcs[player.volume][player.arc]]
     console.log(technique.name)
     const profile = [
@@ -100,6 +100,6 @@ module.exports = class ProfileCommand extends Command {
     .setThumbnail(arc.image)
     .setDescription(profileMessage)
     .setFooter(`Born: ${dateFormat(player._id.getTimestamp(), "dddd, mmmm dS, yyyy, h:MM TT")}`);
-    message.say(messageEmbed)
+    msg.say(messageEmbed)
   }
 }

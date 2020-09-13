@@ -29,7 +29,7 @@ module.exports = class PagesCommand extends Command {
     })
 	}
 	
-	run(message) {
+	run(msg) {
     let pages = ['Page 1', 'two', 'tres', 'si', 'wu', 'seis', 'seven'];
     let page = 1;
 
@@ -39,11 +39,11 @@ module.exports = class PagesCommand extends Command {
     .setFooter(`Page ${page} of ${pages.length}`)
     .setDescription(pages[page-1])
 
-    message.say(messageEmbed).then(msg => {
+    msg.say(messageEmbed).then(msg => {
       msg.react('⬅️').then(r => {
         msg.react('➡️')
         const filter = (reaction, user) => {
-          return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === message.author.id;
+          return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === msg.author.id;
         }
         const reactionCollector = msg.createReactionCollector(filter, {time: 60000});
         reactionCollector.on('collect', async r => {
@@ -59,10 +59,10 @@ module.exports = class PagesCommand extends Command {
           messageEmbed.setFooter(`Page ${page} of ${pages.length}`)
           msg.edit(messageEmbed)
 
-          const userReactions = msg.reactions.cache.filter(reaction => reaction.users.cache.has(message.author.id));
+          const userReactions = msg.reactions.cache.filter(reaction => reaction.users.cache.has(msg.author.id));
           try {
             for (const reaction of userReactions.values()) {
-              await reaction.users.remove(message.author.id);
+              await reaction.users.remove(msg.author.id);
             }
           } catch (error) {
             console.error(error);

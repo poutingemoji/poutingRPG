@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 
 const Genius = new (require("genius-lyrics")).Client(process.env.GENIUSLYRICSKEY)
 
@@ -31,8 +31,8 @@ module.exports = class LyricsCommand extends Command {
       },
     })
   }
-  async run(message, {song}) {
-    const sentMessage = await message.say(`${Helper.emoji(message,"730597505938620437")} **${message.author.username}**, searching for requested song lyrics... \:mag_right: `)
+  async run(msg, {song}) {
+    const sentMessage = await msg.say(`${Helper.emoji(msg,"730597505938620437")} **${msg.author.username}**, searching for requested song lyrics... \:mag_right: `)
     try {
       const songs = await Genius.tracks.search(song, { limit: 10 })
       const lyricsRequest = await songs[0].lyrics()
@@ -40,10 +40,10 @@ module.exports = class LyricsCommand extends Command {
         .setColor("#fffa64")
         .setDescription(truncateText(lyricsRequest))
       sentMessage.delete()
-      message.say(messageEmbed)
+      msg.say(messageEmbed)
     } catch(err) {
       console.error(err)
-      sentMessage.edit(Helper.emojiMsg(message, "left", ["err"], `Couldn't find lyrics for the song, **${song}**`))
+      sentMessage.edit(`${emoji(msg,'err')} Couldn't find lyrics for the song, **${song}**`)
     }
   }
 }

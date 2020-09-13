@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 
 module.exports = class BanCommand extends Command {
 	constructor(client) {
@@ -11,10 +11,11 @@ module.exports = class BanCommand extends Command {
 			group: 'moderation',
 			memberName: 'ban',
       description: 'Bans the specified user.',
-      examples: [`${process.env.PREFIX}ban [@user/id]`],
+      examples: [`${process.env.PREFIX}ban [user]`],
       clientPermissions: ['BAN_MEMBERS'],
       userPermissions: ['BAN_MEMBERS'],
       guildOnly: true,
+      nsfw: false,
       args: [
         {
           key: 'user',
@@ -34,16 +35,14 @@ module.exports = class BanCommand extends Command {
       },
     })
   }
-  run(message, {user, numOfDays}) {
-    message.guild.member(user)
+  run(msg, {user, numOfDays}) {
+    msg.guild.member(user)
       .ban({ days: numOfDays })
       .then(() => {
-        let bannedMsg = `Successfully banned **${user.tag}**`
-        bannedMsg += numOfDays ? ` for ${numOfDays} day(s).` : `.`
-        message.say(Helper.emojiMsg(message, "left", ["res"], bannedMsg))
+        msg.say(`Successfully banned **${user.tag}**${numOfDays ? ` for ${numOfDays} day(s)` : ''}.`)
       })
       .catch(() => {
-        message.say(Helper.emojiMsg(message, "left", ["err"], `Unable to ban **${user.tag}**.`))
+        msg.say(`${emoji(msg,'err')} Unable to ban **${user.tag}**.`)
       }) 
   }
 }

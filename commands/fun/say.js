@@ -30,12 +30,12 @@ module.exports = class SayCommand extends Command {
     })
   }
 
-  run(message, { text }) {
-    if (!['257641125135908866', '423317547920916492'].includes(message.author.id)) return
+  run(msg, { text }) {
+    if (!['257641125135908866', '423317547920916492'].includes(msg.author.id)) return
     console.log(text)
     const args = text.split(" ")
     let mentions = []
-    message.delete()
+    msg.delete()
     if (args[0].toLowerCase() === "chinese") {
       args[0] = "Chinese (Simplified)"
     }
@@ -47,11 +47,11 @@ module.exports = class SayCommand extends Command {
       }
       translate(text.replace(args[0], ''), opts)
         .then(response => {
-          message.say(mentions.join(' ') + response.text)
+          msg.say(mentions.join(' ') + response.text)
         })
         .catch(console.error)
     } else {
-      return message.say(text)
+      return msg.say(text)
     }
   }
 }

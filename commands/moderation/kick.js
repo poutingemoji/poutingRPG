@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 
 module.exports = class KickCommand extends Command {
 	constructor(client) {
@@ -11,10 +11,11 @@ module.exports = class KickCommand extends Command {
 			group: 'moderation',
 			memberName: 'kick',
       description: 'Kicks the specified user.',
-      examples: [`${process.env.PREFIX}kick [@user/id]`],
+      examples: [`${process.env.PREFIX}kick [user]`],
       clientPermissions: ['KICK_MEMBERS'],
       userPermissions: ['KICK_MEMBERS'],
       guildOnly: true,
+      nsfw: false,
       args: [
         {
           key: 'user',
@@ -28,14 +29,14 @@ module.exports = class KickCommand extends Command {
       },
     })
   }
-  run(message, {user}) {
-    message.guild.member(user)
+  run(msg, {user}) {
+    msg.guild.member(user)
       .kick()
       .then(() => {
-          message.say(Helper.emojiMsg(message, "left", ["res"], `Successfully kicked **${user.tag}**.`))
+        msg.say(`Successfully kicked **${user.tag}**.`)
       })
       .catch(() => {
-          message.say(Helper.emojiMsg(message, "left", ["err"], `Unable to kick **${user.tag}**.`))
+        msg.say(`${emoji(msg,'err')} Unable to kick **${user.tag}**.`)
       }) 
   }
 }

@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 const Requester = require('../../utils/Requester')
 
 const dateFormat = require('dateformat')
@@ -41,11 +41,11 @@ module.exports = class AnimeCommand extends Command {
       },
     })
   }
-  async run(message, {anime}) {
+  async run(msg, {anime}) {
     try {
-      var sentMessage = await message.say(Helper.emojiMsg(message, "left", ["loading"], `Searching for requested anime... \:mag_right:`))
+      var sentMessage = await msg.say(`${emoji(msg,'loading')} Searching for requested anime... \:mag_right:`)
       var animeRequest = await Requester.request(`https://kitsu.io/api/edge/anime?filter[text]=${anime}`)
-      if (animeRequest["data"][0] === undefined) return sentMessage.edit(Helper.emojiMsg(message, "left", ["err"], `Could not find info on ${anime}`))
+      if (animeRequest["data"][0] === undefined) return sentMessage.edit(`${emoji(msg,'err')} Could not find info on ${anime}`)
     } catch(err) {
       console.error(err)
     }
@@ -60,13 +60,12 @@ module.exports = class AnimeCommand extends Command {
     }
     const filter = response => options.includes(parseInt(response.content))
     let animeInfo
-    sentMessage.edit(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `I have found about ${animeRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`, true)).then(() => {
-      message.channel.awaitMessages(filter, { max: 1, time: 12000 })
+    sentMessage.edit(`${msg.author}, I have found about ${animeRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`).then(msgSent => {
+      msgSent.channel.awaitMessages(filter, { max: 1, time: 12000 })
         .then(res => {
           const chosenAnimeIndex = res.first().content-1
           animeInfo = animeRequest["data"][chosenAnimeIndex]["attributes"]
-          sentMessage.delete()
-          //console.log(animeInfo)
+          msgSent.delete()
           const title = animeInfo["titles"]["ja_jp"] ? `${animeInfo["titles"]["ja_jp"]} - ${animeInfo["canonicalTitle"]}` : animeInfo["canonicalTitle"]
           const messageEmbed = new MessageEmbed()
             .setColor('#ed7220')
@@ -83,11 +82,11 @@ module.exports = class AnimeCommand extends Command {
           if (animeInfo["nextRelease"]) {
             messageEmbed.setFooter(`Next Release: ${dateFormat(animeInfo["nextRelease"], "dddd, mmmm dS, yyyy, h:MM TT")}`)
           }
-          message.say(messageEmbed)   
+          msg.say(messageEmbed)   
         })
         .catch(err => {
           console.error(err)
-          message.say(Helper.emojiMsg(message, "left", ["err"], "you didn't answer in time. This search is cancelled.", true))
+          msg.say(`${emoji(msg,'err')} ${msg.author}, you didn't answer in time. This search is cancelled.`)
         })
     })
   }

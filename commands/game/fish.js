@@ -38,14 +38,14 @@ module.exports = class FishCommand extends Command {
     })
 	}
 	
-	async run(message, {stats}) {
-    const player = await Database.findPlayer(message, message.author);
+	async run(msg, {stats}) {
+    const player = await Database.findPlayer(msg, msg.author);
     const messageEmbed = new MessageEmbed()
     .setColor('#2f3136')
 
     let description = '';
     if (stats == 'stats') {
-      messageEmbed.setTitle(`${message.author.username}'s Fishing Statistics 🎣`)
+      messageEmbed.setTitle(`${msg.author.username}'s Fishing Statistics 🎣`)
       var totalAmt = 0
       player.fishes.forEach((value, key) => {
         description += `${fishes[key].emoji} ${key}: **${value}**\n`
@@ -54,21 +54,21 @@ module.exports = class FishCommand extends Command {
       description += `\nTotal Amount: **${totalAmt}**`
     } else {
       const fish = Helper.percentageChance(Object.keys(fishes), Object.values(fishes).map(res => res.rarity))
-      description = `🎣 ${message.author.username} fished out: **${fish} ${fishes[fish].emoji}** !\n\n`
+      description = `🎣 ${msg.author.username} fished out: **${fish} ${fishes[fish].emoji}** !\n\n`
       for (var i = 0; i < currencies.length; i++) {
         const cur = currencies[i]
         const exp = Math.ceil(fishes[fish][cur.name]/1.5)
         if (fishes[fish].hasOwnProperty(cur.name)) {
           description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
           description += `*You earned experience:* **+ ${exp}** ✨`
-          await Database.incrementValuePlayer(message.author, cur.name, fishes[fish][cur.name])
-          await Database.addExpPlayer(message.author, message, exp)
-          await Database.addFishPlayer(message.author, fish)
+          await Database.incrementValuePlayer(msg.author, cur.name, fishes[fish][cur.name])
+          await Database.addExpPlayer(msg.author, msg, exp)
+          await Database.addFishPlayer(msg.author, fish)
         }
       }
     }
     messageEmbed.setDescription(description)
-    message.say(messageEmbed)
+    msg.say(messageEmbed)
 	}
 }
 

@@ -25,13 +25,13 @@ module.exports = class DailyCommand extends Command {
     })
 	}
 	
-	async run(message) {
+	async run(msg) {
     console.log(arcs[0][0].chapters[0].quests)
-    const player = await Database.findPlayer(message, message.author)
+    const player = await Database.findPlayer(msg, msg.author)
     const exp = Helper.randomIntFromInterval(250, 400)
     const points = Helper.randomIntFromInterval(375, 600)
-    await Database.addExpPlayer(message.author, message, exp)
-    await Database.incrementValuePlayer(message.author, 'points', points)
-    message.say(`${message.author.username}, you've received your daily **${exp}** ✨ exp & your daily **${points}** ⛳ points.`)
+    await Database.addExpPlayer(msg.author, msg, exp)
+    await Database.incrementValuePlayer(msg.author, 'points', points)
+    msg.say(`${msg.author.username}, you've received your daily **${exp}** ✨ exp & your daily **${points}** ⛳ points.`)
 	}
 }

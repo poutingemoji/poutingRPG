@@ -1,16 +1,35 @@
-const edata = require('../docs/data/emojis.js')
+const emojis = require('../docs/data/emojis.js')
 const { MessageEmbed } = require('discord.js')
 
-class Helper {
+const Helper = {
+
+  disambiguation(items, label, property = 'name') {
+    const itemList = items.map(item => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
+    return `Multiple ${label} found, please be more specific: ${itemList}`;
+  },
+    
+  paginate(items, page = 1, pageLength = 10) {
+    const maxPage = Math.ceil(items.length / pageLength);
+    if(page < 1) page = 1;
+    if(page > maxPage) page = maxPage;
+    const startIndex = (page - 1) * pageLength;
+    return {
+      items: items.length > pageLength ? items.slice(startIndex, startIndex + pageLength) : items,
+      page,
+      maxPage,
+      pageLength
+    };
+  },
+    
   codeBlock(str, syntax) {
     syntax = typeof syntax !== 'undefined' ? syntax : '';
     return `\`\`\`${syntax}\n${str}\n\`\`\`\n`;
-  };
-
-  emoji(message, emojiId) {
-    return message.client.emojis.cache.get(emojiId).toString();
-  };
-
+  },
+  
+  emoji(msg, emoji) {
+    return msg.client.emojis.cache.get(emojis[emoji]).toString();
+  },
+  
   titleCase(str) {
     str = String(str)
     str = str.replace(/_/g, " ");
@@ -19,39 +38,16 @@ class Helper {
       splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
     }
     return splitStr.join(' ');
-  };
-
-  emojiMsg(message, align, emoji, str, author) {
-    author = typeof author !== 'undefined' ? author : false;
-    let content = '';
-    if (align == "left") {
-      for (let i = 0; i < emoji.length; i++) {
-        content += this.emoji(message, edata[emoji[i]]);
-      }
-      author ? content += ` **${message.author.username}**,` : content += '';
-      return content + ` ${str}`;
-    } else if (align == "center") {
-      author ? content += ` **${message.author.username}**,` : content += '';
-      content += `${str} `;
-      for (let i = 0; i < emoji.length; i++) {
-        if (i % 2 == 0) {
-          content = this.emoji(message, edata[emoji[i]]) + content;
-        } else {
-          content += this.emoji(message, edata[emoji[i]]);
-        }
-      }
-      return content;
-    };
-  };
-
+  },
+  
   numberWithCommas(int) {
     return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
+  },
+  
   clamp(num, min, max) {
     return num <= min ? min : num >= max ? max : num;
-  };
-
+  },
+  
   secondsToDhms(seconds, conjunction, abbreviate, splice) {
     seconds = parseInt(seconds);
     
@@ -68,12 +64,12 @@ class Helper {
     ]
     if (splice) Display.splice(-1,splice)
     return Display.filter(Boolean).join(conjunction);
-  };
-
+  },
+  
   randomIntFromInterval(min, max){
     return Math.floor(Math.random() * (max - min + 1) + min);
-  };
-
+  },
+  
   romanize(num) {
     if (isNaN(num))
       return NaN;
@@ -86,8 +82,8 @@ class Helper {
     while (i--)
       roman = (key[+digits.pop() + (i * 10)] || "") + roman;
     return Array(+digits.join("") + 1).join("M") + roman;
-}
-
+  },
+  
   arrayShuffle(array) {
     for ( var i = 0, length = array.length, swap = 0, temp = ''; i < length; i++ ) {
       swap = Math.floor(Math.random() * (i + 1));
@@ -96,17 +92,18 @@ class Helper {
       array[i] = temp;
     }
     return array;
-  };
- 
+  },
+   
   percentageChance(values, chances) {
     for ( var i = 0, pool = []; i < chances.length; i++ ) {
       for ( var i2 = 0; i2 < chances[i]; i2++ ) {
         pool.push(i);
       }
     }
-    return values[this.arrayShuffle(pool)['0']];
-  };
+    return values[Helper.arrayShuffle(pool)['0']];
+  },
+  
 }
 
-module.exports = new Helper();
+module.exports = Helper
 

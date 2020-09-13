@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 
 const { Parser } = require('expr-eval')
 
@@ -31,22 +31,22 @@ module.exports = class MathCommand extends Command {
       },
     })
   }
-  run(message, {equation}) {
+  run(msg, {equation}) {
     try {
       let evaluatedEquation = Parser.evaluate(equation)
       const messageEmbed = new MessageEmbed()
         .setColor('#ed7220')
-        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
         .addFields(
           { name: 'Equation', value: Helper.codeBlock(equation, "py")},
           { name: 'Result', value: Helper.codeBlock(evaluatedEquation, "py")},
         )
         .setTimestamp()
         .setFooter("Calculated")
-      message.say(messageEmbed)
+      msg.say(messageEmbed)
     } catch (err) {
       console.error(err)
-      return message.say(Helper.emojiMsg(message, "left", ["err"], `The equation provided could not be evaluated.`))
+      return msg.say(`${emoji(msg,'err')} The equation provided could not be evaluated.`)
     }
   }
 }

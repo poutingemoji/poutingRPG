@@ -29,8 +29,8 @@ module.exports = class ShinsuCommand extends Command {
     })
 	}
 	
-	async run(message) {
-    const player = await Database.findPlayer(message, message.author)
+	async run(msg) {
+    const player = await Database.findPlayer(msg, msg.author)
     const technique = techniques[player.technique.id]
     const shinsu = [
       {
@@ -68,9 +68,9 @@ module.exports = class ShinsuCommand extends Command {
     })
     const messageEmbed = new MessageEmbed()
       .setColor('#56acef')
-      .setTitle(`${message.author.username}'s Shinsu`)
+      .setTitle(`${msg.author.username}'s Shinsu`)
       .setThumbnail(technique.image)
       .setDescription(shinsuMessage)
-    message.say(messageEmbed)
+    msg.say(messageEmbed)
 	}
 }

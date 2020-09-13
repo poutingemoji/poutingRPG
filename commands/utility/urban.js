@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 const Requester = require('../../utils/Requester')
 
 const dateFormat = require('dateformat')
@@ -33,12 +33,12 @@ module.exports = class UrbanCommand extends Command {
       },
     })
   }
-  async run(message, {term}) {
+  async run(msg, {term}) {
     try {
       let urbanRequest = await Requester.request(`https://api.urbandictionary.com/v0/define?term=${term}`)
       const urbanList = urbanRequest["list"]
       const urbanInfo = urbanList[Math.floor(Math.random()*urbanList.length)]
-      if (!urbanInfo) throw Helper.emojiMsg(message, "left", ["err"], `Can't find the term, **${term}**, on Urban Dictionary.`)
+      if (!urbanInfo) throw `${emoji(msg,'err')} Can't find the term, **${term}**, on Urban Dictionary.`
       const messageEmbed = new MessageEmbed()
         .setColor("#199ceb")
         .setTitle(urbanInfo["word"])
@@ -46,10 +46,10 @@ module.exports = class UrbanCommand extends Command {
         .setDescription(urbanInfo["definition"])
         .addField('Example', urbanInfo["example"])
         .setFooter(`by ${urbanInfo["author"]} • ${dateFormat(urbanInfo["written_on"], "mmmm dS, yyyy" )}`)
-      message.say(messageEmbed)
+      msg.say(messageEmbed)
     } catch(err) {
       console.error(err)
-      message.say(err)
+      msg.say(err)
     }
   }
 }

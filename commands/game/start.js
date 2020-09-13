@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
 const Database = require('../../database/Database');
-const Helper = require('../../utils/Helper')
+const { emoji } = require('../../utils/Helper')
 
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
@@ -37,8 +37,8 @@ module.exports = class StartCommand extends Command {
 
 	}
 
-	async run(message, {restart}) {
-    const player = await Database.findPlayer(message, message.author, true)
+	async run(msg, {restart}) {
+    const player = await Database.findPlayer(msg, msg.author, true)
     if (!restart && player) return 
     
    
@@ -46,53 +46,53 @@ module.exports = class StartCommand extends Command {
 
 		const confirmMsg = "yes"
 		if (restart) {
-			message.say(Helper.emojiMsg(message, "left", ["prompt1", "prompt2"], `Type the message below to **confirm**. ${Helper.codeBlock(confirmMsg, "css")}`))
+			msg.say(`Type the message below to **confirm**. ${Helper.codeBlock(confirmMsg, "css")}`)
 			const confirmFilter = response => {
-				return confirmMsg.toLowerCase() == response.content.toLowerCase() && response.author.id === message.author.id
+				return confirmMsg.toLowerCase() == response.content.toLowerCase() && response.author.id === msg.author.id
 			}
-			const confirmed = await message.channel.awaitMessages(confirmFilter, { max: 1, time: 60000 })
+			const confirmed = await msg.channel.awaitMessages(confirmFilter, { max: 1, time: 60000 })
 		}
 
 		let description = familyDescription()
 		const familyFilter = response => {
       console.log(families)
-			return Object.keys(families).includes(response.content) && response.author.id === message.author.id
+			return Object.keys(families).includes(response.content) && response.author.id === msg.author.id
 		}
-		var createCharMsg = await message.say(description)
+		var createCharMsg = await msg.say(description)
 
-		message.channel.awaitMessages(familyFilter, { max: 1, time: 60000 })
+		msg.channel.awaitMessages(familyFilter, { max: 1, time: 60000 })
 			.then(res => {
 				family = res.first().content
 
 				let description = raceDescription()
 				const raceFilter = response => {
-					return Object.keys(races).includes(response.content) && response.author.id === message.author.id
+					return Object.keys(races).includes(response.content) && response.author.id === msg.author.id
         }
         console.log(races)
 				createCharMsg.edit(description)
-				return message.channel.awaitMessages(raceFilter, { max: 1, time: 60000 })
+				return msg.channel.awaitMessages(raceFilter, { max: 1, time: 60000 })
 			})
 			.then(async res => {
 				race = res.first().content
 
 				let description = positionDescription()
 				const positionFilter = response => {
-          return Object.keys(positions).includes(response.content) && response.author.id === message.author.id
+          return Object.keys(positions).includes(response.content) && response.author.id === msg.author.id
 				}
         createCharMsg.edit(description)
-				return message.channel.awaitMessages(positionFilter, { max: 1, time: 30000 })
+				return msg.channel.awaitMessages(positionFilter, { max: 1, time: 30000 })
 			})
 			.then(async res => {
 				position = res.first().content
 
         console.log(family, race, position)
-				Database.createNewPlayer(message.author, family, race, position)
+				Database.createNewPlayer(msg.author, family, race, position)
 
-				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${message.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
+				createCharMsg.edit(`[**${positions[position].name.toUpperCase()}**] ${msg.author.username} **${families[family].name}** of the **${races[race].name}** race, I sincerely welcome you to the Tower.`)
 			})
 			.catch(err => {
 				console.error(err)
-				message.say(Helper.emojiMsg(message, "left", ["err"], "You didn't answer in time. Your registration into the Tower is cancelled."))
+				msg.say(`${emoji(msg,'err')} ${msg.author}, you didn't answer in time. Your registration into the Tower is cancelled.`)
 			})
 	}
 }

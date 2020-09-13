@@ -24,9 +24,9 @@ module.exports = class BuyCommand extends Command {
     })
   }
 
-  async run(message, { weapon }) {
-    const player = await Database.findPlayer(message, message.author)
-    Database.addQuestsPlayer(message.author)
-    return message.say('WIP')
+  async run(msg, { weapon }) {
+    const player = await Database.findPlayer(msg, msg.author)
+    Database.addQuestsPlayer(msg.author)
+    return msg.say('WIP')
   }
 }

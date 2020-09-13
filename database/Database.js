@@ -80,16 +80,16 @@ class Database {
     })
   )};
 
-  findPlayer(message, player, noMessage) {
+  findPlayer(msg, player, noMessage) {
     return new Promise((resolve, reject) => Player.findOne({ playerId: player.id }, (err, res) => {
       if (err) {
       return reject(err);
       }
       if (!res && !noMessage) {
-        if (message.author.id == player.id) {
-          return message.say(`Please type \`${message.client.commandPrefix}start\` to begin.`);
+        if (msg.author.id == player.id) {
+          return msg.say(`Please type \`${msg.client.commandPrefix}start\` to begin.`);
         } else {
-          return message.say(`${player.username} hasn't started climbing the Tower.`);
+          return msg.say(`${player.username} hasn't started climbing the Tower.`);
         }
       }
 
@@ -105,7 +105,7 @@ class Database {
     });
   }
 
-  addExpPlayer(player, message, value) {
+  addExpPlayer(player, msg, value) {
     Player.findOne({ playerId: player.id }, (err, res) => { 
       res.exp += value
       let description = ''
@@ -115,7 +115,7 @@ class Database {
         res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
         description += `🆙 Congratulations ${player.toString()}, you've reached level **${res.level}**!\n`;
       }
-      if (description !== '') message.say(description)
+      if (description !== '') msg.say(description)
       res.save().catch(err => console.log(err))
     });
   }

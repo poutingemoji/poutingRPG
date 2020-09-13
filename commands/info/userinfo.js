@@ -32,9 +32,9 @@ module.exports = class UserinfoCommand extends Command {
       },
     })
   }
-  run(message, {user}) {
-    const mentionedUser = user || message.author
-    const mentionedMember = message.guild.member(user) || message.member
+  run(msg, {user}) {
+    const mentionedUser = user || msg.author
+    const mentionedMember = msg.guild.member(user) || msg.member
     const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ")
     const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => Helper.titleCase(permission)).join(', ')
     const messageEmbed = new MessageEmbed()
@@ -54,6 +54,6 @@ module.exports = class UserinfoCommand extends Command {
     if (mentionedRoles) {
       messageEmbed.addField(`Roles (${mentionedRoles.split(' ').length})`,  mentionedRoles)
     }
-    message.say(messageEmbed)
+    msg.say(messageEmbed)
   }
 }

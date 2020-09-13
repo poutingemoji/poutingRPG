@@ -1,4 +1,13 @@
 const enumHelper = {
+  links: {
+    website: 'https://poutingemoji.github.io/poutingbot/',
+    commandList: 'https://poutingemoji.github.io/poutingbot/commands.html',
+    supportServer: 'https://discord.gg/nGVe96h',
+  },
+  embedColors: {
+    bot: '#aacda4',
+    game: '#2f3136',
+  },
   expFormulas: {
     fast: 'floor(((4*n)^3)/5)',
     mediumfast: 'floor(n^3)',

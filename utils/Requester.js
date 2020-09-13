@@ -1,7 +1,7 @@
   
 const fetch = require("node-fetch")
 
-class Requester {
+const Requester =  {
 
   async request(URL) {
     let res = await fetch(URL)
@@ -9,4 +9,4 @@ class Requester {
   }
 
 }
-module.exports = new Requester();
+module.exports = Requester

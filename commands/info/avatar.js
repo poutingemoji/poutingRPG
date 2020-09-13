@@ -27,8 +27,8 @@ module.exports = class AvatarCommand extends Command {
       },
     })
   }
-  run(message, {user}) {
-    const mentionedUser = user || message.author
-    message.say(mentionedUser.displayAvatarURL())
+  run(msg, {user}) {
+    const mentionedUser = user || msg.author
+    msg.say(mentionedUser.displayAvatarURL())
   }
 }

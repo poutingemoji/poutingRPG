@@ -36,9 +36,9 @@ module.exports = class TranslateCommand extends Command {
       },
     })
   }
-  run(message, {language, content}) {
+  run(msg, {language, content}) {
     if (language.toLowerCase() === "chinese" || language.toLowerCase() === "ch") language = "Chinese (Simplified)"
-    if (!translate.languages.getCode(language)) return message.say(Helper.err(message, `the language, **${Helper.titleCase(language)}**, doesn't exist in my database.`, true))
+    if (!translate.languages.getCode(language)) return msg.say(Helper.err(msg, `the language, **${Helper.titleCase(language)}**, doesn't exist in my database.`, true))
     const opts = {
       to: translate.languages.getCode(language.toLowerCase()), 
     }
@@ -46,12 +46,12 @@ module.exports = class TranslateCommand extends Command {
       .then(res => {
         const messageEmbed = new MessageEmbed()
           .setColor("#4c8cf5")
-          .setAuthor(message.author.tag, message.author.displayAvatarURL())
+          .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
           .addField(translate.languages[res.from.language.iso], Helper.codeBlock(content))
           .setTimestamp()
           .setFooter("Translated")
         language.length !== 2 ? messageEmbed.addField(Helper.titleCase(language), Helper.codeBlock(res.text)) : messageEmbed.addField(translate.languages[language], Helper.codeBlock(res.text))
-        message.say(messageEmbed)
+        msg.say(messageEmbed)
       })
       .catch(err => {
         console.error(err)

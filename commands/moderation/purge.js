@@ -1,6 +1,8 @@
 require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
+const { emoji } = require('../../utils/Helper')
+
 module.exports = class PurgeCommand extends Command {
   constructor(client) {
     super(client, {
@@ -8,56 +10,22 @@ module.exports = class PurgeCommand extends Command {
       aliases: ['prune', 'clear', 'wipe'],
       group: 'moderation',
       memberName: 'purge',
-      description: 'Allows you to mass delete messages in your server. DEFAULT: 25 MSGS',
+      description: 'Allows you to mass delete messages in your server.',
       examples: [
-        `${process.env.PREFIX}purge @user`,
         `${process.env.PREFIX}purge [number]`,
-        `${process.env.PREFIX}purge bots [number]`,
-        `${process.env.PREFIX}purge commands [number]`,
-        `${process.env.PREFIX}purge mentions [number]`,
-        `${process.env.PREFIX}purge images [number]`,
-        `${process.env.PREFIX}purge links [number]`,
-        `${process.env.PREFIX}purge invites [number]`,
-        `${process.env.PREFIX}purge text [number]`,
-        `${process.env.PREFIX}purge embeds [number]`,
-        `${process.env.PREFIX}purge emojis [number]`,
-        `${process.env.PREFIX}purge startswith [content]`,
-        `${process.env.PREFIX}purge endswith [content]`,
-        `${process.env.PREFIX}purge includes [content]`,
-        `${process.env.PREFIX}purge match [content]`,
       ],
       clientPermissions: ['MANAGE_MESSAGES'],
       userPermissions: ['MANAGE_MESSAGES'],
       guildOnly: true,
+      nsfw: false,
       args: [
         {
-          key: 'typeOfMessages',
-          prompt: 'What kind of message would you like to purge?',
-          type: 'string',
-          default: false,
-          validate: typeOfMessages => {
-            if (isNaN(typeOfMessages)) {
-              return true
-            } else {
-              console.log(typeOfMessages)
-              if (typeOfMessages > 0 && typeOfMessages < 101) return true
-              return "Number of messages deleted must be greater than 0 and less than 101."
-            }
-          }
-        },
-        {
-          key: 'messageFilter',
+          key: 'numOfMsgs',
           prompt: 'How many messages would you like to purge?',
-          type: 'string',
-          default: 25,
-          validate: messageFilter => {
-            if (isNaN(messageFilter)) {
-              return true
-            } else {
-              console.log(messageFilter)
-              if (messageFilter > 0 && messageFilter < 101) return true
-              return "Number of messages deleted must be greater than 0 and less than 101."
-            }
+          type: 'integer',
+          validate: num => {
+            if (100 > num && num > 0) return true
+            return "Number of messages deleted must be greater than 0 and less than 100."
           }
         },
       ],
@@ -67,122 +35,20 @@ module.exports = class PurgeCommand extends Command {
       },
     })
   }
-  run(message, { typeOfMessages, messageFilter }) {
-    message.delete()
-    let messagesDeleted
-    if (!isNaN(messageFilter)) {
-      messageFilter = Math.floor(messageFilter)
-    }
-    if (!typeOfMessages) {
-      message.channel.bulkDelete(messageFilter, true).catch(err => {
-        console.error(err)
+  run(msg, {numOfMsgs}) {
+    numOfMsgs++
+    msg.channel.bulkDelete(numOfMsgs, true).catch(err => {
+      console.error(err)
+    })
+    try {
+      msg.say(`Deletion of messages successful. Total messages deleted: ${numOfMsgs-1}`).then(msgSent => {
+        setTimeout(function(){
+          msgSent.delete()
+        }, 2000)
       })
-      purgeMessage(message, "Deletion of messages successful. Total messages deleted: " + "`" + messageFilter + "`")
-    } else if (["bots", "commands", "embeds", "emojis", "images", "invites", "links", "pings", "text", "startswith", "endswith", "contains", "match"].includes(typeOfMessages) || message.mentions.users.first()) {
-      let filteredMessages
-      message.channel.messages.fetch().then(messages => {
-        if (isNaN(messageFilter)) {
-          let promptKeyword
-          if (typeOfMessages === "contains") {
-            filteredMessages = messages.filter(msg => msg.content.includes(messageFilter))
-            promptKeyword = 'containing'
-          } else if (typeOfMessages === "startswith") {
-            filteredMessages = messages.filter(msg => msg.content.startsWith(messageFilter))
-            promptKeyword = 'starting with'
-          } else if (typeOfMessages === "endswith") {
-            filteredMessages = messages.filter(msg => msg.content.endsWith(messageFilter))
-            promptKeyword = 'ending with'
-          } else if (typeOfMessages === "match") {
-            filteredMessages = messages.filter(msg => msg.content === messageFilter)
-            promptKeyword = 'matching'
-          }
-          messagesDeleted = filteredMessages.array()
-          console.log(typeOfMessages)
-          message.channel.bulkDelete(messagesDeleted, true).catch(err => {
-            console.error(err)
-          })
-          if (messagesDeleted.length > 0) {
-            purgeMessage(message, `Deletion of messages ${promptKeyword} **${messageFilter}** was successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
-          } else
-            purgeMessage(message, `No messages ${promptKeyword} **${messageFilter}** could be found!`)
-        } else {
-          const user = message.mentions.users.first()
-          if (user) {                         
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.author.id === user.id, messageFilter))
-          } else if (typeOfMessages === "bots") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.author.bot, messageFilter))
-          } else if (typeOfMessages === "commands") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.content.startsWith(message.guild.commandprocess.env.PREFIX), messageFilter))
-          } else if (typeOfMessages === "embeds") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.embeds.length, messageFilter))
-          } else if (typeOfMessages === "emojis") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.content.includes('<:' && '>' || '<a:' && '>') || isDoubleByte(msg.content), messageFilter))
-          } else if (typeOfMessages === "images") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.attachments.size > 0, messageFilter))
-          } else if (typeOfMessages === "invites") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.content.includes('discord.gg/'||'discordapp.com/invite/'), messageFilter))
-          } else if (typeOfMessages === "links") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.content.includes('https://'||'www.'||'.com'), messageFilter))
-          } else if (typeOfMessages === "pings") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, msg.mentions.users.first() || msg.mentions.roles.first(), messageFilter))
-          } else if (typeOfMessages === "text") {
-            filteredMessages = messages.filter(msg => filterLimit(msg, !(msg.attachments.size > 0) && !msg.embeds.length), messageFilter)
-          }
-          messagesDeleted = filteredMessages.array()
-
-          message.channel.bulkDelete(messagesDeleted, true).catch(err => {
-            console.error(err)
-          })
-
-          if (!user) {
-            if (messagesDeleted.length > 0) {
-              purgeMessage(message, `Deletion of **${typeOfMessages}** successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
-            } else
-              purgeMessage(message, `No **${typeOfMessages}** were found!`)
-          } else {
-            if (messagesDeleted.length > 0) {
-              purgeMessage(message, `Deletion of **${user.username}**'s messages was successful. Total messages deleted: ` + "`" + messagesDeleted.length + "`")
-            } else
-              purgeMessage(message, `None of **${user.username}** 's messages were found!`)
-            }
-          }
-      }).catch(err => {
-        console.error(err)
-      })
-    } else if (!isNaN(typeOfMessages)) {
-      message.channel.bulkDelete(typeOfMessages, true).catch(err => {
-        console.error(err)
-      })
-      purgeMessage(message, "Deletion of messages successful. Total messages deleted: " + "`" + typeOfMessages + "`")
+    } catch(err) {
+      msg.say(`${emoji(msg,'err')} Unable to purge messages.`)
+      console.error(err)
     }
   }
-}
-
-function filterLimit(msg, condition, messageFilter) {
-    var counter = 0
-    if (counter < messageFilter && condition) {
-        counter++
-        return true
-    } else {
-        return false
-    }
-}
-
-function isDoubleByte(str) {
-    for (let i = 0, n = str.length; i < n; i++) {
-        if (str.charCodeAt( i ) > 255) { return true; }
-    }
-    return false
-}
-
-async function purgeMessage(message, text) {
-    try {
-        const sentMessage = await message.say(text)
-            setTimeout(function(){
-                sentMessage.delete()
-            }, 1500)
-    } catch(err) {
-        console.error(err)
-        return console.log("Didn't edit the message.")
-    }
 }

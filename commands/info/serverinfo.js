@@ -23,8 +23,8 @@ module.exports = class ServerinfoCommand extends Command {
       },
     })
   }
-  run(message) {
-    let guild = message.guild
+  run(msg) {
+    let guild = msg.guild
     const members = guild.members.cache.map(member => member)
     const membersOnline = (members.filter(member => member.user.presence.status !== 'offline')).length
     const membersOffline = members.length - membersOnline
@@ -51,6 +51,6 @@ module.exports = class ServerinfoCommand extends Command {
       .setFooter(`ID: ${guild.id}`)
     if (roles) messageEmbed.addField("Roles", roles.length, true)
     if (emojis) messageEmbed.addField(`Emojis (${emojis.length})`, emojis.slice(0, 20).join(' '))
-    message.say(messageEmbed)
+    msg.say(messageEmbed)
   }
 }

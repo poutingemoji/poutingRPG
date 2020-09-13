@@ -18,7 +18,7 @@
     "dotenv": "^8.2.0",
     "expr-eval": "^2.0.2",
     "genius-lyrics": "^3.0.0",
-    "mongoose": "^5.9.20",
+    "mongoose": "^5.10.4",
     "node-pre-gyp": "0.12.0",
     "tenorjs": "^1.0.7"
   },

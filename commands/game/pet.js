@@ -48,71 +48,70 @@ module.exports = class petCommand extends Command {
   
   //console.log(Objects.newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
 
-	async run(message, { actionChosen, nickname }) {
-    var player = await Database.findPlayer(message, message.author)
+	async run(msg, { actionChosen, nickname }) {
+    var player = await Database.findPlayer(msg, msg.author)
     var pet = player.pet
     if (!pets[pet.id] || actionChosen == 'new') {
-      await Database.createNewPet(message.author, Math.floor(Math.random()*pets.length), '')
-      return message.say('New pet has been created. Please run the command again.')
+      await Database.createNewPet(msg.author, Math.floor(Math.random()*pets.length), '')
+      return msg.say('New pet has been created. Please run the command again.')
     }
     
     var differences = []
     if (Object.keys(enumHelper.petActions).includes(actionChosen)) {
       const actionIndex = Object.keys(enumHelper.petActions).findIndex(action => action == actionChosen)
       const needIncrease = Helper.clamp((pet[needs[actionIndex]] + 42), 0, 100) - pet[needs[actionIndex]]
-      if (needIncrease == 0) return message.say(`Your ${needs[actionIndex]} is maxed. Please wait for it to go down.`)
-      message.say(`You ${actionChosen} your pet.`)
+      if (needIncrease == 0) return msg.say(`Your ${needs[actionIndex]} is maxed. Please wait for it to go down.`)
+      msg.say(`You ${actionChosen} your pet.`)
       differences[actionIndex] = 42
-      await Database.updateNeedsPet(message.author, differences)
-      await Database.addExpPet(message.author, Math.round(needIncrease), 0, 100)
+      await Database.updateNeedsPet(msg.author, differences)
+      await Database.addExpPet(msg.author, Math.round(needIncrease), 0, 100)
     }
 
-    if (actionChosen == 'name') {
-      if (nickname.length > 32 || !nickname) return message.say('Please keep your nickname at 32 characters or under.')
-      await Database.renamePet(message.author, nickname)
-      message.say(`Your pet's name is now **${nickname}**.`)
-    }
+    switch (actionChosen) {
+      case 'name':
+        if (nickname.length > 32 || !nickname) return msg.say('Please keep your nickname at 32 characters or under.')
+        await Database.renamePet(msg.author, nickname)
+        msg.say(`Your pet's name is now **${nickname}**.`)
+        break;
+      case 'disown':
+        await Database.removePet(msg.author)
+        msg.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
+        break;
+      default: 
+        const secondsPassed = (Date.now() - pet.updatedAt)/1000
+        console.log(secondsPassed)
+        for (var i = 0; i < needs.length; i++) {
+          const difference = -(secondsPassed/pets[pet.id].empty[needs[i]])*100
+          differences.push(difference)
+          pet[needs[i]] += difference
+        }
 
-    if (actionChosen == 'disown') {
-      await Database.removePet(message.author)
-      message.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
-    }
+        await Database.updateNeedsPet(msg.author, differences)
+        console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
+        const messageEmbed = new MessageEmbed()
+        .setTitle(`${msg.member.nickname || msg.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)
+        .setThumbnail(pets[pet.id].image)
 
-    if (!actionChosen) {
-      const secondsPassed = (Date.now() - pet.updatedAt)/1000
-      console.log(secondsPassed)
-      for (var i = 0; i < needs.length; i++) {
-        const difference = -(secondsPassed/pets[pet.id].empty[needs[i]])*100
-        differences.push(difference)
-        pet[needs[i]] += difference
-      }
-
-      await Database.updateNeedsPet(message.author, differences)
-      console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
-      const messageEmbed = new MessageEmbed()
-      .setTitle(`${message.member.nickname || message.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)
-      .setThumbnail(pets[pet.id].image)
-
-      var mood
-      var roundedNeeds = []
-      for (var i = 0; i < needs.length; i++) {
-        var need = needs[i]
-        pet[need] = Helper.clamp(pet[need], 0, 100)
-        var roundedNeed = Math.round(pet[need])
-        roundedNeeds.push(roundedNeed)
-        messageEmbed.addField(
-          `${Helper.titleCase(need)
-          } (${roundedNeed}%)`, 
-          `[${progressBar(roundedNeed/100)}](https://www.youtube.com/user/pokimane)\n${
-          pet[need] !== 0 ? `\`${Helper.secondsToDhms((pet[need]/100)*pets[pet.id].empty[need], ' and ', true, 2)
-          } until empty\`` : ''}`, true
+        var mood
+        var roundedNeeds = []
+        for (var i = 0; i < needs.length; i++) {
+          var need = needs[i]
+          pet[need] = Helper.clamp(pet[need], 0, 100)
+          var roundedNeed = Math.round(pet[need])
+          roundedNeeds.push(roundedNeed)
+          messageEmbed.addField(
+            `${Helper.titleCase(need)
+            } (${roundedNeed}%)`, 
+            `[${progressBar(roundedNeed/100)}](https://www.youtube.com/user/pokimane)\n${
+            pet[need] !== 0 ? `\`${Helper.secondsToDhms((pet[need]/100)*pets[pet.id].empty[need], ' and ', true, 2)
+            } until empty\`` : ''}`, true
+          )
+        }
+        messageEmbed.addFields(
+          { name: `Experience`, value: `[${progressBar(pet.exp/pet.expMax)}](https://www.youtube.com/user/pokimane)\n\`Level ${pet.level} (${pet.exp}/${pet.expMax})\``, inline: true },
+          { name: `Mood`, value: 'Great', inline: true }
         )
-      }
-      messageEmbed.addFields(
-        { name: `Experience`, value: `[${progressBar(pet.exp/pet.expMax)}](https://www.youtube.com/user/pokimane)\n\`Level ${pet.level} (${pet.exp}/${pet.expMax})\``, inline: true },
-        { name: `Mood`, value: 'Great', inline: true }
-      )
-      message.say(messageEmbed);
+        msg.say(messageEmbed);
     }
   }
 }

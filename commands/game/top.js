@@ -34,7 +34,7 @@ module.exports = class TopCommand extends Command {
     })
 	}
 	
-	async run(message, { filter }) {
+	async run(msg, { filter }) {
     const checkDict = {
 			['level'] : 'exp',
 			['points'] : 'points',
@@ -54,7 +54,7 @@ module.exports = class TopCommand extends Command {
             leaderboardPosition = `${i + 1})`
           }
           
-          const user = await message.client.users.fetch(res[i].playerId)
+          const user = await msg.client.users.fetch(res[i].playerId)
           if (filter === 'level') {
             topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].exp}\n`
           } else {
@@ -66,7 +66,7 @@ module.exports = class TopCommand extends Command {
         .setColor('#2f3136')
         .setTitle(`Global Leaderboard [${Helper.titleCase(filter)}]`)
         .setDescription(topPlayers)
-        message.say(messageEmbed)
+        msg.say(messageEmbed)
       } catch(err) {
         console.error(err)
       }

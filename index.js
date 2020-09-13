@@ -1,16 +1,19 @@
-const fs = require('fs')
-const { CommandoClient } = require("discord.js-commando")
-const path = require("path")
-const Helper = require('./utils/Helper')
-const DBL = require("dblapi.js");
 require('dotenv').config()
 
+const { CommandoClient } = require("discord.js-commando")
 
-//Creating Commando Client
+const Helper = require('./utils/Helper')
+const { links } = require('./utils/enumHelper')
+
+const DBL = require("dblapi.js");
+
+const fs = require('fs');
+const path = require("path");
+
 const client = new CommandoClient({
 	commandPrefix: process.env.DEVPREFIX || process.env.PREFIX,
 	owner: "257641125135908866",
-	invite: "https://discord.gg/nGVe96h",
+	invite: links.supportServer,
   disableEveryone: true,
   shards: 'auto',
 })
@@ -55,8 +58,8 @@ client.once("ready", () => {
 client.on("error", console.error)
 client.login(process.env.TOKEN)
 
-client.on('message', message => {
-  if (message.author.bot) return
+client.on('message', msg => {
+  if (msg.author.bot) return
 })
 
 //Update Commands Table Info (WEBSITE)

@@ -23,11 +23,11 @@ module.exports = class ChannelinfoCommand extends Command {
       },
     })
   }
-  run(message) {
-    let channel = message.channel
-    console.log(message.mentions.channels.first())
-    if (message.mentions.channels.first()) {
-        channel = message.mentions.channels.first()
+  run(msg) {
+    let channel = msg.channel
+    console.log(msg.mentions.channels.first())
+    if (msg.mentions.channels.first()) {
+        channel = msg.mentions.channels.first()
     }
 		const messageEmbed = new MessageEmbed()
       .setColor('#92b096')
@@ -42,6 +42,6 @@ module.exports = class ChannelinfoCommand extends Command {
     if (channel.topic) {
         messageEmbed.addField("Topic", channel.topic)
     }
-		message.say(messageEmbed)
+		msg.say(messageEmbed)
   }
 }
