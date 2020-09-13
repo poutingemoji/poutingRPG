@@ -2,7 +2,8 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const { emoji, titleCase } = require('../../utils/Helper')
+const { titleCase } = require('../../utils/Helper')
+const { emoji } = require('../../utils/msgHelper')
 const Requester = require('../../utils/Requester')
 
 module.exports = class WeatherCommand extends Command {

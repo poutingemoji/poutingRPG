@@ -2,8 +2,8 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const { loadTop10 } = require('../../database/Database');
-const { paginate, titleCase } = require('../../utils/Helper')
+const { loadTopPlayers } = require('../../database/Database');
+const { commandInfo, paginate, titleCase } = require('../../utils/Helper')
 const { embedColors } = require('../../utils/enumHelper')
 
 const positions = require('../../docs/data/positions.js')
@@ -13,8 +13,19 @@ const Pagination = require('discord-paginationembed');
 
 const pageLength = 10;
 const filters = {
-  [false] : {level: -1, exp: -1},
-  ['points'] : {points: -1},
+  [false] : {
+    filter: {level: -1, exp: -1},
+    where: 'level',
+  },
+  ['points'] : {
+    filter: {points: -1},
+    where: 'points',
+  },
+  ['fish'] : {
+    filter: { 'fishes.\nTotal Amount': -1, 'fishes.\nTotal Amount': 0},
+    where: 'fishes.\nTotal Amount',
+    gte: 1,
+  },
 }
 
 module.exports = class TopCommand extends Command {
@@ -48,11 +59,14 @@ module.exports = class TopCommand extends Command {
 	}
 	
 	async run(msg, { filter }) {
-  
-    const res = await loadTop10(filters[filter])
+    if (!filters[filter]) {
+      const commands = this.client.registry.findCommands('top', false, msg);
+      return commandInfo(msg, commands[0])
+    }
+    const res = await loadTopPlayers(filters[filter].filter, filters[filter].where, filters[filter].gte || 0)
     var yourPosition = false
     var yourPage
-
+    console.log(res.length)
     const embeds = [];
 
     var { maxPage } = paginate(res, 1, pageLength)
@@ -75,11 +89,14 @@ module.exports = class TopCommand extends Command {
         } else {
           lbPosition = `${lbPosition+1})`
         }
-        topPlayers += `${lbPosition}    ${positions[player.position[0]].emoji}  **${user.username}** ─ `
         
+        topPlayers += `${lbPosition}    ${positions[player.position[0]].emoji}  **${user.username}** ─ `
         switch(filter) {
           case 'points':
-            topPlayers += `${titleCase(filter)}: ${player.points}\n`
+            topPlayers += `Points: ${player.points}\n`
+            break;
+          case 'fish':
+            topPlayers += `Total Fish: ${player.fishes.get('\nTotal Amount')}\n`           
             break;
           default:
             topPlayers += `Lvl: ${player.level} ─ Exp: ${player.exp}\n`
@@ -89,7 +106,6 @@ module.exports = class TopCommand extends Command {
         new MessageEmbed()
         .setTitle(`[Page ${page+1}/${maxPage}]`)
         .setDescription(topPlayers)
-        
       )
     }
     

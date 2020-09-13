@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const { disambiguation, titleCase, secondsToDhms } = require('../../utils/Helper');
+const { commandInfo, disambiguation, titleCase, secondsToDhms } = require('../../utils/Helper');
 const { links, embedColors } = require('../../utils/enumHelper');
 
 module.exports = class HelpCommand extends Command {
@@ -35,26 +35,7 @@ module.exports = class HelpCommand extends Command {
     const showAll = args.command && args.command.toLowerCase() === 'all';
     if(args.command && !showAll) {
 			if(commands.length === 1) {
-        const messageEmbed = new MessageEmbed()
-          .setColor(embedColors.bot)
-          .setAuthor(msg.client.user.username, msg.client.user.displayAvatarURL())
-          .setTitle(`${titleCase(commands[0].groupID)} Command: ${commands[0].name}`)
-          .setURL('https://poutingemoji.github.io/poutingbot/commands.html')
-          .setDescription(`**Description**: ${commands[0].description}`)
-          .setFooter([commands[0].guildOnly ? 'Usable only in servers' : false, commands[0].nsfw ? 'NSFW' : false].filter(Boolean).join(', '))
-        if(commands[0].examples.length > 0) messageEmbed.addField('Usage:', commands[0].examples.join('\n'));
-        if(commands[0].aliases.length > 0) messageEmbed.addField('Aliases:', commands[0].aliases.join(', '));
-        messageEmbed.addField('Cooldown:', secondsToDhms(commands[0].throttling.duration, ', '))
-
-        const messages = [];
-        
-				try {
-					messages.push(await msg.say(messageEmbed));
-				} catch(err) {
-					messages.push(await msg.reply('Unable to send you the command info.'));
-        }
-        
-				return messages;
+        return commandInfo(msg, commands[0])
 			} else if(commands.length > 15) {
 				return msg.reply('Multiple commands found. Please be more specific.');
 			} else if(commands.length > 1) {

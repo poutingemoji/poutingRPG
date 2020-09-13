@@ -61,6 +61,7 @@ const Objects = {
         ['Sweetfish']: 0,
         ['Boot']: 0,
         ['Brick']: 0,
+        ['\nTotal Amount']: 0,
       },
     }
   },

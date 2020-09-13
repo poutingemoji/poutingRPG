@@ -1,6 +1,3 @@
-const emojis = require('../docs/data/emojis.js')
-const { MessageEmbed } = require('discord.js')
-
 const Helper = {
 
   disambiguation(items, label, property = 'name') {
@@ -21,13 +18,8 @@ const Helper = {
     };
   },
     
-  codeBlock(str, syntax) {
-    syntax = typeof syntax !== 'undefined' ? syntax : '';
+  codeBlock(str, syntax = '') {
     return `\`\`\`${syntax}\n${str}\n\`\`\`\n`;
-  },
-  
-  emoji(msg, emoji) {
-    return msg.client.emojis.cache.get(emojis[emoji]).toString();
   },
   
   titleCase(str) {
@@ -101,25 +93,6 @@ const Helper = {
       }
     }
     return values[Helper.arrayShuffle(pool)['0']];
-  },
-  
-  confirmation(msg, content) {
-    return msg.say(content).then(msgSent => {
-      msgSent.react(emojis['check'])
-      .then(() => msgSent.react(emojis['cross']))
-
-      const filter = (reaction, user) => {
-        return ['check', 'cross'].includes(reaction.emoji.name) && user.id === msg.author.id;
-      }
-
-      return msgSent.awaitReactions(filter, { max: 1, time: 10000, errors: ['time'] })
-        .then(collected => {
-          msgSent.delete();
-          if (collected.first().emoji.name == 'check') return true
-          else return false
-        })
-        .catch(() => msgSent.delete());
-    })
   },
 }
 

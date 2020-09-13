@@ -2,7 +2,8 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
 const { findPlayer, createNewPlayer } = require('../../database/Database');
-const { emoji, titleCase, codeBlock, confirmation } = require('../../utils/Helper')
+const { titleCase, codeBlock } = require('../../utils/Helper')
+const { emoji, confirmation } = require('../../utils/msgHelper')
 
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')

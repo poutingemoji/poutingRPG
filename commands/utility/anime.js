@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const { emoji } = require('../../utils/Helper')
+const { emoji } = require('../../utils/msgHelper')
 const Requester = require('../../utils/Requester')
 
 const dateFormat = require('dateformat')

@@ -123,12 +123,16 @@ class Database {
   addFishPlayer(player, fish) {
     Player.findOne({ playerId: player.id }, (err, res) => { 
       res.fishes.set(fish, res.fishes.get(fish)+1 || 1);
+      res.fishes.set('\nTotal Amount', res.fishes.get('\nTotal Amount')+1 || 1);
       res.save().catch(err => console.log(err))
     });
   }
 
-  loadTop10(filter) {
+  loadTopPlayers(filter, where, gte) {
+    console.log(where, gte)
     return Player.find()
+      .where(where)
+      .gte(gte)
       .sort(filter)
       .exec()
   }

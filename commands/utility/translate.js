@@ -2,7 +2,8 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const { emoji, titleCase, codeBlock } = require('../../utils/Helper')
+const { titleCase, codeBlock } = require('../../utils/Helper')
+const { emoji } = require('../../utils/msgHelper')
 
 const translate = require('@vitalets/google-translate-api')
 

@@ -42,28 +42,27 @@ module.exports = class FishCommand extends Command {
     .setColor('#2f3136')
 
     let description = '';
-    if (stats == 'stats') {
-      messageEmbed.setTitle(`${msg.author.username}'s Fishing Statistics 🎣`)
-      var totalAmt = 0
-      player.fishes.forEach((value, key) => {
-        description += `${fishes[key].emoji} ${key}: **${value}**\n`
-        totalAmt += value
-      })
-      description += `\nTotal Amount: **${totalAmt}**`
-    } else {
-      const fish = percentageChance(Object.keys(fishes), Object.values(fishes).map(res => res.rarity))
-      description = `🎣 ${msg.author.username} fished out: **${fish} ${fishes[fish].emoji}** !\n\n`
-      for (var i = 0; i < currencies.length; i++) {
-        const cur = currencies[i]
-        const exp = Math.ceil(fishes[fish][cur.name]/1.5)
-        if (fishes[fish].hasOwnProperty(cur.name)) {
-          description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
-          description += `*You earned experience:* **+ ${exp}** ✨`
-          await incrementValuePlayer(msg.author, cur.name, fishes[fish][cur.name])
-          await addExpPlayer(msg.author, msg, exp)
-          await addFishPlayer(msg.author, fish)
+    switch (stats) {
+      case 'stats':
+        messageEmbed.setTitle(`${msg.author.username}'s Fishing Statistics 🎣`)
+        player.fishes.forEach((value, key) => {
+          description += `${fishes[key].emoji} ${key}: **${value}**\n`
+        })
+        break;
+      default:
+        const fish = percentageChance(Object.keys(fishes), Object.values(fishes).map(res => res.rarity))
+        description = `🎣 ${msg.author.username} fished out: **${fish} ${fishes[fish].emoji}** !\n\n`
+        for (var i = 0; i < currencies.length; i++) {
+          const cur = currencies[i]
+          const exp = Math.ceil(fishes[fish][cur.name]/1.5)
+          if (fishes[fish].hasOwnProperty(cur.name)) {
+            description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
+            description += `*You earned experience:* **+ ${exp}** ✨`
+            await incrementValuePlayer(msg.author, cur.name, fishes[fish][cur.name])
+            await addExpPlayer(msg.author, msg, exp)
+            await addFishPlayer(msg.author, fish)
+          }
         }
-      }
     }
     messageEmbed.setDescription(description)
     msg.say(messageEmbed)
@@ -140,5 +139,8 @@ const fishes = {
     emoji: '🧱',
     points: 0,
     rarity: 3,
+  },
+  ['\nTotal Amount']: {
+    emoji: '',
   },
 }

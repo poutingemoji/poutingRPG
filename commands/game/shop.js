@@ -3,7 +3,8 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const Database = require('../../database/Database');
-const { emoji, titleCase } = require('../../utils/Helper')
+const { titleCase } = require('../../utils/Helper')
+const { emoji } = require('../../utils/msgHelper')
 
 module.exports = class ShopCommand extends Command {
   constructor(client) {
