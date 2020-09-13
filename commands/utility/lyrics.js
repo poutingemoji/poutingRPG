@@ -32,7 +32,7 @@ module.exports = class LyricsCommand extends Command {
     })
   }
   async run(msg, {song}) {
-    const sentMessage = await msg.say(`${Helper.emoji(msg,"730597505938620437")} **${msg.author.username}**, searching for requested song lyrics... \:mag_right: `)
+    const sentMessage = await msg.say(`${emoji(msg,"730597505938620437")} **${msg.author.username}**, searching for requested song lyrics... \:mag_right: `)
     try {
       const songs = await Genius.tracks.search(song, { limit: 10 })
       const lyricsRequest = await songs[0].lyrics()

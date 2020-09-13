@@ -3,7 +3,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const Database = require('../../database/Database');
-const { emoji } = require('../../utils/Helper')
+const { emoji, titleCase } = require('../../utils/Helper')
 
 module.exports = class ShopCommand extends Command {
   constructor(client) {
@@ -55,7 +55,7 @@ module.exports = class ShopCommand extends Command {
     const current = categoryChosen.slice((page-1)*itemsPerPage, page*itemsPerPage)
     const messageEmbed = new MessageEmbed()
     .setColor(categoryColors[category])
-    .setFooter(`${Helper.titleCase(category)} Store ─ Page ${page} of ${argLimit}`)
+    .setFooter(`${titleCase(category)} Store ─ Page ${page} of ${argLimit}`)
 
     let description = ''
 
@@ -64,7 +64,7 @@ module.exports = class ShopCommand extends Command {
       itemCurrent = categoryChosen[categoryChosen.findIndex(item => item.name == itemCurrent.name)]
       description += `${itemCurrent.emoji} **${itemCurrent.name}**\n${itemCurrent.price} points\n`
     })
-    messageEmbed.addField(`${Helper.titleCase(category)} Store`, description)
+    messageEmbed.addField(`${titleCase(category)} Store`, description)
     msg.say(messageEmbed) 
   }
 }

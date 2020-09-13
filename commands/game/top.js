@@ -3,7 +3,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const Database = require('../../database/Database');
-const Helper = require('../../utils/Helper')
+const { titleCase } = require('../../utils/Helper')
 
 const positions = require('../../docs/data/positions.js')
 
@@ -56,15 +56,15 @@ module.exports = class TopCommand extends Command {
           
           const user = await msg.client.users.fetch(res[i].playerId)
           if (filter === 'level') {
-            topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].exp}\n`
+            topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${titleCase(filter)}: ${res[i].level} ─ Exp: ${res[i].exp}\n`
           } else {
-            topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${Helper.titleCase(filter)}: ${res[i].points}\n`
+            topPlayers += `${leaderboardPosition}    ${positions[res[i].position[0]].emoji}  **${user.username}** ─ ${titleCase(filter)}: ${res[i].points}\n`
           }
         }
         
         const messageEmbed = new MessageEmbed()
         .setColor('#2f3136')
-        .setTitle(`Global Leaderboard [${Helper.titleCase(filter)}]`)
+        .setTitle(`Global Leaderboard [${titleCase(filter)}]`)
         .setDescription(topPlayers)
         msg.say(messageEmbed)
       } catch(err) {

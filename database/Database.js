@@ -3,8 +3,8 @@ mongoose.Promise = require('bluebird');
 
 const playerSchema = require('./schemas/player');
 
-const enumHelper = require('../utils/enumHelper')
-const Helper = require('../utils/Helper')
+const { clamp } = require('../utils/Helper')
+const { expFormulas, petNeeds } = require('../utils/enumHelper')
 const Objects = require('./Objects');
 
 const positions = require('../docs/data/positions.js');
@@ -112,7 +112,7 @@ class Database {
       while (res.exp >= res.expMax) {
         res.level++
         res.exp -= res.expMax
-        res.expMax = Parser.evaluate(enumHelper.expFormulas['mediumslow'], { n: res.level+1 })
+        res.expMax = Parser.evaluate(expFormulas['mediumslow'], { n: res.level+1 })
         description += `🆙 Congratulations ${player.toString()}, you've reached level **${res.level}**!\n`;
       }
       if (description !== '') msg.say(description)
@@ -149,8 +149,8 @@ class Database {
 
   updateNeedsPet(player, differences) {
     Player.findOne({ playerId: player.id }, (err, res) => { 
-      const needs =  enumHelper.petNeeds
-      for (var i in differences) res.pet[needs[i]] = Helper.clamp(res.pet[needs[i]] += differences[i], 0, 100)
+      const needs =  petNeeds
+      for (var i in differences) res.pet[needs[i]] = clamp(res.pet[needs[i]] += differences[i], 0, 100)
       res.pet.updatedAt = new Date();
       res.save().catch(err => console.log(err))
     }).exec();
@@ -162,7 +162,7 @@ class Database {
       while (res.pet.exp >= res.pet.expMax) {
         res.pet.level++
         res.pet.exp -= res.pet.expMax
-        res.pet.expMax = Parser.evaluate(enumHelper.expFormulas[pets[res.pet.id].exprate], { n: res.pet.level+1 })
+        res.pet.expMax = Parser.evaluate(expFormulas[pets[res.pet.id].exprate], { n: res.pet.level+1 })
       }
       res.save().catch(err => console.log(err))
     });

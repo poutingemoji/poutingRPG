@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const { CommandoClient } = require("discord.js-commando")
 
-const Helper = require('./utils/Helper')
+const { secondsToDhms } = require('./utils/Helper')
 const { links } = require('./utils/enumHelper')
 
 const DBL = require("dblapi.js");
@@ -82,7 +82,7 @@ Object.keys(jsonFiles).forEach(function(key) {
 				`${cmd.description}${cmd.nsfw ? ' (NSFW)' : ''}`,
 				cmd.examples.join("\n"), 
 				cmd.aliases.join("\n"), 
-				Helper.secondsToDhms(cmd.throttling.duration, ', ')
+				secondsToDhms(cmd.throttling.duration, ', ')
 				])
 			)
 		}

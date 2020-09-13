@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const Parser = require('expr-eval').Parser;
 
-const enumHelper = require('../../utils/enumHelper')
-
 const playerSchema = new mongoose.Schema({
   playerId: String,
 

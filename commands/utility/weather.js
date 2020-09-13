@@ -50,8 +50,6 @@ module.exports = class WeatherCommand extends Command {
           {name: "Humidity", value: weatherInfo["main"]["humidity"] + "%", inline: true },
           {name: "Wind Speed", value: Math.floor(weatherInfo["wind"]["speed"]) + " mph " + getCardinalDirection(weatherInfo["wind"]["deg"]), inline: true },
         )
-        .setTimestamp()
-        .setFooter('Weather')
       msg.say(messageEmbed)
     } catch(err) {
       console.log(err)

@@ -3,8 +3,8 @@ const { Command } = require("discord.js-commando")
 const { MessageEmbed } = require('discord.js')
 
 const Database = require('../../database/Database');
-const Helper = require('../../utils/Helper');
-const enumHelper = require('../../utils/enumHelper');
+const { romanize } = require('../../utils/Helper');
+const { maxHealth, maxShinsu, positionColors } = require('../../utils/enumHelper');
 
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
@@ -61,8 +61,8 @@ module.exports = class ProfileCommand extends Command {
         ['✨ Exp']: `${player.exp}/${player.expMax}`,
       },
       {
-        ['💗 Health']: `${player.health}/${enumHelper.maxHealth(player.level)}`,
-        ['🌊 Shinsu']: `${player.shinsu}/${enumHelper.maxShinsu(player.level)}`,
+        ['💗 Health']: `${player.health}/${maxHealth(player.level)}`,
+        ['🌊 Shinsu']: `${player.shinsu}/${maxShinsu(player.level)}`,
       },
       {
         ['⛳ Points']: player.points,
@@ -71,7 +71,7 @@ module.exports = class ProfileCommand extends Command {
       {
         ['🗺️ Arc']: arc.name,
         ['📖 Chapter']: player.chapter+1,
-        ['🥋 Technique']: `${technique.name} (${Helper.romanize(player.technique.mastery)})`,
+        ['🥋 Technique']: `${technique.name} (${romanize(player.technique.mastery)})`,
       },
       {
         ['🏔️ Reputation']: player.reputation,
@@ -95,7 +95,7 @@ module.exports = class ProfileCommand extends Command {
       }
     })
     const messageEmbed = new MessageEmbed()
-    .setColor(enumHelper.positionColors[player.position[0]])
+    .setColor(positionColors[player.position[0]])
     .setTitle(`${user.username}'s Profile`)
     .setThumbnail(arc.image)
     .setDescription(profileMessage)

@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Helper = require('../../utils/Helper')
+const { titleCase } = require('../../utils/Helper')
 
 const dateFormat = require('dateformat')
 
@@ -36,7 +36,7 @@ module.exports = class UserinfoCommand extends Command {
     const mentionedUser = user || msg.author
     const mentionedMember = msg.guild.member(user) || msg.member
     const mentionedRoles = mentionedMember._roles.map(role => "<@&" + role + ">").join(" ")
-    const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => Helper.titleCase(permission)).join(', ')
+    const mentionedPermissions = mentionedMember.permissions.toArray().map(permission => titleCase(permission)).join(', ')
     const messageEmbed = new MessageEmbed()
       .setColor('#92b096')
       .setAuthor(mentionedUser.tag, mentionedUser.displayAvatarURL())

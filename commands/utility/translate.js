@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const Helper = require('../../utils/Helper')
+const { emoji, titleCase, codeBlock } = require('../../utils/Helper')
 
 const translate = require('@vitalets/google-translate-api')
 
@@ -38,7 +38,7 @@ module.exports = class TranslateCommand extends Command {
   }
   run(msg, {language, content}) {
     if (language.toLowerCase() === "chinese" || language.toLowerCase() === "ch") language = "Chinese (Simplified)"
-    if (!translate.languages.getCode(language)) return msg.say(Helper.err(msg, `the language, **${Helper.titleCase(language)}**, doesn't exist in my database.`, true))
+    if (!translate.languages.getCode(language)) return msg.say(`${emoji(msg,'err')} ${msg.author}, the language, **${titleCase(language)}**, doesn't exist in my database.`)
     const opts = {
       to: translate.languages.getCode(language.toLowerCase()), 
     }
@@ -47,10 +47,10 @@ module.exports = class TranslateCommand extends Command {
         const messageEmbed = new MessageEmbed()
           .setColor("#4c8cf5")
           .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
-          .addField(translate.languages[res.from.language.iso], Helper.codeBlock(content))
+          .addField(translate.languages[res.from.language.iso], codeBlock(content))
           .setTimestamp()
           .setFooter("Translated")
-        language.length !== 2 ? messageEmbed.addField(Helper.titleCase(language), Helper.codeBlock(res.text)) : messageEmbed.addField(translate.languages[language], Helper.codeBlock(res.text))
+        language.length !== 2 ? messageEmbed.addField(titleCase(language), codeBlock(res.text)) : messageEmbed.addField(translate.languages[language], codeBlock(res.text))
         msg.say(messageEmbed)
       })
       .catch(err => {

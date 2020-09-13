@@ -1,6 +1,6 @@
 const pets = require('../docs/data/pets.js');
 const Parser = require('expr-eval').Parser;
-const enumHelper = require('../utils/enumHelper')
+const { expFormulas, maxHealth, maxShinsu } = require('../utils/enumHelper')
 
 const Objects = {
   newTechnique(id) {
@@ -24,10 +24,10 @@ const Objects = {
 
       level: 1,
       exp: 0,
-      expMax: Parser.evaluate(enumHelper.expFormulas['mediumfast'], { n: 2 }),
+      expMax: Parser.evaluate(expFormulas['mediumfast'], { n: 2 }),
 
-      health: enumHelper.maxHealth(1),
-      shinsu: enumHelper.maxShinsu(1),
+      health: maxHealth(1),
+      shinsu: maxShinsu(1),
 
       quality: [],
       baang: 0,
@@ -71,7 +71,7 @@ const Objects = {
         updatedAt: Date.now(),
         nickname: nickname,
   
-        level: 1, exp: 0, expMax: Parser.evaluate(enumHelper.expFormulas[pets[id].exprate], { n: 2 }),
+        level: 1, exp: 0, expMax: Parser.evaluate(expFormulas[pets[id].exprate], { n: 2 }),
         hunger: 100, hygiene: 100, fun: 100, energy: 100,
       }
     }
@@ -86,6 +86,7 @@ const Objects = {
         goal: objective[1],
       },
       progress: 0,
+      rewards: rewards,
       //defeat, fish, collect, train
     }
   }

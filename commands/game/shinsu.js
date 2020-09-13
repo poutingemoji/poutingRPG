@@ -3,8 +3,8 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const Database = require('../../database/Database');
-const Helper = require('../../utils/Helper');
-const enumHelper = require('../../utils/enumHelper');
+const { clamp } = require('../../utils/Helper');
+const { maxShinsu } = require('../../utils/enumHelper');
 
 const techniques = require('../../docs/data/techniques.js')
 const qualities = require('../../docs/data/qualities.js')
@@ -34,8 +34,8 @@ module.exports = class ShinsuCommand extends Command {
     const technique = techniques[player.technique.id]
     const shinsu = [
       {
-        ['🌊 Shinsu']: `${player.shinsu}/${enumHelper.maxShinsu(player.level)}`,
-        ['🎯 Accuracy']: `${Helper.clamp(Math.round(100-player.technique.id*.9), 0, 100)}%`,
+        ['🌊 Shinsu']: `${player.shinsu}/${maxShinsu(player.level)}`,
+        ['🎯 Accuracy']: `${clamp(Math.round(100-player.technique.id*.9), 0, 100)}%`,
         ['💥 Damage']: `${player.technique.id*4.5}`,
       },
       {

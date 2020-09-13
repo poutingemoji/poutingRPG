@@ -4,13 +4,11 @@ const { MessageEmbed } = require('discord.js')
 
 const Objects = require('../../database/Objects');
 const Database = require('../../database/Database');
-const Helper = require('../../utils/Helper');
-const enumHelper = require('../../utils/enumHelper');
+const { clamp, titleCase, secondsToDhms } = require('../../utils/Helper');
+const { petNeeds, petActions } = require('../../utils/enumHelper');
 
 const positions = require('../../docs/data/positions.js')
 const pets = require('../../docs/data/pets.js');
-
-const needs = enumHelper.petNeeds
 
 module.exports = class petCommand extends Command {
 	constructor(client) {
@@ -29,7 +27,7 @@ module.exports = class petCommand extends Command {
           key: 'actionChosen',
           prompt: "What would you like to do to your pet?",
 					type: 'string',
-          oneOf: Object.keys(enumHelper.petActions).concat(['name', 'disown', 'new']),
+          oneOf: Object.keys(petActions).concat(['name', 'disown', 'new']),
           default: false
         },
         {
@@ -57,10 +55,10 @@ module.exports = class petCommand extends Command {
     }
     
     var differences = []
-    if (Object.keys(enumHelper.petActions).includes(actionChosen)) {
-      const actionIndex = Object.keys(enumHelper.petActions).findIndex(action => action == actionChosen)
-      const needIncrease = Helper.clamp((pet[needs[actionIndex]] + 42), 0, 100) - pet[needs[actionIndex]]
-      if (needIncrease == 0) return msg.say(`Your ${needs[actionIndex]} is maxed. Please wait for it to go down.`)
+    if (Object.keys(petActions).includes(actionChosen)) {
+      const actionIndex = Object.keys(petActions).findIndex(action => action == actionChosen)
+      const needIncrease = clamp((pet[petNeeds[actionIndex]] + 42), 0, 100) - pet[petNeeds[actionIndex]]
+      if (needIncrease == 0) return msg.say(`Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`)
       msg.say(`You ${actionChosen} your pet.`)
       differences[actionIndex] = 42
       await Database.updateNeedsPet(msg.author, differences)
@@ -80,10 +78,10 @@ module.exports = class petCommand extends Command {
       default: 
         const secondsPassed = (Date.now() - pet.updatedAt)/1000
         console.log(secondsPassed)
-        for (var i = 0; i < needs.length; i++) {
-          const difference = -(secondsPassed/pets[pet.id].empty[needs[i]])*100
+        for (var i = 0; i < petNeeds.length; i++) {
+          const difference = -(secondsPassed/pets[pet.id].empty[petNeeds[i]])*100
           differences.push(difference)
-          pet[needs[i]] += difference
+          pet[petNeeds[i]] += difference
         }
 
         await Database.updateNeedsPet(msg.author, differences)
@@ -94,16 +92,16 @@ module.exports = class petCommand extends Command {
 
         var mood
         var roundedNeeds = []
-        for (var i = 0; i < needs.length; i++) {
-          var need = needs[i]
-          pet[need] = Helper.clamp(pet[need], 0, 100)
+        for (var i = 0; i < petNeeds.length; i++) {
+          var need = petNeeds[i]
+          pet[need] = clamp(pet[need], 0, 100)
           var roundedNeed = Math.round(pet[need])
           roundedNeeds.push(roundedNeed)
           messageEmbed.addField(
-            `${Helper.titleCase(need)
+            `${titleCase(need)
             } (${roundedNeed}%)`, 
             `[${progressBar(roundedNeed/100)}](https://www.youtube.com/user/pokimane)\n${
-            pet[need] !== 0 ? `\`${Helper.secondsToDhms((pet[need]/100)*pets[pet.id].empty[need], ' and ', true, 2)
+            pet[need] !== 0 ? `\`${secondsToDhms((pet[need]/100)*pets[pet.id].empty[need], ' and ', true, 2)
             } until empty\`` : ''}`, true
           )
         }
@@ -117,6 +115,6 @@ module.exports = class petCommand extends Command {
 }
 
 function progressBar(value) {
-  value = Math.round(Helper.clamp(value, 0, 1)*10)
+  value = Math.round(clamp(value, 0, 1)*10)
   return `${'■'.repeat(value)}${'□'.repeat(10-value)}`;
 }

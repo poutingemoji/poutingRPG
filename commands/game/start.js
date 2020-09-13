@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 
 const Database = require('../../database/Database');
-const { emoji } = require('../../utils/Helper')
+const { emoji, codeBlock } = require('../../utils/Helper')
 
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
@@ -46,7 +46,7 @@ module.exports = class StartCommand extends Command {
 
 		const confirmMsg = "yes"
 		if (restart) {
-			msg.say(`Type the message below to **confirm**. ${Helper.codeBlock(confirmMsg, "css")}`)
+			msg.say(`Type the message below to **confirm**. ${codeBlock(confirmMsg, "css")}`)
 			const confirmFilter = response => {
 				return confirmMsg.toLowerCase() == response.content.toLowerCase() && response.author.id === msg.author.id
 			}
@@ -112,7 +112,7 @@ function raceDescription() {
   for (var i = 0; i < races.length; i++) {
     if (!categories.includes(races[i].type)) {
       categories.push(races[i].type)
-      description += `**${Helper.titleCase(races[i].type)}**\n`
+      description += `**${titleCase(races[i].type)}**\n`
     }
     description += `${i} - ${races[i].name} ${races[i].emoji}\n`
   }

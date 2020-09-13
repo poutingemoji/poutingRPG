@@ -3,10 +3,8 @@ const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 
 const Database = require('../../database/Database');
-const Helper = require('../../utils/Helper');
-const enumHelper = require('../../utils/enumHelper');
-
-const currencies = enumHelper.currencies
+const { percentageChance } = require('../../utils/Helper');
+const { currencies } = require('../../utils/enumHelper');
 
 module.exports = class FishCommand extends Command {
 	constructor(client) {
@@ -53,7 +51,7 @@ module.exports = class FishCommand extends Command {
       })
       description += `\nTotal Amount: **${totalAmt}**`
     } else {
-      const fish = Helper.percentageChance(Object.keys(fishes), Object.values(fishes).map(res => res.rarity))
+      const fish = percentageChance(Object.keys(fishes), Object.values(fishes).map(res => res.rarity))
       description = `🎣 ${msg.author.username} fished out: **${fish} ${fishes[fish].emoji}** !\n\n`
       for (var i = 0; i < currencies.length; i++) {
         const cur = currencies[i]
