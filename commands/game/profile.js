@@ -45,7 +45,7 @@ module.exports = class ProfileCommand extends Command {
 	async run(msg, {user}) {
     user = user || msg.author
     const player = await findPlayer(msg, user)
-    const [family, race, pet, technique, arc] = [families[player.family], races[player.race], pets[player.pet.id], techniques[player.technique.id], arcs[player.volume][player.arc]]
+    const [family, race, pet, technique, arc] = [families[player.family], races[player.race], pets[player.pet.id], techniques[player.technique.id], arcs[player.arc]]
     console.log(technique.name)
     const profile = [
       {
@@ -76,6 +76,7 @@ module.exports = class ProfileCommand extends Command {
         ['🏔️ Reputation']: player.reputation,
       },
     ]
+    console.log(player.position)
     if (player.position.length > 1) {
       var i = 0;
       player.position.forEach(res => { 
@@ -83,6 +84,7 @@ module.exports = class ProfileCommand extends Command {
         profile[1][`${positions[res].emoji} Position ${i}`] = positions[res].name
       })
     } else {
+      console.log(player.position)
       profile[1][`${positions[player.position[0]].emoji} Position`] = positions[player.position[0]].name
     }
     pets[player.pet.id] ? profile[5][`${pet.emoji} Pet`] = `${pet.name}` : profile[5]['❓ Pet'] = 'None';
