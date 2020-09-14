@@ -2,7 +2,8 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const { commandInfo, disambiguation, titleCase, secondsToDhms } = require('../../utils/Helper');
+const { disambiguation, titleCase, secondsToDhms } = require('../../utils/Helper');
+const { commandInfo } = require('../../utils/msgHelper');
 const { links, embedColors } = require('../../utils/enumHelper');
 
 module.exports = class HelpCommand extends Command {

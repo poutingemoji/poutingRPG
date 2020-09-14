@@ -3,7 +3,7 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const { findPlayer, createNewPlayer } = require('../../database/Database');
-const { titleCase, codeBlock } = require('../../utils/Helper')
+const { titleCase } = require('../../utils/Helper')
 const { emoji, confirmation } = require('../../utils/msgHelper')
 const { embedColors } = require('../../utils/enumHelper')
 
