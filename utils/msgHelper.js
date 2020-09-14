@@ -1,5 +1,6 @@
 const { MessageEmbed } = require('discord.js')
 
+const { titleCase, secondsToDhms } = require('./Helper')
 const { embedColors } = require('./enumHelper')
 
 const emojis = require('../docs/data/emojis.js')
@@ -19,7 +20,7 @@ const msgHelper = {
         return ['check', 'cross'].includes(reaction.emoji.name) && user.id === msg.author.id;
       }
 
-      return msgSent.awaitReactions(filter, { max: 1, time: 10000, errors: ['time'] })
+      return msgSent.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
         .then(collected => {
           msgSent.delete();
           if (collected.first().emoji.name == 'check') return true
@@ -33,13 +34,13 @@ const msgHelper = {
     const messageEmbed = new MessageEmbed()
       .setColor(embedColors.bot)
       .setAuthor(msg.client.user.username, msg.client.user.displayAvatarURL())
-      .setTitle(`${Helper.titleCase(command.groupID)} Command: ${command.name}`)
+      .setTitle(`${titleCase(command.groupID)} Command: ${command.name}`)
       .setURL('https://poutingemoji.github.io/poutingbot/commands.html')
       .setDescription(`**Description**: ${command.description}`)
       .setFooter([command.guildOnly ? 'Usable only in servers' : false, command.nsfw ? 'NSFW' : false].filter(Boolean).join(', '))
     if(command.examples.length > 0) messageEmbed.addField('Usage:', command.examples.join('\n'));
     if(command.aliases.length > 0) messageEmbed.addField('Aliases:', command.aliases.join(', '));
-    messageEmbed.addField('Cooldown:', Helper.secondsToDhms(command.throttling.duration, ', '))
+    messageEmbed.addField('Cooldown:', secondsToDhms(command.throttling.duration, ', '))
     const messages = [];
     try {
       messages.push(await msg.say(messageEmbed));

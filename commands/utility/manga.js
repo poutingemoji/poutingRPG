@@ -60,8 +60,9 @@ module.exports = class MangaCommand extends Command {
     }
     const filter = response => options.includes(parseInt(response.content))
     let mangaInfo
-    sentMessage.edit(`${msg.author}, I have found about ${mangaRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`).then(() => {
-      msg.channel.awaitMessages(filter, { max: 1, time: 12000 })
+    sentMessage.edit(`${msg.author}, I have found about ${mangaRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`)
+      .then(msgSent => {
+      msgSent.channel.awaitMessages(filter, { max: 1, time: 12000 })
         .then(res => {
           const chosenMangaIndex = res.first().content-1
           mangaInfo = mangaRequest["data"][chosenMangaIndex]["attributes"]

@@ -3,14 +3,12 @@ const Parser = require('expr-eval').Parser;
 const { expFormulas, maxHealth, maxShinsu } = require('../utils/enumHelper')
 
 const Objects = {
-  newTechnique(id) {
+
+  updatedPlayer() {
     return {
-      technique: {
-        id: id,
-        mastery: 1,
-      }
     }
   },
+
   newPlayer(playerId, family, race, position, quality) {
     console.log(quality)
     return {
@@ -24,7 +22,7 @@ const Objects = {
 
       level: 1,
       exp: 0,
-      expMax: Parser.evaluate(expFormulas['mediumfast'], { n: 2 }),
+      expMax: Parser.evaluate(expFormulas['mediumslow'], { n: 2 }),
 
       health: maxHealth(1),
       shinsu: maxShinsu(1),
@@ -65,42 +63,16 @@ const Objects = {
       },
     }
   },
-  updatedPlayer() {
+
+  newTechnique(id) {
     return {
-      baang: 0,
-      myun: 0,
-      soo: 0,
-
-      arc: 0,
-      chapter: 0,
       technique: {
-        id: 0,
+        id: id,
         mastery: 1,
-      },
-
-      reputation: 0,
-      quests: [],
-      pet: {},
-      fishes: {
-        ['Shrimp']: 0,
-        ['Fish']: 0,
-        ['Tropical Fish']: 0,
-        ['Blowfish']: 0,
-        ['Squid']: 0,
-        ['Octopus']: 0,
-        ['Metalfish']: 0,
-        ['Silver Fish']: 0,
-        ['Crystal Shard']: 0,
-        ['Valuable Object']: 0,
-        ['Baby Zygaena']: 0,
-        ['Sweetfish']: 0,
-        ['Boot']: 0,
-        ['Brick']: 0,
-        ['\nTotal Amount']: 0,
-      },
+      }
     }
   },
-  
+
   newPet(id, nickname) {
     return {
       pet: {

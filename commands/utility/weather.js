@@ -32,14 +32,12 @@ module.exports = class WeatherCommand extends Command {
   }
   async run(msg, {place}) {
     try {
-      const weatherURL = isNaN(place) ? `https://api.openweathermap.org/data/2.5/weather?q=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}` : `https://api.openweathermap.org/data/2.5/weather?zip=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`
-      let weatherInfo = await Requester.request(weatherURL)
-      console.log(weatherInfo)
+      const weatherURL =  `https://api.openweathermap.org/data/2.5/weather?${isNaN(place)?'q':'zip'}=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`
+      const weatherInfo = await Requester.request(weatherURL)
       if (weatherInfo.name === undefined) {
         throw `Can't find info on the weather in **${place}**.`
       }
       const currentWeather = weatherInfo["weather"][0]
-      console.log(weatherInfo["sys"]["country"])
       const messageEmbed = new MessageEmbed()
         .setColor('#99ccff')
         .setAuthor(`${weatherInfo["name"]}${!weatherInfo["sys"]["country"] ? '' : `, ${getCountryName(weatherInfo["sys"]["country"])}`}`)

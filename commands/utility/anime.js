@@ -59,7 +59,8 @@ module.exports = class AnimeCommand extends Command {
     }
     const filter = response => options.includes(parseInt(response.content))
     let animeInfo
-    sentMessage.edit(`${msg.author}, I have found about ${animeRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`).then(msgSent => {
+    sentMessage.edit(`${msg.author}, I have found about ${animeRequest["data"].length} results, please pick the one you meant.\n${possibleMatches}`)
+      .then(msgSent => {
       msgSent.channel.awaitMessages(filter, { max: 1, time: 12000 })
         .then(res => {
           const chosenAnimeIndex = res.first().content-1

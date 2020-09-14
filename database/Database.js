@@ -4,7 +4,7 @@ mongoose.Promise = require('bluebird');
 const playerSchema = require('./schemas/player');
 
 const { clamp } = require('../utils/Helper')
-const { expFormulas, petNeeds } = require('../utils/enumHelper')
+const { maxHealth, maxShinsu, expFormulas, petNeeds } = require('../utils/enumHelper')
 const { updatedPlayer, newPlayer, newPet, newTechnique } = require('./Objects');
 
 const positions = require('../docs/data/positions.js');
@@ -113,6 +113,9 @@ class Database {
         res.level++
         res.exp -= res.expMax
         res.expMax = Parser.evaluate(expFormulas['mediumslow'], { n: res.level+1 })
+        res.health = maxHealth(res.level+1)
+        res.shinsu = maxShinsu(res.level+1)
+        
         description += `🆙 Congratulations ${player.toString()}, you've reached level **${res.level}**!\n`;
       }
       if (description !== '') msg.say(description)

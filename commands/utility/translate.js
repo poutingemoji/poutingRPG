@@ -38,7 +38,9 @@ module.exports = class TranslateCommand extends Command {
   }
   run(msg, {language, content}) {
     if (language.toLowerCase() === "chinese" || language.toLowerCase() === "ch") language = "Chinese (Simplified)"
-    if (!translate.languages.getCode(language)) return msg.say(`${emoji(msg,'err')} ${msg.author}, the language, **${titleCase(language)}**, doesn't exist in my database.`)
+    if (!translate.languages.getCode(language)) {
+      return msg.say(`${emoji(msg,'err')} ${msg.author}, the language, **${titleCase(language)}**, doesn't exist in my database.`)
+    }
     const opts = {
       to: translate.languages.getCode(language.toLowerCase()), 
     }
@@ -50,7 +52,11 @@ module.exports = class TranslateCommand extends Command {
           .addField(translate.languages[res.from.language.iso], codeBlock(content))
           .setTimestamp()
           .setFooter("Translated")
-        language.length !== 2 ? messageEmbed.addField(titleCase(language), codeBlock(res.text)) : messageEmbed.addField(translate.languages[language], codeBlock(res.text))
+        if (language.length !== 2) {
+          messageEmbed.addField(titleCase(language), codeBlock(res.text))
+        } else {
+          messageEmbed.addField(translate.languages[language], codeBlock(res.text))
+        }
         msg.say(messageEmbed)
       })
       .catch(err => {
