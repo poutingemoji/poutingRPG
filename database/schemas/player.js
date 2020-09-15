@@ -4,11 +4,11 @@ const Parser = require('expr-eval').Parser;
 const playerSchema = new mongoose.Schema({
   playerId: String,
 
-  family: Number,
-  race: Number,
+  family: String,
+  race: String,
   irregular: Boolean,
 
-  position: [Number],
+  position: [String],
 
   level: Number,
   exp: Number,

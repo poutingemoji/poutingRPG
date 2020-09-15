@@ -7,7 +7,10 @@ const { clamp } = require('../utils/Helper')
 const { maxHealth, maxShinsu, expFormulas, petNeeds } = require('../utils/enumHelper')
 const { updatedPlayer, newPlayer, newPet, newTechnique } = require('./Objects');
 
+const families = require('../docs/data/families.js');
+const races = require('../docs/data/races.js');
 const positions = require('../docs/data/positions.js');
+
 const pets = require('../docs/data/pets.js');
 const arcs = require('../docs/data/arcs.js');
 
@@ -190,14 +193,16 @@ class Database {
 
   updateAllPlayers() {
     return new Promise((resolve, reject) => Player.updateMany({ reputation: 0 },
-      updatedPlayer(),
-      { upsert: true },
       (err, res) => {
         if (err) {
         return reject(err);
         }
-  
-        return resolve(res);
+        if (!isNaN(res.family)) {
+          res.family = Object.keys(families)[res.family]
+          res.position = Object.keys(position)[res.position]
+          res.race = Object.keys(races)[res.race]
+          res.save().catch(err => console.log(err))
+        }
       })
     )}
 }
