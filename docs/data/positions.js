@@ -1,59 +1,64 @@
-const positions = [
-  fisherman = {
+const positions = {
+  fisherman: {
     name: 'Fisherman',
     emoji: '🎣',
     quality: [],
+    basic: true,
   },
-  spearbearer = {
+  spearbearer: {
     name: 'Spear Bearer',
     emoji: '🏹',
     quality: [],
+    basic: true,
   },
-  scout = {
+  scout: {
     name: 'Scout',
     emoji: '🏃',
     quality: [],
+    basic: true,
   },
-  lightbearer = {
+  lightbearer: {
     name: 'Light Bearer',
     emoji: '💡',
     quality: [],
+    basic: true,
   },
-  wavecontroller = {
+  wavecontroller: {
     name: 'Wave Controller',
     emoji: '🌊',
     quality: [],
+    basic: true,
   },
-  dansulsa = {
+  dansulsa: {
     name: 'Dansulsa',
     emoji: '🧱',
     quality: [],
   },
-  defender = {
+  defender: {
     name: 'Defender',
     emoji: '🛡️',
     quality: [],
   },
-  anima = {
+  anima: {
     name: 'Anima',
     emoji: '🦮',
     quality: [],
   },
-  wonsulsa = {
+  wonsulsa: {
     name: 'Wonsulsa',
     emoji: '🔵',
     quality: [],
   },
-  hwayeomsa = {
+  hwayeomsa: {
     name: 'Hwayeomsa',
     emoji: '🔥',
     quality: [3],
   },
-  jeonsulsa = {
+  jeonsulsa: {
     name: 'Jeonsulsa',
     emoji: '⚡',
     quality: [1],
   },
-]
+}
 
 module.exports = positions

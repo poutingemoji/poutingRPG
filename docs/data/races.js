@@ -1,41 +1,41 @@
-const races = [
-  human = {
+const races = {
+  human: {
     name: 'Human',
     emoji: '👨',
     type: 'humanoid',
     quality: [],
   },
-  redwitch = {
+  redwitch: {
     name: 'Red Witch',
     emoji: '🧙',
     type: 'humanoid',
     quality: [],
   },
-  silverdwarf = {
+  silverdwarf: {
     name: 'Silver Dwarf',
     emoji: '🧭',
     type: 'humanoid',
     quality: [],
   },
-  canineperson = {
+  canineperson: {
     name: 'Canine Person',
     emoji: '🐶',
     type: 'humanoid',
     quality: [],
   },
-  datahuman = {
+  datahuman: {
     name: 'Data Human',
     emoji: '📈',
     type: 'humanoid',
     quality: [],
   },
-  khukum = {
+  khukum: {
     name: 'Khukum',
     emoji: '☣️',
     type: 'humanoid',
     quality: [],
   },
-  rabbitear = {
+  rabbitear: {
     name: 'Rabbit Ear',
     emoji: '🐰',
     type: 'humanoid',
@@ -44,19 +44,19 @@ const races = [
 
 
 
-  nativeone = {
+  nativeone: {
     name: 'Native One',
     emoji: '☄️',
     type: 'animalistic',
     quality: [2,3,5,6,10],
   },
-  dooni = {
+  dooni: {
     name: 'Dooni',
     emoji: '🐷',
     type: 'animalistic',
     quality: [],
   },
-  wraithraiser = {
+  wraithraiser: {
     name: 'Wraithraiser',
     emoji: '🐊',
     type: 'animalistic',
@@ -65,24 +65,24 @@ const races = [
 
 
 
-  manyeyed = {
+  manyeyed: {
     name: 'Many Eyed',
     emoji: '👀',
     type: 'unusual',
     quality: [],
   },
-  guardian = {
+  guardian: {
     name: 'Guardian',
     emoji: '🗿',
     type: 'unusual',
     quality: [],
   },
-  fluffydwarf = {
+  fluffydwarf: {
     name: 'Fluffy Dwarf',
     emoji: '💦',
     type: 'unusual',
     quality: [],
-  }
-]
+  },
+}
 
 module.exports = races

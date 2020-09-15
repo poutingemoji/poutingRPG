@@ -86,7 +86,7 @@ const Objects = {
     }
   },
  
-  newQuest(objectiveType, objective, rewards) {
+  newQuest(objectiveType, objective) {
     console.log(objective)
     return {
       objectiveType: objectiveType,
@@ -95,7 +95,6 @@ const Objects = {
         goal: objective[1],
       },
       progress: 0,
-      rewards: rewards,
       //defeat, fish, collect, train
     }
   }

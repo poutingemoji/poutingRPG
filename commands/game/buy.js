@@ -27,9 +27,10 @@ module.exports = class BuyCommand extends Command {
 
   async run(msg, { category, item }) {
     const player = await findPlayer(msg, msg.author)
-    return
+    await addQuestsPlayer(msg.author)
+    return 
     console.log(arcs[0].chapters[0].quests)
-    addQuestsPlayer(msg.author)
+   
     return msg.say('WIP')
   }
 }

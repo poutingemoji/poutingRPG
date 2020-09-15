@@ -1,51 +1,51 @@
-const qualities = [
-  ice = {
+const qualities = {
+  ice: {
     name: 'Ice',
     emoji: '🧊',
   },
-  lightning = {
+  lightning: {
     name: 'Lightning',
     emoji: '⚡',
   },
-  rock = {
+  rock: {
     name: 'Rock',
     emoji: '🌑',
   },
-  fire = {
+  fire: {
     name: 'Fire',
     emoji: '🔥',
   },
-  wind = {
+  wind: {
     name: 'Wind',
     emoji: '💨',
   },
-  crystal = {
+  crystal: {
     name: 'Crystal',
     emoji: '🔮',
   },
-  plant = {
+  plant: {
     name: 'Plant',
     emoji: '🌿',
   },
 
 
 
-  orb = {
+  orb: {
     name: 'Orb',
     emoji: '⚪',
   },
-  dartarrow = {
+  dartarrow: {
     name: 'Dart Arrow',
     emoji: '🏹',
   },
-  boost = {
+  boost: {
     name: 'Boost',
     emoji: '💪',
   },
-  bubble = {
+  bubble: {
     name: 'Bubble',
     emoji: '🧼',
   },
-]
+}
 
 module.exports = qualities

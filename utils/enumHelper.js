@@ -1,3 +1,5 @@
+const { clamp } = require('./Helper');
+
 const enumHelper = {
   links: {
     website: 'https://poutingemoji.github.io/poutingbot/',
@@ -19,6 +21,12 @@ const enumHelper = {
   },
   maxShinsu: (level) => {
     return 50 + (level * 5);
+  },
+  techniqueAccuracy: (technique) => {
+    return clamp(Math.round(100-technique*.9), 1, 100)
+  },
+  techniqueDamage: (technique) => {
+    return Math.round((technique+1)*4.5)
   },
   petNeeds: [
     'hunger', 

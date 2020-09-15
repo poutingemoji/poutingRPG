@@ -1,55 +1,55 @@
-const families = [
-  ari = {
+const families = {
+  ari: {
     name: 'Ari',
     emoji: '🕊️',
     quality: [],
   },
-  arie = {
+  arie: {
     name: 'Arie',
     emoji: '🤺',
     quality: [],
   },
-  eurasia = {
+  eurasia: {
     name: 'Eurasia',
     emoji: '💤',
     quality: [],
   },
-  ha = {
+  ha: {
     name: 'Ha',
     emoji: '🛡️',
     quality: [],
   },
-  hendolok = {
+  hendolok: {
    name: 'Hendo Lok',
    emoji: '⚰️',
    quality: [],
   },
-  khun = {
+  khun: {
     name: 'Khun',
     emoji: '⚡',
     quality: [0,1],
   },
-  lopobia = {
+  lopobia: {
    name: 'Lo Po Bia',
    emoji: '🦮',
    quality: [],
   },
-  pobidau = {
+  pobidau: {
     name: 'Po Bidau',
     emoji: '🔬',
     quality: [],
   },
-  tuperie = {
+  tuperie: {
     name: 'Tu Perie',
     emoji: '💡',
     quality: [],
   },
-  yeon = {
+  yeon: {
     name: 'Yeon',
     emoji: '🔥',
     quality: [3],
-  }
-]
+  },
+}
 
 module.exports = families
 

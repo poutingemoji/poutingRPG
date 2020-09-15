@@ -9,7 +9,7 @@ const arcs = [
         emoji: '',
         location: '',
         quests: [
-          newQuest('Defeat', ['Big Nose', 6]),
+          newQuest('Defeat', ['testdummy', 6]),
         ],
       },
     ],
