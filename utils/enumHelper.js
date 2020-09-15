@@ -40,13 +40,13 @@ const enumHelper = {
     play: 'fun',
     walk: 'energy',
   },
-  positionColors: [
-    fisherman = '#db3043',
-    spearbearer = '#c06850',
-    scout = '#79b15a',
-    lightbearer = '#ffd984',
-    wavecontroller = '#50a5e6',
-  ],
+  positionColors: {
+    fisherman: '#db3043',
+    spearbearer: '#c06850',
+    scout: '#79b15a',
+    lightbearer: '#ffd984',
+    wavecontroller: '#50a5e6',
+  },
   currencies: [
     points = {
       name: 'points',

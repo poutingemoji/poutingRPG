@@ -27,7 +27,7 @@ const families = {
   khun: {
     name: 'Khun',
     emoji: '⚡',
-    quality: [0,1],
+    quality: ['ice','lightning'],
   },
   lopobia: {
    name: 'Lo Po Bia',
@@ -47,7 +47,7 @@ const families = {
   yeon: {
     name: 'Yeon',
     emoji: '🔥',
-    quality: [3],
+    quality: ['fire'],
   },
 }
 

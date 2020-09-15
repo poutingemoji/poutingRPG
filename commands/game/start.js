@@ -118,12 +118,11 @@ module.exports = class StartCommand extends Command {
     console.log(traitsChosen)
     const qualities = [families[traitsChosen[0]].quality, races[traitsChosen[1]].quality]
     const quality = []
-    for (var a = 0; a < qualities.length; a++) {
-      for (var b = 0; b < qualities[a].length; b++) {
-        if (Math.random() >= 0.66) {
-          quality.push(qualities[a][b]);
-        }
-      }
+
+    for (var i = 0; i < qualities.length; i++) {
+      quality.push(
+        qualities[i][Math.floor(Math.random() * qualities[i].length)]
+      );
     }
 
     msg.say(`[**${positions[traitsChosen[2]].name.toUpperCase()}**] ${msg.author.username} **${families[traitsChosen[0]].name}** of the **${races[traitsChosen[1]].name}** race, I sincerely welcome you to the Tower.`)

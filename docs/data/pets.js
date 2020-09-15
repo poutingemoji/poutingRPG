@@ -39,7 +39,7 @@ const pets = [
     },
     exprate: 'mediumfast',
     price: 0,
-    family: 9,
+    family: 'yeon',
     race: false,
   },
   shadowfox = {
@@ -54,7 +54,7 @@ const pets = [
     },
     exprate: 'mediumfast',
     price: 0,
-    family: 6,
+    family: 'lopobia',
     race: false,
   },
   fenryl = {
@@ -69,7 +69,7 @@ const pets = [
     },
     exprate: 'mediumfast',
     price: 0,
-    family: 6,
+    family: 'lopobia',
     race: false,
   },
   octocrab = {
@@ -84,7 +84,7 @@ const pets = [
     },
     exprate: 'mediumfast',
     price: 0,
-    family: 6,
+    family: 'lopobia',
     race: false,
   },
   submergedfish = {
@@ -129,7 +129,7 @@ const pets = [
     },
     exprate: 'mediumfast',
     price: 0,
-    family: 6,
+    family: 'lopobia',
     race: false,
   },
   giantcat = {
@@ -144,7 +144,7 @@ const pets = [
     },
     exprate: 'mediumfast',
     price: 0,
-    family: 6,
+    family: 'lopobia',
     race: false,
   },
   ancientoddeyedgiantcobra = {
@@ -159,7 +159,7 @@ const pets = [
     },
     exprate: 'mediumfast',
     price: 0,
-    family: 6,
+    family: 'lopobia',
     race: false,
   },
   treasureeatingstingray = {
@@ -205,7 +205,7 @@ const pets = [
     exprate: 'mediumfast',
     price: 0,
     family: false,
-    race: 11,
+    race: 'guardian',
   },
 ]
 

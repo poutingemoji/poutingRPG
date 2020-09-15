@@ -1,7 +1,24 @@
 const qualities = {
-  ice: {
-    name: 'Ice',
-    emoji: '🧊',
+  //starter
+  fire: {
+    name: 'Fire',
+    emoji: '🔥',
+  },
+  water: {
+    name: 'Water',
+    emoji: '💧',
+  },
+  plant: {
+    name: 'Plant',
+    emoji: '🌿',
+  },
+
+
+
+  //basic
+  wind: {
+    name: 'Wind',
+    emoji: '💨',
   },
   lightning: {
     name: 'Lightning',
@@ -11,40 +28,68 @@ const qualities = {
     name: 'Rock',
     emoji: '🌑',
   },
-  fire: {
-    name: 'Fire',
-    emoji: '🔥',
+
+
+  //fusion
+  //water + wind
+  ice: { 
+    name: 'Ice',
+    emoji: '🧊',
   },
-  wind: {
-    name: 'Wind',
-    emoji: '💨',
-  },
-  crystal: {
+  //water + rock
+  crystal: { 
     name: 'Crystal',
     emoji: '🔮',
   },
-  plant: {
-    name: 'Plant',
-    emoji: '🌿',
+  //plant + wind
+  spirit: { 
+    name: 'Spirit',
+    emoji: '👻',
   },
+
+ 
 
 
 
-  orb: {
-    name: 'Orb',
-    emoji: '⚪',
+  //rare
+  light: {
+    name: 'Light',
+    emoji: '🌕',
   },
-  dartarrow: {
-    name: 'Dart Arrow',
-    emoji: '🏹',
+  dark: {
+    name: 'Dark',
+    emoji: '🌑',
   },
-  boost: {
-    name: 'Boost',
-    emoji: '💪',
+  gravity: { 
+    name: 'Gravity',
+    emoji: '⏬',
   },
-  bubble: {
-    name: 'Bubble',
-    emoji: '🧼',
+  dream: { 
+    name: 'Dream',
+    emoji: '🛌',
+  },
+  
+
+  //superior
+  //water + dark
+  acid: { 
+    name: 'Acid',
+    emoji: '☣️',
+  },
+  //acid + rock
+  slime: { 
+    name: 'Slime',
+    emoji: '💦',
+  },
+  //light + dark
+  void: {
+    name: 'Void',
+    emoji: '⚫',
+  },
+  //void + gravity
+  space: {
+    name: 'Space',
+    emoji: '🌌',
   },
 }
 

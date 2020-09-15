@@ -11,7 +11,7 @@ const techniques = [
     type: 'lethal',
     mastery: 3,
     position: 1, 
-    quality: [1],
+    quality: ['lightning'],
   },
   roseshower = {
     name: 'Rose Shower',

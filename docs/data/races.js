@@ -3,7 +3,7 @@ const races = {
     name: 'Human',
     emoji: '👨',
     type: 'humanoid',
-    quality: [],
+    quality: ['boost'],
   },
   redwitch: {
     name: 'Red Witch',
@@ -21,7 +21,7 @@ const races = {
     name: 'Canine Person',
     emoji: '🐶',
     type: 'humanoid',
-    quality: [],
+    quality: ['boost'],
   },
   datahuman: {
     name: 'Data Human',
@@ -48,7 +48,7 @@ const races = {
     name: 'Native One',
     emoji: '☄️',
     type: 'animalistic',
-    quality: [2,3,5,6,10],
+    quality: ['rock','fire','crystal','plant','water'],
   },
   dooni: {
     name: 'Dooni',
@@ -81,7 +81,7 @@ const races = {
     name: 'Fluffy Dwarf',
     emoji: '💦',
     type: 'unusual',
-    quality: [],
+    quality: ['bubble'],
   },
 }
 
