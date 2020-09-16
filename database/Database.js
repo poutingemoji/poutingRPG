@@ -13,6 +13,7 @@ const positions = require('../docs/data/positions.js');
 
 const pets = require('../docs/data/pets.js');
 const arcs = require('../docs/data/arcs.js');
+const { res } = require('../docs/data/emojis');
 
 const Player = mongoose.model('Player', playerSchema);
 
@@ -69,16 +70,16 @@ class Database {
       })
     )}
 
-  createNewPlayer(player, family, race, position, quality) {
-    console.log(player.id, family, race, position, quality)
+  createNewPlayer(player, family, race, position) {
+    console.log(player.id, family, race, position)
     return new Promise((resolve, reject) => Player.replaceOne({ playerId: player.id },
-    newPlayer(player.id, family, race, position, quality),
+    newPlayer(player.id, family, race, position),
     { upsert: true },
     (err, res) => {
       if (err) {
       return reject(err);
       }
-
+      console.log(res)
       return resolve(res);
     })
   )};
@@ -192,19 +193,12 @@ class Database {
   }
 
   updateAllPlayers() {
-    return new Promise((resolve, reject) => Player.updateMany({ reputation: 0 },
+    Player.updateMany({  },
+      { move: ['punch']},
       (err, res) => {
-        if (err) {
-        return reject(err);
-        }
-        if (!isNaN(res.family)) {
-          res.family = Object.keys(families)[res.family]
-          res.position = Object.keys(position)[res.position]
-          res.race = Object.keys(races)[res.race]
-          res.save().catch(err => console.log(err))
-        }
+        console.log(res)
       })
-    )}
+  }
 }
 
 module.exports = new Database();

@@ -49,7 +49,7 @@ module.exports = class petCommand extends Command {
     var player = await findPlayer(msg, msg.author)
     var pet = player.pet
     if (!pets[pet.id] || actionChosen == 'new') {
-      await createNewPet(msg.author, Math.floor(Math.random()*pets.length), '')
+      await createNewPet(msg.author, Object.keys(pets)[Math.floor(Math.random()*Object.keys(pets).length)], '')
       return msg.say('New pet has been created. Please run the command again.')
     }
     

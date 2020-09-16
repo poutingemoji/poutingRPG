@@ -3,10 +3,10 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const { findPlayer } = require('../../database/Database');
-const { maxShinsu, techniqueAccuracy, techniqueDamage } = require('../../utils/enumHelper');
+const { maxShinsu, moveAccuracy, moveDamage } = require('../../utils/enumHelper');
 
 const enemies = require('../../docs/data/enemies.js');
-const techniques = require('../../docs/data/techniques');
+const moves = require('../../docs/data/moves');
 
 module.exports = class BattleCommand extends Command {
   constructor(client) {
@@ -44,7 +44,7 @@ module.exports = class BattleCommand extends Command {
       [true] : {
         name: msg.author.username,
         health: player.health,
-        damage: techniqueDamage(player.technique.id),
+        damage: moveDamage(player.move.id),
         speed: 100,
       },
       [false] : {

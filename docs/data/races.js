@@ -2,44 +2,37 @@ const races = {
   human: {
     name: 'Human',
     emoji: '👨',
-    type: 'humanoid',
-    quality: ['boost'],
+    category: 'humanoid',
   },
   redwitch: {
     name: 'Red Witch',
     emoji: '🧙',
-    type: 'humanoid',
-    quality: [],
+    category: 'humanoid',
   },
   silverdwarf: {
     name: 'Silver Dwarf',
     emoji: '🧭',
-    type: 'humanoid',
-    quality: [],
+    category: 'humanoid',
   },
   canineperson: {
     name: 'Canine Person',
     emoji: '🐶',
-    type: 'humanoid',
-    quality: ['boost'],
+    category: 'humanoid',
   },
   datahuman: {
     name: 'Data Human',
     emoji: '📈',
-    type: 'humanoid',
-    quality: [],
+    category: 'humanoid',
   },
   khukum: {
     name: 'Khukum',
     emoji: '☣️',
-    type: 'humanoid',
-    quality: [],
+    category: 'humanoid',
   },
   rabbitear: {
     name: 'Rabbit Ear',
     emoji: '🐰',
-    type: 'humanoid',
-    quality: [],
+    category: 'humanoid',
   },
 
 
@@ -47,20 +40,17 @@ const races = {
   nativeone: {
     name: 'Native One',
     emoji: '☄️',
-    type: 'animalistic',
-    quality: ['rock','fire','crystal','plant','water'],
+    category: 'animalistic',
   },
   dooni: {
     name: 'Dooni',
     emoji: '🐷',
-    type: 'animalistic',
-    quality: [],
+    category: 'animalistic',
   },
   wraithraiser: {
     name: 'Wraithraiser',
     emoji: '🐊',
-    type: 'animalistic',
-    quality: [],
+    category: 'animalistic',
   },
 
 
@@ -68,20 +58,17 @@ const races = {
   manyeyed: {
     name: 'Many Eyed',
     emoji: '👀',
-    type: 'unusual',
-    quality: [],
+    category: 'unusual',
   },
   guardian: {
     name: 'Guardian',
     emoji: '🗿',
-    type: 'unusual',
-    quality: [],
+    category: 'unusual',
   },
   fluffydwarf: {
     name: 'Fluffy Dwarf',
     emoji: '💦',
-    type: 'unusual',
-    quality: ['bubble'],
+    category: 'unusual',
   },
 }
 

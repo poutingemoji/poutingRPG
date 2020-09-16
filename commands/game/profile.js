@@ -9,7 +9,7 @@ const { maxHealth, maxShinsu, positionColors } = require('../../utils/enumHelper
 const families = require('../../docs/data/families.js')
 const races = require('../../docs/data/races.js')
 const positions = require('../../docs/data/positions.js')
-const techniques = require('../../docs/data/techniques.js')
+const moves = require('../../docs/data/moves.js')
 const pets = require('../../docs/data/pets.js')
 const arcs = require('../../docs/data/arcs.js')
 
@@ -45,15 +45,14 @@ module.exports = class ProfileCommand extends Command {
 	async run(msg, {user}) {
     user = user || msg.author
     const player = await findPlayer(msg, user)
-    const [family, race, pet, technique, arc] = [families[player.family], races[player.race], pets[player.pet.id], techniques[player.technique.id], arcs[player.arc]]
-    console.log(technique.name)
+    const [family, race, pet, arc] = [families[player.family], races[player.race], pets[player.pet.id], arcs[player.arc]]
     const profile = [
       {
         [`${family.emoji} Family`]: family.name,
         [`${race.emoji} Race`]: race.name,
       },
       {
-
+        [`${positions[player.position[0]].emoji} Positions`]: player.position.map(position => positions[position].name).join(', '),
       },
       {
         ['⛩️ Level']: player.level,
@@ -70,24 +69,13 @@ module.exports = class ProfileCommand extends Command {
       {
         ['🗺️ Arc']: arc.name,
         ['📖 Chapter']: player.chapter+1,
-        ['🥋 Technique']: `${technique.name} (${romanize(player.technique.mastery)})`,
+        ['🥋 Techniques']: player.move.map(move => moves[move].name).join(', '),
+        [`${pet ? pet.emoji : '❓'} Pet`]: pet ? pet.name : 'None',
       },
       {
         ['🏔️ Reputation']: player.reputation,
       },
     ]
-    console.log(player.position)
-    if (player.position.length > 1) {
-      var i = 0;
-      player.position.forEach(res => { 
-        i++
-        profile[1][`${positions[res].emoji} Position ${i}`] = positions[res].name
-      })
-    } else {
-      console.log(player.position)
-      profile[1][`${positions[player.position[0]].emoji} Position`] = positions[player.position[0]].name
-    }
-    pets[player.pet.id] ? profile[5][`${pet.emoji} Pet`] = `${pet.name}` : profile[5]['❓ Pet'] = 'None';
     var profileMessage = ''
     profile.forEach(category => {
       profileMessage += `──────────────\n`

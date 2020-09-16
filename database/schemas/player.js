@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Parser = require('expr-eval').Parser;
 
 const playerSchema = new mongoose.Schema({
   playerId: String,
@@ -17,22 +16,23 @@ const playerSchema = new mongoose.Schema({
   health: Number,
   shinsu: Number,
   
-  quality: [Number],
   baang: Number,
   myun: Number,
   soo: Number,
+  
+  physical: Number,
+  speed: Number,
+  durability: Number,
 
   points: Number,
   dallars: Number,
   
+  technique: {},
   arc: Number,
   chapter: Number,
-  technique: {
-    id: Number,
-    mastery: Number,
-  },
+  move: [String],
   pet: {
-    id: Number,
+    id: String,
     updatedAt: Date,
     nickname: String,
 

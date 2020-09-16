@@ -9,8 +9,7 @@ const Objects = {
     }
   },
 
-  newPlayer(playerId, family, race, position, quality) {
-    console.log(quality)
+  newPlayer(playerId, family, race, position) {
     return {
       playerId: playerId,
 
@@ -27,20 +26,20 @@ const Objects = {
       health: maxHealth(1),
       shinsu: maxShinsu(1),
 
-      quality: quality,
       baang: 0,
       myun: 0,
       soo: 0,
+
+      physical: 0,
+      durability: 0,
+      speed: 0,
 
       points: 0,
       dallars: 0,
 
       arc: 0,
       chapter: 0,
-      technique: {
-        id: 0,
-        mastery: 1,
-      },
+      move: ['Punch'],
 
       reputation: 0,
       quests: [],
@@ -66,7 +65,7 @@ const Objects = {
 
   newTechnique(id) {
     return {
-      technique: {
+      move: {
         id: id,
         mastery: 1,
       }

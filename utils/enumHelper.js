@@ -22,11 +22,11 @@ const enumHelper = {
   maxShinsu: (level) => {
     return 50 + (level * 5);
   },
-  techniqueAccuracy: (technique) => {
-    return clamp(Math.round(100-technique*.9), 1, 100)
+  moveAccuracy: (move) => {
+    return clamp(Math.round(100-move*.9), 1, 100)
   },
-  techniqueDamage: (technique) => {
-    return Math.round((technique+1)*4.5)
+  moveDamage: (move) => {
+    return Math.round((move+1)*4.5)
   },
   petNeeds: [
     'hunger', 

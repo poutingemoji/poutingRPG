@@ -2,62 +2,57 @@ const positions = {
   fisherman: {
     name: 'Fisherman',
     emoji: '🎣',
-    quality: [],
-    basic: true,
+    category: 'basic',
   },
   spearbearer: {
     name: 'Spear Bearer',
     emoji: '🏹',
-    quality: [],
-    basic: true,
+    category: 'basic',
   },
   scout: {
     name: 'Scout',
     emoji: '🏃',
-    quality: [],
-    basic: true,
+    category: 'basic',
   },
   lightbearer: {
     name: 'Light Bearer',
     emoji: '💡',
-    quality: [],
-    basic: true,
+    category: 'basic',
   },
   wavecontroller: {
     name: 'Wave Controller',
     emoji: '🌊',
-    quality: [],
-    basic: true,
+    category: 'basic',
   },
   dansulsa: {
     name: 'Dansulsa',
     emoji: '🧱',
-    quality: [],
+    category: 'special',
   },
   defender: {
     name: 'Defender',
     emoji: '🛡️',
-    quality: [],
+    category: 'special',
   },
   anima: {
     name: 'Anima',
     emoji: '🦮',
-    quality: [],
+    category: 'special',
   },
   wonsulsa: {
     name: 'Wonsulsa',
     emoji: '🔵',
-    quality: [],
+    category: 'special',
   },
   hwayeomsa: {
     name: 'Hwayeomsa',
     emoji: '🔥',
-    quality: [3],
+    category: 'special',
   },
   jeonsulsa: {
     name: 'Jeonsulsa',
     emoji: '⚡',
-    quality: [1],
+    category: 'special',
   },
 }
 
