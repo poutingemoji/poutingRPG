@@ -3,14 +3,10 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const { loadTopPlayers } = require('../../database/Database');
-const { paginate, titleCase } = require('../../utils/Helper.js')
-const { commandInfo } = require('../../utils/msgHelper')
-const { embedColors } = require('../../utils/enumHelper')
+const { paginate } = require('../../utils/Helper.js')
+const { buildEmbeds, commandInfo } = require('../../utils/msgHelper')
 
 const positions = require('../../docs/data/positions.js')
-const { cross } = require('../../docs/data/emojis.js')
-
-const Pagination = require('discord-paginationembed');
 
 const pageLength = 10;
 const filters = {
@@ -70,11 +66,11 @@ module.exports = class TopCommand extends Command {
     })
 	}
 	
-	async run(msg, { filter }) {
-    if (!filters[filter]) {
-      const commands = this.client.registry.findCommands('top', false, msg);
-      return commandInfo(msg, commands[0])
+	async run(msg, { filter }) { 
+    if (!Object.keys(filters).includes(filter)) {
+      return commandInfo(msg, this)
     }
+
     const res = await loadTopPlayers(filters[filter].filter, filters[filter].where, filters[filter].gte || 0)
     if (res.length == 0) return msg.say('There is no data for this leaderboard.')
     var yourPosition = false
@@ -84,7 +80,7 @@ module.exports = class TopCommand extends Command {
 
     var { maxPage } = paginate(res, 1, pageLength)
     for (let page = 0; page < maxPage; page++) {
-      var { items, maxPage } = paginate(res, page+1, pageLength)
+      var { items } = paginate(res, page+1, pageLength)
       let topPlayers = ''
       for (let item = 0; item < items.length; item++) {
         const player = items[item]
@@ -124,21 +120,6 @@ module.exports = class TopCommand extends Command {
       )
     }
     
-    const Embeds = new Pagination.Embeds()
-      .setArray(embeds)
-      .setAuthorizedUsers([msg.author.id])
-      .setChannel(msg.channel)
-      .setClientAssets({ msg, prompt: '{{user}}, which page would you like to see?' })
-      .setNavigationEmojis({
-        back: '⬅️',
-        delete: cross,
-        forward: '➡️',
-        jump: '🔢',
-      })
-      .setDisabledNavigationEmojis(['delete'])
-      .setColor(embedColors.game)
-      .setFooter(`Your position: ${yourPosition ?  `${yourPosition}/${res.length} [Page ${yourPage}]` : 'Unranked'}`)
-    
-    await Embeds.build();
+    buildEmbeds(msg, embeds, `Your position: ${yourPosition ?  `${yourPosition}/${res.length} [Page ${yourPage}]` : 'Unranked'}`)
   }
 }

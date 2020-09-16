@@ -5,6 +5,8 @@ const { embedColors } = require('./enumHelper')
 
 const emojis = require('../docs/data/emojis.js')
 
+const Pagination = require('discord-paginationembed');
+
 const msgHelper = {
   
   emoji(msg, emoji) {
@@ -41,13 +43,25 @@ const msgHelper = {
     if(command.examples.length > 0) messageEmbed.addField('Usage:', command.examples.join('\n'));
     if(command.aliases.length > 0) messageEmbed.addField('Aliases:', command.aliases.join(', '));
     messageEmbed.addField('Cooldown:', secondsToDhms(command.throttling.duration, ', '))
-    const messages = [];
-    try {
-      messages.push(await msg.say(messageEmbed));
-    } catch(err) {
-      messages.push(await msg.reply('Unable to send you the command info.'));
-    }
-    return messages;
+    msg.say(messageEmbed) 
+  },
+
+  async buildEmbeds(msg, embeds, footer) {
+    const Embeds = new Pagination.Embeds()
+    .setArray(embeds)
+    .setAuthorizedUsers([msg.author.id])
+    .setChannel(msg.channel)
+    .setClientAssets({ msg, prompt: '{{user}}, which page would you like to see?' })
+    .setNavigationEmojis({
+      back: '⬅️',
+      delete: emojis.cross,
+      forward: '➡️',
+      jump: '🔢',
+    })
+    .setDisabledNavigationEmojis(['delete'])
+    .setColor(embedColors.game)
+    if (footer) Embeds.setFooter(footer)
+    await Embeds.build();
   },
 
 }

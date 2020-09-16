@@ -75,12 +75,11 @@ const Objects = {
     }
   },
 
-  newPet(id, nickname) {
+  newPet(id) {
     return {
       pet: {
         id: id,
         updatedAt: Date.now(),
-        nickname: nickname,
   
         level: 1, exp: 0, expMax: Parser.evaluate(expFormulas[pets[id].exprate], { n: 2 }),
         hunger: 100, hygiene: 100, fun: 100, energy: 100,

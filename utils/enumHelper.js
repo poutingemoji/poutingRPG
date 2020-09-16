@@ -3,8 +3,8 @@ const { clamp } = require('./Helper');
 const enumHelper = {
   links: {
     website: 'https://poutingemoji.github.io/poutingbot/',
-    commandList: 'https://poutingemoji.github.io/poutingbot/commands.html',
-    supportServer: 'https://discord.gg/nGVe96h',
+    commandlist: 'https://poutingemoji.github.io/poutingbot/commands.html',
+    supportserver: 'https://discord.gg/nGVe96h',
   },
   embedColors: {
     bot: '#aacda4',

@@ -10,6 +10,8 @@ const { petNeeds, petActions } = require('../../utils/enumHelper');
 const positions = require('../../docs/data/positions.js')
 const pets = require('../../docs/data/pets.js');
 
+const oneOf = ['', 'feed', 'wash', 'play', 'walk', 'name', 'disown']
+
 module.exports = class petCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -18,16 +20,7 @@ module.exports = class petCommand extends Command {
 			group: 'game',
 			memberName: 'pet',
 			description: 'Displays your pet.',
-      examples: [
-        `${client.commandPrefix}pet`,
-        `${client.commandPrefix}pet feed`,
-        `${client.commandPrefix}pet wash`,
-        `${client.commandPrefix}pet play`,
-        `${client.commandPrefix}pet walk`,
-        `${client.commandPrefix}pet name`,
-        `${client.commandPrefix}pet disown`,
-        `${client.commandPrefix}pet new`,
-    ],
+      examples: oneOf.map(arg => `${client.commandPrefix}${client.memberName} ${arg}`),
 			clientPermissions: [],
 			userPermissions: [],
       guildOnly: true,
@@ -36,7 +29,7 @@ module.exports = class petCommand extends Command {
           key: 'actionChosen',
           prompt: "What would you like to do to your pet?",
 					type: 'string',
-          default: false
+          default: '',
         },
         {
           key: 'nickname',
@@ -53,18 +46,15 @@ module.exports = class petCommand extends Command {
 	}
   
   //console.log(newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
-
 	async run(msg, { actionChosen, nickname }) {
-    if (!Object.keys(petActions).concat(['name', 'disown', 'new']).includes(actionChosen)) {
-      const commands = this.client.registry.findCommands('pet', false, msg);
-      return commandInfo(msg, commands[0])
+    if (!oneOf.includes(actionChosen)) {
+      return commandInfo(msg, this)
     }
-
+    console.log(this.client.memberName)
     var player = await findPlayer(msg, msg.author)
     var pet = player.pet
-    if (!pets[pet.id] || actionChosen == 'new') {
-      await createNewPet(msg.author, Object.keys(pets)[Math.floor(Math.random()*Object.keys(pets).length)], '')
-      return msg.say('New pet has been created. Please run the command again.')
+    if (!pets[pet.id]) {
+      return msg.say(`Use \`${this.client.commandPrefix}shop pet\` to buy a pet.`)
     }
     
     var differences = []

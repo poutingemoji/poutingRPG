@@ -13,7 +13,6 @@ const positions = require('../docs/data/positions.js');
 
 const pets = require('../docs/data/pets.js');
 const arcs = require('../docs/data/arcs.js');
-const { res } = require('../docs/data/emojis');
 
 const Player = mongoose.model('Player', playerSchema);
 
@@ -68,7 +67,7 @@ class Database {
   
         return resolve(res);
       })
-    )}
+  )}
 
   createNewPlayer(player, family, race, position) {
     console.log(player.id, family, race, position)
@@ -82,7 +81,7 @@ class Database {
       console.log(res)
       return resolve(res);
     })
-  )};
+  )}
 
   findPlayer(msg, player, noMessage) {
     return new Promise((resolve, reject) => Player.findOne({ playerId: player.id }, (err, res) => {
@@ -145,7 +144,6 @@ class Database {
   }
 
   loadTopPlayers(filter, where, gte) {
-    console.log(where, gte)
     return Player.find()
       .where(where)
       .gte(gte)
@@ -153,18 +151,17 @@ class Database {
       .exec()
   }
 
-  createNewPet(player, id, nickname) {
-    return new Promise((resolve, reject) => Player.updateOne({ playerId: player.id },
-      newPet(id, nickname),
-      { upsert: true },
-      (err, res) => {
-        if (err) {
-        return reject(err);
-        }
-  
-        return resolve(res);
-      })
-    )}
+  createNewPet(player, id) {
+    Player.updateOne({ playerId: player.id },
+      newPet(id), 
+      { upsert: true })
+    Player.aggregate( 
+      [{ $project: { 
+        points: { 
+          $subtract: [ "$points", pets[id].price ] 
+        }}
+      }])
+  }
 
   updateNeedsPet(player, differences) {
     Player.findOne({ playerId: player.id }, (err, res) => { 
@@ -212,17 +209,3 @@ class Database {
 }
 
 module.exports = new Database();
-
-function createNewPlayer(player, family, race, position) {
-  console.log(player.id, family, race, position)
-  return new Promise((resolve, reject) => Player.replaceOne({ playerId: player.id },
-  newPlayer(player.id, family, race, position),
-  { upsert: true },
-  (err, res) => {
-    if (err) {
-    return reject(err);
-    }
-    console.log(res)
-    return resolve(res);
-  })
-)};

@@ -13,7 +13,7 @@ const path = require("path");
 const client = new CommandoClient({
 	commandPrefix: process.env.DEVPREFIX || process.env.PREFIX,
 	owner: "257641125135908866",
-	invite: links.supportServer,
+	invite: links.supportserver,
   disableEveryone: true,
   shards: 'auto',
 })

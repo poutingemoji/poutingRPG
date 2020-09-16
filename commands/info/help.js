@@ -36,7 +36,7 @@ module.exports = class HelpCommand extends Command {
     const showAll = args.command && args.command.toLowerCase() === 'all';
     if(args.command && !showAll) {
 			if(commands.length === 1) {
-        return commandInfo(msg, commands[0])
+        return commandInfo(msg, commands[0], )
 			} else if(commands.length > 15) {
 				return msg.reply('Multiple commands found. Please be more specific.');
 			} else if(commands.length > 1) {
@@ -70,9 +70,9 @@ module.exports = class HelpCommand extends Command {
             ` },
             { name: 'Useful Links', 
               value: `
-              **Command List**: ${links.commandList}
+              **Command List**: ${links.commandlist}
               **Website**: ${links.website}
-              **Support Server**: ${links.supportServer}
+              **Support Server**: ${links.supportserver}
             ` },
           )
 				messages.push(await msg.say(messageEmbed));

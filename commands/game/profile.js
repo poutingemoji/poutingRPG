@@ -3,7 +3,7 @@ const { Command } = require("discord.js-commando")
 const { MessageEmbed } = require('discord.js')
 
 const { findPlayer } = require('../../database/Database');
-const { romanize } = require('../../utils/Helper');
+const { numberWithCommas } = require('../../utils/Helper');
 const { maxHealth, maxShinsu, positionColors } = require('../../utils/enumHelper');
 
 const families = require('../../docs/data/families.js')
@@ -63,8 +63,8 @@ module.exports = class ProfileCommand extends Command {
         ['🌊 Shinsu']: `${player.shinsu}/${maxShinsu(player.level)}`,
       },
       {
-        ['⛳ Points']: player.points,
-        ['🟡 Dallars']: player.dallars,
+        ['⛳ Points']: numberWithCommas(player.points),
+        ['🟡 Dallars']: numberWithCommas(player.dallars),
       },
       {
         ['🗺️ Arc']: arc.name,
@@ -73,7 +73,7 @@ module.exports = class ProfileCommand extends Command {
         [`${pet ? pet.emoji : '❓'} Pet`]: pet ? pet.name : 'None',
       },
       {
-        ['🏔️ Reputation']: player.reputation,
+        ['🏔️ Reputation']: numberWithCommas(player.reputation),
       },
     ]
 

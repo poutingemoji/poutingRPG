@@ -3,8 +3,11 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const Database = require('../../database/Database');
-const { titleCase } = require('../../utils/Helper')
-const { emoji } = require('../../utils/msgHelper')
+const { numberWithCommas, paginate } = require('../../utils/Helper')
+const { buildEmbeds, commandInfo } = require('../../utils/msgHelper')
+const { links } = require('../../utils/enumHelper')
+
+const pageLength = 4;
 
 module.exports = class ShopCommand extends Command {
   constructor(client) {
@@ -14,7 +17,9 @@ module.exports = class ShopCommand extends Command {
       group: 'game',
       memberName: 'shop',
       description: 'Displays what is for sale.',
-      examples: [`${client.commandPrefix}shop [category] [page]`],
+      examples: [`
+      ${client.commandPrefix}shop pet
+      `],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
@@ -23,13 +28,7 @@ module.exports = class ShopCommand extends Command {
           key: 'category',
           prompt: 'What category of the shop would you like to see?',
           type: 'string',
-          oneOf: ['pet'],
-        },
-        {
-          key: 'page',
-          prompt: 'What page of the shop would you like to see?',
-					type: 'integer',
-          default: 1
+          default: 'pet',
         },
       ],
       throttling: {
@@ -39,32 +38,34 @@ module.exports = class ShopCommand extends Command {
     })
   }
 
-  run(msg, { category, page }) {
-    return msg.say('WIP')
-    const categoryColors = {
-      pet: '#ee2446'
+  async run(msg, { category }) {
+    if (!['pet'].includes(category)) {
+      return commandInfo(msg, this)
     }
-    const itemsPerPage = 4
-    var categoryChosen = require(`../../docs/data/${category}s.js`);
-    const argLimit = Math.ceil(categoryChosen.length/itemsPerPage)
-
-    if (!(argLimit >= page && page >= 1)) {
-      return msg.say(`${emoji(msg,'err')} Page ${page} doesn't exist.`)
+    const res = require(`../../docs/data/${category}s.js`);
+    
+    const embeds = [];
+    var { maxPage } = paginate(Object.keys(res), 1, pageLength)
+    for (let page = 0; page < maxPage; page++) {
+      var { items } = paginate(Object.keys(res), page+1, pageLength)
+      let itemsOffered = ''
+      for (let item = 0; item < items.length; item++) {
+        const itemInfo = res[items[item]]
+      
+        switch(category) {
+          default:
+            itemsOffered += `${itemInfo.emoji} **${itemInfo.name}**\n${itemInfo.price} points\n\n`; break;
+          case 'pet':
+            itemsOffered += `${itemInfo.emoji} **${itemInfo.name}**\n*[id: ${items[item]}](${links.website})*\n${numberWithCommas(itemInfo.price)} points\n\n`; break;
+        }
+      }
+      embeds.push(
+        new MessageEmbed()
+        .setTitle(`[Page ${page+1}/${maxPage}]`)
+        .setDescription(itemsOffered)
+      )
     }
-
-    const current = categoryChosen.slice((page-1)*itemsPerPage, page*itemsPerPage)
-    const messageEmbed = new MessageEmbed()
-    .setColor(categoryColors[category])
-    .setFooter(`${titleCase(category)} Store ─ Page ${page} of ${argLimit}`)
-
-    let description = ''
-
-    current.forEach(itemCurrent => {
-      console.log(itemCurrent)
-      itemCurrent = categoryChosen[categoryChosen.findIndex(item => item.name == itemCurrent.name)]
-      description += `${itemCurrent.emoji} **${itemCurrent.name}**\n${itemCurrent.price} points\n`
-    })
-    messageEmbed.addField(`${titleCase(category)} Store`, description)
-    msg.say(messageEmbed) 
+    
+    buildEmbeds(msg, embeds)
   }
 }
