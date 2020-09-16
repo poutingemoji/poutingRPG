@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js')
 
 const { findPlayer, createNewPet, updateNeedsPet, addExpPet, renamePet, removePet } = require('../../database/Database');
 const { clamp, titleCase, secondsToDhms } = require('../../utils/Helper');
+const { commandInfo } = require('../../utils/msgHelper')
 const { petNeeds, petActions } = require('../../utils/enumHelper');
 
 const positions = require('../../docs/data/positions.js')
@@ -17,7 +18,16 @@ module.exports = class petCommand extends Command {
 			group: 'game',
 			memberName: 'pet',
 			description: 'Displays your pet.',
-			examples: [`${client.commandPrefix}pet`],
+      examples: [
+        `${client.commandPrefix}pet`,
+        `${client.commandPrefix}pet feed`,
+        `${client.commandPrefix}pet wash`,
+        `${client.commandPrefix}pet play`,
+        `${client.commandPrefix}pet walk`,
+        `${client.commandPrefix}pet name`,
+        `${client.commandPrefix}pet disown`,
+        `${client.commandPrefix}pet new`,
+    ],
 			clientPermissions: [],
 			userPermissions: [],
       guildOnly: true,
@@ -26,7 +36,6 @@ module.exports = class petCommand extends Command {
           key: 'actionChosen',
           prompt: "What would you like to do to your pet?",
 					type: 'string',
-          oneOf: Object.keys(petActions).concat(['name', 'disown', 'new']),
           default: false
         },
         {
@@ -46,6 +55,11 @@ module.exports = class petCommand extends Command {
   //console.log(newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
 
 	async run(msg, { actionChosen, nickname }) {
+    if (!Object.keys(petActions).concat(['name', 'disown', 'new']).includes(actionChosen)) {
+      const commands = this.client.registry.findCommands('pet', false, msg);
+      return commandInfo(msg, commands[0])
+    }
+
     var player = await findPlayer(msg, msg.author)
     var pet = player.pet
     if (!pets[pet.id] || actionChosen == 'new') {

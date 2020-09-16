@@ -76,6 +76,7 @@ module.exports = class ProfileCommand extends Command {
         ['🏔️ Reputation']: player.reputation,
       },
     ]
+
     var profileMessage = ''
     profile.forEach(category => {
       profileMessage += `──────────────\n`

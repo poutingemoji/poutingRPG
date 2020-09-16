@@ -15,14 +15,17 @@ const playerSchema = new mongoose.Schema({
 
   health: Number,
   shinsu: Number,
+  updatedAt: Date,
   
+  statpoints: Number,
+
   baang: Number,
   myun: Number,
   soo: Number,
   
-  physical: Number,
-  speed: Number,
   durability: Number,
+  speed: Number,
+  physical: Number,
 
   points: Number,
   dallars: Number,

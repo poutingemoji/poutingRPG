@@ -3,7 +3,7 @@ mongoose.Promise = require('bluebird');
 
 const playerSchema = require('./schemas/player');
 
-const { clamp } = require('../utils/Helper')
+const { clamp, isBetween } = require('../utils/Helper')
 const { maxHealth, maxShinsu, expFormulas, petNeeds } = require('../utils/enumHelper')
 const { updatedPlayer, newPlayer, newPet, newTechnique } = require('./Objects');
 
@@ -127,6 +127,15 @@ class Database {
     });
   }
 
+  addStatPointsPlayer(player, stat) {
+    Player.findOne({ playerId: player.id }, (err, res) => { 
+      console.log(key, value)
+      
+      res[stat] += value
+      res.save().catch(err => console.log(err))
+    });
+  }
+
   addFishPlayer(player, fish) {
     Player.findOne({ playerId: player.id }, (err, res) => { 
       res.fishes.set(fish, res.fishes.get(fish)+1 || 1);
@@ -193,8 +202,9 @@ class Database {
   }
 
   updateAllPlayers() {
-    Player.updateMany({  },
-      { move: ['punch']},
+    Player.updateMany({ reputation: 0 },
+      {  },
+      { upsert: true },
       (err, res) => {
         console.log(res)
       })
@@ -202,3 +212,17 @@ class Database {
 }
 
 module.exports = new Database();
+
+function createNewPlayer(player, family, race, position) {
+  console.log(player.id, family, race, position)
+  return new Promise((resolve, reject) => Player.replaceOne({ playerId: player.id },
+  newPlayer(player.id, family, race, position),
+  { upsert: true },
+  (err, res) => {
+    if (err) {
+    return reject(err);
+    }
+    console.log(res)
+    return resolve(res);
+  })
+)};

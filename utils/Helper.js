@@ -40,6 +40,11 @@ const Helper = {
     return num <= min ? min : num >= max ? max : num;
   },
   
+  isBetween(n, a, b) {
+    return (n - a) * (n - b) <= 0
+ },
+
+  
   secondsToDhms(seconds, conjunction, abbreviate, splice) {
     seconds = parseInt(seconds);
     

@@ -4,8 +4,6 @@ const { MessageEmbed } = require('discord.js')
 
 const { findPlayer } = require('../../database/Database');
 
-const { maxShinsu, moveAccuracy, moveDamage } = require('../../utils/enumHelper');
-
 const moves = require('../../docs/data/moves.js')
 
 module.exports = class ShinsuCommand extends Command {
@@ -15,7 +13,7 @@ module.exports = class ShinsuCommand extends Command {
 			aliases: [],
 			group: 'game',
 			memberName: 'stats',
-			description: 'Additional commands relating to your stats.',
+			description: 'Display your stats and stat points.',
 			examples: [],
 			clientPermissions: [],
 			userPermissions: [],
@@ -32,25 +30,24 @@ module.exports = class ShinsuCommand extends Command {
     const player = await findPlayer(msg, msg.author)
     const stats = [
       {
-        ['🌧️ Baang (Capacity)']: player.baang,
-        ['💦 Myun (Accuracy)']: player.myun,
-        ['☄️ Soo (Damage)']: player.soo,
+        ['⚗️ Baang (Max Shinsu)']: player.baang,
+        ['🌧️ Myun (Accuracy)']: player.myun,
+        ['☄️ Soo (Shinsu Dmg)']: player.soo,
       },
       {
-        ['👊 Physical (Damage)']: player.physical,
-        ['🛡️ Durability (Health)']: player.durability,
-        ['💨 Speed (Dodge)']: player.speed,
+        ['🛡️ Durability (Max Health)']: player.durability,
+        ['🍃 Speed (Dodge + Critical)']: player.speed,
+        ['👊 Physical (Physical Dmg)']: player.physical,
       },
     ]
    
-    let statsMessage = ``
+    let statsMessage = `➡️ Stat Points: **${44}**\n`
     stats.forEach(category => {
       statsMessage += `────────────\n`
       for (var key in category) {
         statsMessage += `${key}: **${category[key]}**\n`
       }
     })
-    console.log(player.quality)
     const messageEmbed = new MessageEmbed()
       .setColor('#56acef')
       .setTitle(`${msg.author.username}'s Statistics`)

@@ -25,21 +25,24 @@ const Objects = {
 
       health: maxHealth(1),
       shinsu: maxShinsu(1),
+      updatedAt: Date.now(),
+      
+      statpoints: 0,
 
       baang: 0,
       myun: 0,
       soo: 0,
 
-      physical: 0,
       durability: 0,
       speed: 0,
-
+      physical: 0,
+      
       points: 0,
       dallars: 0,
 
       arc: 0,
       chapter: 0,
-      move: ['Punch'],
+      move: ['punch'],
 
       reputation: 0,
       quests: [],

@@ -12,7 +12,6 @@ const races = require('../../docs/data/races.js')
 const positions = require('../../docs/data/positions.js')
 const traits = [families, races, positions]
 
-console.log(Object.keys(Object.keys(races)))
 module.exports = class StartCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -63,13 +62,12 @@ module.exports = class StartCommand extends Command {
       messageEmbed.setDescription(description)
       messageEmbed.setFooter(footer)
       const filter = res => {
-        console.log(res.content)
         return Object.keys(Object.keys(traits[i])).map(n => `${parseInt(n)+1}`).includes(res.content) && res.author.id === msg.author.id
       }
       
       traitsChosen.push(
         await msg.say(messageEmbed).then(msgSent => {
-          return msgSent.channel.awaitMessages(filter, { max: 1, time: 1000 })
+          return msgSent.channel.awaitMessages(filter, { max: 1, time: 60000 })
             .then(res => {
               msgSent.delete()
               return Object.keys(traits[i])[res.first().content-1]
