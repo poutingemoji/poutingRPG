@@ -152,15 +152,21 @@ class Database {
   }
 
   createNewPet(player, id) {
-    Player.updateOne({ playerId: player.id },
-      newPet(id), 
-      { upsert: true })
-    Player.aggregate( 
-      [{ $project: { 
-        points: { 
-          $subtract: [ "$points", pets[id].price ] 
-        }}
-      }])
+    return new Promise((resolve, reject) => Player.findOne({ playerId: player.id }, (err, res) => { 
+      console.log(res.pet.id)
+      if (!pets[id]) return resolve(`There is no pet with the id, ${id}.`)
+      if (res.pet.id) return resolve('You need to disown your current pet before buying another.')
+      if (pets[id].price > res.points) return resolve(`You dont't have enough money to purchase ${pets[id].emoji} ${pets[id].name}.`)
+      res.points -= pets[id].price
+      res.save().catch(err => console.log(err + 'err'))
+
+      Player.updateOne({ playerId: player.id },
+        newPet(id),
+        { upsert: true },
+        (err, res) => {
+        })
+        return resolve(`You bought a ${pets[id].emoji} **${pets[id].name}**. Congratulations!`) 
+    }))
   }
 
   updateNeedsPet(player, differences) {
@@ -169,7 +175,7 @@ class Database {
       for (var i in differences) res.pet[needs[i]] = clamp(res.pet[needs[i]] += differences[i], 0, 100)
       res.pet.updatedAt = new Date();
       res.save().catch(err => console.log(err))
-    }).exec();
+    })
   }
 
   addExpPet(player, value) {

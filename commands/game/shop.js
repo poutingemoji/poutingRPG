@@ -17,9 +17,9 @@ module.exports = class ShopCommand extends Command {
       group: 'game',
       memberName: 'shop',
       description: 'Displays what is for sale.',
-      examples: [`
-      ${client.commandPrefix}shop pet
-      `],
+      examples: [
+        `${client.commandPrefix}shop pet`
+      ],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
@@ -66,6 +66,6 @@ module.exports = class ShopCommand extends Command {
       )
     }
     
-    buildEmbeds(msg, embeds)
+    buildEmbeds(msg, embeds, `To purchase a pet: ${this.client.commandPrefix}buy pet [id]`)
   }
 }

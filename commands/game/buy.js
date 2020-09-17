@@ -39,12 +39,11 @@ module.exports = class BuyCommand extends Command {
   }
 
   async run(msg, { category, id }) {
-    console.log(this.group.id)
     const player = await findPlayer(msg, msg.author)
-    if (!pets[id]) return msg.say(`There is no pet with the id, ${id}.`)
-    await createNewPet(msg.author, id)
-    msg.say('Pet bought')
-    return 
+    
+   
+    console.log()
+    return msg.say(await createNewPet(msg.author, id))
     await addQuestsPlayer(msg.author)
     console.log(arcs[0].chapters[0].quests)
    

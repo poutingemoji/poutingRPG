@@ -20,7 +20,15 @@ module.exports = class petCommand extends Command {
 			group: 'game',
 			memberName: 'pet',
 			description: 'Displays your pet.',
-      examples: oneOf.map(arg => `${client.commandPrefix}${client.memberName} ${arg}`),
+      examples: [
+        `${client.commandPrefix}pet`,
+        `${client.commandPrefix}pet feed`,
+        `${client.commandPrefix}pet wash`,
+        `${client.commandPrefix}pet play`,
+        `${client.commandPrefix}pet walk`,
+        `${client.commandPrefix}pet name`,
+        `${client.commandPrefix}pet disown`,
+      ],
 			clientPermissions: [],
 			userPermissions: [],
       guildOnly: true,
@@ -54,7 +62,8 @@ module.exports = class petCommand extends Command {
     var player = await findPlayer(msg, msg.author)
     var pet = player.pet
     if (!pets[pet.id]) {
-      return msg.say(`Use \`${this.client.commandPrefix}shop pet\` to buy a pet.`)
+      await createNewPet(msg.author, Object.keys(pets)[Math.floor(Math.random()*Object.keys(pets).length)], '')
+      return msg.say(`To purchase a pet: ${this.client.commandPrefix}buy pet [id]`)
     }
     
     var differences = []
