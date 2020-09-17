@@ -83,8 +83,8 @@ module.exports = class StartCommand extends Command {
       new MessageEmbed()
         .setColor(embedColors.game)
         .setDescription(`[**${positions[traitsChosen[2]].name.toUpperCase()}**] ${msg.author.username} **${families[traitsChosen[0]].name}** of the **${races[traitsChosen[1]].name}** race, I sincerely welcome you to the Tower.`)
+        .setFooter("The story mode isn't done right now, so far there are pets and fishing.")
     )
-    if (msg.author.id !== '257641125135908866')  return msg.say(`Not accepting new entries right now, working on the storyline of this Tower of God RPG and I don't want any new data while I'm making it. Thank you for understanding and hope you look forward to the finished product! :)`)
     createNewPlayer(msg.author, traitsChosen[0], traitsChosen[1], traitsChosen[2])
 	}
 }
