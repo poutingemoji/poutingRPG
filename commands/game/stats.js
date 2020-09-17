@@ -41,7 +41,7 @@ module.exports = class ShinsuCommand extends Command {
       },
     ]
    
-    let statsMessage = `➡️ Stat Points: **${44}**\n`
+    let statsMessage = `➡️ Stat Points: **${player.statpoints}**\n`
     stats.forEach(category => {
       statsMessage += `────────────\n`
       for (var key in category) {

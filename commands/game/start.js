@@ -73,7 +73,7 @@ module.exports = class StartCommand extends Command {
       new MessageEmbed()
         .setColor(embedColors.game)
         .setDescription(`[**${positions[traitsChosen[2]].name.toUpperCase()}**] ${msg.author.username} **${families[traitsChosen[0]].name}** of the **${races[traitsChosen[1]].name}** race, I sincerely welcome you to the Tower.`)
-        .setFooter(`The story mode isn't done right now, there are only pets and fishing. You can view a list of commands with: ${this.client.commandPrefix}help`)
+        .setFooter(`The story mode isn't done right now, there are only pets and fishing. I will do a fresh reset when I am ready to release. You can view a list of commands with: ${this.client.commandPrefix}help`)
     )
     createNewPlayer(msg.author, traitsChosen[0], traitsChosen[1], traitsChosen[2])
 	}

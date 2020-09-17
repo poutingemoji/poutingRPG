@@ -86,7 +86,7 @@ module.exports = class petCommand extends Command {
             .setDescription(itemsOffered)
           )
         }
-        buildEmbeds(msg, embeds, `To purchase a pet: ${this.client.commandPrefix}pet buy [id]`)
+        buildEmbeds(msg, embeds, `To purchase a pet: ${this.client.commandPrefix}pet [id]`)
         break;
       case 'name':
         if (nickname.length > 32 || !nickname) return msg.say('Please keep your nickname at 32 characters or under.')

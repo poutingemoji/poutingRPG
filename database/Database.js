@@ -111,18 +111,24 @@ class Database {
 
   addExpPlayer(player, msg, value) {
     Player.findOne({ playerId: player.id }, (err, res) => { 
-      res.exp += value
+      const prevlevel = res.level
       let description = ''
+      res.exp += value
+    
       while (res.exp >= res.expMax) {
         res.level++
         res.exp -= res.expMax
         res.expMax = Parser.evaluate(expFormulas['mediumslow'], { n: res.level+1 })
         res.health = maxHealth(res.level+1)
         res.shinsu = maxShinsu(res.level+1)
-        
-        description += `🆙 Congratulations ${player.toString()}, you've reached level **${res.level}**!\n`;
+        res.statpoints += 5
       }
-      if (description !== '') msg.say(description)
+
+      if (res.level !== prevlevel) {
+        description += `🆙 Congratulations ${player.toString()}, you've reached level **${res.level}**!\n\n`;
+        description += `⏫ You have gained **${(res.level-prevlevel)*5} stat points**! You can assign them using: \`${msg.client.commandPrefix}stats\`.`
+        msg.say(description)
+      }
       res.save().catch(err => console.log(err))
     });
   }
