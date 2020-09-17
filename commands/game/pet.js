@@ -3,14 +3,14 @@ const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
 const { findPlayer, createNewPet, updateNeedsPet, addExpPet, renamePet, removePet } = require('../../database/Database');
-const { clamp, titleCase, secondsToDhms } = require('../../utils/Helper');
-const { commandInfo } = require('../../utils/msgHelper')
-const { petNeeds, petActions } = require('../../utils/enumHelper');
+const { clamp, titleCase, secondsToDhms, numberWithCommas, paginate } = require('../../utils/Helper');
+const { commandInfo, buildEmbeds } = require('../../utils/msgHelper')
+const { petNeeds, petActions, links } = require('../../utils/enumHelper');
 
-const positions = require('../../docs/data/positions.js')
 const pets = require('../../docs/data/pets.js');
 
-const oneOf = ['', 'feed', 'wash', 'play', 'walk', 'name', 'disown']
+const oneOf = ['', 'feed', 'wash', 'play', 'walk', 'name', 'disown', 'list', 'buy']
+const pageLength = 4;
 
 module.exports = class petCommand extends Command {
 	constructor(client) {
@@ -28,20 +28,22 @@ module.exports = class petCommand extends Command {
         `${client.commandPrefix}pet walk`,
         `${client.commandPrefix}pet name`,
         `${client.commandPrefix}pet disown`,
+        `${client.commandPrefix}pet list`,
+        `${client.commandPrefix}pet buy`,
       ],
 			clientPermissions: [],
 			userPermissions: [],
       guildOnly: true,
       args: [
         {
-          key: 'actionChosen',
+          key: 'action',
           prompt: "What would you like to do to your pet?",
 					type: 'string',
           default: '',
         },
         {
-          key: 'nickname',
-          prompt: 'What would you like to call your pet?',
+          key: 'idORnickname',
+          prompt: '',
 					type: 'string',
           default: false
         },
@@ -54,8 +56,8 @@ module.exports = class petCommand extends Command {
 	}
   
   //console.log(newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
-	async run(msg, { actionChosen, nickname }) {
-    if (!oneOf.includes(actionChosen)) {
+	async run(msg, { action, idORnickname }) {
+    if (!oneOf.includes(action)) {
       return commandInfo(msg, this)
     }
     console.log(this.client.memberName)
@@ -67,25 +69,46 @@ module.exports = class petCommand extends Command {
     }
     
     var differences = []
-    if (Object.keys(petActions).includes(actionChosen)) {
-      const actionIndex = Object.keys(petActions).findIndex(action => action == actionChosen)
+    if (Object.keys(petActions).includes(action)) {
+      const actionIndex = Object.keys(petActions).findIndex(action => action == action)
       const needIncrease = clamp((pet[petNeeds[actionIndex]] + 42), 0, 100) - pet[petNeeds[actionIndex]]
       if (needIncrease == 0) return msg.say(`Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`)
-      msg.say(`You ${actionChosen} your pet.`)
+      msg.say(`You ${action} your pet.`)
       differences[actionIndex] = 42
       await updateNeedsPet(msg.author, differences)
       await addExpPet(msg.author, Math.round(needIncrease), 0, 100)
     }
 
-    switch (actionChosen) {
+    switch (action) {
+      case 'list':
+        const embeds = [];
+        var { maxPage } = paginate(Object.keys(pets), 1, pageLength)
+        for (let page = 0; page < maxPage; page++) {
+          var { pets } = paginate(Object.keys(pets), page+1, pageLength)
+          let petsOffered = ''
+          for (let pet = 0; pet < pets.length; pet++) {
+            const petInfo = pets[pets[pet]]
+            petsOffered += `${petInfo.emoji} **${petInfo.name}**\n*[id: ${pets[pet]}](${links.website})*\n${numberWithCommas(petInfo.price)} points\n\n`
+          }
+          embeds.push(
+            new MessageEmbed()
+            .setTitle(`[Page ${page+1}/${maxPage}]`)
+            .setDescription(petsOffered)
+          )
+        }
+        buildEmbeds(msg, embeds, `To purchase a pet: ${this.client.commandPrefix}pet buy [id]`)
+        break;
+      case 'buy':
+        msg.say(await createNewPet(msg.author, idORnickname))
+        break;
       case 'name':
-        if (nickname.length > 32 || !nickname) return msg.say('Please keep your nickname at 32 characters or under.')
-        await renamePet(msg.author, nickname)
-        msg.say(`Your pet's name is now **${nickname}**.`)
+        if (idORnickname.length > 32 || !idORnickname) return msg.say('Please keep your idORnickname at 32 characters or under.')
+        await renamePet(msg.author, idORnickname)
+        msg.say(`Your pet's name is now **${idORnickname}**.`)
         break;
       case 'disown':
         await removePet(msg.author)
-        msg.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
+        msg.say(`You have disowned ${pet.idORnickname ? pet.idORnickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
         break;
       default: 
         const secondsPassed = (Date.now() - pet.updatedAt)/1000
@@ -99,7 +122,7 @@ module.exports = class petCommand extends Command {
         await updateNeedsPet(msg.author, differences)
         console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
         const messageEmbed = new MessageEmbed()
-        .setTitle(`${msg.member.nickname || msg.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)
+        .setTitle(`${msg.member.idORnickname || msg.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.idORnickname !== '' ? `(${pet.idORnickname})` : ''}`)
         .setThumbnail(pets[pet.id].image)
 
         var mood
