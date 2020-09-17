@@ -97,7 +97,7 @@ module.exports = class petCommand extends Command {
       default: 
         if (!pets[pet.id]) {
           await createNewPet(msg.author, Object.keys(pets)[Math.floor(Math.random()*Object.keys(pets).length)], '')
-          return msg.say(`To purchase a pet: ${this.client.commandPrefix}buy pet [id]`)
+          return msg.say(`You don't have a pet. You can view a list of the pets with: \`${this.client.commandPrefix}pet list\``)
         }
 
         var differences = []
@@ -107,7 +107,6 @@ module.exports = class petCommand extends Command {
           if (needIncrease == 0) return msg.say(`Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`)
           msg.say(`You ${action} your pet.`)
           differences[actionIndex] = 42
-          await updateNeedsPet(msg.author, differences)
           await addExpPet(msg.author, Math.round(needIncrease), 0, 100)
         }
 
