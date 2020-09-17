@@ -22,20 +22,11 @@ module.exports = class StartCommand extends Command {
 			description: 'Begin your adventure up the Tower.',
       examples: [
         `${client.commandPrefix}start`,
-        `${client.commandPrefix}start new`,
       ],
 			clientPermissions: [],
 			userPermissions: [],
 			guildOnly: true,
-      args: [
-        {
-          key: 'restart',
-          prompt: "Would you like to create a new character?",
-					type: 'string',
-					oneOf: ['new'],
-					default: false
-        },
-      ],
+      args: [],
       throttling: {
         usages: 1,
         duration: 60
@@ -43,10 +34,9 @@ module.exports = class StartCommand extends Command {
     })
 	}
 
-	async run(msg, {restart}) {
+	async run(msg) {
     const player = await findPlayer(msg, msg.author, true)
-    if (!restart && player) return 
-    if (restart) {
+    if (player) {
       const res = await confirmation(msg, `${msg.author}, do you want to start over?`);
       if (!res) return;
     }
@@ -83,7 +73,7 @@ module.exports = class StartCommand extends Command {
       new MessageEmbed()
         .setColor(embedColors.game)
         .setDescription(`[**${positions[traitsChosen[2]].name.toUpperCase()}**] ${msg.author.username} **${families[traitsChosen[0]].name}** of the **${races[traitsChosen[1]].name}** race, I sincerely welcome you to the Tower.`)
-        .setFooter("The story mode isn't done right now, so far there are pets and fishing.")
+        .setFooter(`The story mode isn't done right now, there are only pets and fishing. You can view a list of commands with: ${this.client.commandPrefix}help`)
     )
     createNewPlayer(msg.author, traitsChosen[0], traitsChosen[1], traitsChosen[2])
 	}
