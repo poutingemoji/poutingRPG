@@ -4,6 +4,7 @@ mongoose.Promise = require('bluebird');
 const playerSchema = require('./schemas/player');
 
 const { clamp, isBetween } = require('../utils/Helper')
+const { confirmation } = require('../utils/msgHelper')
 const { maxHealth, maxShinsu, expFormulas, petNeeds } = require('../utils/enumHelper')
 const { updatedPlayer, newPlayer, newPet, newTechnique } = require('./Objects');
 
@@ -151,12 +152,13 @@ class Database {
       .exec()
   }
 
-  createNewPet(player, id) {
+  buyPet(player, id) {
     return new Promise((resolve, reject) => Player.findOne({ playerId: player.id }, (err, res) => { 
       console.log(res.pet.id)
       if (!pets[id]) return resolve(`There is no pet with the id, ${id}.`)
       if (res.pet.id) return resolve('You need to disown your current pet before buying another.')
       if (pets[id].price > res.points) return resolve(`You dont't have enough money to purchase ${pets[id].emoji} ${pets[id].name}.`)
+      
       res.points -= pets[id].price
       res.save().catch(err => console.log(err + 'err'))
 

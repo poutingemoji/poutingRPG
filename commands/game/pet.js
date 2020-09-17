@@ -2,7 +2,7 @@ require('dotenv').config()
 const { Command } = require('discord.js-commando')
 const { MessageEmbed } = require('discord.js')
 
-const { findPlayer, createNewPet, updateNeedsPet, addExpPet, renamePet, removePet } = require('../../database/Database');
+const { findPlayer, buyPet, updateNeedsPet, addExpPet, renamePet, removePet } = require('../../database/Database');
 const { clamp, titleCase, secondsToDhms, numberWithCommas, paginate } = require('../../utils/Helper');
 const { commandInfo, buildEmbeds } = require('../../utils/msgHelper')
 const { petNeeds, petActions, links } = require('../../utils/enumHelper');
@@ -42,8 +42,8 @@ module.exports = class petCommand extends Command {
           default: '',
         },
         {
-          key: 'idORnickname',
-          prompt: '',
+          key: 'nickname',
+          prompt: 'What would you like to call your pet?',
 					type: 'string',
           default: false
         },
@@ -56,13 +56,19 @@ module.exports = class petCommand extends Command {
 	}
   
   //console.log(newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
-	async run(msg, { action, idORnickname }) {
-    if (!oneOf.includes(action)) {
+	async run(msg, { action, nickname }) {
+    if (!oneOf.includes(action) && !pets.hasOwnProperty(action)) {
       return commandInfo(msg, this)
     }    
     var player = await findPlayer(msg, msg.author)
     var pet = player.pet
     
+    if (pets.hasOwnProperty(action)) {
+
+      return msg.say(await buyPet(msg.author, action))
+    }
+    
+
     switch (action) {
       case 'list':
         const embeds = [];
@@ -82,23 +88,17 @@ module.exports = class petCommand extends Command {
         }
         buildEmbeds(msg, embeds, `To purchase a pet: ${this.client.commandPrefix}pet buy [id]`)
         break;
-      case 'buy':
-        msg.say(await createNewPet(msg.author, idORnickname))
-        break;
       case 'name':
-        if (idORnickname.length > 32 || !idORnickname) return msg.say('Please keep your nickname at 32 characters or under.')
-        await renamePet(msg.author, idORnickname)
-        msg.say(`Your pet's name is now **${idORnickname}**.`)
+        if (nickname.length > 32 || !nickname) return msg.say('Please keep your nickname at 32 characters or under.')
+        await renamePet(msg.author, nickname)
+        msg.say(`Your pet's name is now **${nickname}**.`)
         break;
       case 'disown':
         await removePet(msg.author)
-        msg.say(`You have disowned ${pet.idORnickname ? pet.idORnickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
+        msg.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
         break;
       default: 
-        if (!pets[pet.id]) {
-          await createNewPet(msg.author, Object.keys(pets)[Math.floor(Math.random()*Object.keys(pets).length)], '')
-          return msg.say(`You don't have a pet. You can view a list of the pets with: \`${this.client.commandPrefix}pet list\``)
-        }
+        if (!pets[pet.id]) return msg.say(`You don't have a pet. You can view a list of the pets with: \`${this.client.commandPrefix}pet list\``)
 
         var differences = []
         if (Object.keys(petActions).includes(action)) {
@@ -121,7 +121,7 @@ module.exports = class petCommand extends Command {
         await updateNeedsPet(msg.author, differences)
         console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
         const messageEmbed = new MessageEmbed()
-        .setTitle(`${msg.member.idORnickname || msg.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.idORnickname !== '' ? `(${pet.idORnickname})` : ''}`)
+        .setTitle(`${msg.member.nickname || msg.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)
         .setThumbnail(pets[pet.id].image)
 
         var mood
