@@ -62,22 +62,7 @@ module.exports = class petCommand extends Command {
     }    
     var player = await findPlayer(msg, msg.author)
     var pet = player.pet
-    if (!pets[pet.id]) {
-      await createNewPet(msg.author, Object.keys(pets)[Math.floor(Math.random()*Object.keys(pets).length)], '')
-      return msg.say(`To purchase a pet: ${this.client.commandPrefix}buy pet [id]`)
-    }
     
-    var differences = []
-    if (Object.keys(petActions).includes(action)) {
-      const actionIndex = Object.keys(petActions).findIndex(action => action == action)
-      const needIncrease = clamp((pet[petNeeds[actionIndex]] + 42), 0, 100) - pet[petNeeds[actionIndex]]
-      if (needIncrease == 0) return msg.say(`Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`)
-      msg.say(`You ${action} your pet.`)
-      differences[actionIndex] = 42
-      await updateNeedsPet(msg.author, differences)
-      await addExpPet(msg.author, Math.round(needIncrease), 0, 100)
-    }
-
     switch (action) {
       case 'list':
         const embeds = [];
@@ -110,6 +95,22 @@ module.exports = class petCommand extends Command {
         msg.say(`You have disowned ${pet.idORnickname ? pet.idORnickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
         break;
       default: 
+        if (!pets[pet.id]) {
+          await createNewPet(msg.author, Object.keys(pets)[Math.floor(Math.random()*Object.keys(pets).length)], '')
+          return msg.say(`To purchase a pet: ${this.client.commandPrefix}buy pet [id]`)
+        }
+
+        var differences = []
+        if (Object.keys(petActions).includes(action)) {
+          const actionIndex = Object.keys(petActions).findIndex(action => action == action)
+          const needIncrease = clamp((pet[petNeeds[actionIndex]] + 42), 0, 100) - pet[petNeeds[actionIndex]]
+          if (needIncrease == 0) return msg.say(`Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`)
+          msg.say(`You ${action} your pet.`)
+          differences[actionIndex] = 42
+          await updateNeedsPet(msg.author, differences)
+          await addExpPet(msg.author, Math.round(needIncrease), 0, 100)
+        }
+
         const secondsPassed = (Date.now() - pet.updatedAt)/1000
         console.log(secondsPassed)
         for (var i = 0; i < petNeeds.length; i++) {
