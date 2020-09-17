@@ -38,7 +38,7 @@ const enumHelper = {
     feed: 'hunger',
     wash: 'hygiene',
     play: 'fun',
-    walk: 'energy',
+    pat: 'energy',
   },
   positionColors: {
     fisherman: '#db3043',

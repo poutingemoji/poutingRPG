@@ -67,7 +67,7 @@ module.exports = class TopCommand extends Command {
 	}
 	
 	async run(msg, { filter }) { 
-    if (!Object.keys(filters).includes(filter)) {
+    if (!Object.keys(filters).includes(filter) && filter !== false) {
       return commandInfo(msg, this)
     }
 

@@ -9,7 +9,7 @@ const { petNeeds, petActions, links } = require('../../utils/enumHelper');
 
 const pets = require('../../docs/data/pets.js');
 
-const oneOf = ['', 'feed', 'wash', 'play', 'walk', 'name', 'disown', 'list', 'buy']
+const oneOf = ['', 'feed', 'wash', 'play', 'pat', 'name', 'disown', 'list', 'buy']
 const pageLength = 4;
 
 module.exports = class petCommand extends Command {
@@ -25,7 +25,7 @@ module.exports = class petCommand extends Command {
         `${client.commandPrefix}pet feed`,
         `${client.commandPrefix}pet wash`,
         `${client.commandPrefix}pet play`,
-        `${client.commandPrefix}pet walk`,
+        `${client.commandPrefix}pet pat`,
         `${client.commandPrefix}pet name`,
         `${client.commandPrefix}pet disown`,
         `${client.commandPrefix}pet list`,
@@ -59,8 +59,7 @@ module.exports = class petCommand extends Command {
 	async run(msg, { action, idORnickname }) {
     if (!oneOf.includes(action)) {
       return commandInfo(msg, this)
-    }
-    console.log(this.client.memberName)
+    }    
     var player = await findPlayer(msg, msg.author)
     var pet = player.pet
     if (!pets[pet.id]) {
@@ -84,16 +83,16 @@ module.exports = class petCommand extends Command {
         const embeds = [];
         var { maxPage } = paginate(Object.keys(pets), 1, pageLength)
         for (let page = 0; page < maxPage; page++) {
-          var { pets } = paginate(Object.keys(pets), page+1, pageLength)
-          let petsOffered = ''
-          for (let pet = 0; pet < pets.length; pet++) {
-            const petInfo = pets[pets[pet]]
-            petsOffered += `${petInfo.emoji} **${petInfo.name}**\n*[id: ${pets[pet]}](${links.website})*\n${numberWithCommas(petInfo.price)} points\n\n`
+          var { items } = paginate(Object.keys(pets), page+1, pageLength)
+          let itemsOffered = ''
+          for (let item = 0; item < items.length; item++) {
+            const itemInfo = pets[items[item]]
+            itemsOffered += `${itemInfo.emoji} **${itemInfo.name}**\n*[id: ${items[item]}](${links.website})*\n${numberWithCommas(itemInfo.price)} points\n\n`
           }
           embeds.push(
             new MessageEmbed()
             .setTitle(`[Page ${page+1}/${maxPage}]`)
-            .setDescription(petsOffered)
+            .setDescription(itemsOffered)
           )
         }
         buildEmbeds(msg, embeds, `To purchase a pet: ${this.client.commandPrefix}pet buy [id]`)
@@ -102,7 +101,7 @@ module.exports = class petCommand extends Command {
         msg.say(await createNewPet(msg.author, idORnickname))
         break;
       case 'name':
-        if (idORnickname.length > 32 || !idORnickname) return msg.say('Please keep your idORnickname at 32 characters or under.')
+        if (idORnickname.length > 32 || !idORnickname) return msg.say('Please keep your nickname at 32 characters or under.')
         await renamePet(msg.author, idORnickname)
         msg.say(`Your pet's name is now **${idORnickname}**.`)
         break;
