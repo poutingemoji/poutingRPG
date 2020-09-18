@@ -11,7 +11,6 @@ const positions = require("../../docs/data/positions");
 
 const minLimit = 500;
 const maxLimit = 30000;
-
 const highestRoll = 12;
 
 module.exports = class GambleCommand extends Command {
@@ -36,7 +35,8 @@ module.exports = class GambleCommand extends Command {
           type: "string",
           validate: (num) => {
             if (isNaN(num) && num !== "all") return;
-            if (!Number.isInteger(int)) return 'You need to provide an integer.';
+            if (!Number.isInteger(num) && num !== "all")
+              return "You need to provide an integer.";
             if (num < minLimit)
               return `You need to gamble at least ${minLimit} points.`;
             if (num > maxLimit)
@@ -54,7 +54,16 @@ module.exports = class GambleCommand extends Command {
 
   async run(msg, { points }) {
     const player = await findPlayer(msg, msg.author);
-    if (points == "all") points = maxLimit;
+    if (points == "all") {
+      if (points < minLimit)
+        return `You need to gamble at least ${minLimit} points.`;
+      if (player.points > maxLimit) {
+        points = maxLimit;
+      } else {
+        points = player.points;
+      }
+    }
+    console.log(points);
     if (points > player.points)
       return msg.say(`You don't have ${points} points.`);
     const roll1 = Math.floor(Math.random() * highestRoll);
