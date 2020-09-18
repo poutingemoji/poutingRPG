@@ -3,7 +3,7 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer, changeValuePlayer } = require("../../database/Database");
-const { titleCase } = require("../../utils/Helper");
+const { titleCase, numberWithCommas } = require("../../utils/Helper");
 const { embedColors, positionColors } = require("../../utils/enumHelper");
 
 const moves = require("../../docs/data/moves.js");
@@ -107,13 +107,13 @@ module.exports = class GambleCommand extends Command {
         changeMsg = "won/lost";
     }
     messageEmbed.setDescription(
-      `You ${changeMsg} ${Math.abs(pointsChange)} points.${
+      `You ${changeMsg} ${numberWithCommas(Math.abs(pointsChange))} points.${
         Math.sign(pointsChange) !== 0
           ? `\n**Percent of Bet ${titleCase(changeMsg)}**: ${Math.round(
               (pointsChange / points) * 100
             )}%`
           : ""
-      }\n\nYou now have ${player.points + pointsChange} points.`
+      }\n\nYou now have ${numberWithCommas(player.points + pointsChange)} points.`
     );
     msg.say(messageEmbed);
   }
