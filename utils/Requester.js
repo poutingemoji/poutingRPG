@@ -1,12 +1,9 @@
-  
-const fetch = require("node-fetch")
+const fetch = require("node-fetch");
 
-const Requester =  {
-
+const Requester = {
   async request(URL) {
-    let res = await fetch(URL)
-    return await res.json()
-  }
-
-}
-module.exports = Requester
+    let res = await fetch(URL);
+    return await res.json();
+  },
+};
+module.exports = Requester;

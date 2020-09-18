@@ -1,47 +1,47 @@
 const families = {
   ari: {
-    name: 'Ari',
-    emoji: '🕊️',
+    name: "Ari",
+    emoji: "🕊️",
   },
   arie: {
-    name: 'Arie',
-    emoji: '🤺',
+    name: "Arie",
+    emoji: "🤺",
   },
   eurasia: {
-    name: 'Eurasia',
-    emoji: '💤',
+    name: "Eurasia",
+    emoji: "💤",
   },
   ha: {
-    name: 'Ha',
-    emoji: '🛡️',
+    name: "Ha",
+    emoji: "🛡️",
   },
   hendolok: {
-   name: 'Hendo Lok',
-   emoji: '⚰️',
+    name: "Hendo Lok",
+    emoji: "⚰️",
   },
   khun: {
-    name: 'Khun',
-    emoji: '⚡',
+    name: "Khun",
+    emoji: "⚡",
   },
   lopobia: {
-   name: 'Lo Po Bia',
-   emoji: '🦮',
+    name: "Lo Po Bia",
+    emoji: "🦮",
   },
   pobidau: {
-    name: 'Po Bidau',
-    emoji: '🔬',
+    name: "Po Bidau",
+    emoji: "🔬",
   },
   tuperie: {
-    name: 'Tu Perie',
-    emoji: '💡',
+    name: "Tu Perie",
+    emoji: "💡",
   },
   yeon: {
-    name: 'Yeon',
-    emoji: '🔥',
+    name: "Yeon",
+    emoji: "🔥",
   },
-}
+};
 
-module.exports = families
+module.exports = families;
 
 /*
 ari = 0

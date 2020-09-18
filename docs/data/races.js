@@ -1,75 +1,71 @@
 const races = {
   human: {
-    name: 'Human',
-    emoji: '👨',
-    category: 'humanoid',
+    name: "Human",
+    emoji: "👨",
+    category: "humanoid",
   },
   redwitch: {
-    name: 'Red Witch',
-    emoji: '🧙',
-    category: 'humanoid',
+    name: "Red Witch",
+    emoji: "🧙",
+    category: "humanoid",
   },
   silverdwarf: {
-    name: 'Silver Dwarf',
-    emoji: '🧭',
-    category: 'humanoid',
+    name: "Silver Dwarf",
+    emoji: "🧭",
+    category: "humanoid",
   },
   canineperson: {
-    name: 'Canine Person',
-    emoji: '🐶',
-    category: 'humanoid',
+    name: "Canine Person",
+    emoji: "🐶",
+    category: "humanoid",
   },
   datahuman: {
-    name: 'Data Human',
-    emoji: '📈',
-    category: 'humanoid',
+    name: "Data Human",
+    emoji: "📈",
+    category: "humanoid",
   },
   khukum: {
-    name: 'Khukum',
-    emoji: '☣️',
-    category: 'humanoid',
+    name: "Khukum",
+    emoji: "☣️",
+    category: "humanoid",
   },
   rabbitear: {
-    name: 'Rabbit Ear',
-    emoji: '🐰',
-    category: 'humanoid',
+    name: "Rabbit Ear",
+    emoji: "🐰",
+    category: "humanoid",
   },
-
-
 
   nativeone: {
-    name: 'Native One',
-    emoji: '☄️',
-    category: 'animalistic',
+    name: "Native One",
+    emoji: "☄️",
+    category: "animalistic",
   },
   dooni: {
-    name: 'Dooni',
-    emoji: '🐷',
-    category: 'animalistic',
+    name: "Dooni",
+    emoji: "🐷",
+    category: "animalistic",
   },
   wraithraiser: {
-    name: 'Wraithraiser',
-    emoji: '🐊',
-    category: 'animalistic',
+    name: "Wraithraiser",
+    emoji: "🐊",
+    category: "animalistic",
   },
-
-
 
   manyeyed: {
-    name: 'Many Eyed',
-    emoji: '👀',
-    category: 'unusual',
+    name: "Many Eyed",
+    emoji: "👀",
+    category: "unusual",
   },
   guardian: {
-    name: 'Guardian',
-    emoji: '🗿',
-    category: 'unusual',
+    name: "Guardian",
+    emoji: "🗿",
+    category: "unusual",
   },
   fluffydwarf: {
-    name: 'Fluffy Dwarf',
-    emoji: '💦',
-    category: 'unusual',
+    name: "Fluffy Dwarf",
+    emoji: "💦",
+    category: "unusual",
   },
-}
+};
 
-module.exports = races
+module.exports = races;

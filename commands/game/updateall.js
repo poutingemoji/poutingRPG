@@ -1,19 +1,17 @@
-require('dotenv').config()
-const { Command } = require('discord.js-commando')
+require("dotenv").config();
+const { Command } = require("discord.js-commando");
 
-const { updateAllPlayers } = require('../../database/Database');
+const { updateAllPlayers } = require("../../database/Database");
 
 module.exports = class UpdateAllCommand extends Command {
   constructor(client) {
     super(client, {
-      name: 'updateall',
+      name: "updateall",
       aliases: [],
-      group: 'game',
-      memberName: 'updateall',
-      description: 'Update all MongoDB documents.',
-      examples: [
-        `${client.commandPrefix}updateall`,
-      ],
+      group: "game",
+      memberName: "updateall",
+      description: "Update all MongoDB documents.",
+      examples: [`${client.commandPrefix}updateall`],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
@@ -21,17 +19,17 @@ module.exports = class UpdateAllCommand extends Command {
       args: [],
       throttling: {
         usages: 1,
-        duration: 5
+        duration: 5,
       },
-    })
+    });
   }
 
   run(msg) {
-    if (msg.author.id !== '257641125135908866') return
-    updateAllPlayers()
-    return msg.say('Updated all MongoDB documents, master.')
+    if (msg.author.id !== "257641125135908866") return;
+    updateAllPlayers();
+    return msg.say("Updated all MongoDB documents, master.");
     //const player = await findPlayer(msg, msg.author)
     //addQuestsPlayer(msg.author)
     //return msg.say('WIP')
   }
-}
+};

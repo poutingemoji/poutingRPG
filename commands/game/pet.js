@@ -1,25 +1,48 @@
-require('dotenv').config()
-const { Command } = require('discord.js-commando')
-const { MessageEmbed } = require('discord.js')
+require("dotenv").config();
+const { Command } = require("discord.js-commando");
+const { MessageEmbed } = require("discord.js");
 
-const { findPlayer, buyPet, updateNeedsPet, addExpPet, renamePet, removePet } = require('../../database/Database');
-const { clamp, titleCase, secondsToDhms, numberWithCommas, paginate } = require('../../utils/Helper');
-const { commandInfo, buildEmbeds } = require('../../utils/msgHelper')
-const { petNeeds, petActions, links } = require('../../utils/enumHelper');
+const {
+  findPlayer,
+  buyPet,
+  updateNeedsPet,
+  addExpPet,
+  renamePet,
+  removePet,
+} = require("../../database/Database");
+const {
+  clamp,
+  titleCase,
+  secondsToDhms,
+  numberWithCommas,
+  paginate,
+} = require("../../utils/Helper");
+const { commandInfo, buildEmbeds } = require("../../utils/msgHelper");
+const { petNeeds, petActions, links } = require("../../utils/enumHelper");
 
-const pets = require('../../docs/data/pets.js');
+const pets = require("../../docs/data/pets.js");
 
-const oneOf = ['', 'feed', 'wash', 'play', 'pat', 'name', 'disown', 'list', 'buy']
+const oneOf = [
+  "",
+  "feed",
+  "wash",
+  "play",
+  "pat",
+  "name",
+  "disown",
+  "list",
+  "buy",
+];
 const pageLength = 4;
 
 module.exports = class petCommand extends Command {
-	constructor(client) {
-		super(client, {
-			name: 'pet',
-			aliases: [],
-			group: 'game',
-			memberName: 'pet',
-			description: 'Displays your pet.',
+  constructor(client) {
+    super(client, {
+      name: "pet",
+      aliases: [],
+      group: "game",
+      memberName: "pet",
+      description: "Displays your pet.",
       examples: [
         `${client.commandPrefix}pet`,
         `${client.commandPrefix}pet feed`,
@@ -31,123 +54,173 @@ module.exports = class petCommand extends Command {
         `${client.commandPrefix}pet list`,
         `${client.commandPrefix}pet buy`,
       ],
-			clientPermissions: [],
-			userPermissions: [],
+      clientPermissions: [],
+      userPermissions: [],
       guildOnly: true,
       args: [
         {
-          key: 'action',
+          key: "action",
           prompt: "What would you like to do to your pet?",
-					type: 'string',
-          default: '',
+          type: "string",
+          default: "",
         },
         {
-          key: 'nickname',
-          prompt: 'What would you like to call your pet?',
-					type: 'string',
-          default: false
+          key: "nickname",
+          prompt: "What would you like to call your pet?",
+          type: "string",
+          default: false,
         },
       ],
       throttling: {
         usages: 1,
-        duration: 4
+        duration: 4,
       },
-    })
-	}
-  
+    });
+  }
+
   //console.log(newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
-	async run(msg, { action, nickname }) {
+  async run(msg, { action, nickname }) {
     if (!oneOf.includes(action) && !pets.hasOwnProperty(action)) {
-      return commandInfo(msg, this)
-    }    
-    var player = await findPlayer(msg, msg.author)
-    var pet = player.pet
-    
-    if (pets.hasOwnProperty(action)) {
-      return msg.say(await buyPet(msg.author, action))
+      return commandInfo(msg, this);
     }
-    
+    var player = await findPlayer(msg, msg.author);
+    var pet = player.pet;
+
+    if (pets.hasOwnProperty(action)) {
+      return msg.say(await buyPet(msg.author, action));
+    }
 
     switch (action) {
-      case 'list':
+      case "list":
         const embeds = [];
-        var { maxPage } = paginate(Object.keys(pets), 1, pageLength)
+        var { maxPage } = paginate(Object.keys(pets), 1, pageLength);
         for (let page = 0; page < maxPage; page++) {
-          var { items } = paginate(Object.keys(pets), page+1, pageLength)
-          let itemsOffered = ''
+          var { items } = paginate(Object.keys(pets), page + 1, pageLength);
+          let itemsOffered = "";
           for (let item = 0; item < items.length; item++) {
-            const itemInfo = pets[items[item]]
-            itemsOffered += `${itemInfo.emoji} **${itemInfo.name}**\n*[id: ${items[item]}](${links.website})*\n${numberWithCommas(itemInfo.price)} points\n\n`
+            const itemInfo = pets[items[item]];
+            itemsOffered += `${itemInfo.emoji} **${itemInfo.name}**\n*[id: ${
+              items[item]
+            }](${links.website})*\n${numberWithCommas(
+              itemInfo.price
+            )} points\n\n`;
           }
           embeds.push(
             new MessageEmbed()
-            .setTitle(`[Page ${page+1}/${maxPage}]`)
-            .setDescription(itemsOffered)
-          )
+              .setTitle(`[Page ${page + 1}/${maxPage}]`)
+              .setDescription(itemsOffered)
+          );
         }
-        buildEmbeds(msg, embeds, `To purchase a pet: ${this.client.commandPrefix}pet [id]`)
+        buildEmbeds(
+          msg,
+          embeds,
+          `To purchase a pet: ${this.client.commandPrefix}pet [id]`
+        );
         break;
-      case 'name':
-        if (nickname.length > 32 || !nickname) return msg.say('Please keep your nickname at 32 characters or under.')
-        renamePet(msg.author, nickname)
-        msg.say(`Your pet's name is now **${nickname}**.`)
+      case "name":
+        if (nickname.length > 32 || !nickname)
+          return msg.say(
+            "Please keep your nickname at 32 characters or under."
+          );
+        renamePet(msg.author, nickname);
+        msg.say(`Your pet's name is now **${nickname}**.`);
         break;
-      case 'disown':
-        removePet(msg.author)
-        msg.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
+      case "disown":
+        removePet(msg.author);
+        msg.say(
+          `You have disowned ${
+            pet.nickname
+              ? pet.nickname
+              : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`
+          }.`
+        );
         break;
-      default: 
-        if (!pets[pet.id]) return msg.say(`You don't have a pet. You can view a list of the pets with: \`${this.client.commandPrefix}pet list\``)
+      default:
+        if (!pets[pet.id])
+          return msg.say(
+            `You don't have a pet. You can view a list of the pets with: \`${this.client.commandPrefix}pet list\``
+          );
 
-        var differences = []
+        var differences = [];
         if (Object.keys(petActions).includes(action)) {
-          const actionIndex = Object.keys(petActions).findIndex(a => action == a)
-          const needIncrease = clamp((pet[petNeeds[actionIndex]] + 42), 0, 100) - pet[petNeeds[actionIndex]]
-          if (needIncrease == 0) return msg.say(`Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`)
-          differences[actionIndex] = 42
-          addExpPet(msg.author, Math.round(needIncrease), 0, 100)
-          return msg.say(`You ${action} your pet.`)
+          const actionIndex = Object.keys(petActions).findIndex(
+            (a) => action == a
+          );
+          const needIncrease =
+            clamp(pet[petNeeds[actionIndex]] + 42, 0, 100) -
+            pet[petNeeds[actionIndex]];
+          if (needIncrease == 0)
+            return msg.say(
+              `Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`
+            );
+          differences[actionIndex] = 42;
+          addExpPet(msg.author, Math.round(needIncrease), 0, 100);
+          return msg.say(`You ${action} your pet.`);
         }
 
-        const secondsPassed = (Date.now() - pet.updatedAt)/1000
-        console.log(secondsPassed)
+        const secondsPassed = (Date.now() - pet.updatedAt) / 1000;
+        console.log(secondsPassed);
         for (var i = 0; i < petNeeds.length; i++) {
-          const difference = -(secondsPassed/pets[pet.id].empty[petNeeds[i]])*100
-          differences.push(difference)
-          pet[petNeeds[i]] += difference
+          const difference =
+            -(secondsPassed / pets[pet.id].empty[petNeeds[i]]) * 100;
+          differences.push(difference);
+          pet[petNeeds[i]] += difference;
         }
 
-        updateNeedsPet(msg.author, differences)
-        console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
+        updateNeedsPet(msg.author, differences);
+        console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy]);
         const messageEmbed = new MessageEmbed()
-        .setTitle(`${msg.member.nickname || msg.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)
-        .setThumbnail(pets[pet.id].image)
-
-        var mood
-        var roundedNeeds = []
-        for (var i = 0; i < petNeeds.length; i++) {
-          var need = petNeeds[i]
-          pet[need] = clamp(pet[need], 0, 100)
-          var roundedNeed = Math.round(pet[need])
-          roundedNeeds.push(roundedNeed)
-          messageEmbed.addField(
-            `${titleCase(need)
-            } (${roundedNeed}%)`, 
-            `[${progressBar(roundedNeed/100)}](https://www.youtube.com/user/pokimane)\n${
-            pet[need] !== 0 ? `\`${secondsToDhms((pet[need]/100)*pets[pet.id].empty[need], ' and ', true, 2)
-            } until empty\`` : ''}`, true
+          .setTitle(
+            `${msg.member.nickname || msg.author.username}'s ${
+              pets[pet.id].name
+            } ${pets[pet.id].emoji}\n${
+              pet.nickname !== "" ? `(${pet.nickname})` : ""
+            }`
           )
+          .setThumbnail(pets[pet.id].image);
+
+        var mood;
+        var roundedNeeds = [];
+        for (var i = 0; i < petNeeds.length; i++) {
+          var need = petNeeds[i];
+          pet[need] = clamp(pet[need], 0, 100);
+          var roundedNeed = Math.round(pet[need]);
+          roundedNeeds.push(roundedNeed);
+          messageEmbed.addField(
+            `${titleCase(need)} (${roundedNeed}%)`,
+            `[${progressBar(
+              roundedNeed / 100
+            )}](https://www.youtube.com/user/pokimane)\n${
+              pet[need] !== 0
+                ? `\`${secondsToDhms(
+                    (pet[need] / 100) * pets[pet.id].empty[need],
+                    " and ",
+                    true,
+                    2
+                  )} until empty\``
+                : ""
+            }`,
+            true
+          );
         }
         messageEmbed.addFields(
-          { name: `Experience`, value: `[${progressBar(pet.exp/pet.expMax)}](https://www.youtube.com/user/pokimane)\n\`Level ${pet.level} (${pet.exp}/${pet.expMax})\``, inline: true },
-          { name: `Mood`, value: 'Great', inline: true }
-        )
+          {
+            name: `Experience`,
+            value: `[${progressBar(
+              pet.exp / pet.expMax
+            )}](https://www.youtube.com/user/pokimane)\n\`Level ${pet.level} (${
+              pet.exp
+            }/${pet.expMax})\``,
+            inline: true,
+          },
+          { name: `Mood`, value: "Great", inline: true }
+        );
         msg.say(messageEmbed);
     }
   }
-}
+};
 
 function progressBar(value) {
-  value = Math.round(clamp(value, 0, 1)*10)
-  return `${'■'.repeat(value)}${'□'.repeat(10-value)}`;
+  value = Math.round(clamp(value, 0, 1) * 10);
+  return `${"■".repeat(value)}${"□".repeat(10 - value)}`;
 }

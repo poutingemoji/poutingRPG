@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const playerSchema = new mongoose.Schema({
   playerId: String,
@@ -16,20 +16,20 @@ const playerSchema = new mongoose.Schema({
   health: Number,
   shinsu: Number,
   updatedAt: Date,
-  
+
   statpoints: Number,
 
   baang: Number,
   myun: Number,
   soo: Number,
-  
+
   durability: Number,
   speed: Number,
   physical: Number,
 
   points: Number,
   dallars: Number,
-  
+
   technique: {},
   arc: Number,
   chapter: Number,
@@ -54,11 +54,7 @@ const playerSchema = new mongoose.Schema({
   fishes: {
     type: Map,
     of: Number,
-  }
-})
+  },
+});
 
-module.exports = playerSchema
-
-
-
-
+module.exports = playerSchema;
