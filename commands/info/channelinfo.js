@@ -12,7 +12,9 @@ module.exports = class ChannelinfoCommand extends Command {
 			group: 'info',
 			memberName: 'channelinfo',
       description: "Displays info about the mentioned channel.",
-      examples: [`${client.commandPrefix}channelinfo`],
+      examples: [
+        `${client.commandPrefix}channelinfo`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

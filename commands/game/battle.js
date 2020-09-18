@@ -16,7 +16,9 @@ module.exports = class BattleCommand extends Command {
       group: 'game',
       memberName: 'battle',
       description: 'Start a battle.',
-      examples: [`${client.commandPrefix}battle`],
+      examples: [
+        `${client.commandPrefix}battle`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

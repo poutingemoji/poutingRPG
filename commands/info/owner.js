@@ -11,7 +11,9 @@ module.exports = class OwnerCommand extends Command {
 			group: 'info',
 			memberName: 'owner',
         description: "Shows the owner of this bot.",
-        examples: [`${client.commandPrefix}owner`],
+        examples: [
+          `${client.commandPrefix}owner`,
+        ],
         clientPermissions: [],
         userPermissions: [],
         guildOnly: true,

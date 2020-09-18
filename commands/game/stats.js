@@ -6,7 +6,7 @@ const { findPlayer } = require('../../database/Database');
 
 const moves = require('../../docs/data/moves.js')
 
-module.exports = class ShinsuCommand extends Command {
+module.exports = class StatsCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'stats',
@@ -14,7 +14,9 @@ module.exports = class ShinsuCommand extends Command {
 			group: 'game',
 			memberName: 'stats',
 			description: 'Display your stats and stat points.',
-			examples: [],
+			examples: [
+        `${client.commandPrefix}stats`
+      ],
 			clientPermissions: [],
 			userPermissions: [],
       guildOnly: true,

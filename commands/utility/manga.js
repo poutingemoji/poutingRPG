@@ -24,7 +24,9 @@ module.exports = class MangaCommand extends Command {
 			group: 'utility',
 			memberName: 'manga',
       description: 'Displays info of the requested manga.',
-      examples: [`${client.commandPrefix}manga [manga]`],
+      examples: [
+        `${client.commandPrefix}manga [manga]`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       args: [

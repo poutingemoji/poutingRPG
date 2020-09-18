@@ -23,7 +23,9 @@ module.exports = class ProfileCommand extends Command {
 			group: "game",
 			memberName: "profile",
 			description: "Displays your profile.",
-			examples: [`${client.commandPrefix}profile [@user/id]`],
+			examples: [
+        `${client.commandPrefix}profile [@user/id]`
+      ],
 			clientPermissions: [],
 			userPermissions: [],
       guildOnly: true,

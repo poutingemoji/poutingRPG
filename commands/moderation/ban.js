@@ -11,7 +11,9 @@ module.exports = class BanCommand extends Command {
 			group: 'moderation',
 			memberName: 'ban',
       description: 'Bans the specified user.',
-      examples: [`${client.commandPrefix}ban [user]`],
+      examples: [
+        `${client.commandPrefix}ban [user]`,
+      ],
       clientPermissions: ['BAN_MEMBERS'],
       userPermissions: ['BAN_MEMBERS'],
       guildOnly: true,

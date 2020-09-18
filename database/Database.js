@@ -101,7 +101,7 @@ class Database {
     }));
   }
 
-  incrementValuePlayer(player, key, value) {
+  changeValuePlayer(player, key, value) {
     Player.findOne({ playerId: player.id }, (err, res) => { 
       console.log(key, value)
       res[key] += value
@@ -119,8 +119,8 @@ class Database {
         res.level++
         res.exp -= res.expMax
         res.expMax = Parser.evaluate(expFormulas['mediumslow'], { n: res.level+1 })
-        res.health = maxHealth(res.level+1)
-        res.shinsu = maxShinsu(res.level+1)
+        res.health = maxHealth(res.level)
+        res.shinsu = maxShinsu(res.level)
         res.statpoints += 5
       }
 

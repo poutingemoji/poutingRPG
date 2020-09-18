@@ -11,7 +11,9 @@ module.exports = class UpdateAllCommand extends Command {
       group: 'game',
       memberName: 'updateall',
       description: 'Update all MongoDB documents.',
-      examples: [`${client.commandPrefix}updateall`],
+      examples: [
+        `${client.commandPrefix}updateall`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

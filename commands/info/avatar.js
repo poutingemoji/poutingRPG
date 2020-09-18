@@ -9,7 +9,9 @@ module.exports = class AvatarCommand extends Command {
 			group: 'info',
 			memberName: 'avatar',
       description: "Links a URL to the avatar of the mentioned user.",
-      examples: [`${client.commandPrefix}avatar [@user/id]`],
+      examples: [
+        `${client.commandPrefix}avatar [@user/id]`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

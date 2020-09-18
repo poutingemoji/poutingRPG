@@ -64,7 +64,6 @@ module.exports = class petCommand extends Command {
     var pet = player.pet
     
     if (pets.hasOwnProperty(action)) {
-
       return msg.say(await buyPet(msg.author, action))
     }
     
@@ -90,11 +89,11 @@ module.exports = class petCommand extends Command {
         break;
       case 'name':
         if (nickname.length > 32 || !nickname) return msg.say('Please keep your nickname at 32 characters or under.')
-        await renamePet(msg.author, nickname)
+        renamePet(msg.author, nickname)
         msg.say(`Your pet's name is now **${nickname}**.`)
         break;
       case 'disown':
-        await removePet(msg.author)
+        removePet(msg.author)
         msg.say(`You have disowned ${pet.nickname ? pet.nickname : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`}.`)
         break;
       default: 
@@ -102,12 +101,12 @@ module.exports = class petCommand extends Command {
 
         var differences = []
         if (Object.keys(petActions).includes(action)) {
-          const actionIndex = Object.keys(petActions).findIndex(action => action == action)
+          const actionIndex = Object.keys(petActions).findIndex(a => action == a)
           const needIncrease = clamp((pet[petNeeds[actionIndex]] + 42), 0, 100) - pet[petNeeds[actionIndex]]
           if (needIncrease == 0) return msg.say(`Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`)
-          msg.say(`You ${action} your pet.`)
           differences[actionIndex] = 42
-          await addExpPet(msg.author, Math.round(needIncrease), 0, 100)
+          addExpPet(msg.author, Math.round(needIncrease), 0, 100)
+          return msg.say(`You ${action} your pet.`)
         }
 
         const secondsPassed = (Date.now() - pet.updatedAt)/1000
@@ -118,7 +117,7 @@ module.exports = class petCommand extends Command {
           pet[petNeeds[i]] += difference
         }
 
-        await updateNeedsPet(msg.author, differences)
+        updateNeedsPet(msg.author, differences)
         console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy])
         const messageEmbed = new MessageEmbed()
         .setTitle(`${msg.member.nickname || msg.author.username}'s ${pets[pet.id].name} ${pets[pet.id].emoji}\n${pet.nickname !== '' ? `(${pet.nickname})` : ''}`)

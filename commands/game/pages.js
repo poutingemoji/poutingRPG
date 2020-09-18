@@ -14,7 +14,9 @@ module.exports = class PagesCommand extends Command {
 			group: 'game',
 			memberName: 'pages',
 			description: 'Page test.',
-			examples: [`${client.commandPrefix}pages`],
+			examples: [
+        `${client.commandPrefix}pages`,
+      ],
 			clientPermissions: [],
 			userPermissions: [],
       guildOnly: true,

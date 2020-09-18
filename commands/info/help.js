@@ -14,7 +14,9 @@ module.exports = class HelpCommand extends Command {
 			group: 'info',
 			memberName: 'help',
       description: "Shows the command list.",
-      examples: [`${client.commandPrefix}help`],
+      examples: [
+        `${client.commandPrefix}help`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       args: [

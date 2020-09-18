@@ -14,7 +14,9 @@ module.exports = class UserinfoCommand extends Command {
 			group: 'info',
 			memberName: 'userinfo',
       description: "Display the user mentioned's info.",
-      examples: [`${client.commandPrefix}userinfo [@user/id]`],
+      examples: [
+        `${client.commandPrefix}userinfo [@user/id]`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,

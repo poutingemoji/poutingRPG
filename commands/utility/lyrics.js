@@ -14,7 +14,9 @@ module.exports = class LyricsCommand extends Command {
 			group: 'utility',
 			memberName: 'lyrics',
       description: 'Display the lyrics of the requested song.',
-      examples: [`${client.commandPrefix}lyrics [song]`],
+      examples: [
+        `${client.commandPrefix}lyrics [song]`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       args: [

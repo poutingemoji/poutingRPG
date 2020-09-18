@@ -3,6 +3,9 @@ const { Command } = require('discord.js-commando')
 
 const { emoji } = require('../../utils/Helper')
 
+const minLimit = 1;
+const maxLimit = 100;
+
 module.exports = class PurgeCommand extends Command {
   constructor(client) {
     super(client, {
@@ -12,7 +15,7 @@ module.exports = class PurgeCommand extends Command {
       memberName: 'purge',
       description: 'Allows you to mass delete messages in your server.',
       examples: [
-        `${client.commandPrefix}purge [number]`,
+        `${client.commandPrefix}purge [#msgs]`,
       ],
       clientPermissions: ['MANAGE_MESSAGES'],
       userPermissions: ['MANAGE_MESSAGES'],
@@ -22,9 +25,11 @@ module.exports = class PurgeCommand extends Command {
           key: 'numOfMsgs',
           prompt: 'How many messages would you like to purge?',
           type: 'integer',
-          validate: num => {
-            if (100 > num && num > 0) return true
-            return "Number of messages deleted must be greater than 0 and less than 100."
+          validate: amt => {
+            if (isNaN(amt)) return
+            if (amt < minLimit) return `You need to purge at least ${minLimit} msg(s).`;
+            if (amt > maxLimit) return `You can't purge more than ${maxLimit} msg(s)`;
+            return true;
           }
         },
       ],

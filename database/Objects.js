@@ -66,12 +66,9 @@ const Objects = {
     }
   },
 
-  newTechnique(id) {
+  newMove(id) {
     return {
-      move: {
-        id: id,
-        mastery: 1,
-      }
+      move: [id]
     }
   },
 
@@ -80,9 +77,10 @@ const Objects = {
       pet: {
         id: id,
         updatedAt: Date.now(),
-  
+        
         level: 1, exp: 0, expMax: Parser.evaluate(expFormulas[pets[id].exprate], { n: 2 }),
         hunger: 100, hygiene: 100, fun: 100, energy: 100,
+        nickname: '',
       }
     }
   },

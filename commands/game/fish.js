@@ -2,7 +2,7 @@ require('dotenv').config();
 const { Command } = require('discord.js-commando');
 const { MessageEmbed } = require('discord.js');
 
-const { findPlayer, addExpPlayer, incrementValuePlayer, addFishPlayer } = require('../../database/Database');
+const { findPlayer, addExpPlayer, changeValuePlayer, addFishPlayer } = require('../../database/Database');
 const { percentageChance } = require('../../utils/Helper');
 const { currencies } = require('../../utils/enumHelper');
 
@@ -58,7 +58,7 @@ module.exports = class FishCommand extends Command {
           if (fishes[fish].hasOwnProperty(cur.name)) {
             description += `*You earned ${cur.name}:* **+ ${fishes[fish][cur.name]}** ${cur.emoji}\n`
             description += `*You earned experience:* **+ ${exp}** ✨`
-            await incrementValuePlayer(msg.author, cur.name, fishes[fish][cur.name])
+            await changeValuePlayer(msg.author, cur.name, fishes[fish][cur.name])
             await addExpPlayer(msg.author, msg, exp)
             await addFishPlayer(msg.author, fish)
           }
