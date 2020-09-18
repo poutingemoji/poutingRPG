@@ -124,7 +124,6 @@ class Database {
 
   changeValuePlayer(player, key, value) {
     Player.findOne({ playerId: player.id }, (err, res) => {
-      console.log(key, value);
       res[key] += value;
       res.save().catch((err) => console.log(err));
     });

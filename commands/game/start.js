@@ -86,7 +86,7 @@ module.exports = class StartCommand extends Command {
           }** race, I sincerely welcome you to the Tower.`
         )
         .setFooter(
-          `The story mode isn't done right now, there are only pets and fishing. I will do a fresh reset when I am ready to release. You can view a list of commands with: ${this.client.commandPrefix}help`
+          `The story mode isn't done right now, there are only pets, gambling, and fishing. I will do a fresh reset when I am ready to release. You can view a list of commands with: ${this.client.commandPrefix}help`
         )
     );
     createNewPlayer(

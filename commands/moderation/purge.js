@@ -20,14 +20,15 @@ module.exports = class PurgeCommand extends Command {
       guildOnly: true,
       args: [
         {
-          key: "numOfMsgs",
+          key: "int",
           prompt: "How many messages would you like to purge?",
           type: "integer",
-          validate: (amt) => {
-            if (isNaN(amt)) return;
-            if (amt < minLimit)
+          validate: (int) => {
+            if (isNaN(int)) return;
+            if (!Number.isInteger(int)) return 'You need to provide an integer.';
+            if (int < minLimit)
               return `You need to purge at least ${minLimit} msg(s).`;
-            if (amt > maxLimit)
+            if (int > maxLimit)
               return `You can't purge more than ${maxLimit} msg(s)`;
             return true;
           },
@@ -39,17 +40,15 @@ module.exports = class PurgeCommand extends Command {
       },
     });
   }
-  run(msg, { numOfMsgs }) {
-    numOfMsgs++;
-    msg.channel.bulkDelete(numOfMsgs, true).catch((err) => {
+  run(msg, { int }) {
+    int++;
+    msg.channel.bulkDelete(int, true).catch((err) => {
       console.error(err);
     });
     try {
       msg
         .say(
-          `Deletion of messages successful. Total messages deleted: ${
-            numOfMsgs - 1
-          }`
+          `Deletion of messages successful. Total messages deleted: ${int - 1}`
         )
         .then((msgSent) => {
           setTimeout(function () {

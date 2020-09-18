@@ -3,13 +3,16 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer, changeValuePlayer } = require("../../database/Database");
+const { titleCase } = require("../../utils/Helper");
 const { embedColors, positionColors } = require("../../utils/enumHelper");
 
 const moves = require("../../docs/data/moves.js");
 const positions = require("../../docs/data/positions");
 
 const minLimit = 500;
-const maxLimit = 9999;
+const maxLimit = 30000;
+
+const highestRoll = 12;
 
 module.exports = class GambleCommand extends Command {
   constructor(client) {
@@ -31,11 +34,12 @@ module.exports = class GambleCommand extends Command {
           key: "points",
           prompt: "How much would you like to gamble?",
           type: "string",
-          validate: (amt) => {
-            if (isNaN(amt) && amt !== "all") return;
-            if (amt < minLimit)
+          validate: (num) => {
+            if (isNaN(num) && num !== "all") return;
+            if (!Number.isInteger(int)) return 'You need to provide an integer.';
+            if (num < minLimit)
               return `You need to gamble at least ${minLimit} points.`;
-            if (amt > maxLimit)
+            if (num > maxLimit)
               return `You can't gamble more than ${maxLimit}.`;
             return true;
           },
@@ -50,17 +54,22 @@ module.exports = class GambleCommand extends Command {
 
   async run(msg, { points }) {
     const player = await findPlayer(msg, msg.author);
-    if (points == "all") points = player.points;
-    console.log(points);
+    if (points == "all") points = maxLimit;
     if (points > player.points)
       return msg.say(`You don't have ${points} points.`);
-    const roll1 = Math.floor(Math.random() * 10);
-    const roll2 = Math.floor(Math.random() * 10);
-    var pointsChange = Math.round(points * (roll1 - roll2));
+    const roll1 = Math.floor(Math.random() * highestRoll);
+    const roll2 = Math.floor(Math.random() * highestRoll);
+    var pointsChange = Math.round(
+      points * (((roll1 - roll2) * highestRoll) / 100)
+    );
+    if (-points > pointsChange) pointsChange = -points;
     changeValuePlayer(msg.author, "points", pointsChange);
 
     const messageEmbed = new MessageEmbed()
-      .setTitle(`${msg.author.username}'s Gambling Game`)
+      .setAuthor(
+        "Khun's Gambling Game",
+        "https://cdn.discordapp.com/attachments/722720878932262952/756417772304465990/Khun_Aguero_Agnis.png"
+      )
       .addFields(
         {
           name: msg.author.username,
@@ -89,9 +98,13 @@ module.exports = class GambleCommand extends Command {
         changeMsg = "won/lost";
     }
     messageEmbed.setDescription(
-      `You ${changeMsg} ${Math.abs(pointsChange)} points.\n\nYou now have ${
-        player.points + pointsChange
-      } points.`
+      `You ${changeMsg} ${Math.abs(pointsChange)} points.${
+        Math.sign(pointsChange) !== 0
+          ? `\n**Percent of Bet ${titleCase(changeMsg)}**: ${Math.round(
+              (pointsChange / points) * 100
+            )}%`
+          : ""
+      }\n\nYou now have ${player.points + pointsChange} points.`
     );
     msg.say(messageEmbed);
   }

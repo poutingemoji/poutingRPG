@@ -22,7 +22,7 @@ module.exports = class BanCommand extends Command {
           type: "user",
         },
         {
-          key: "numOfDays",
+          key: "intOfDays",
           prompt: "How many days would you like this user to be banned?",
           type: "integer",
           default: false,
@@ -34,14 +34,14 @@ module.exports = class BanCommand extends Command {
       },
     });
   }
-  run(msg, { user, numOfDays }) {
+  run(msg, { user, intOfDays }) {
     msg.guild
       .member(user)
-      .ban({ days: numOfDays })
+      .ban({ days: intOfDays })
       .then(() => {
         msg.say(
           `Successfully banned **${user.tag}**${
-            numOfDays ? ` for ${numOfDays} day(s)` : ""
+            intOfDays ? ` for ${intOfDays} day(s)` : ""
           }.`
         );
       })

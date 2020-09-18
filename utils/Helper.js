@@ -44,8 +44,8 @@ const Helper = {
     return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   },
 
-  clamp(num, min, max) {
-    return num <= min ? min : num >= max ? max : num;
+  clamp(int, min, max) {
+    return int <= min ? min : int >= max ? max : int;
   },
 
   isBetween(n, a, b) {
