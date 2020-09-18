@@ -35,7 +35,7 @@ module.exports = class GambleCommand extends Command {
           type: "string",
           validate: (num) => {
             if (isNaN(num) && num !== "all") return;
-            if (!Number.isInteger(num) && num !== "all")
+            if (!Number.isInteger(parseInt(num)) && num !== "all")
               return "You need to provide an integer.";
             if (num < minLimit)
               return `You need to gamble at least ${minLimit} points.`;

@@ -23,12 +23,12 @@ module.exports = class PurgeCommand extends Command {
           key: "int",
           prompt: "How many messages would you like to purge?",
           type: "integer",
-          validate: (int) => {
-            if (isNaN(int)) return;
-            if (!Number.isInteger(int)) return 'You need to provide an integer.';
-            if (int < minLimit)
+          validate: (num) => {
+            if (isNaN(num)) return;
+            if (!Number.isInteger(parseInt(num))) return 'You need to provide an integer.';
+            if (num < minLimit)
               return `You need to purge at least ${minLimit} msg(s).`;
-            if (int > maxLimit)
+            if (num > maxLimit)
               return `You can't purge more than ${maxLimit} msg(s)`;
             return true;
           },
