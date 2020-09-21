@@ -154,21 +154,19 @@ module.exports = class petCommand extends Command {
               `Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`
             );
           differences[actionIndex] = 42;
+          updateNeedsPet(msg.author, differences);
           addExpPet(msg.author, Math.round(needIncrease), 0, 100);
           return msg.say(`You ${action} your pet.`);
         }
 
         const secondsPassed = (Date.now() - pet.updatedAt) / 1000;
-        console.log(secondsPassed);
         for (var i = 0; i < petNeeds.length; i++) {
           const difference =
             -(secondsPassed / pets[pet.id].empty[petNeeds[i]]) * 100;
           differences.push(difference);
           pet[petNeeds[i]] += difference;
         }
-
         updateNeedsPet(msg.author, differences);
-        console.log([pet.hunger, pet.hygiene, pet.fun, pet.energy]);
         const messageEmbed = new MessageEmbed()
           .setTitle(
             `${msg.member.nickname || msg.author.username}'s ${
