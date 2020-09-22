@@ -27,7 +27,7 @@ module.exports = class StatsCommand extends Command {
   }
 
   async run(msg) {
-    const player = await findPlayer(msg, msg.author);
+    const player = await findPlayer(msg.author, msg);
     const stats = [
       {
         ["⚗️ Baang (Max Shinsu)"]: player.baang,

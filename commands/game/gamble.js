@@ -2,12 +2,14 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const { findPlayer, changeValuePlayer } = require("../../database/Database");
+const { findPlayer } = require("../../database/Database");
 const { titleCase, numberWithCommas } = require("../../utils/Helper");
 const { embedColors, positionColors } = require("../../utils/enumHelper");
 
 const moves = require("../../docs/data/moves.js");
 const positions = require("../../docs/data/positions");
+
+const { incrementValue } = require("../../database/functions");
 
 const minLimit = 500;
 const maxLimit = 30000;
@@ -53,7 +55,8 @@ module.exports = class GambleCommand extends Command {
   }
 
   async run(msg, { points }) {
-    const player = await findPlayer(msg, msg.author);
+    const player = await findPlayer(msg.author, msg);
+    player.incrementValue = incrementValue;
     if (points == "all") {
       if (points < minLimit)
         return `You need to gamble at least ${minLimit} points.`;
@@ -72,7 +75,7 @@ module.exports = class GambleCommand extends Command {
       points * (((roll1 - roll2) * highestRoll) / 100)
     );
     if (-points > pointsChange) pointsChange = -points;
-    changeValuePlayer(msg.author, "points", pointsChange);
+    player.incrementValue(msg.author, "points", pointsChange);
 
     const messageEmbed = new MessageEmbed()
       .setAuthor(
@@ -113,7 +116,9 @@ module.exports = class GambleCommand extends Command {
               (pointsChange / points) * 100
             )}%`
           : ""
-      }\n\nYou now have ${numberWithCommas(player.points + pointsChange)} points.`
+      }\n\nYou now have ${numberWithCommas(
+        player.points + pointsChange
+      )} points.`
     );
     msg.say(messageEmbed);
   }

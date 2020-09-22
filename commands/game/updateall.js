@@ -28,8 +28,5 @@ module.exports = class UpdateAllCommand extends Command {
     if (msg.author.id !== "257641125135908866") return;
     updateAllPlayers();
     return msg.say("Updated all MongoDB documents, master.");
-    //const player = await findPlayer(msg, msg.author)
-    //addQuestsPlayer(msg.author)
-    //return msg.say('WIP')
   }
 };

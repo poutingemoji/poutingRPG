@@ -2,14 +2,7 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const {
-  findPlayer,
-  buyPet,
-  updateNeedsPet,
-  addExpPet,
-  renamePet,
-  removePet,
-} = require("../../database/Database");
+const { findPlayer } = require("../../database/Database");
 const {
   clamp,
   titleCase,
@@ -20,8 +13,17 @@ const {
 const { commandInfo, buildEmbeds } = require("../../utils/msgHelper");
 const { petNeeds, petActions, links } = require("../../utils/enumHelper");
 
+const {
+  buyPet,
+  updateNeedsPet,
+  addExpPet,
+  renamePet,
+  removePet,
+} = require("../../database/functions");
+
 const pets = require("../../docs/data/pets.js");
 
+const pageLength = 4;
 const oneOf = [
   "",
   "feed",
@@ -33,7 +35,6 @@ const oneOf = [
   "list",
   "buy",
 ];
-const pageLength = 4;
 
 module.exports = class petCommand extends Command {
   constructor(client) {
@@ -83,11 +84,29 @@ module.exports = class petCommand extends Command {
     if (!oneOf.includes(action) && !pets.hasOwnProperty(action)) {
       return commandInfo(msg, this);
     }
-    var player = await findPlayer(msg, msg.author);
+    const player = await findPlayer(msg.author, msg);
+    player.buyPet = buyPet;
+    player.updateNeedsPet = updateNeedsPet;
+    player.addExpPet = addExpPet;
+    player.renamePet = renamePet;
+    player.removePet = removePet;
     var pet = player.pet;
 
     if (pets.hasOwnProperty(action)) {
-      return msg.say(await buyPet(msg.author, action));
+      var id = action;
+      if (!pets[id]) return msg.say(`There is no pet with the id, ${id}.`);
+      if (player.pet.id)
+        return msg.say(
+          "You need to disown your current pet before buying another."
+        );
+      if (pets[id].price > player.points)
+        return msg.say(
+          `You dont't have enough money to purchase ${pets[id].emoji} ${pets[id].name}.`
+        );
+      await player.buyPet(id);
+      return msg.say(
+        `You bought a ${pets[id].emoji} **${pets[id].name}**. Congratulations!`
+      );
     }
 
     switch (action) {
@@ -122,11 +141,10 @@ module.exports = class petCommand extends Command {
           return msg.say(
             "Please keep your nickname at 32 characters or under."
           );
-        renamePet(msg.author, nickname);
+        player.renamePet(nickname);
         msg.say(`Your pet's name is now **${nickname}**.`);
         break;
       case "disown":
-        removePet(msg.author);
         msg.say(
           `You have disowned ${
             pet.nickname
@@ -134,6 +152,8 @@ module.exports = class petCommand extends Command {
               : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`
           }.`
         );
+        console.log(player.pet.id);
+        player.removePet();
         break;
       default:
         if (!pets[pet.id])
@@ -154,8 +174,8 @@ module.exports = class petCommand extends Command {
               `Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`
             );
           differences[actionIndex] = 42;
-          updateNeedsPet(msg.author, differences);
-          addExpPet(msg.author, Math.round(needIncrease), 0, 100);
+          player.updateNeedsPet(differences);
+          player.addExpPet(Math.round(needIncrease / 4), 0, 100);
           return msg.say(`You ${action} your pet.`);
         }
 
@@ -166,7 +186,7 @@ module.exports = class petCommand extends Command {
           differences.push(difference);
           pet[petNeeds[i]] += difference;
         }
-        updateNeedsPet(msg.author, differences);
+        player.updateNeedsPet(differences);
         const messageEmbed = new MessageEmbed()
           .setTitle(
             `${msg.member.nickname || msg.author.username}'s ${
@@ -222,3 +242,5 @@ function progressBar(value) {
   value = Math.round(clamp(value, 0, 1) * 10);
   return `${"■".repeat(value)}${"□".repeat(10 - value)}`;
 }
+
+function calculateMood() {}

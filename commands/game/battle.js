@@ -33,7 +33,7 @@ module.exports = class BattleCommand extends Command {
   }
 
   async run(msg) {
-    const player = await findPlayer(msg, msg.author);
+    const player = await findPlayer(msg.author, msg);
     var quest;
     for (var i = 0; i < player.quests.length; i++) {
       if (player.quests[i].objectiveType == "Defeat") {

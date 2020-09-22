@@ -33,7 +33,7 @@ module.exports = class StartCommand extends Command {
   }
 
   async run(msg) {
-    const player = await findPlayer(msg, msg.author, true);
+    const player = await findPlayer(msg.author, msg, false);
     if (player) {
       const res = await confirmation(
         msg,

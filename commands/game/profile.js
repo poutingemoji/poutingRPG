@@ -48,7 +48,7 @@ module.exports = class ProfileCommand extends Command {
 
   async run(msg, { user }) {
     user = user || msg.author;
-    const player = await findPlayer(msg, user);
+    const player = await findPlayer(user, msg);
     const [family, race, pet, arc] = [
       families[player.family],
       races[player.race],

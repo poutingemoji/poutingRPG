@@ -1,26 +1,11 @@
 const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
-
 const playerSchema = require("./schemas/player");
+const Player = mongoose.model("Player", playerSchema);
 
-const { clamp, isBetween } = require("../utils/Helper");
-const { confirmation } = require("../utils/msgHelper");
-const {
-  maxHealth,
-  maxShinsu,
-  expFormulas,
-  petNeeds,
-} = require("../utils/enumHelper");
-const { updatedPlayer, newPlayer, newPet, newTechnique } = require("./Objects");
-
-const families = require("../docs/data/families.js");
-const races = require("../docs/data/races.js");
-const positions = require("../docs/data/positions.js");
+const { newPlayer } = require("./Objects");
 
 const pets = require("../docs/data/pets.js");
-const arcs = require("../docs/data/arcs.js");
-
-const Player = mongoose.model("Player", playerSchema);
 
 process.on("close", () => {
   console.log("Database disconnecting on app termination");
@@ -57,27 +42,22 @@ mongoose.connection.on("error", (err) => {
   disconnect();
 });
 
-const Parser = require("expr-eval").Parser;
-
 class Database {
   constructor() {
     connect();
   }
 
-  addQuestsPlayer(player) {
+  findPlayer(player, msg, sendMsg = true) {
     return new Promise((resolve, reject) =>
-      Player.updateOne(
-        { playerId: player.id },
-        { quests: arcs[0].chapters[0].quests },
-        { upsert: true },
-        (err, res) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(res);
+      Player.findOne({ playerId: player.id }, (err, res) => {
+        if (err) {
+          return reject(err);
         }
-      )
+        if (!res && sendMsg) {
+          return msg.say(msg.author.id == player.id ?  `Please type \`${msg.client.commandPrefix}start\` to begin.` : `${player.username} hasn't started climbing the Tower.`)
+        }
+        return resolve(res);
+      })
     );
   }
 
@@ -99,163 +79,8 @@ class Database {
     );
   }
 
-  findPlayer(msg, player, noMessage) {
-    return new Promise((resolve, reject) =>
-      Player.findOne({ playerId: player.id }, (err, res) => {
-        if (err) {
-          return reject(err);
-        }
-        if (!res && !noMessage) {
-          if (msg.author.id == player.id) {
-            return msg.say(
-              `Please type \`${msg.client.commandPrefix}start\` to begin.`
-            );
-          } else {
-            return msg.say(
-              `${player.username} hasn't started climbing the Tower.`
-            );
-          }
-        }
-
-        return resolve(res);
-      })
-    );
-  }
-
-  changeValuePlayer(player, key, value) {
-    Player.findOne({ playerId: player.id }, (err, res) => {
-      res[key] += value;
-      res.save().catch((err) => console.log(err));
-    });
-  }
-
-  addExpPlayer(player, msg, value) {
-    Player.findOne({ playerId: player.id }, (err, res) => {
-      const prevlevel = res.level;
-      let description = "";
-      res.exp += value;
-
-      while (res.exp >= res.expMax) {
-        res.level++;
-        res.exp -= res.expMax;
-        res.expMax = Parser.evaluate(expFormulas["mediumslow"], {
-          n: res.level + 1,
-        });
-        res.health = maxHealth(res.level);
-        res.shinsu = maxShinsu(res.level);
-        res.statpoints += 5;
-      }
-
-      if (res.level !== prevlevel) {
-        description += `🆙 Congratulations ${player.toString()}, you've reached level **${
-          res.level
-        }**!\n\n`;
-        description += `⏫ You have gained **${
-          (res.level - prevlevel) * 5
-        } stat points**! You can assign them using: \`${
-          msg.client.commandPrefix
-        }stats\`.`;
-        msg.say(description);
-      }
-      res.save().catch((err) => console.log(err));
-    });
-  }
-
-  addStatPointsPlayer(player, stat) {
-    Player.findOne({ playerId: player.id }, (err, res) => {
-      console.log(key, value);
-
-      res[stat] += value;
-      res.save().catch((err) => console.log(err));
-    });
-  }
-
-  addFishPlayer(player, fish) {
-    Player.findOne({ playerId: player.id }, (err, res) => {
-      res.fishes.set(fish, res.fishes.get(fish) + 1 || 1);
-      res.fishes.set(
-        "\nTotal Amount",
-        res.fishes.get("\nTotal Amount") + 1 || 1
-      );
-      res.save().catch((err) => console.log(err));
-    });
-  }
-
   loadTopPlayers(filter, where, gte) {
     return Player.find().where(where).gte(gte).sort(filter).exec();
-  }
-
-  buyPet(player, id) {
-    return new Promise((resolve, reject) =>
-      Player.findOne({ playerId: player.id }, (err, res) => {
-        console.log(res.pet.id);
-        if (!pets[id]) return resolve(`There is no pet with the id, ${id}.`);
-        if (res.pet.id)
-          return resolve(
-            "You need to disown your current pet before buying another."
-          );
-        if (pets[id].price > res.points)
-          return resolve(
-            `You dont't have enough money to purchase ${pets[id].emoji} ${pets[id].name}.`
-          );
-
-        res.points -= pets[id].price;
-        res.save().catch((err) => console.log(err + "err"));
-
-        Player.updateOne(
-          { playerId: player.id },
-          newPet(id),
-          { upsert: true },
-          (err, res) => {}
-        );
-        return resolve(
-          `You bought a ${pets[id].emoji} **${pets[id].name}**. Congratulations!`
-        );
-      })
-    );
-  }
-
-  updateNeedsPet(player, differences) {
-    Player.findOne({ playerId: player.id }, (err, res) => {
-      const needs = petNeeds;
-      for (var i in differences)
-        res.pet[needs[i]] = clamp(
-          (res.pet[needs[i]] += differences[i]),
-          0,
-          100
-        );
-      res.pet.updatedAt = new Date();
-      res.save().catch((err) => console.log(err));
-    });
-  }
-
-  addExpPet(player, value) {
-    Player.findOne({ playerId: player.id }, (err, res) => {
-      res.pet.exp += value;
-      while (res.pet.exp >= res.pet.expMax) {
-        res.pet.level++;
-        res.pet.exp -= res.pet.expMax;
-        res.pet.expMax = Parser.evaluate(
-          expFormulas[pets[res.pet.id].exprate],
-          { n: res.pet.level + 1 }
-        );
-      }
-      res.save().catch((err) => console.log(err));
-    });
-  }
-
-  renamePet(player, nickname) {
-    Player.findOne({ playerId: player.id }, (err, res) => {
-      res.pet.nickname = nickname;
-      res.save().catch((err) => console.log(err));
-    });
-  }
-
-  removePet(player) {
-    Player.findOne({ playerId: player.id }, (err, res) => {
-      res.pet = {};
-      res.save().catch((err) => console.log(err));
-    });
   }
 
   updateAllPlayers() {
