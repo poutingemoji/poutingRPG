@@ -85,14 +85,16 @@ module.exports = class MovesCommand extends Command {
         buildEmbeds(
           msg,
           embeds,
-          `To purchase a pet: ${this.client.commandPrefix}pet [id]`
+          `To learn a move: ${this.client.commandPrefix}moves [id]`
         );
         break;
       default:
         const messageEmbed = new MessageEmbed()
           .setColor(embedColors.game)
           .setTitle(`${msg.author.username}'s Current Moves`)
-          .setFooter(`To view available moves: ${msg.client.commandPrefix}moves list`)
+          .setFooter(
+            `To view available moves: ${msg.client.commandPrefix}moves list`
+          );
         for (var i = 0; i < 4; i++) {
           var iteminfo = "";
           const currentMove = moves[player.move[i]];
@@ -101,9 +103,7 @@ module.exports = class MovesCommand extends Command {
               currentMove.name
             }**\n*[id: ${player.move[i]}](${links.website})*\nEnergy: ${
               currentMove.energy
-            }\nPower: ${currentMove.power}\nAccuracy: ${
-              currentMove.accuracy
-            }`;
+            }\nPower: ${currentMove.power}\nAccuracy: ${currentMove.accuracy}`;
           } else {
             iteminfo += `None`;
           }

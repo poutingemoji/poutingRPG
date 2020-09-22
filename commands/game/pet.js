@@ -91,7 +91,7 @@ module.exports = class petCommand extends Command {
     player.renamePet = renamePet;
     player.removePet = removePet;
     var pet = player.pet;
-
+    
     if (pets.hasOwnProperty(action)) {
       var id = action;
       if (!pets[id]) return msg.say(`There is no pet with the id, ${id}.`);

@@ -11,7 +11,6 @@ const msgHelper = {
   emoji(msg, emoji) {
     return msg.client.emojis.cache.get(emojis[emoji]).toString();
   },
-
   confirmation(msg, content) {
     return msg.say(content).then((msgSent) => {
       msgSent.react(emojis["check"]).then(() => msgSent.react(emojis["cross"]));
@@ -33,8 +32,7 @@ const msgHelper = {
         .catch(() => msgSent.delete());
     });
   },
-
-  async commandInfo(msg, command) {
+  commandInfo(msg, command) {
     const messageEmbed = new MessageEmbed()
       .setColor(embedColors.bot)
       .setAuthor(msg.client.user.username, msg.client.user.displayAvatarURL())
@@ -59,7 +57,6 @@ const msgHelper = {
     );
     msg.say(messageEmbed);
   },
-
   async buildEmbeds(msg, embeds, footer) {
     const Embeds = new Pagination.Embeds()
       .setArray(embeds)

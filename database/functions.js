@@ -130,7 +130,7 @@ const functions = {
 module.exports = functions;
 
 function save(player, update) {
-  if (!update.hasOwnProperty("$unset")) update = Object.assign(player, update);
+  if (update && !update.hasOwnProperty("$unset")) update = Object.assign(player, update);
   Player.updateOne(
     { playerId: player.playerId },
     update || player,

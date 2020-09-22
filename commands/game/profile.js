@@ -61,10 +61,8 @@ module.exports = class ProfileCommand extends Command {
         [`${race.emoji} Race`]: race.name,
       },
       {
-        [`${
-          positions[player.position[0]].emoji
-        } Positions`]: player.position
-          .map((position) => positions[position].name)
+        [`👥 Positions`]: player.position
+          .map((position) => positions[position].emoji)
           .join(", "),
       },
       {
@@ -82,9 +80,6 @@ module.exports = class ProfileCommand extends Command {
       {
         ["🗺️ Arc"]: arc.name,
         ["📖 Chapter"]: player.chapter + 1,
-        ["🥋 Techniques"]: player.move
-          .map((move) => moves[move].name)
-          .join(", "),
         [`${pet ? pet.emoji : "❓"} Pet`]: pet ? pet.name : "None",
       },
       {
