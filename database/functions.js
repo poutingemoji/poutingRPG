@@ -71,7 +71,7 @@ const functions = {
     if (totalNumOfMoves == this.move.length) {
       this.move[index] = newMove;
     } else if (totalNumOfMoves > this.move.length) {
-      this.move.push(newMove)
+      this.move.push(newMove);
     }
     save(this);
   },

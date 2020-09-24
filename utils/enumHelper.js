@@ -26,7 +26,7 @@ const enumHelper = {
     Clean: "#a8dafe",
     Dirty: "#c06850",
     Happy: "#79b15a",
-    Bored: "#37393e",
+    Bored: "#ffcc4d",
     Energized: "#fe7894",
     Tired: "#202226",
   },
