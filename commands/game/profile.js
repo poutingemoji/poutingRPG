@@ -13,7 +13,6 @@ const {
 const families = require("../../docs/data/families.js");
 const races = require("../../docs/data/races.js");
 const positions = require("../../docs/data/positions.js");
-const moves = require("../../docs/data/moves.js");
 const pets = require("../../docs/data/pets.js");
 const arcs = require("../../docs/data/arcs.js");
 

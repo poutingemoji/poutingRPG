@@ -13,6 +13,8 @@ const positions = {
     category: "basic",
     moves: {
       punch: 0,
+      roseshower: 0,
+      espadadelaluz: 0,
     },
   },
   scout: {

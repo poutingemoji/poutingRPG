@@ -1,6 +1,7 @@
 const { clamp } = require("./Helper");
 
 const enumHelper = {
+  totalNumOfMoves: 3,
   links: {
     website: "https://poutingemoji.github.io/poutingbot/",
     commandlist: "https://poutingemoji.github.io/poutingbot/commands.html",
@@ -10,6 +11,31 @@ const enumHelper = {
     bot: "#aacda4",
     game: "#2f3136",
   },
+  positionColors: {
+    fisherman: "#db3043",
+    spearbearer: "#c06850",
+    scout: "#79b15a",
+    lightbearer: "#ffd984",
+    wavecontroller: "#50a5e6",
+  },
+  moodColors: {
+    Great: "#50a5e6",
+    Fine: "#d2d4d6",
+    Full: "#9266c7",
+    Hungry: "#db3043",
+    Clean: "#a8dafe",
+    Dirty: "#c06850",
+    Happy: "#79b15a",
+    Bored: "#37393e",
+    Energized: "#fe7894",
+    Tired: "#202226",
+  },
+  moods: [
+    { high: "Full", low: "Hungry" },
+    { high: "Clean", low: "Dirty" },
+    { high: "Happy", low: "Bored" },
+    { high: "Energized", low: "Tired" },
+  ],
   expFormulas: {
     fast: "floor(((4*n)^3)/5)",
     mediumfast: "floor(n^3)",
@@ -35,22 +61,15 @@ const enumHelper = {
     play: "fun",
     pat: "energy",
   },
-  positionColors: {
-    fisherman: "#db3043",
-    spearbearer: "#c06850",
-    scout: "#79b15a",
-    lightbearer: "#ffd984",
-    wavecontroller: "#50a5e6",
-  },
   currencies: [
-    (points = {
+    {
       name: "points",
       emoji: "⛳",
-    }),
-    (dallars = {
+    },
+    {
       name: "dallars",
       emoji: "🟡",
-    }),
+    },
   ],
 };
 

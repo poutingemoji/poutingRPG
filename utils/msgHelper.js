@@ -11,6 +11,30 @@ const msgHelper = {
   emoji(msg, emoji) {
     return msg.client.emojis.cache.get(emojis[emoji]).toString();
   },
+  choose123(msg, content, embed) {
+    return msg.say(content, embed).then((msgSent) => {
+      msgSent
+        .react("1️⃣")
+        .then(() => msgSent.react("2️⃣"))
+        .then(() => msgSent.react("3️⃣"));
+
+      const keycaps = ["1️⃣", "2️⃣", "3️⃣"]
+      const filter = (reaction, user) => {
+        return (
+          keycaps.includes(reaction.emoji.name) &&
+          user.id === msg.author.id
+        );
+      };
+      
+      return msgSent
+        .awaitReactions(filter, { max: 1, time: 60000, errors: ["time"] })
+        .then((collected) => {
+          msgSent.delete();
+          return keycaps.indexOf(collected.first().emoji.name)
+        })
+        .catch(() => msgSent.delete());
+    });
+  },
   confirmation(msg, content) {
     return msg.say(content).then((msgSent) => {
       msgSent.react(emojis["check"]).then(() => msgSent.react(emojis["cross"]));

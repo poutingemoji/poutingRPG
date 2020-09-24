@@ -33,7 +33,7 @@ module.exports = class StartCommand extends Command {
   }
 
   async run(msg) {
-    const player = await findPlayer(msg.author, msg, false);
+    const player = await findPlayer(msg.author);
     if (player) {
       const res = await confirmation(
         msg,
@@ -98,7 +98,7 @@ module.exports = class StartCommand extends Command {
   }
 };
 
-const chooseFamily = function () {
+function chooseFamily() {
   var description = "";
   var i = 0;
   for (var [key, value] of Object.entries(families)) {
@@ -113,7 +113,7 @@ const chooseFamily = function () {
   };
 };
 
-const chooseRace = function () {
+function chooseRace() {
   var description = "";
   var i = 0;
   var categories = [];
@@ -132,7 +132,7 @@ const chooseRace = function () {
   };
 };
 
-const choosePosition = function () {
+function choosePosition() {
   var description = "";
   var i = 0;
   for (var [key, value] of Object.entries(positions)) {

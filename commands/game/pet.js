@@ -11,7 +11,13 @@ const {
   paginate,
 } = require("../../utils/Helper");
 const { commandInfo, buildEmbeds } = require("../../utils/msgHelper");
-const { petNeeds, petActions, links } = require("../../utils/enumHelper");
+const {
+  moods,
+  moodColors,
+  petNeeds,
+  petActions,
+  links,
+} = require("../../utils/enumHelper");
 
 const {
   buyPet,
@@ -79,7 +85,7 @@ module.exports = class petCommand extends Command {
     });
   }
 
-  //console.log(newQuest('Collect', ['Blueberries', 15], {points: 10, exp: 200}))
+  //console.log(newQuest('Collect', [15, 'Blueberries'], {points: 10, exp: 200}))
   async run(msg, { action, nickname }) {
     if (!oneOf.includes(action) && !pets.hasOwnProperty(action)) {
       return commandInfo(msg, this);
@@ -91,7 +97,7 @@ module.exports = class petCommand extends Command {
     player.renamePet = renamePet;
     player.removePet = removePet;
     var pet = player.pet;
-    
+
     if (pets.hasOwnProperty(action)) {
       var id = action;
       if (!pets[id]) return msg.say(`There is no pet with the id, ${id}.`);
@@ -197,7 +203,6 @@ module.exports = class petCommand extends Command {
           )
           .setThumbnail(pets[pet.id].image);
 
-        var mood;
         var roundedNeeds = [];
         for (var i = 0; i < petNeeds.length; i++) {
           var need = petNeeds[i];
@@ -221,6 +226,8 @@ module.exports = class petCommand extends Command {
             true
           );
         }
+        const mood = calculateMood(roundedNeeds);
+        messageEmbed.setColor(moodColors[mood]);
         messageEmbed.addFields(
           {
             name: `Experience`,
@@ -231,7 +238,7 @@ module.exports = class petCommand extends Command {
             }/${pet.expMax})\``,
             inline: true,
           },
-          { name: `Mood`, value: "Great", inline: true }
+          { name: `Mood`, value: mood, inline: true }
         );
         msg.say(messageEmbed);
     }
@@ -243,4 +250,20 @@ function progressBar(value) {
   return `${"■".repeat(value)}${"□".repeat(10 - value)}`;
 }
 
-function calculateMood() {}
+function calculateMood(needs) {
+  if (needs.every((n) => 80 <= n)) {
+    return "Great";
+  } else if (needs.every((n) => 80 > n > 46)) {
+    return "Fine";
+  } else {
+    var moodIndex = needs.indexOf(Math.min(...needs))
+    var mood = needs[moodIndex]
+    if (46 > mood) {
+      return moods[moodIndex].low
+    } else {
+      moodIndex = needs.indexOf(Math.max(...needs))
+      mood = needs[moodIndex]
+      return moods[moodIndex].high
+    }
+  }
+}

@@ -4,7 +4,9 @@ const playerSchema = require("./schemas/player");
 const Player = mongoose.model("Player", playerSchema);
 
 const { clamp, isBetween } = require("../utils/Helper");
+const { totalNumOfMoves } = require("../utils/enumHelper");
 const { confirmation } = require("../utils/msgHelper");
+
 const {
   maxHealth,
   maxShinsu,
@@ -65,6 +67,14 @@ const functions = {
     this[key] += value;
     save(this);
   },
+  upsertMove(newMove, index) {
+    if (totalNumOfMoves == this.move.length) {
+      this.move[index] = newMove;
+    } else if (totalNumOfMoves > this.move.length) {
+      this.move.push(newMove)
+    }
+    save(this);
+  },
   addStatPoints(stat, value) {
     this[stat] += value;
     save(this);
@@ -77,7 +87,7 @@ const functions = {
     const familyMoves = families[this.family].moves;
     const positionMoves = positions[this.position].moves;
     for (var key in moves) {
-      if (this.move.includes(key)) continue
+      if (this.move.includes(key)) continue;
       if (
         familyMoves.hasOwnProperty(key) ||
         positionMoves.hasOwnProperty(key)
@@ -130,13 +140,14 @@ const functions = {
 module.exports = functions;
 
 function save(player, update) {
-  if (update && !update.hasOwnProperty("$unset")) update = Object.assign(player, update);
+  if (update && !update.hasOwnProperty("$unset"))
+    update = Object.assign(player, update);
   Player.updateOne(
     { playerId: player.playerId },
     update || player,
     { upsert: true },
     (err, res) => {
-      console.log(res);
+      //console.log(res);
     }
   );
 }

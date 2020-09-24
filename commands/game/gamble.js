@@ -12,8 +12,8 @@ const positions = require("../../docs/data/positions");
 const { incrementValue } = require("../../database/functions");
 
 const minLimit = 500;
-const maxLimit = 30000;
-const highestRoll = 12;
+const maxLimit = 25000;
+const highestRoll = 15;
 
 module.exports = class GambleCommand extends Command {
   constructor(client) {
@@ -66,7 +66,6 @@ module.exports = class GambleCommand extends Command {
         points = player.points;
       }
     }
-    console.log(points);
     if (points > player.points)
       return msg.say(`You don't have ${points} points.`);
     const roll1 = Math.floor(Math.random() * highestRoll);

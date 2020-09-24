@@ -9,26 +9,26 @@ const { buildEmbeds, commandInfo } = require("../../utils/msgHelper");
 const positions = require("../../docs/data/positions.js");
 
 const pageLength = 10;
-const filters = {
+const sorts = {
   [false]: {
-    filter: { level: -1, exp: -1 },
+    sort: { level: -1, exp: -1 },
     where: "level",
   },
   ["points"]: {
-    filter: { points: -1 },
+    sort: { points: -1 },
     where: "points",
   },
   ["dallars"]: {
-    filter: { dallars: -1 },
+    sort: { dallars: -1 },
     where: "dallars",
   },
   ["fish"]: {
-    filter: { "fishes.\nTotal Amount": -1 },
+    sort: { "fishes.\nTotal Amount": -1 },
     where: "fishes.\nTotal Amount",
     gte: 1,
   },
   ["reputation"]: {
-    filter: { reputation: -1 },
+    sort: { reputation: -1 },
     where: "reputation",
   },
 };
@@ -53,8 +53,8 @@ module.exports = class TopCommand extends Command {
       guildOnly: true,
       args: [
         {
-          key: "filter",
-          prompt: "What would you like to filter the leaderboard by?",
+          key: "sort",
+          prompt: "What would you like to sort the leaderboard by?",
           type: "string",
           default: false,
         },
@@ -66,15 +66,15 @@ module.exports = class TopCommand extends Command {
     });
   }
 
-  async run(msg, { filter }) {
-    if (!Object.keys(filters).includes(filter) && filter !== false) {
+  async run(msg, { sort }) {
+    if (!Object.keys(sorts).includes(sort) && sort !== false) {
       return commandInfo(msg, this);
     }
 
     const res = await loadTopPlayers(
-      filters[filter].filter,
-      filters[filter].where,
-      filters[filter].gte || 0
+      sorts[sort].sort,
+      sorts[sort].where,
+      sorts[sort].gte || 0
     );
     if (res.length == 0)
       return msg.say("There is no data for this leaderboard.");
@@ -107,7 +107,7 @@ module.exports = class TopCommand extends Command {
         topPlayers += `${position}    ${
           positions[player.position[0]].emoji
         }  **${user.username}** ─ `;
-        switch (filter) {
+        switch (sort) {
           default:
             topPlayers += `Lvl: ${player.level} ─ Exp: ${player.exp}\n`;
             break;

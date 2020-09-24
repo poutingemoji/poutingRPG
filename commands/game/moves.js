@@ -4,15 +4,19 @@ const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
 const { numberWithCommas, paginate } = require("../../utils/Helper");
-const { commandInfo, buildEmbeds } = require("../../utils/msgHelper");
-const { embedColors, links } = require("../../utils/enumHelper");
+const {
+  commandInfo,
+  buildEmbeds,
+  choose123,
+} = require("../../utils/msgHelper");
+const { totalNumOfMoves, embedColors, links } = require("../../utils/enumHelper");
 
 const families = require("../../docs/data/families.js");
 const races = require("../../docs/data/races.js");
 const positions = require("../../docs/data/positions.js");
 const moves = require("../../docs/data/moves.js");
 
-const { getAvailableMoves } = require("../../database/functions");
+const { getAvailableMoves, upsertMove } = require("../../database/functions");
 
 const pageLength = 4;
 const oneOf = ["", "list"];
@@ -50,8 +54,9 @@ module.exports = class MovesCommand extends Command {
   async run(msg, { action }) {
     const player = await findPlayer(msg.author, msg);
     player.getAvailableMoves = getAvailableMoves;
+    player.upsertMove = upsertMove;
     const availableMoves = player.getAvailableMoves();
-    if (!oneOf.includes(action) && !availableMoves.hasOwnProperty(action)) {
+    if (!oneOf.includes(action) && !availableMoves.includes(action)) {
       return commandInfo(msg, this);
     }
 
@@ -65,12 +70,7 @@ module.exports = class MovesCommand extends Command {
           var { items } = paginate(availableMoves, page + 1, pageLength);
           let itemsOffered = "";
           for (let item = 0; item < items.length; item++) {
-            const itemInfo = moves[items[item]];
-            itemsOffered += `${itemInfo.category == "shinsu" ? "🌊" : "👊"} **${
-              itemInfo.name
-            }**\n*[id: ${items[item]}](${links.website})*\nEnergy: ${
-              itemInfo.energy
-            }\nPower: ${itemInfo.power}\nAccuracy: ${itemInfo.accuracy}\n`;
+            itemsOffered += moveInfo(items[item]);
           }
           embeds.push(
             new MessageEmbed()
@@ -89,27 +89,51 @@ module.exports = class MovesCommand extends Command {
         );
         break;
       default:
+        if (availableMoves.includes(action) && totalNumOfMoves > player.move) {
+          return player.upsertMove(action);
+         
+        }
         const messageEmbed = new MessageEmbed()
           .setColor(embedColors.game)
           .setTitle(`${msg.author.username}'s Current Moves`)
           .setFooter(
             `To view available moves: ${msg.client.commandPrefix}moves list`
           );
-        for (var i = 0; i < 4; i++) {
-          var iteminfo = "";
+        for (var i = 0; i < totalNumOfMoves; i++) {
+          var itemInfo = "";
           const currentMove = moves[player.move[i]];
           if (currentMove) {
-            iteminfo += `${currentMove.category == "shinsu" ? "🌊" : "👊"} **${
-              currentMove.name
-            }**\n*[id: ${player.move[i]}](${links.website})*\nEnergy: ${
-              currentMove.energy
-            }\nPower: ${currentMove.power}\nAccuracy: ${currentMove.accuracy}`;
+            itemInfo += moveInfo(player.move[i]);
           } else {
-            iteminfo += `None`;
+            itemInfo += `None`;
           }
-          messageEmbed.addField(`Move ${i + 1}:`, iteminfo);
+          messageEmbed.addField(`Move ${i + 1}:`, itemInfo, true);
+        }
+        //&& totalNumOfMoves == player.move.length
+        if (availableMoves.includes(action)) {
+          const res = await choose123(
+            msg,
+            `${
+              msg.author
+            }, which move would you like to replace with ${moveName(
+              moves[action]
+            )}?`,
+            messageEmbed
+          );
+          player.upsertMove(action, res)
+          return;
         }
         msg.say(messageEmbed);
     }
   }
 };
+
+function moveInfo(id) {
+  return `${moveName(moves[id])}\n*[id: ${id}](${links.website})*\nEnergy: ${
+    moves[id].energy
+  }\nPower: ${moves[id].power}\nAccuracy: ${moves[id].accuracy}\n`;
+}
+
+function moveName(move) {
+  return `${move.category == "shinsu" ? "🌊" : "👊"} **${move.name}**`;
+}

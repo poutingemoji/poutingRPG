@@ -47,14 +47,18 @@ class Database {
     connect();
   }
 
-  findPlayer(player, msg, sendMsg = true) {
+  findPlayer(player, msg) {
     return new Promise((resolve, reject) =>
       Player.findOne({ playerId: player.id }, (err, res) => {
         if (err) {
           return reject(err);
         }
-        if (!res && sendMsg) {
-          return msg.say(msg.author.id == player.id ?  `Please type \`${msg.client.commandPrefix}start\` to begin.` : `${player.username} hasn't started climbing the Tower.`)
+        if (!res && msg) {
+          return msg.say(
+            msg.author.id == player.id
+              ? `Please type \`${msg.client.commandPrefix}start\` to begin.`
+              : `${player.username} hasn't started climbing the Tower.`
+          );
         }
         return resolve(res);
       })
@@ -79,8 +83,8 @@ class Database {
     );
   }
 
-  loadTopPlayers(filter, where, gte) {
-    return Player.find().where(where).gte(gte).sort(filter).exec();
+  loadTopPlayers(sort, where, gte) {
+    return Player.find().where(where).gte(gte).sort(sort).exec();
   }
 
   updateAllPlayers() {

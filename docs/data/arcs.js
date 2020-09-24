@@ -9,7 +9,7 @@ const arcs = [
       (chapter1 = {
         emoji: "",
         location: "",
-        quests: [newQuest("Defeat", ["testdummy", 6])],
+        quests: [newQuest("Defeat", [6, "testdummy"])],
       }),
     ],
   }),

@@ -93,8 +93,8 @@ const Objects = {
     return {
       objectiveType: objectiveType,
       objective: {
-        name: objective[0],
-        goal: objective[1],
+        name: objective[1],
+        goal: objective[0],
       },
       progress: 0,
       //defeat, fish, collect, train

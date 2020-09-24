@@ -23,7 +23,6 @@ module.exports = class OwnerCommand extends Command {
     });
   }
   run(msg) {
-    console.log(msg.client.owner);
     msg.say(`${msg.author}, my owner is **poutingemoji#5785**.`);
   }
 };
