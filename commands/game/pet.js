@@ -220,8 +220,8 @@ module.exports = class petCommand extends Command {
                     " and ",
                     true,
                     2
-                  )} until empty\``
-                : ""
+                  )} Left\``
+                : "Empty"
             }`,
             true
           );
