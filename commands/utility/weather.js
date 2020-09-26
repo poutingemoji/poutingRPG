@@ -2,9 +2,9 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const { titleCase } = require("../../utils/Helper");
-const { emoji } = require("../../utils/msgHelper");
-const Requester = require("../../utils/Requester");
+const { titleCase } = require("../../utils/helpers/strHelper");
+const { emoji } = require("../../utils/helpers/msgHelper");
+const { request } = require("../../utils/Requester");
 
 module.exports = class WeatherCommand extends Command {
   constructor(client) {
@@ -35,7 +35,7 @@ module.exports = class WeatherCommand extends Command {
       const weatherURL = `https://api.openweathermap.org/data/2.5/weather?${
         isNaN(place) ? "q" : "zip"
       }=${place}&units=imperial&appid=${process.env.OPENWEATHERMAPKEY}`;
-      const weatherInfo = await Requester.request(weatherURL);
+      const weatherInfo = await request(weatherURL);
       if (weatherInfo.name === undefined) {
         throw `Can't find info on the weather in **${place}**.`;
       }

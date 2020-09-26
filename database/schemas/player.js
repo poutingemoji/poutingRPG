@@ -14,18 +14,16 @@ const playerSchema = new mongoose.Schema({
   expMax: Number,
 
   health: Number,
-  shinsu: Number,
+  energy: Number,
   updatedAt: Date,
 
   statpoints: Number,
 
-  baang: Number,
-  myun: Number,
-  soo: Number,
-
+  shinsu: Number,
+  sword: Number,
+  strength: Number,
   durability: Number,
   speed: Number,
-  physical: Number,
 
   points: Number,
   dallars: Number,

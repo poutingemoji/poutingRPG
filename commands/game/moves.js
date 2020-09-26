@@ -3,23 +3,24 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
-const { numberWithCommas, paginate } = require("../../utils/Helper");
+const { getAvailableMoves, upsertMove } = require("../../database/functions");
+
+const { paginate } = require("../../utils/helpers/arrHelper");
+const { totalNumOfMoves, embedColors, links } = require("../../utils/helpers/enumHelper");
+const { numberWithCommas } = require("../../utils/helpers/intHelper");
 const {
   commandInfo,
   buildEmbeds,
   choose123,
-} = require("../../utils/msgHelper");
-const { totalNumOfMoves, embedColors, links } = require("../../utils/enumHelper");
+} = require("../../utils/helpers/msgHelper");
 
 const families = require("../../docs/data/families.js");
-const races = require("../../docs/data/races.js");
-const positions = require("../../docs/data/positions.js");
 const moves = require("../../docs/data/moves.js");
+const positions = require("../../docs/data/positions.js");
+const races = require("../../docs/data/races.js");
 
-const { getAvailableMoves, upsertMove } = require("../../database/functions");
-
-const pageLength = 4;
 const oneOf = ["", "list"];
+const pageLength = 4;
 
 module.exports = class MovesCommand extends Command {
   constructor(client) {
@@ -120,6 +121,7 @@ module.exports = class MovesCommand extends Command {
             )}?`,
             messageEmbed
           );
+          msg.say(`You have forgotten ${moveName(moves[player.move[res]])} and learned ${moveName(moves[action])}.`)
           player.upsertMove(action, res)
           return;
         }

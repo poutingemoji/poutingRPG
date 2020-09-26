@@ -1,6 +1,8 @@
+const { expFormulas, maxHealth, maxEnergy } = require("../utils/helpers/enumHelper");
+
 const pets = require("../docs/data/pets.js");
+
 const Parser = require("expr-eval").Parser;
-const { expFormulas, maxHealth, maxShinsu } = require("../utils/enumHelper");
 
 const Objects = {
   updatedPlayer() {
@@ -22,19 +24,17 @@ const Objects = {
       expMax: Parser.evaluate(expFormulas["mediumslow"], { n: 2 }),
 
       health: maxHealth(1),
-      shinsu: maxShinsu(1),
+      energy: maxEnergy(1),
       updatedAt: Date.now(),
 
       statpoints: 0,
 
-      baang: 0,
-      myun: 0,
-      soo: 0,
-
+      shinsu: 0,
+      sword: 0,
+      strength: 0,
       durability: 0,
       speed: 0,
-      physical: 0,
-
+      
       points: 0,
       dallars: 0,
 
@@ -88,16 +88,13 @@ const Objects = {
     };
   },
 
-  newQuest(objectiveType, objective) {
-    console.log(objective);
+  newQuest(type, goal, id, progress) {
     return {
-      objectiveType: objectiveType,
-      objective: {
-        name: objective[1],
-        goal: objective[0],
-      },
-      progress: 0,
-      //defeat, fish, collect, train
+      //defeat, fish, collect, use
+      type: type,
+      id: id,
+      goal: goal,
+      progress: progress || 0,
     };
   },
 };

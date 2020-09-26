@@ -2,8 +2,8 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const { emoji } = require("../../utils/msgHelper");
-const Requester = require("../../utils/Requester");
+const { emoji } = require("../../utils/helpers/msgHelper");
+const { request } = require("../../utils/Requester");
 
 const dateFormat = require("dateformat");
 
@@ -45,7 +45,7 @@ module.exports = class AnimeCommand extends Command {
       var sentMessage = await msg.say(
         `${emoji(msg, "loading")} Searching for requested anime... \:mag_right:`
       );
-      var animeRequest = await Requester.request(
+      var animeRequest = await request(
         `https://kitsu.io/api/edge/anime?filter[text]=${anime}`
       );
       if (animeRequest["data"][0] === undefined)

@@ -3,18 +3,18 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
-const { numberWithCommas } = require("../../utils/Helper");
+const { numberWithCommas } = require("../../utils/helpers/intHelper");
 const {
   maxHealth,
-  maxShinsu,
+  maxEnergy,
   positionColors,
-} = require("../../utils/enumHelper");
+} = require("../../utils/helpers/enumHelper");
 
-const families = require("../../docs/data/families.js");
-const races = require("../../docs/data/races.js");
-const positions = require("../../docs/data/positions.js");
-const pets = require("../../docs/data/pets.js");
 const arcs = require("../../docs/data/arcs.js");
+const families = require("../../docs/data/families.js");
+const pets = require("../../docs/data/pets.js");
+const positions = require("../../docs/data/positions.js");
+const races = require("../../docs/data/races.js");
 
 const dateFormat = require("dateformat");
 
@@ -70,7 +70,7 @@ module.exports = class ProfileCommand extends Command {
       },
       {
         ["💗 Health"]: `${player.health}/${maxHealth(player.level)}`,
-        ["🌊 Shinsu"]: `${player.shinsu}/${maxShinsu(player.level)}`,
+        ["⚗️ Energy"]: `${player.shinsu}/${maxEnergy(player.level)}`,
       },
       {
         ["⛳ Points"]: numberWithCommas(player.points),

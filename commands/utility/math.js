@@ -2,8 +2,8 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const { codeBlock } = require("../../utils/Helper");
-const { emoji } = require("../../utils/msgHelper");
+const { emoji } = require("../../utils/helpers/msgHelper");
+const { codeBlock } = require("../../utils/helpers/strHelper");
 
 const { Parser } = require("expr-eval");
 

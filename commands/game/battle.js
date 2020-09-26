@@ -4,13 +4,13 @@ const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
 const {
-  maxShinsu,
+  maxEnergy,
+  movePower,
   moveAccuracy,
-  moveDamage,
-} = require("../../utils/enumHelper");
+} = require("../../utils/helpers/enumHelper");
 
 const enemies = require("../../docs/data/enemies.js");
-const moves = require("../../docs/data/moves");
+const moves = require("../../docs/data/moves.js");
 
 module.exports = class BattleCommand extends Command {
   constructor(client) {
@@ -48,13 +48,13 @@ module.exports = class BattleCommand extends Command {
       [true]: {
         name: msg.author.username,
         health: player.health,
-        damage: moveDamage(player.move.id),
+        power: movePower(player.move.id),
         speed: 100,
       },
       [false]: {
         name: enemy.name,
         health: enemy.health,
-        damage: enemy.damage,
+        power: enemy.damage,
         speed: enemy.speed,
       },
     };

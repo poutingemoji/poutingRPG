@@ -2,7 +2,7 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const { emoji } = require("../../utils/msgHelper");
+const { emoji } = require("../../utils/helpers/msgHelper");
 
 const Genius = new (require("genius-lyrics").Client)(
   process.env.GENIUSLYRICSKEY

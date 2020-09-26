@@ -3,8 +3,9 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { loadTopPlayers } = require("../../database/Database");
-const { paginate } = require("../../utils/Helper.js");
-const { buildEmbeds, commandInfo } = require("../../utils/msgHelper");
+
+const { paginate } = require("../../utils/helpers/arrHelper.js");
+const { buildEmbeds, commandInfo } = require("../../utils/helpers/msgHelper");
 
 const positions = require("../../docs/data/positions.js");
 

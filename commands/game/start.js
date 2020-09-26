@@ -3,13 +3,15 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer, createNewPlayer } = require("../../database/Database");
-const { titleCase } = require("../../utils/Helper");
-const { emoji, confirmation } = require("../../utils/msgHelper");
-const { embedColors } = require("../../utils/enumHelper");
+
+const { embedColors } = require("../../utils/helpers/enumHelper");
+const { emoji, confirmation } = require("../../utils/helpers/msgHelper");
+const { titleCase } = require("../../utils/helpers/strHelper");
 
 const families = require("../../docs/data/families.js");
-const races = require("../../docs/data/races.js");
 const positions = require("../../docs/data/positions.js");
+const races = require("../../docs/data/races.js");
+
 const traits = [families, races, positions];
 
 module.exports = class StartCommand extends Command {

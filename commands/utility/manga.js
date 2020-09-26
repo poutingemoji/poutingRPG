@@ -2,8 +2,8 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const { emoji } = require("../../utils/msgHelper");
-const Requester = require("../../utils/Requester");
+const { emoji } = require("../../utils/helpers/msgHelper");
+const { request } = require("../../utils/Requester");
 
 const dateFormat = require("dateformat");
 
@@ -45,7 +45,7 @@ module.exports = class MangaCommand extends Command {
       var sentMessage = await msg.say(
         `${emoji(msg, "loading")} Searching for requested manga... \:mag_right:`
       );
-      var mangaRequest = await Requester.request(
+      var mangaRequest = await request(
         `https://kitsu.io/api/edge/manga?filter[text]=${manga}`
       );
       console.log(mangaRequest["data"][1]);

@@ -1,122 +1,177 @@
 const { newQuest } = require("../../database/Objects");
 
 const arcs = [
-  (headonsfloor = {
+  {
     name: "Headon's Floor",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752544027410462/Headons_Floor.png",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [newQuest("Defeat", [6, "testdummy"])],
-      }),
+      {
+        name: "1st Floor: Entering the Tower",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
-  (evankhellshell = {
+  },
+  {
     name: "Evankhell's Hell",
-    emoji: "",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752550155288606/Evankhells_Hell.jpg",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [],
-      }),
+      {
+        name: "1st Floor",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
-  (lerorostest = {
+  },
+  {
     name: "Lero-Ro's Test",
-    emoji: "",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752484099457034/Lero-Ros_Test.jpg",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [],
-      }),
+      {
+        name: "1st Floor",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
-  (yuhansungsexamination = {
+  },
+  {
     name: "Yu Han Sung's Examination",
-    emoji: "",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752503342661692/Yu_Han_Sungs_Examination.jpg",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [],
-      }),
+      {
+        name: "1st Floor",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
-  (crowngame = {
+  },
+  {
     name: "Crown Game",
-    emoji: "",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752478927880242/Crown_Game.jpg",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [],
-      }),
+      {
+        name: "1st Floor",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
-  (positiontest = {
+  },
+  {
     name: "Position Test",
-    emoji: "",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752505712443512/Position_Test.png",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [],
-      }),
+      {
+        name: "1st Floor",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
-  (hideandseek = {
+  },
+  {
     name: "Hide-and-Seek",
-    emoji: "",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752480450150460/Hide-and-Seek.webp",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [],
-      }),
+      {
+        name: "1st Floor",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
-  (submergedfish = {
+  },
+  {
     name: "Submerged Fish",
-    emoji: "",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752494123581440/Submerged_Fish.png",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [],
-      }),
+      {
+        name: "1st Floor",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
-  (lastexamination = {
+  },
+  {
     name: "Last Examination",
-    emoji: "",
     image:
       "https://cdn.discordapp.com/attachments/722720878932262952/751752480232308766/Last_Examination.webp",
     chapters: [
-      (chapter1 = {
-        emoji: "",
-        location: "",
-        quests: [],
-      }),
+      {
+        name: "1st Floor",
+        emoji: "🚪",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        quests: [
+          newQuest("Defeat", 6, "testdummy"),
+          newQuest("Collect", 100, "points"),
+          newQuest("Use", 5, "skillpoints"),
+          newQuest("Fish", 5, "Fish"),
+        ],
+      },
     ],
-  }),
+  },
 ];
 
 module.exports = arcs;

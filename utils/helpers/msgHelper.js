@@ -1,9 +1,10 @@
 const { MessageEmbed } = require("discord.js");
 
-const { titleCase, secondsToDhms } = require("./Helper");
+const { titleCase } = require("../helpers/strHelper");
+const { secondsToDhms } = require("../helpers/intHelper");
 const { embedColors } = require("./enumHelper");
 
-const emojis = require("../docs/data/emojis.js");
+const emojis = require("../../docs/data/emojis.js");
 
 const Pagination = require("discord-paginationembed");
 

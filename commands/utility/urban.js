@@ -2,8 +2,8 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const { emoji } = require("../../utils/msgHelper");
-const Requester = require("../../utils/Requester");
+const { emoji } = require("../../utils/helpers/msgHelper");
+const { request } = require("../../utils/Requester");
 
 const dateFormat = require("dateformat");
 
@@ -34,7 +34,7 @@ module.exports = class UrbanCommand extends Command {
   }
   async run(msg, { term }) {
     try {
-      let urbanRequest = await Requester.request(
+      let urbanRequest = await request(
         `https://api.urbandictionary.com/v0/define?term=${term}`
       );
       const urbanList = urbanRequest["list"];

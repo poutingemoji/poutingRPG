@@ -4,22 +4,6 @@ const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
 const {
-  clamp,
-  titleCase,
-  secondsToDhms,
-  numberWithCommas,
-  paginate,
-} = require("../../utils/Helper");
-const { commandInfo, buildEmbeds } = require("../../utils/msgHelper");
-const {
-  moods,
-  moodColors,
-  petNeeds,
-  petActions,
-  links,
-} = require("../../utils/enumHelper");
-
-const {
   buyPet,
   updateNeedsPet,
   addExpPet,
@@ -27,9 +11,24 @@ const {
   removePet,
 } = require("../../database/functions");
 
+const { paginate } = require("../../utils/helpers/arrHelper");
+const {
+  moods,
+  moodColors,
+  petNeeds,
+  petActions,
+  links,
+} = require("../../utils/helpers/enumHelper");
+const {
+  clamp,
+  secondsToDhms,
+  numberWithCommas,
+} = require("../../utils/helpers/intHelper");
+const { commandInfo, buildEmbeds } = require("../../utils/helpers/msgHelper");
+const { titleCase } = require("../../utils/helpers/strHelper");
+
 const pets = require("../../docs/data/pets.js");
 
-const pageLength = 4;
 const oneOf = [
   "",
   "feed",
@@ -41,6 +40,11 @@ const oneOf = [
   "list",
   "buy",
 ];
+
+const pageLength = 4;
+const minPetNeed = 0;
+const maxPetNeed = 100;
+const increasePetNeed = 33;
 
 module.exports = class petCommand extends Command {
   constructor(client) {
@@ -96,12 +100,12 @@ module.exports = class petCommand extends Command {
     player.addExpPet = addExpPet;
     player.renamePet = renamePet;
     player.removePet = removePet;
-    var pet = player.pet;
+    const pet = player.pet;
 
     if (pets.hasOwnProperty(action)) {
       var id = action;
       if (!pets[id]) return msg.say(`There is no pet with the id, ${id}.`);
-      if (player.pet.id)
+      if (pet.id)
         return msg.say(
           "You need to disown your current pet before buying another."
         );
@@ -158,7 +162,7 @@ module.exports = class petCommand extends Command {
               : `your ${pets[pet.id].name} ${pets[pet.id].emoji}`
           }.`
         );
-        console.log(player.pet.id);
+        console.log(pet.id);
         player.removePet();
         break;
       default:
@@ -167,31 +171,45 @@ module.exports = class petCommand extends Command {
             `You don't have a pet. You can view a list of the pets with: \`${this.client.commandPrefix}pet list\``
           );
 
-        var differences = [];
+        var differences = [0, 0, 0, 0];
         if (Object.keys(petActions).includes(action)) {
           const actionIndex = Object.keys(petActions).findIndex(
             (a) => action == a
           );
           const needIncrease =
-            clamp(pet[petNeeds[actionIndex]] + 42, 0, 100) -
-            pet[petNeeds[actionIndex]];
-          if (needIncrease == 0)
+            clamp(
+              pet[petNeeds[actionIndex]] + increasePetNeed,
+              minPetNeed,
+              maxPetNeed
+            ) - pet[petNeeds[actionIndex]];
+          if (needIncrease == minPetNeed)
             return msg.say(
               `Your ${petNeeds[actionIndex]} is maxed. Please wait for it to go down.`
             );
-          differences[actionIndex] = 42;
+          differences[actionIndex] = increasePetNeed;
           player.updateNeedsPet(differences);
-          player.addExpPet(Math.round(needIncrease / 4), 0, 100);
-          return msg.say(`You ${action} your pet.`);
+          player.addExpPet(
+            Math.round(needIncrease / 4),
+            minPetNeed,
+            maxPetNeed
+          );
+          return msg.say(
+            `You ${action} ${
+              pet.nickname !== ""
+                ? `${pet.nickname}`
+                : `your ${pets[pet.id].emoji} ${pets[pet.id].name}`
+            }.`
+          );
         }
 
-        const secondsPassed = (Date.now() - pet.updatedAt) / 1000;
         for (var i = 0; i < petNeeds.length; i++) {
-          const difference =
-            -(secondsPassed / pets[pet.id].empty[petNeeds[i]]) * 100;
-          differences.push(difference);
-          pet[petNeeds[i]] += difference;
+          differences[i] -=
+            ((Date.now() - pet.updatedAt) /
+              1000 /
+              pets[pet.id].empty[petNeeds[i]]) *
+            maxPetNeed;
         }
+        console.log(differences);
         player.updateNeedsPet(differences);
         const messageEmbed = new MessageEmbed()
           .setTitle(
@@ -203,24 +221,23 @@ module.exports = class petCommand extends Command {
           )
           .setThumbnail(pets[pet.id].image);
 
-        var roundedNeeds = [];
+        const roundedNeeds = [];
         for (var i = 0; i < petNeeds.length; i++) {
-          var need = petNeeds[i];
-          pet[need] = clamp(pet[need], 0, 100);
-          var roundedNeed = Math.round(pet[need]);
+          const need = petNeeds[i];
+          pet[need] = clamp(pet[need], minPetNeed, maxPetNeed);
+          const roundedNeed = Math.round(pet[need]);
           roundedNeeds.push(roundedNeed);
           messageEmbed.addField(
             `${titleCase(need)} (${roundedNeed}%)`,
             `[${progressBar(
               roundedNeed / 100
             )}](https://www.youtube.com/user/pokimane)\n${
-              pet[need] !== 0
-                ? `\`${secondsToDhms(
+              pet[need] !== minPetNeed
+                ? `${secondsToDhms(
                     (pet[need] / 100) * pets[pet.id].empty[need],
                     " and ",
-                    true,
-                    2
-                  )} Left\``
+                    true
+                  )} Left`
                 : "Empty"
             }`,
             true
@@ -233,9 +250,9 @@ module.exports = class petCommand extends Command {
             name: `Experience`,
             value: `[${progressBar(
               pet.exp / pet.expMax
-            )}](https://www.youtube.com/user/pokimane)\n\`Level ${pet.level} (${
+            )}](https://www.youtube.com/user/pokimane)\nLevel ${pet.level} (${
               pet.exp
-            }/${pet.expMax})\``,
+            }/${pet.expMax})`,
             inline: true,
           },
           { name: `Mood`, value: mood, inline: true }
@@ -246,8 +263,8 @@ module.exports = class petCommand extends Command {
 };
 
 function progressBar(value) {
-  value = Math.round(clamp(value, 0, 1) * 10);
-  return `${"■".repeat(value)}${"□".repeat(10 - value)}`;
+  value = Math.round((clamp(value, 0, 1) * maxPetNeed) / 10);
+  return `${"■".repeat(value)}${"□".repeat(maxPetNeed / 10 - value)}`;
 }
 
 function calculateMood(needs) {
@@ -256,14 +273,14 @@ function calculateMood(needs) {
   } else if (needs.every((n) => 80 > n > 46)) {
     return "Fine";
   } else {
-    var moodIndex = needs.indexOf(Math.min(...needs))
-    var mood = needs[moodIndex]
+    var moodIndex = needs.indexOf(Math.min(...needs));
+    var mood = needs[moodIndex];
     if (46 > mood) {
-      return moods[moodIndex].low
+      return moods[moodIndex].low;
     } else {
-      moodIndex = needs.indexOf(Math.max(...needs))
-      mood = needs[moodIndex]
-      return moods[moodIndex].high
+      moodIndex = needs.indexOf(Math.max(...needs));
+      mood = needs[moodIndex];
+      return moods[moodIndex].high;
     }
   }
 }

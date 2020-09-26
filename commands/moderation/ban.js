@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { Command } = require("discord.js-commando");
 
-const { emoji } = require("../../utils/Helper");
+const { emoji } = require("../../utils/helpers/msgHelper");
 
 module.exports = class BanCommand extends Command {
   constructor(client) {

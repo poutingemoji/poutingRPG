@@ -3,13 +3,14 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
-const { titleCase, numberWithCommas } = require("../../utils/Helper");
-const { embedColors, positionColors } = require("../../utils/enumHelper");
+const { incrementValue } = require("../../database/functions");
+
+const { embedColors, positionColors } = require("../../utils/helpers/enumHelper");
+const { numberWithCommas } = require("../../utils/helpers/intHelper");
+const { titleCase } = require("../../utils/helpers/strHelper");
 
 const moves = require("../../docs/data/moves.js");
 const positions = require("../../docs/data/positions");
-
-const { incrementValue } = require("../../database/functions");
 
 const minLimit = 500;
 const maxLimit = 25000;

@@ -2,11 +2,11 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 
 const { findPlayer } = require("../../database/Database");
-const { randomIntFromInterval } = require("../../utils/Helper");
+const { addExp, incrementValue } = require("../../database/functions");
+
+const { randomIntFromInterval } = require("../../utils/helpers/intHelper");
 
 const arcs = require("../../docs/data/arcs");
-
-const { addExp, incrementValue } = require("../../database/functions");
 
 module.exports = class DailyCommand extends Command {
   constructor(client) {

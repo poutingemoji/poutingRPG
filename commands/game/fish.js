@@ -3,10 +3,10 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
-const { percentageChance } = require("../../utils/Helper");
-const { currencies } = require("../../utils/enumHelper");
-
 const { addExp, incrementValue, addFish } = require("../../database/functions");
+
+const { percentageChance } = require("../../utils/helpers/arrHelper");
+const { currencies, fishes } = require("../../utils/helpers/enumHelper");
 
 module.exports = class FishCommand extends Command {
   constructor(client) {
@@ -53,102 +53,22 @@ module.exports = class FishCommand extends Command {
         });
         break;
       default:
-        const fish = percentageChance(
+        const fishName = percentageChance(
           Object.keys(fishes),
           Object.values(fishes).map((res) => res.rarity)
         );
-        description = `🎣 ${msg.author.username} fished out: **${fish} ${fishes[fish].emoji}** !\n\n`;
-        for (var i = 0; i < currencies.length; i++) {
-          const cur = currencies[i];
-          const exp = Math.ceil(fishes[fish][cur.name] / 1.5);
-          if (fishes[fish].hasOwnProperty(cur.name)) {
-            description += `*You earned ${cur.name}:* **+ ${
-              fishes[fish][cur.name]
-            }** ${cur.emoji}\n`;
-            description += `*You earned experience:* **+ ${exp}** ✨`;
-            player.incrementValue(msg.author, cur.name, fishes[fish][cur.name]);
-            player.addExp(exp, msg);
-            player.addFish(fish);
-          }
-        }
+        const fish = fishes[fishName];
+        description = `🎣 ${msg.author.username} fished out: **${fishName} ${fish.emoji}** !\n\n`;
+
+        const curName = fish.hasOwnProperty("points") ? "points" : "dallars";
+        const exp = Math.floor(fish[curName] / 1.5);
+        description += `*You earned ${curName}:* **+ ${fish[curName]}** ${currencies[curName].emoji}\n`;
+        description += `*You earned experience:* **+ ${exp}** ✨`;
+        player.incrementValue(msg.author, curName, fish[curName]);
+        player.addExp(exp, msg);
+        player.addFish(fishName);
     }
     messageEmbed.setDescription(description);
     msg.say(messageEmbed);
   }
-};
-
-const fishes = {
-  ["Shrimp"]: {
-    emoji: "🦐",
-    points: 15,
-    rarity: 60,
-  },
-  ["Fish"]: {
-    emoji: "🐟",
-    points: 20,
-    rarity: 50,
-  },
-  ["Tropical Fish"]: {
-    emoji: "🐠",
-    points: 20,
-    rarity: 40,
-  },
-  ["Blowfish"]: {
-    emoji: "🐡",
-    points: 25,
-    rarity: 35,
-  },
-  ["Squid"]: {
-    emoji: "🦑",
-    points: 30,
-    rarity: 30,
-  },
-  ["Octopus"]: {
-    emoji: "🐙",
-    points: 30,
-    rarity: 30,
-  },
-  ["Metalfish"]: {
-    emoji: "⚙️",
-    points: 40,
-    rarity: 20,
-  },
-  ["Silver Fish"]: {
-    emoji: "⛓️",
-    points: 50,
-    rarity: 15,
-  },
-  ["Crystal Shard"]: {
-    emoji: "💠",
-    points: 90,
-    rarity: 10,
-  },
-  ["Valuable Object"]: {
-    emoji: "🏺",
-    points: 100,
-    rarity: 5,
-  },
-  ["Baby Zygaena"]: {
-    emoji: "💮",
-    points: 150,
-    rarity: 1,
-  },
-  ["Sweetfish"]: {
-    emoji: "🦈",
-    dallars: 5,
-    rarity: 5,
-  },
-  ["Boot"]: {
-    emoji: "👢",
-    points: 0,
-    rarity: 3,
-  },
-  ["Brick"]: {
-    emoji: "🧱",
-    points: 0,
-    rarity: 3,
-  },
-  ["\nTotal Amount"]: {
-    emoji: "",
-  },
 };

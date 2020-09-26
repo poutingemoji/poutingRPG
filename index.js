@@ -2,8 +2,8 @@ require("dotenv").config();
 
 const { CommandoClient } = require("discord.js-commando");
 
-const { secondsToDhms } = require("./utils/Helper");
 const { links } = require("./utils/enumHelper");
+const { secondsToDhms } = require("./utils/helpers/intHelper");
 
 const DBL = require("dblapi.js");
 

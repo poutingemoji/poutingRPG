@@ -3,24 +3,24 @@ mongoose.Promise = require("bluebird");
 const playerSchema = require("./schemas/player");
 const Player = mongoose.model("Player", playerSchema);
 
-const { clamp, isBetween } = require("../utils/Helper");
-const { totalNumOfMoves } = require("../utils/enumHelper");
-const { confirmation } = require("../utils/msgHelper");
+const { newPet } = require("./Objects");
 
 const {
   maxHealth,
-  maxShinsu,
+  maxEnergy,
   expFormulas,
   petNeeds,
-} = require("../utils/enumHelper");
-const { newPet } = require("./Objects");
+  totalNumOfMoves,
+} = require("../utils/helpers/enumHelper");
+const { clamp, isBetween } = require("../utils/helpers/intHelper");
+const { confirmation } = require("../utils/helpers/msgHelper");
 
-const families = require("../docs/data/families.js");
-const races = require("../docs/data/races.js");
-const positions = require("../docs/data/positions.js");
-const pets = require("../docs/data/pets.js");
 const arcs = require("../docs/data/arcs.js");
+const families = require("../docs/data/families.js");
 const moves = require("../docs/data/moves.js");
+const pets = require("../docs/data/pets.js");
+const positions = require("../docs/data/positions.js");
+const races = require("../docs/data/races.js");
 
 const Parser = require("expr-eval").Parser;
 
@@ -38,7 +38,7 @@ const functions = {
         n: this.level + 1,
       });
       this.health = maxHealth(this.level);
-      this.shinsu = maxShinsu(this.level);
+      this.shinsu = maxEnergy(this.level);
       this.statpoints += 5;
     }
 

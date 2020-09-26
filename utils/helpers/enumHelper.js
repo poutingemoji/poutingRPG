@@ -1,4 +1,4 @@
-const { clamp } = require("./Helper");
+const { clamp } = require("./intHelper");
 
 const enumHelper = {
   totalNumOfMoves: 3,
@@ -45,13 +45,13 @@ const enumHelper = {
   maxHealth: (level) => {
     return 100 + level * 5;
   },
-  maxShinsu: (level) => {
+  maxEnergy: (level) => {
     return 50 + level * 5;
   },
   moveAccuracy: (move) => {
     return clamp(Math.round(100 - move * 0.9), 1, 100);
   },
-  moveDamage: (move) => {
+  movePower: (move) => {
     return Math.round((move + 1) * 4.5);
   },
   petNeeds: ["hunger", "hygiene", "fun", "energy"],
@@ -61,16 +61,89 @@ const enumHelper = {
     play: "fun",
     pat: "energy",
   },
-  currencies: [
-    {
-      name: "points",
+  currencies: {
+    points: {
       emoji: "⛳",
     },
-    {
-      name: "dallars",
+    dallars: {
       emoji: "🟡",
     },
-  ],
+  },
+  fishes: {
+    ["Shrimp"]: {
+      emoji: "🦐",
+      points: 15,
+      rarity: 60,
+    },
+    ["Fish"]: {
+      emoji: "🐟",
+      points: 20,
+      rarity: 50,
+    },
+    ["Tropical Fish"]: {
+      emoji: "🐠",
+      points: 20,
+      rarity: 40,
+    },
+    ["Blowfish"]: {
+      emoji: "🐡",
+      points: 25,
+      rarity: 35,
+    },
+    ["Squid"]: {
+      emoji: "🦑",
+      points: 30,
+      rarity: 30,
+    },
+    ["Octopus"]: {
+      emoji: "🐙",
+      points: 30,
+      rarity: 30,
+    },
+    ["Metalfish"]: {
+      emoji: "⚙️",
+      points: 40,
+      rarity: 20,
+    },
+    ["Silver Fish"]: {
+      emoji: "⛓️",
+      points: 50,
+      rarity: 15,
+    },
+    ["Crystal Shard"]: {
+      emoji: "💠",
+      points: 90,
+      rarity: 10,
+    },
+    ["Valuable Object"]: {
+      emoji: "🏺",
+      points: 100,
+      rarity: 5,
+    },
+    ["Baby Zygaena"]: {
+      emoji: "💮",
+      points: 150,
+      rarity: 1,
+    },
+    ["Sweetfish"]: {
+      emoji: "🦈",
+      dallars: 5,
+      rarity: 5,
+    },
+    ["Boot"]: {
+      emoji: "👢",
+      points: 0,
+      rarity: 3,
+    },
+    ["Brick"]: {
+      emoji: "🧱",
+      points: 0,
+      rarity: 3,
+    },
+    ["\nTotal Amount"]: {
+      emoji: "",
+    },
+  },
 };
 
 module.exports = enumHelper;

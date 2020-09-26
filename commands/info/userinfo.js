@@ -2,7 +2,7 @@ require("dotenv").config();
 const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
-const { titleCase } = require("../../utils/Helper");
+const { titleCase } = require("../../utils/helpers/strHelper");
 
 const dateFormat = require("dateformat");
 

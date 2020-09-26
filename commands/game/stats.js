@@ -30,14 +30,11 @@ module.exports = class StatsCommand extends Command {
     const player = await findPlayer(msg.author, msg);
     const stats = [
       {
-        ["⚗️ Baang (Max Shinsu)"]: player.baang,
-        ["🌧️ Myun (Accuracy)"]: player.myun,
-        ["☄️ Soo (Shinsu Dmg)"]: player.soo,
-      },
-      {
-        ["🛡️ Durability (Max Health)"]: player.durability,
-        ["🍃 Speed (Dodge + Critical)"]: player.speed,
-        ["👊 Physical (Physical Dmg)"]: player.physical,
+        ["🌊 Shinsu"]: player.shinsu,
+        ["⚔️ Sword"]: player.sword,
+        ["👊 Strength"]: player.strength,
+        ["🛡️ Durability"]: player.durability,
+        ["🍃 Speed "]: player.speed, //Dodge + Critical
       },
     ];
 

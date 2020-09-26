@@ -6,4 +6,5 @@ const Requester = {
     return await res.json();
   },
 };
+
 module.exports = Requester;
