@@ -11,7 +11,6 @@ const families = {
     emoji: "🤺",
     moves: {
       punch: 0,
-      rampage: 0,
     },
   },
   eurasia: {

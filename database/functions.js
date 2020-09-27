@@ -61,10 +61,13 @@ const functions = {
       "\nTotal Amount",
       this.fishes.get("\nTotal Amount") + 1 || 1
     );
+    this.incrementQuest("Fish", fish);
     save(this);
   },
   incrementValue(key, value) {
     this[key] += value;
+    console.log(key, value)
+    this.incrementQuest("Collect", key, value);
     save(this);
   },
   upsertMove(newMove, index) {
@@ -82,17 +85,37 @@ const functions = {
   addQuests() {
     save(this, { quests: arcs[this.arc].chapters[this.chapter].quests });
   },
+  incrementQuest(type, id, value = 1) {
+    var quest;
+    for (var i = 0; i < this.quests.length; i++) {
+      if (this.quests[i].type == type && this.quests[i].id == id) {
+        quest = this.quests[i];
+      }
+    }
+    if (!quest || quest.progress == quest.goal) return;
+    if (isNaN(value)) {
+      quest.progress = value;
+    } else {
+      quest.progress += value;
+    }
+  },
   getAvailableMoves() {
     let availableMoves = [];
     const familyMoves = families[this.family].moves;
     const positionMoves = positions[this.position].moves;
+    const raceMoves = races[this.race].moves;
     for (var key in moves) {
       if (this.move.includes(key)) continue;
       if (
         familyMoves.hasOwnProperty(key) ||
-        positionMoves.hasOwnProperty(key)
+        positionMoves.hasOwnProperty(key) ||
+        raceMoves.hasOwnProperty(key)
       ) {
-        if (this.level > familyMoves[key] || this.level > positionMoves[key]) {
+        if (
+          this.level > familyMoves[key] ||
+          this.level > positionMoves[key] ||
+          this.level > raceMoves[key]
+        ) {
           availableMoves.push(key);
         }
       }

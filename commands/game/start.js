@@ -4,7 +4,7 @@ const { MessageEmbed } = require("discord.js");
 
 const { findPlayer, createNewPlayer } = require("../../database/Database");
 
-const { embedColors } = require("../../utils/helpers/enumHelper");
+const { colors } = require("../../utils/helpers/enumHelper");
 const { emoji, confirmation } = require("../../utils/helpers/msgHelper");
 const { titleCase } = require("../../utils/helpers/strHelper");
 
@@ -44,7 +44,7 @@ module.exports = class StartCommand extends Command {
       if (!res) return;
     }
 
-    const messageEmbed = new MessageEmbed().setColor(embedColors.game);
+    const messageEmbed = new MessageEmbed().setColor(colors.embed.game);
 
     const choose = [chooseFamily, chooseRace, choosePosition];
     const traitsChosen = [];
@@ -79,7 +79,7 @@ module.exports = class StartCommand extends Command {
 
     msg.say(
       new MessageEmbed()
-        .setColor(embedColors.game)
+        .setColor(colors.embed.game)
         .setDescription(
           `[**${positions[traitsChosen[2]].name.toUpperCase()}**] ${
             msg.author.username

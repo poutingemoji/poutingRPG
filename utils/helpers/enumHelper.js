@@ -7,28 +7,31 @@ const enumHelper = {
     commandlist: "https://poutingemoji.github.io/poutingbot/commands.html",
     supportserver: "https://discord.gg/nGVe96h",
   },
-  embedColors: {
-    bot: "#aacda4",
-    game: "#2f3136",
-  },
-  positionColors: {
-    fisherman: "#db3043",
-    spearbearer: "#c06850",
-    scout: "#79b15a",
-    lightbearer: "#ffd984",
-    wavecontroller: "#50a5e6",
-  },
-  moodColors: {
-    Great: "#50a5e6",
-    Fine: "#f4f8fb",
-    Full: "#9266c7",
-    Hungry: "#db3043",
-    Clean: "#a8dafe",
-    Dirty: "#c06850",
-    Happy: "#79b15a",
-    Bored: "#687681",
-    Energized: "#fe7894",
-    Tired: "#202226",
+  //Colors
+  colors: {
+    embed: {
+      bot: "#aacda4",
+      game: "#2f3136",
+    },
+    position: {
+      fisherman: "#db3043",
+      spearbearer: "#c06850",
+      scout: "#79b15a",
+      lightbearer: "#ffd984",
+      wavecontroller: "#50a5e6",
+    },
+    mood: {
+      Great: "#50a5e6",
+      Fine: "#f4f8fb",
+      Full: "#9266c7",
+      Hungry: "#db3043",
+      Clean: "#a8dafe",
+      Dirty: "#c06850",
+      Happy: "#79b15a",
+      Bored: "#687681",
+      Energized: "#fe7894",
+      Tired: "#202226",
+    },
   },
   moods: [
     { high: "Full", low: "Hungry" },
@@ -60,14 +63,6 @@ const enumHelper = {
     wash: "hygiene",
     play: "fun",
     pat: "energy",
-  },
-  currencies: {
-    points: {
-      emoji: "⛳",
-    },
-    dallars: {
-      emoji: "🟡",
-    },
   },
   fishes: {
     ["Shrimp"]: {

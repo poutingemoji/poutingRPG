@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js");
 
 const { titleCase } = require("../helpers/strHelper");
 const { secondsToDhms } = require("../helpers/intHelper");
-const { embedColors } = require("./enumHelper");
+const { colors } = require("./enumHelper");
 
 const emojis = require("../../docs/data/emojis.js");
 
@@ -59,7 +59,7 @@ const msgHelper = {
   },
   commandInfo(msg, command) {
     const messageEmbed = new MessageEmbed()
-      .setColor(embedColors.bot)
+      .setColor(colors.embed.bot)
       .setAuthor(msg.client.user.username, msg.client.user.displayAvatarURL())
       .setTitle(`${titleCase(command.groupID)} Command: ${command.name}`)
       .setURL("https://poutingemoji.github.io/poutingbot/commands.html")
@@ -98,7 +98,7 @@ const msgHelper = {
         jump: "🔢",
       })
       .setDisabledNavigationEmojis(["delete"])
-      .setColor(embedColors.game);
+      .setColor(colors.embed.game);
     if (footer) Embeds.setFooter(footer);
     await Embeds.build();
   },

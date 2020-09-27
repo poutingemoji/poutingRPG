@@ -6,7 +6,11 @@ const { findPlayer } = require("../../database/Database");
 const { getAvailableMoves, upsertMove } = require("../../database/functions");
 
 const { paginate } = require("../../utils/helpers/arrHelper");
-const { totalNumOfMoves, embedColors, links } = require("../../utils/helpers/enumHelper");
+const {
+  totalNumOfMoves,
+  colors,
+  links,
+} = require("../../utils/helpers/enumHelper");
 const { numberWithCommas } = require("../../utils/helpers/intHelper");
 const {
   commandInfo,
@@ -14,6 +18,7 @@ const {
   choose123,
 } = require("../../utils/helpers/msgHelper");
 
+const emojis = require("../../docs/data/emojis.js");
 const families = require("../../docs/data/families.js");
 const moves = require("../../docs/data/moves.js");
 const positions = require("../../docs/data/positions.js");
@@ -92,10 +97,9 @@ module.exports = class MovesCommand extends Command {
       default:
         if (availableMoves.includes(action) && totalNumOfMoves > player.move) {
           return player.upsertMove(action);
-         
         }
         const messageEmbed = new MessageEmbed()
-          .setColor(embedColors.game)
+          .setColor(colors.embed.game)
           .setTitle(`${msg.author.username}'s Current Moves`)
           .setFooter(
             `To view available moves: ${msg.client.commandPrefix}moves list`
@@ -121,8 +125,12 @@ module.exports = class MovesCommand extends Command {
             )}?`,
             messageEmbed
           );
-          msg.say(`You have forgotten ${moveName(moves[player.move[res]])} and learned ${moveName(moves[action])}.`)
-          player.upsertMove(action, res)
+          msg.say(
+            `You have forgotten ${moveName(
+              moves[player.move[res]]
+            )} and learned ${moveName(moves[action])}.`
+          );
+          player.upsertMove(action, res);
           return;
         }
         msg.say(messageEmbed);
@@ -137,5 +145,5 @@ function moveInfo(id) {
 }
 
 function moveName(move) {
-  return `${move.category == "shinsu" ? "🌊" : "👊"} **${move.name}**`;
+  return `${emojis[move.category]} **${move.name}**`;
 }

@@ -1,5 +1,4 @@
 const strHelper = {
-  //String
   codeBlock(str, syntax = "") {
     return `\`\`\`${syntax}\n${str}\n\`\`\`\n`;
   },

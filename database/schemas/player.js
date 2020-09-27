@@ -12,6 +12,11 @@ const playerSchema = new mongoose.Schema({
   level: Number,
   exp: Number,
   expMax: Number,
+  
+  baang: Number,
+  myun: Number,
+  soo: Number,
+  quality: Array,
 
   health: Number,
   energy: Number,

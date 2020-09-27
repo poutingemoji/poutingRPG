@@ -7,10 +7,11 @@ const { numberWithCommas } = require("../../utils/helpers/intHelper");
 const {
   maxHealth,
   maxEnergy,
-  positionColors,
+  colors,
 } = require("../../utils/helpers/enumHelper");
 
 const arcs = require("../../docs/data/arcs.js");
+const emojis = require("../../docs/data/emojis.js");
 const families = require("../../docs/data/families.js");
 const pets = require("../../docs/data/pets.js");
 const positions = require("../../docs/data/positions.js");
@@ -58,43 +59,41 @@ module.exports = class ProfileCommand extends Command {
       {
         [`${family.emoji} Family`]: family.name,
         [`${race.emoji} Race`]: race.name,
-      },
-      {
-        [`👥 Positions`]: player.position
+        [`${emojis["positions"]} Positions`]: player.position
           .map((position) => positions[position].emoji)
           .join(", "),
       },
       {
-        ["⛩️ Level"]: player.level,
-        ["✨ Exp"]: `${player.exp}/${player.expMax}`,
+        [`${emojis["level"]} Level`]: player.level,
+        [`${emojis["exp"]} Exp`]: `${player.exp}/${player.expMax}`,
       },
       {
-        ["💗 Health"]: `${player.health}/${maxHealth(player.level)}`,
-        ["⚗️ Energy"]: `${player.shinsu}/${maxEnergy(player.level)}`,
+        [`${emojis["health"]} Health`]: `${player.health}/${maxHealth(
+          player.level
+        )}`,
+        [`${emojis["energy"]} Energy`]: `${player.shinsu}/${maxEnergy(
+          player.level
+        )}`,
+        [`${emojis["points"]} Points`]: numberWithCommas(player.points),
+        [`${emojis["dallars"]} Dallars`]: numberWithCommas(player.dallars),
       },
       {
-        ["⛳ Points"]: numberWithCommas(player.points),
-        ["🟡 Dallars"]: numberWithCommas(player.dallars),
-      },
-      {
-        ["🗺️ Arc"]: arc.name,
-        ["📖 Chapter"]: player.chapter + 1,
+        [`${emojis["arc"]} Arc`]: arc.name,
+        [`${emojis["chapter"]} Chapter`]: player.chapter + 1,
         [`${pet ? pet.emoji : "❓"} Pet`]: pet ? pet.name : "None",
-      },
-      {
-        ["🏔️ Reputation"]: numberWithCommas(player.reputation),
+        [`🏔️ Reputation`]: numberWithCommas(player.reputation),
       },
     ];
 
     var profileMessage = "";
     profile.forEach((category) => {
-      profileMessage += `──────────────\n`;
+      profileMessage += `───────────────\n`;
       for (var key in category) {
         profileMessage += `${key}: **${category[key]}**\n`;
       }
     });
     const messageEmbed = new MessageEmbed()
-      .setColor(positionColors[player.position[0]])
+      .setColor(colors.position[player.position[0]])
       .setTitle(`${user.username}'s Profile`)
       .setThumbnail(arc.image)
       .setDescription(profileMessage)

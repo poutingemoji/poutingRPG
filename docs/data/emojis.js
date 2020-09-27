@@ -6,10 +6,23 @@ const emojis = {
   loading: "730597505938620437",
   late: "729204396726026262",
   res: "729206897818730567",
-  prompt1: "729255616786464848",
-  prompt2: "729255637837414450",
-  levelup1: "741523323032174593",
-  levelup2: "729190800579100672",
+  //Stats
+  shinsu: "🌊",
+  sword: "⚔️",
+  strength: "👊",
+  durability: "🛡️",
+  speed: "🍃",
+  //Profile
+  positions: "👥",
+  level: "⛩️",
+  exp: "✨",
+  health: "💗",
+  energy: "⚗️",
+  points: "⛳",
+  dallars: "🟡",
+  arc: "🗺️",
+  chapter: "📖",
+  quests: "📜",
 };
 
 module.exports = emojis;

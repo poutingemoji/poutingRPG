@@ -4,6 +4,7 @@ const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
 
+const emojis = require("../../docs/data/emojis.js");
 const moves = require("../../docs/data/moves.js");
 
 module.exports = class StatsCommand extends Command {
@@ -30,11 +31,11 @@ module.exports = class StatsCommand extends Command {
     const player = await findPlayer(msg.author, msg);
     const stats = [
       {
-        ["🌊 Shinsu"]: player.shinsu,
-        ["⚔️ Sword"]: player.sword,
-        ["👊 Strength"]: player.strength,
-        ["🛡️ Durability"]: player.durability,
-        ["🍃 Speed "]: player.speed, //Dodge + Critical
+        [`${emojis["shinsu"]} Shinsu`]: player.shinsu,
+        [`${emojis["sword"]} Sword`]: player.sword,
+        [`${emojis["strength"]} Strength`]: player.strength,
+        [`${emojis["durability"]} Durability`]: player.durability,
+        [`${emojis["speed"]} Speed`]: player.speed, //Dodge + Critical
       },
     ];
 

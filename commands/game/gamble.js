@@ -5,12 +5,12 @@ const { MessageEmbed } = require("discord.js");
 const { findPlayer } = require("../../database/Database");
 const { incrementValue } = require("../../database/functions");
 
-const { embedColors, positionColors } = require("../../utils/helpers/enumHelper");
+const { colors } = require("../../utils/helpers/enumHelper");
 const { numberWithCommas } = require("../../utils/helpers/intHelper");
 const { titleCase } = require("../../utils/helpers/strHelper");
 
 const moves = require("../../docs/data/moves.js");
-const positions = require("../../docs/data/positions");
+const positions = require("../../docs/data/positions.js");
 
 const minLimit = 500;
 const maxLimit = 25000;
@@ -75,7 +75,7 @@ module.exports = class GambleCommand extends Command {
       points * (((roll1 - roll2) * highestRoll) / 100)
     );
     if (-points > pointsChange) pointsChange = -points;
-    player.incrementValue(msg.author, "points", pointsChange);
+    player.incrementValue("points", pointsChange);
 
     const messageEmbed = new MessageEmbed()
       .setAuthor(
@@ -98,16 +98,17 @@ module.exports = class GambleCommand extends Command {
     var changeMsg;
     switch (Math.sign(pointsChange)) {
       case 1:
-        messageEmbed.setColor(positionColors.scout);
+        messageEmbed.setColor(colors.position.scout);
         changeMsg = "won";
         break;
       case -1:
-        messageEmbed.setColor(positionColors.fisherman);
+        messageEmbed.setColor(colors.position.fisherman);
         changeMsg = "lost";
         break;
       default:
-        messageEmbed.setColor(embedColors.game);
+        messageEmbed.setColor(colors.embed.game);
         changeMsg = "won/lost";
+        break;
     }
     messageEmbed.setDescription(
       `You ${changeMsg} ${numberWithCommas(Math.abs(pointsChange))} points.${

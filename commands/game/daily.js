@@ -6,7 +6,8 @@ const { addExp, incrementValue } = require("../../database/functions");
 
 const { randomIntFromInterval } = require("../../utils/helpers/intHelper");
 
-const arcs = require("../../docs/data/arcs");
+const arcs = require("../../docs/data/arcs.js");
+const emojis = require("../../docs/data/emojis.js");
 
 module.exports = class DailyCommand extends Command {
   constructor(client) {
@@ -35,9 +36,9 @@ module.exports = class DailyCommand extends Command {
     const exp = randomIntFromInterval(250, 400);
     const points = randomIntFromInterval(375, 600);
     await player.addExp(exp, msg);
-    await player.incrementValue(msg.author, "points", points);
+    await player.incrementValue("points", points);
     msg.say(
-      `${msg.author.username}, you've received your daily **${exp}** ✨ exp & your daily **${points}** ⛳ points.`
+      `${msg.author.username}, you've received your daily **${exp}** ${emojis["exp"]} exp & your daily **${points}** ${emojis["points"]} points.`
     );
   }
 };

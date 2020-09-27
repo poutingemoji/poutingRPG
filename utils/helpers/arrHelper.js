@@ -1,5 +1,4 @@
 const arrHelper = {
-  //Array
   disambiguation(items, label, property = "name") {
     const itemList = items
       .map(
@@ -43,7 +42,7 @@ const arrHelper = {
         pool.push(i);
       }
     }
-    return values[Helper.arrayShuffle(pool)["0"]];
+    return values[arrHelper.arrayShuffle(pool)["0"]];
   },
 };
 

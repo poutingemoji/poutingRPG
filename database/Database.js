@@ -88,10 +88,22 @@ class Database {
   }
 
   updateAllPlayers() {
-    Player.updateMany({ reputation: 0 }, {}, { upsert: true }, (err, res) => {
+    Player.updateMany({  }, 
+      { $unset: { myun: 1, soo: 1, quality: 1, physical: 1 } }, 
+      { upsert: true },
+      (err, res) => {
       console.log(res);
     });
   }
 }
 
 module.exports = new Database();
+
+/*
+  Player.updateMany({  }, 
+      { $unset: { myun: 1, soo: 1, quality: 1, physical: 1 } }, 
+      { upsert: true },
+      (err, res) => {
+      console.log(res);
+    });
+*/ 
