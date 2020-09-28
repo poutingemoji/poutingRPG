@@ -70,14 +70,6 @@ const functions = {
     this.incrementQuest("Collect", key, value);
     save(this);
   },
-  upsertMove(newMove, index) {
-    if (totalNumOfMoves == this.move.length) {
-      this.move[index] = newMove;
-    } else if (totalNumOfMoves > this.move.length) {
-      this.move.push(newMove);
-    }
-    save(this);
-  },
   addStatPoints(stat, value) {
     this[stat] += value;
     save(this);
@@ -96,8 +88,16 @@ const functions = {
     if (isNaN(value)) {
       quest.progress = value;
     } else {
-      quest.progress += value;
+      quest.progress += Math.min(value, quest.goal-quest.progress);
     }
+  },
+  upsertMove(newMove, index) {
+    if (totalNumOfMoves == this.move.length) {
+      this.move[index] = newMove;
+    } else if (totalNumOfMoves > this.move.length) {
+      this.move.push(newMove);
+    }
+    save(this);
   },
   getAvailableMoves() {
     let availableMoves = [];

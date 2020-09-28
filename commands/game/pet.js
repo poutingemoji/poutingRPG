@@ -14,7 +14,7 @@ const {
 const { paginate } = require("../../utils/helpers/arrHelper");
 const {
   moods,
-  moodColors,
+  colors,
   petNeeds,
   petActions,
   links,
@@ -244,7 +244,7 @@ module.exports = class petCommand extends Command {
           );
         }
         const mood = calculateMood(roundedNeeds);
-        messageEmbed.setColor(moodColors[mood]);
+        messageEmbed.setColor(colors.mood[mood]);
         messageEmbed.addFields(
           {
             name: `Experience`,

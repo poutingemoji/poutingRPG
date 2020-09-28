@@ -88,12 +88,14 @@ class Database {
   }
 
   updateAllPlayers() {
-    Player.updateMany({  }, 
-      { $unset: { myun: 1, soo: 1, quality: 1, physical: 1 } }, 
+    Player.updateMany(
+      {},
+      { },
       { upsert: true },
       (err, res) => {
-      console.log(res);
-    });
+        console.log(res);
+      }
+    );
   }
 }
 
@@ -106,4 +108,4 @@ module.exports = new Database();
       (err, res) => {
       console.log(res);
     });
-*/ 
+*/

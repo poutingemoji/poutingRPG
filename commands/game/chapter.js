@@ -66,7 +66,6 @@ function getQuestsInfo(quests) {
   var totalPercent = 0;
   for (const quest of quests) {
     content += `- ${quest.type} **${quest.goal}** `;
-    console.log(quest.progress)
     switch (quest.type) {
       case "Defeat":
         content += `enemies`;
@@ -85,5 +84,5 @@ function getQuestsInfo(quests) {
     totalPercent += percent;
     content += `: ${quest.progress}/${quest.goal} (${percent}%)\n`;
   }
-  return { questsInfo: content, totalPercent: totalPercent / quests.length };
+  return { questsInfo: content, totalPercent: Math.floor(totalPercent / quests.length) };
 }
