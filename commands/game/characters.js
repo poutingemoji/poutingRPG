@@ -3,9 +3,7 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
-const {
-  getCharProperty,
-} = require("../../database/functions");
+const { getCharProperty } = require("../../database/functions");
 
 const { paginate } = require("../../utils/helpers/arrHelper");
 const { buildEmbeds } = require("../../utils/helpers/msgHelper");
@@ -16,7 +14,7 @@ module.exports = class CharactersCommand extends Command {
   constructor(client) {
     super(client, {
       name: "characters",
-      aliases: [],
+      aliases: ["chars"],
       group: "game",
       memberName: "characters",
       description: "Claim your daily reward.",
@@ -44,7 +42,7 @@ module.exports = class CharactersCommand extends Command {
       var { items } = paginate(charactersOwned, page + 1);
       var description = "";
       for (var i = 0; i < items.length; i++) {
-        const id = charactersOwned[i]
+        const id = charactersOwned[i];
         const [name, position, level, duplicates] = [
           player.getCharProperty("name", msg, id),
           player.getCharProperty("position", msg, id),
@@ -55,14 +53,11 @@ module.exports = class CharactersCommand extends Command {
       }
       embeds.push(
         new MessageEmbed()
-        .setTitle(`[Page ${page + 1}/${maxPage}]`)
-        .setDescription(description)
+          .setTitle(`[Page ${page + 1}/${maxPage}]`)
+          .setDescription(description)
       );
     }
 
-    buildEmbeds(
-      msg,
-      embeds
-    );
+    buildEmbeds(msg, embeds);
   }
 };

@@ -5,7 +5,7 @@ const { MessageEmbed } = require("discord.js");
 const { findPlayer, createNewPlayer } = require("../../database/Database");
 
 const { colors } = require("../../utils/helpers/enumHelper");
-const { emoji, confirmation } = require("../../utils/helpers/msgHelper");
+const { confirmation } = require("../../utils/helpers/msgHelper");
 const { titleCase } = require("../../utils/helpers/strHelper");
 
 const Families = require("../../docs/data/Families");

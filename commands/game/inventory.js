@@ -3,7 +3,6 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
-const { addExp, incrementValue } = require("../../database/functions");
 
 const { paginate } = require("../../utils/helpers/arrHelper");
 const { buildEmbeds } = require("../../utils/helpers/msgHelper");
@@ -51,7 +50,7 @@ module.exports = class InventoryCommand extends Command {
         const id = inventory[i]
         switch(Items[id].type) {
           case "weapon": 
-            description += `x${player.inventory[id]} **${Items[id].name}** | Base ATK: ${Items[id].Base_ATK} | Secondary Stat: ${Items[id].Secondary_Stat} | [ID: ${id}](https://www.twitch.tv/pokimane)\n`;            break;
+            description += `x${player.inventory[id]} **${Items[id].name}** | Base ATK: ${Items[id].Base_ATK} | Secondary Stat: ${Items[id].Secondary_Stat.replace(/_/g, " ")} | [ID: ${id}](https://www.twitch.tv/pokimane)\n`;            break;
           default:
             
         }

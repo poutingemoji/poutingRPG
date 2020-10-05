@@ -3,19 +3,10 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer } = require("../../database/Database");
-const {
-  addExp,
-  incrementValue,
-  getCharProperty,
-} = require("../../database/functions");
+const { getCharProperty } = require("../../database/functions");
 
-const { romanize } = require("../../utils/helpers/intHelper");
 const { emoji } = require("../../utils/helpers/msgHelper");
 
-const Arcs = require("../../docs/data/Arcs");
-const Characters = require("../../docs/data/Characters");
-const Emojis = require("../../docs/data/Emojis");
-const Items = require("../../docs/data/Items");
 const Positions = require("../../docs/data/Positions");
 
 module.exports = class InfoCommand extends Command {
@@ -47,7 +38,7 @@ module.exports = class InfoCommand extends Command {
 
   async run(msg, { char }) {
     const player = await findPlayer(msg.author, msg);
-    if (!player.characters_Owned.hasOwnProperty(char)) return
+    if (!player.characters_Owned.hasOwnProperty(char)) return;
     player.getCharProperty = getCharProperty;
 
     const [name, position, phase, weapon, level, EXP, Max_EXP, attributes] = [
@@ -59,7 +50,7 @@ module.exports = class InfoCommand extends Command {
       player.getCharProperty("EXP"),
       player.getCharProperty("Max_EXP"),
       player.getCharProperty("attributes"),
-    ]
+    ];
 
     const stars = `${"⭐".repeat(phase)}${emoji(msg, "empty_star").repeat(
       6 - phase
