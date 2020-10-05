@@ -3,79 +3,47 @@ mongoose.Promise = require("bluebird");
 const playerSchema = require("./schemas/player");
 const Player = mongoose.model("Player", playerSchema);
 
-const { newPet } = require("./Objects");
-
-const {
-  maxHealth,
-  maxEnergy,
-  expFormulas,
-  petNeeds,
-  totalNumOfMoves,
-} = require("../utils/helpers/enumHelper");
-const { clamp, isBetween } = require("../utils/helpers/intHelper");
-const { confirmation } = require("../utils/helpers/msgHelper");
-
-const arcs = require("../docs/data/arcs.js");
-const families = require("../docs/data/families.js");
-const moves = require("../docs/data/moves.js");
-const pets = require("../docs/data/pets.js");
-const positions = require("../docs/data/positions.js");
-const races = require("../docs/data/races.js");
+const Arcs = require("../docs/data/Arcs");
+const Characters = require("../docs/data/Characters");
+const Items = require("../docs/data/Items");
+const Positions = require("../docs/data/Positions");
 
 const Parser = require("expr-eval").Parser;
 
 const functions = {
   //Player Functions
   addExp(value, msg) {
-    let description = "";
-    const prevlevel = this.level;
-    this.exp += value;
+    const level_Prev = this.level;
+    this.EXP += value;
 
-    while (this.exp >= this.expMax) {
+    while (this.EXP >= this.Max_EXP) {
       this.level++;
-      this.exp -= this.expMax;
-      this.expMax = Parser.evaluate(expFormulas["mediumslow"], {
+      this.EXP -= this.Max_EXP;
+      this.Max_EXP = Parser.evaluate(expFormulas["mediumslow"], {
         n: this.level + 1,
       });
       this.health = maxHealth(this.level);
       this.shinsu = maxEnergy(this.level);
-      this.statpoints += 5;
+      this.statpoints += statpointsPerLevel;
     }
 
-    if (this.level !== prevlevel) {
-      description += `🆙 Congratulations ${msg.author.toString()}, you've reached level **${
-        this.level
-      }**!\n\n`;
-      description += `⏫ You have gained **${
-        (this.level - prevlevel) * 5
-      } stat points**! You can assign them using: \`${
-        msg.client.commandPrefix
-      }stats\`.`;
-      msg.say(description);
+    if (this.level !== level_Prev) {
+      msg.say(
+        `🆙 Congratulations ${msg.author.toString()}, you've reached level **${
+          this.level
+        }**!\n\n`
+      );
     }
-    save(this);
-  },
-  addFish(fish) {
-    this.fishes.set(fish, this.fishes.get(fish) + 1 || 1);
-    this.fishes.set(
-      "\nTotal Amount",
-      this.fishes.get("\nTotal Amount") + 1 || 1
-    );
-    this.incrementQuest("Fish", fish);
     save(this);
   },
   incrementValue(key, value) {
     this[key] += value;
-    console.log(key, value)
+    console.log(key, value);
     this.incrementQuest("Collect", key, value);
     save(this);
   },
-  addStatPoints(stat, value) {
-    this[stat] += value;
-    save(this);
-  },
   addQuests() {
-    save(this, { quests: arcs[this.arc].chapters[this.chapter].quests });
+    save(this, { quests: Arcs[this.arc].chapters[this.chapter].quests });
   },
   incrementQuest(type, id, value = 1) {
     var quest;
@@ -88,75 +56,38 @@ const functions = {
     if (isNaN(value)) {
       quest.progress = value;
     } else {
-      quest.progress += Math.min(value, quest.goal-quest.progress);
+      quest.progress += Math.min(value, quest.goal - quest.progress);
     }
   },
-  upsertMove(newMove, index) {
-    if (totalNumOfMoves == this.move.length) {
-      this.move[index] = newMove;
-    } else if (totalNumOfMoves > this.move.length) {
-      this.move.push(newMove);
+  getCharProperty(property, msg, id = this.selected_Character) {
+    const char = this.characters_Owned[id];
+    if (!char) return;
+    console.log(char["duplicates"]);
+    switch (property) {
+      case "name":
+        return id == "irregular" ? msg.author.username : Characters[id].name;
+      case "position":
+        return char.hasOwnProperty("position")
+          ? char.position
+          : Characters[id].position;
+      case "weapon":
+        return Items[char.weapon].name;
+      case "attributes":
+        return Characters[id].attributes;
+      default:
+        return char[property];
     }
+  },
+  giveCharWeapon(weapon) {
+    if (!this.inventory.hasOwnProperty(weapon)) return;
+    if (this.inventory[weapon] == 0) return;
+    const char = this.characters_Owned[this.selected_Character];
+    this.inventory[char.weapon] !== 0
+      ? this.inventory[char.weapon]++
+      : (this.inventory[char.weapon] = 0);
+    this.inventory[weapon]--
+    char.weapon = weapon;
     save(this);
-  },
-  getAvailableMoves() {
-    let availableMoves = [];
-    const familyMoves = families[this.family].moves;
-    const positionMoves = positions[this.position].moves;
-    const raceMoves = races[this.race].moves;
-    for (var key in moves) {
-      if (this.move.includes(key)) continue;
-      if (
-        familyMoves.hasOwnProperty(key) ||
-        positionMoves.hasOwnProperty(key) ||
-        raceMoves.hasOwnProperty(key)
-      ) {
-        if (
-          this.level > familyMoves[key] ||
-          this.level > positionMoves[key] ||
-          this.level > raceMoves[key]
-        ) {
-          availableMoves.push(key);
-        }
-      }
-    }
-    return availableMoves;
-  },
-  //Pet Functions
-  buyPet(id) {
-    this.points -= pets[id].price;
-    save(this, newPet(id));
-  },
-
-  updateNeedsPet(differences) {
-    const needs = petNeeds;
-    for (var i in differences)
-      this.pet[needs[i]] = clamp(
-        (this.pet[needs[i]] += differences[i]),
-        0,
-        100
-      );
-    this.pet.updatedAt = new Date();
-    save(this);
-  },
-  addExpPet(value) {
-    this.pet.exp += value;
-    while (this.pet.exp >= this.pet.expMax) {
-      this.pet.level++;
-      this.pet.exp -= this.pet.expMax;
-      this.pet.expMax = Parser.evaluate(
-        expFormulas[pets[this.pet.id].exprate],
-        { n: this.pet.level + 1 }
-      );
-    }
-    save(this);
-  },
-  renamePet(nickname) {
-    this.pet.nickname = nickname;
-    save(this);
-  },
-  removePet() {
-    save(this, { $unset: { pet: 1 } });
   },
 };
 
@@ -166,7 +97,7 @@ function save(player, update) {
   if (update && !update.hasOwnProperty("$unset"))
     update = Object.assign(player, update);
   Player.updateOne(
-    { playerId: player.playerId },
+    { id: player.id },
     update || player,
     { upsert: true },
     (err, res) => {

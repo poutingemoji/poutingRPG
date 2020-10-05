@@ -1,7 +1,7 @@
-const Enemies = {
-  testdummy: {
-    name: "Test Dummy",
-    position: "wave_controller",
+const Characters = {
+  irregular: {
+    name: "Irregular",
+    weapon: "dullneedle",
     region: "The Outside",
     attributes: {
       Max_HP: 100,
@@ -12,16 +12,16 @@ const Enemies = {
     },
     techniques: [
       {
-        name: "Attack",   
+        name: "Attack",
       },
       {
-        name: "Defend",   
+        name: "Defend",
       },
       {
-        name: "Skill",   
+        name: "Skill",
       },
     ],
   },
 };
 
-module.exports = Enemies;
+module.exports = Characters;

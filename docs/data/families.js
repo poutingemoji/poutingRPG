@@ -1,4 +1,4 @@
-const families = {
+const Families = {
   ari: {
     name: "Ari",
     emoji: "🕊️",
@@ -71,7 +71,7 @@ const families = {
   },
 };
 
-module.exports = families;
+module.exports = Families;
 
 /*
 ari = 0

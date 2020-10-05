@@ -4,15 +4,14 @@ const { MessageEmbed } = require("discord.js");
 
 const { loadTopPlayers } = require("../../database/Database");
 
-const { paginate } = require("../../utils/helpers/arrHelper.js");
+const { paginate } = require("../../utils/helpers/arrHelper");
 const { buildEmbeds, commandInfo } = require("../../utils/helpers/msgHelper");
 
-const positions = require("../../docs/data/positions.js");
+const Positions = require("../../docs/data/Positions");
 
-const pageLength = 10;
 const sorts = {
   [false]: {
-    sort: { level: -1, exp: -1 },
+    sort: { level: -1, EXP: -1 },
     where: "level",
   },
   ["points"]: {
@@ -22,15 +21,6 @@ const sorts = {
   ["dallars"]: {
     sort: { dallars: -1 },
     where: "dallars",
-  },
-  ["fish"]: {
-    sort: { "fishes.\nTotal Amount": -1 },
-    where: "fishes.\nTotal Amount",
-    gte: 1,
-  },
-  ["reputation"]: {
-    sort: { reputation: -1 },
-    where: "reputation",
   },
 };
 
@@ -46,8 +36,6 @@ module.exports = class TopCommand extends Command {
         `${client.commandPrefix}top`,
         `${client.commandPrefix}top points`,
         `${client.commandPrefix}top dallars`,
-        `${client.commandPrefix}top reputation`,
-        `${client.commandPrefix}top fish`,
       ],
       clientPermissions: [],
       userPermissions: [],
@@ -62,7 +50,7 @@ module.exports = class TopCommand extends Command {
       ],
       throttling: {
         usages: 1,
-        duration: 4,
+        duration: 2,
       },
     });
   }
@@ -84,16 +72,16 @@ module.exports = class TopCommand extends Command {
 
     const embeds = [];
 
-    var { maxPage } = paginate(res, 1, pageLength);
-    for (let page = 0; page < maxPage; page++) {
-      var { items } = paginate(res, page + 1, pageLength);
-      let topPlayers = "";
-      for (let item = 0; item < items.length; item++) {
-        const player = items[item];
-        const user = await msg.client.users.fetch(player.playerId);
+    var { maxPage } = paginate(res);
+    for (var page = 0; page < maxPage; page++) {
+      var { items } = paginate(res, page + 1);
+      var topPlayers = "";
+      for (let i = 0; i < items.length; i++) {
+        const player = items[i];
+        const user = await msg.client.users.fetch(player.id);
 
-        let position = page * pageLength + item;
-        if (player.playerId == msg.author.id) {
+        var position = page * pageLength + i;
+        if (player.id == msg.author.id) {
           yourPosition = position + 1;
           yourPage = page + 1;
         }
@@ -105,12 +93,10 @@ module.exports = class TopCommand extends Command {
           position = `${position + 1})`;
         }
 
-        topPlayers += `${position}    ${
-          positions[player.position[0]].emoji
-        }  **${user.username}** ─ `;
+        topPlayers += `**${user.username}** | `;
         switch (sort) {
           default:
-            topPlayers += `Lvl: ${player.level} ─ Exp: ${player.exp}\n`;
+            topPlayers += `Level: ${player.level} | EXP: ${player.EXP}\n`;
             break;
           case "points":
             topPlayers += `Points: ${player.points}\n`;

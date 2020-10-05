@@ -19,7 +19,7 @@ module.exports = class UpdateAllCommand extends Command {
       args: [],
       throttling: {
         usages: 1,
-        duration: 5,
+        duration: 2000000000,
       },
     });
   }

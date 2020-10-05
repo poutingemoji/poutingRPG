@@ -4,41 +4,40 @@ const { titleCase } = require("../helpers/strHelper");
 const { secondsToDhms } = require("../helpers/intHelper");
 const { colors } = require("./enumHelper");
 
-const emojis = require("../../docs/data/emojis.js");
+const Emojis = require("../../docs/data/Emojis.js");
 
 const Pagination = require("discord-paginationembed");
 
 const msgHelper = {
   emoji(msg, emoji) {
-    return msg.client.emojis.cache.get(emojis[emoji]).toString();
+    
+    return msg.client.emojis.cache.get(Emojis[emoji]).toString();
   },
-  choose123(msg, content, embed) {
-    return msg.say(content, embed).then((msgSent) => {
-      msgSent
-        .react("1️⃣")
-        .then(() => msgSent.react("2️⃣"))
-        .then(() => msgSent.react("3️⃣"));
+  chooseOne(msg, array, content, embed) {
+    return msg.reply(content, embed).then(async (msgSent) => {
+      for (var i = 0; i < array.length; i++) {
+        await msgSent.react(array[i]);
+      }
 
-      const keycaps = ["1️⃣", "2️⃣", "3️⃣"]
       const filter = (reaction, user) => {
-        return (
-          keycaps.includes(reaction.emoji.name) &&
-          user.id === msg.author.id
-        );
+        return array.includes(reaction.emoji.name) && user.id === msg.author.id;
       };
-      
+
       return msgSent
         .awaitReactions(filter, { max: 1, time: 60000, errors: ["time"] })
         .then((collected) => {
           msgSent.delete();
-          return keycaps.indexOf(collected.first().emoji.name)
+          return array.indexOf(collected.first().emoji.name);
         })
-        .catch(() => msgSent.delete());
+        .catch(() => {
+          msgSent.delete();
+          return false;
+        });
     });
   },
   confirmation(msg, content) {
     return msg.say(content).then((msgSent) => {
-      msgSent.react(emojis["check"]).then(() => msgSent.react(emojis["cross"]));
+      msgSent.react(Emojis["check"]).then(() => msgSent.react(Emojis["cross"]));
 
       const filter = (reaction, user) => {
         return (
@@ -93,7 +92,7 @@ const msgHelper = {
       })
       .setNavigationEmojis({
         back: "⬅️",
-        delete: emojis.cross,
+        delete: Emojis.cross,
         forward: "➡️",
         jump: "🔢",
       })

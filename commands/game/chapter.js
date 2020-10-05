@@ -5,14 +5,11 @@ const { MessageEmbed } = require("discord.js");
 const { findPlayer } = require("../../database/Database");
 const { addQuests } = require("../../database/functions");
 
-const {
-  colors,
-  fishes,
-} = require("../../utils/helpers/enumHelper");
+const { colors, fishes } = require("../../utils/helpers/enumHelper");
 
-const arcs = require("../../docs/data/arcs.js");
-const emojis = require("../../docs/data/emojis.js");
-const enemies = require("../../docs/data/enemies.js");
+const Arcs = require("../../docs/data/Arcs");
+const Emojis = require("../../docs/data/Emojis");
+const Enemies = require("../../docs/data/Enemies");
 
 module.exports = class ChapterCommand extends Command {
   constructor(client) {
@@ -29,7 +26,7 @@ module.exports = class ChapterCommand extends Command {
       args: [],
       throttling: {
         usages: 1,
-        duration: 82800,
+        duration: 2,
       },
     });
   }
@@ -38,8 +35,8 @@ module.exports = class ChapterCommand extends Command {
     const player = await findPlayer(msg.author, msg);
     player.addQuests = addQuests;
     //player.addQuests();
-    console.log(player.quests[3].progress)
-    const arc = arcs[player.arc];
+    console.log(player.quests[3].progress);
+    const arc = Arcs[player.arc];
     const chapter = arc.chapters[player.chapter];
     const { totalPercent, questsInfo } = getQuestsInfo(player.quests);
     const messageEmbed = new MessageEmbed()
@@ -47,13 +44,13 @@ module.exports = class ChapterCommand extends Command {
       .setTitle(`${chapter.emoji} ${chapter.name}`)
       .addFields(
         {
-          name: `${emojis["chapter"]} ${arc.name} - Chapter ${
+          name: `${Emojis["chapter"]} ${arc.name} - Chapter ${
             player.chapter + 1
           }/${arc.chapters.length}`,
           value: chapter.description,
         },
         {
-          name: `${emojis["quests"]} Quests (${totalPercent}%)`,
+          name: `${Emojis["quests"]} Quests (${totalPercent}%)`,
           value: questsInfo,
         }
       );
@@ -68,13 +65,13 @@ function getQuestsInfo(quests) {
     content += `- ${quest.type} **${quest.goal}** `;
     switch (quest.type) {
       case "Defeat":
-        content += `enemies`;
+        content += `Enemies`;
         break;
       case "Fish":
         content += `${quest.id} ${fishes[quest.id].emoji}`;
         break;
       case "Collect":
-        content += `${quest.id} ${emojis[quest.id]}`;
+        content += `${quest.id} ${Emojis[quest.id]}`;
         break;
       case "Use":
         content += `${quest.id}`;
@@ -84,5 +81,8 @@ function getQuestsInfo(quests) {
     totalPercent += percent;
     content += `: ${quest.progress}/${quest.goal} (${percent}%)\n`;
   }
-  return { questsInfo: content, totalPercent: Math.floor(totalPercent / quests.length) };
+  return {
+    questsInfo: content,
+    totalPercent: Math.floor(totalPercent / quests.length),
+  };
 }

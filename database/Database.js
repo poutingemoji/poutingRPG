@@ -5,8 +5,6 @@ const Player = mongoose.model("Player", playerSchema);
 
 const { newPlayer } = require("./Objects");
 
-const pets = require("../docs/data/pets.js");
-
 process.on("close", () => {
   console.log("Database disconnecting on app termination");
   if (mongoose.connection.readyState === 1) {
@@ -49,15 +47,16 @@ class Database {
 
   findPlayer(player, msg) {
     return new Promise((resolve, reject) =>
-      Player.findOne({ playerId: player.id }, (err, res) => {
+      Player.findOne({ id: player.id }, (err, res) => {
         if (err) {
           return reject(err);
         }
         if (!res && msg) {
+          const startCommand = `${msg.client.commandPrefix}start`;
           return msg.say(
             msg.author.id == player.id
-              ? `Please type \`${msg.client.commandPrefix}start\` to begin.`
-              : `${player.username} hasn't started climbing the Tower.`
+              ? `Please type \`${startCommand}\` to begin.`
+              : `${player.username} hasn't started their adventure. If you know them, tell them to type \`${startCommand}\` to begin.`
           );
         }
         return resolve(res);
@@ -65,12 +64,12 @@ class Database {
     );
   }
 
-  createNewPlayer(player, family, race, position) {
-    console.log(player.id, family, race, position);
+  createNewPlayer(player, traits) {
+    console.log(player.id, traits);
     return new Promise((resolve, reject) =>
       Player.replaceOne(
-        { playerId: player.id },
-        newPlayer(player.id, family, race, position),
+        { id: player.id },
+        newPlayer(player.id, traits),
         { upsert: true },
         (err, res) => {
           if (err) {
@@ -88,14 +87,9 @@ class Database {
   }
 
   updateAllPlayers() {
-    Player.updateMany(
-      {},
-      { },
-      { upsert: true },
-      (err, res) => {
-        console.log(res);
-      }
-    );
+    Player.updateMany({}, {}, { upsert: true }, (err, res) => {
+      console.log(res);
+    });
   }
 }
 

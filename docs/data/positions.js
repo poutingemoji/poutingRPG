@@ -1,13 +1,10 @@
-const positions = {
+const Positions = {
   fisherman: {
     name: "Fisherman",
     emoji: "🎣",
     category: "basic",
-    moves: {
-      punch: 0,
-    },
   },
-  spearbearer: {
+  spear_bearer: {
     name: "Spear Bearer",
     emoji: "🏹",
     category: "basic",
@@ -21,74 +18,47 @@ const positions = {
     name: "Scout",
     emoji: "🏃",
     category: "basic",
-    moves: {
-      punch: 0,
-    },
   },
-  lightbearer: {
+  light_bearer: {
     name: "Light Bearer",
     emoji: "💡",
     category: "basic",
-    moves: {
-      punch: 0,
-    },
   },
-  wavecontroller: {
+  wave_controller: {
     name: "Wave Controller",
     emoji: "🌊",
     category: "basic",
-    moves: {
-      punch: 0,
-    },
   },
   dansulsa: {
     name: "Dansulsa",
     emoji: "🧱",
     category: "special",
-    moves: {
-      punch: 0,
-    },
   },
   defender: {
     name: "Defender",
     emoji: "🛡️",
     category: "special",
-    moves: {
-      punch: 0,
-    },
   },
   anima: {
     name: "Anima",
     emoji: "🦮",
     category: "special",
-    moves: {
-      punch: 0,
-    },
   },
   wonsulsa: {
     name: "Wonsulsa",
     emoji: "🔵",
     category: "special",
-    moves: {
-      punch: 0,
-    },
   },
   hwayeomsa: {
     name: "Hwayeomsa",
     emoji: "🔥",
     category: "special",
-    moves: {
-      punch: 0,
-    },
   },
   jeonsulsa: {
     name: "Jeonsulsa",
     emoji: "⚡",
     category: "special",
-    moves: {
-      punch: 0,
-    },
   },
 };
 
-module.exports = positions;
+module.exports = Positions;

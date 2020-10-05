@@ -1,6 +1,6 @@
-const { expFormulas, maxHealth, maxEnergy } = require("../utils/helpers/enumHelper");
+const { expFormulas } = require("../utils/helpers/enumHelper");
 
-const pets = require("../docs/data/pets.js");
+const Characters = require("../docs/data/Characters");
 
 const Parser = require("expr-eval").Parser;
 
@@ -9,92 +9,56 @@ const Objects = {
     return {};
   },
 
-  newPlayer(playerId, family, race, position) {
+  newPlayer(id, traits) {
+    console.log(traits[0]);
     return {
-      playerId: playerId,
-
-      family: family,
-      race: race,
-      irregular: Math.random() >= 0.1,
-
-      position: [position],
+      id: id,
 
       level: 1,
-      exp: 0,
-      expMax: Parser.evaluate(expFormulas["mediumslow"], { n: 2 }),
+      EXP: 0,
+      Max_EXP: Parser.evaluate(expFormulas["mediumslow"], { n: 2 }),
 
-      health: maxHealth(1),
-      energy: maxEnergy(1),
-      updatedAt: Date.now(),
+      selected_Character: "irregular",
+      characters_Owned: Objects.newCharacter("irregular", traits[0]),
+      inventory: {dullneedle: 4, dullspear: 2},
 
-      statpoints: 0,
+      energy: 120,
+      updated_At: Date.now(),
 
-      shinsu: 0,
-      sword: 0,
-      strength: 0,
-      durability: 0,
-      speed: 0,
-      
       points: 0,
       dallars: 0,
 
       arc: 0,
       chapter: 0,
-      move: ["punch"],
-
-      reputation: 0,
       quests: [],
-      fishes: {
-        ["Shrimp"]: 0,
-        ["Fish"]: 0,
-        ["Tropical Fish"]: 0,
-        ["Blowfish"]: 0,
-        ["Squid"]: 0,
-        ["Octopus"]: 0,
-        ["Metalfish"]: 0,
-        ["Silver Fish"]: 0,
-        ["Crystal Shard"]: 0,
-        ["Valuable Object"]: 0,
-        ["Baby Zygaena"]: 0,
-        ["Sweetfish"]: 0,
-        ["Boot"]: 0,
-        ["Brick"]: 0,
-        ["\nTotal Amount"]: 0,
-      },
+      commissions: [],
     };
   },
 
-  newMove(id) {
-    return {
-      move: [id],
+  newCharacter(id, position) {
+    console.log(id);
+    const character = {
+      weapon: Characters[id].weapon,
+
+      level: 1,
+      EXP: 0,
+      Max_EXP: Parser.evaluate(expFormulas["slow"], { n: 2 }),
+      phase: 0, 
+
+      duplicates: 0,
     };
+    if (position) character.position = position;
+    return { [id]: character };
   },
 
-  newPet(id) {
-    return {
-      pet: {
-        id: id,
-        updatedAt: Date.now(),
-
-        level: 1,
-        exp: 0,
-        expMax: Parser.evaluate(expFormulas[pets[id].exprate], { n: 2 }),
-        hunger: 100,
-        hygiene: 100,
-        fun: 100,
-        energy: 100,
-        nickname: "",
-      },
-    };
-  },
-
-  newQuest(type, goal, id, progress) {
+  newQuest(type, goal, id, rewards, progress) {
     return {
       //defeat, fish, collect, use
       type: type,
       id: id,
       goal: goal,
       progress: progress || 0,
+      rewards: rewards,
     };
   },
 };

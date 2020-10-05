@@ -8,11 +8,11 @@ const { colors } = require("../../utils/helpers/enumHelper");
 const { emoji, confirmation } = require("../../utils/helpers/msgHelper");
 const { titleCase } = require("../../utils/helpers/strHelper");
 
-const families = require("../../docs/data/families.js");
-const positions = require("../../docs/data/positions.js");
-const races = require("../../docs/data/races.js");
+const Families = require("../../docs/data/Families");
+const Positions = require("../../docs/data/Positions");
+const Races = require("../../docs/data/Races");
 
-const traits = [families, races, positions];
+const traits = [Positions];
 
 module.exports = class StartCommand extends Command {
   constructor(client) {
@@ -46,13 +46,30 @@ module.exports = class StartCommand extends Command {
 
     const messageEmbed = new MessageEmbed().setColor(colors.embed.game);
 
-    const choose = [chooseFamily, chooseRace, choosePosition];
+    const choose = [
+      function () {
+        var description = "";
+        var i = 0;
+        for (var value of Object.values(Positions)) {
+          if (!(value.category == "basic")) break;
+          i++;
+          description += `${i} - **${value.name}** ${value.emoji}\n`;
+        }
+        return {
+          title: "Choose your position:",
+          description: description,
+        };
+      },
+    ];
+    
     const traitsChosen = [];
     for (var i = 0; i < traits.length; i++) {
+      console.log(choose[i]);
       const { title, description, footer } = choose[i]();
       messageEmbed.setTitle(title);
       messageEmbed.setDescription(description);
-      messageEmbed.setFooter(footer);
+      if (footer) messageEmbed.setFooter(footer);
+
       const filter = (res) => {
         return (
           Object.keys(Object.keys(traits[i]))
@@ -80,72 +97,8 @@ module.exports = class StartCommand extends Command {
     msg.say(
       new MessageEmbed()
         .setColor(colors.embed.game)
-        .setDescription(
-          `[**${positions[traitsChosen[2]].name.toUpperCase()}**] ${
-            msg.author.username
-          } **${families[traitsChosen[0]].name}** of the **${
-            races[traitsChosen[1]].name
-          }** race, I sincerely welcome you to the Tower.`
-        )
-        .setFooter(
-          `The story mode isn't done right now, there are only pets, gambling, and fishing. I will do a fresh reset when I am ready to release. You can view a list of commands with: ${this.client.commandPrefix}help`
-        )
+        .setDescription(`I sincerely welcome you to the Tower.`)
     );
-    createNewPlayer(
-      msg.author,
-      traitsChosen[0],
-      traitsChosen[1],
-      traitsChosen[2]
-    );
+    createNewPlayer(msg.author, traitsChosen);
   }
-};
-
-function chooseFamily() {
-  var description = "";
-  var i = 0;
-  for (var [key, value] of Object.entries(families)) {
-    i++;
-    description += `${i} - **${value.name}** ${value.emoji}\n`;
-  }
-  return {
-    title: "Choose your family:",
-    description: description,
-    footer:
-      "Your family will determine some of the techniques you will be able to unlock.",
-  };
-};
-
-function chooseRace() {
-  var description = "";
-  var i = 0;
-  var categories = [];
-  for (var [key, value] of Object.entries(races)) {
-    i++;
-    if (!categories.includes(value.category)) {
-      categories.push(value.category);
-      description += `**${titleCase(value.category)}**\n`;
-    }
-    description += `${i} - ${value.name} ${value.emoji}\n`;
-  }
-  return {
-    title: "Choose your race:",
-    description: description,
-    footer: "Your race will affect your stats.",
-  };
-};
-
-function choosePosition() {
-  var description = "";
-  var i = 0;
-  for (var [key, value] of Object.entries(positions)) {
-    if (!(value.category == "basic")) break;
-    i++;
-    description += `${i} - **${value.name}** ${value.emoji}\n`;
-  }
-  return {
-    title: "Choose your position:",
-    description: description,
-    footer:
-      "Your position will determine some of the techniques you will be able to unlock and affect your stats.",
-  };
 };

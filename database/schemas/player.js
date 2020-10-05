@@ -1,61 +1,26 @@
 const mongoose = require("mongoose");
 
 const playerSchema = new mongoose.Schema({
-  playerId: String,
-
-  family: String,
-  race: String,
-  irregular: Boolean,
-
-  position: [String],
+  id: String,
 
   level: Number,
-  exp: Number,
-  expMax: Number,
+  EXP: Number,
+  Max_EXP: Number,
 
-  health: Number,
+  selected_Character: String,
+  characters_Owned: {},
+  inventory: {},
+
   energy: Number,
-  updatedAt: Date,
-
-
-physical: Number,
-
-  statpoints: Number,
-
-  shinsu: Number,
-  sword: Number,
-  strength: Number,
-  durability: Number,
-  speed: Number,
+  updated_At: Date,
 
   points: Number,
   dallars: Number,
 
-  technique: {},
   arc: Number,
   chapter: Number,
-  move: [String],
-  pet: {
-    id: String,
-    updatedAt: Date,
-    nickname: String,
-
-    level: Number,
-    exp: Number,
-    expMax: Number,
-
-    hunger: Number,
-    hygiene: Number,
-    fun: Number,
-    energy: Number,
-  },
-
-  reputation: Number,
   quests: Array,
-  fishes: {
-    type: Map,
-    of: Number,
-  },
+  commissions: Array,
 });
 
 module.exports = playerSchema;
