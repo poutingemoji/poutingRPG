@@ -19,7 +19,7 @@ const functions = {
     while (this.EXP >= this.Max_EXP) {
       this.level++;
       this.EXP -= this.Max_EXP;
-      this.Max_EXP = Parser.evaluate(expFormulas["mediumslow"], {
+      this.Max_EXP = Parser.evaluate(expFormulas["player"], {
         n: this.level + 1,
       });
       this.health = maxHealth(this.level);
@@ -34,6 +34,10 @@ const functions = {
         }**!\n\n`
       );
     }
+    save(this);
+  },
+  changeValue(key, value) {
+    this[key] = value;
     save(this);
   },
   incrementValue(key, value) {
@@ -59,10 +63,11 @@ const functions = {
       quest.progress += Math.min(value, quest.goal - quest.progress);
     }
   },
+  //Character Functions
   getCharProperty(property, msg, id = this.selected_Character) {
     const char = this.characters_Owned[id];
     if (!char) return;
-    console.log(char["duplicates"]);
+    console.log(char.weapon);
     switch (property) {
       case "name":
         return id == "irregular" ? msg.author.username : Characters[id].name;
@@ -74,18 +79,31 @@ const functions = {
         return Items[char.weapon].name;
       case "attributes":
         return Characters[id].attributes;
+      case "rarity":
+        return Characters[id].rarity;
       default:
         return char[property];
     }
   },
   giveCharWeapon(weapon) {
+    if (Items[weapon].type !== "weapon") return;
     if (!this.inventory.hasOwnProperty(weapon)) return;
-    if (this.inventory[weapon] == 0) return;
     const char = this.characters_Owned[this.selected_Character];
-    this.inventory[char.weapon] !== 0
-      ? this.inventory[char.weapon]++
-      : (this.inventory[char.weapon] = 0);
-    this.inventory[weapon]--
+
+    //Delete Weapon From Inventory And Give to Character
+    if (this.inventory[weapon] == 1) {
+      delete this.inventory[weapon];
+    } else {
+      this.inventory[weapon] -= 1;
+    }
+
+    //Put Character's Weapon Back into Inventory
+    if (!this.inventory[char.weapon]) {
+      this.inventory[char.weapon] = 1;
+    } else {
+      this.inventory[char.weapon] += 1;
+    }
+
     char.weapon = weapon;
     save(this);
   },
@@ -94,6 +112,7 @@ const functions = {
 module.exports = functions;
 
 function save(player, update) {
+  console.log(player.inventory);
   if (update && !update.hasOwnProperty("$unset"))
     update = Object.assign(player, update);
   Player.updateOne(
@@ -101,7 +120,7 @@ function save(player, update) {
     update || player,
     { upsert: true },
     (err, res) => {
-      //console.log(res);
+      console.log(res);
     }
   );
 }

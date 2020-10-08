@@ -8,7 +8,7 @@ const { getCharProperty } = require("../../database/functions");
 const { paginate } = require("../../utils/helpers/arrHelper");
 const { buildEmbeds } = require("../../utils/helpers/msgHelper");
 
-const Positions = require("../../docs/data/Positions");
+const { positions } = require("../../docs/data/Emojis");
 
 module.exports = class CharactersCommand extends Command {
   constructor(client) {
@@ -17,8 +17,8 @@ module.exports = class CharactersCommand extends Command {
       aliases: ["chars"],
       group: "game",
       memberName: "characters",
-      description: "Claim your daily reward.",
-      examples: [`${client.commandPrefix}daily`],
+      description: "View your characters.",
+      examples: [],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
@@ -49,7 +49,7 @@ module.exports = class CharactersCommand extends Command {
           player.getCharProperty("level", msg, id),
           player.getCharProperty("duplicates", msg, id),
         ];
-        description += `**${name}** ${Positions[position].emoji} | Level: ${level} | Duplicates: ${duplicates} | [ID: ${id}](https://www.twitch.tv/pokimane)`;
+        description += `**${name}** ${positions[position]} | Level: ${level} | Duplicates: ${duplicates} | [ID: ${id}](https://www.twitch.tv/pokimane)`;
       }
       embeds.push(
         new MessageEmbed()

@@ -5,6 +5,8 @@ const Player = mongoose.model("Player", playerSchema);
 
 const { newPlayer } = require("./Objects");
 
+const waitingForRes = new Set();
+
 process.on("close", () => {
   console.log("Database disconnecting on app termination");
   if (mongoose.connection.readyState === 1) {
@@ -40,18 +42,24 @@ mongoose.connection.on("error", (err) => {
   disconnect();
 });
 
-class Database {
-  constructor() {
-    connect();
-  }
+connect();
 
-  findPlayer(player, msg) {
+const Database = {
+  waitingForRes: waitingForRes,
+  findPlayer(player, msg, sayMsg = true) {
+    if (waitingForRes.has(player.id)) {
+      msg.say(
+        "Please provide a response to the command before executing another."
+      );
+      return;
+    }
+
     return new Promise((resolve, reject) =>
       Player.findOne({ id: player.id }, (err, res) => {
         if (err) {
           return reject(err);
         }
-        if (!res && msg) {
+        if (!res && sayMsg) {
           const startCommand = `${msg.client.commandPrefix}start`;
           return msg.say(
             msg.author.id == player.id
@@ -62,7 +70,7 @@ class Database {
         return resolve(res);
       })
     );
-  }
+  },
 
   createNewPlayer(player, traits) {
     console.log(player.id, traits);
@@ -80,20 +88,20 @@ class Database {
         }
       )
     );
-  }
+  },
 
   loadTopPlayers(sort, where, gte) {
     return Player.find().where(where).gte(gte).sort(sort).exec();
-  }
+  },
 
-  updateAllPlayers() {
-    Player.updateMany({}, {}, { upsert: true }, (err, res) => {
+  updateAllPlayers(update) {
+    Player.updateMany({}, update, { upsert: true }, (err, res) => {
       console.log(res);
     });
-  }
-}
+  },
+};
 
-module.exports = new Database();
+module.exports = Database;
 
 /*
   Player.updateMany({  }, 

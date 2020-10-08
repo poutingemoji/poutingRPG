@@ -6,6 +6,7 @@ const { findPlayer } = require("../../database/Database");
 
 const { paginate } = require("../../utils/helpers/arrHelper");
 const { buildEmbeds } = require("../../utils/helpers/msgHelper");
+const { titleCase } = require("../../utils/helpers/strHelper");
 
 const Items = require("../../docs/data/Items");
 
@@ -16,8 +17,8 @@ module.exports = class InventoryCommand extends Command {
       aliases: ["inv"],
       group: "game",
       memberName: "inventory",
-      description: "Claim your daily reward.",
-      examples: [`${client.commandPrefix}daily`],
+      description: "View your inventory.",
+      examples: [],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
@@ -47,25 +48,31 @@ module.exports = class InventoryCommand extends Command {
       var { items } = paginate(inventory, page + 1);
       var description = "";
       for (var i = 0; i < items.length; i++) {
-        const id = inventory[i]
-        switch(Items[id].type) {
-          case "weapon": 
-            description += `x${player.inventory[id]} **${Items[id].name}** | Base ATK: ${Items[id].Base_ATK} | Secondary Stat: ${Items[id].Secondary_Stat.replace(/_/g, " ")} | [ID: ${id}](https://www.twitch.tv/pokimane)\n`;            break;
+        const id = inventory[i];
+        const item = Items[id];
+        switch (item.type) {
+          case "weapon":
+            description += `x${player.inventory[id]} **${
+              item.name
+            }** | [${titleCase(
+              item.type
+            )}](https://www.twitch.tv/pokimane) | Base ATK: ${
+              item.Base_ATK
+            } | 2nd Stat: ${item.Secondary_Stat.replace(
+              /_/g,
+              " "
+            )} | [ID: ${id}](https://www.twitch.tv/pokimane)\n`;
+            break;
           default:
-            
         }
-        
       }
       embeds.push(
         new MessageEmbed()
-        .setTitle(`[Page ${page + 1}/${maxPage}]`)
-        .setDescription(description)
+          .setTitle(`[Page ${page + 1}/${maxPage}]`)
+          .setDescription(description)
       );
     }
 
-    buildEmbeds(
-      msg,
-      embeds
-    );
+    buildEmbeds(msg, embeds);
   }
 };

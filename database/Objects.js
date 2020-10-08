@@ -16,11 +16,11 @@ const Objects = {
 
       level: 1,
       EXP: 0,
-      Max_EXP: Parser.evaluate(expFormulas["mediumslow"], { n: 2 }),
+      Max_EXP: Parser.evaluate(expFormulas["player"], { n: 2 }),
 
       selected_Character: "irregular",
       characters_Owned: Objects.newCharacter("irregular", traits[0]),
-      inventory: {dullneedle: 4, dullspear: 2},
+      inventory: {dull_needle: 4},
 
       energy: 120,
       updated_At: Date.now(),

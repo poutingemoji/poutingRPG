@@ -5,9 +5,9 @@ const { MessageEmbed } = require("discord.js");
 const { findPlayer } = require("../../database/Database");
 const { getCharProperty } = require("../../database/functions");
 
-const { emoji } = require("../../utils/helpers/msgHelper");
+const { stars } = require("../../utils/helpers/msgHelper");
 
-const Positions = require("../../docs/data/Positions");
+const { positions } = require("../../docs/data/Emojis");
 
 module.exports = class InfoCommand extends Command {
   constructor(client) {
@@ -16,8 +16,8 @@ module.exports = class InfoCommand extends Command {
       aliases: [],
       group: "game",
       memberName: "info",
-      description: "Claim your daily reward.",
-      examples: [`${client.commandPrefix}daily`],
+      description: "Get info on your character.",
+      examples: [],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
@@ -40,11 +40,11 @@ module.exports = class InfoCommand extends Command {
     const player = await findPlayer(msg.author, msg);
     if (!player.characters_Owned.hasOwnProperty(char)) return;
     player.getCharProperty = getCharProperty;
-
-    const [name, position, phase, weapon, level, EXP, Max_EXP, attributes] = [
+    console.log(player.getCharProperty("rarity"));
+    const [name, position, rarity, weapon, level, EXP, Max_EXP, attributes] = [
       player.getCharProperty("name", msg),
       player.getCharProperty("position"),
-      player.getCharProperty("phase"),
+      player.getCharProperty("rarity"),
       player.getCharProperty("weapon"),
       player.getCharProperty("level"),
       player.getCharProperty("EXP"),
@@ -52,15 +52,11 @@ module.exports = class InfoCommand extends Command {
       player.getCharProperty("attributes"),
     ];
 
-    const stars = `${"⭐".repeat(phase)}${emoji(msg, "empty_star").repeat(
-      6 - phase
-    )}`;
-
     const messageEmbed = new MessageEmbed()
-      .setTitle(`${name} ${Positions[position].emoji}` + `\n${stars}`)
+      .setTitle(`${name} ${positions[position]}\n` + `${stars(msg, rarity)}`)
       .setImage(msg.author.displayAvatarURL());
     var description = `Weapon: ${weapon}\n`;
-    description += `Level ${level}/${(phase + 1) * 20}\n`;
+    description += `Level ${level}/${(rarity + 1) * 20}\n`;
     description += `EXP: ${EXP}/${Max_EXP}\n\n`;
     for (var attribute in attributes) {
       description += `${attribute.replace(/_/g, " ")}: ${

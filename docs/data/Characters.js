@@ -1,7 +1,8 @@
 const Characters = {
   irregular: {
     name: "Irregular",
-    weapon: "dullneedle",
+    rarity: 5,
+    weapon: "dull_needle",
     region: "The Outside",
     attributes: {
       Max_HP: 100,

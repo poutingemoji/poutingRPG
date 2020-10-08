@@ -25,7 +25,7 @@ module.exports = class ProfileCommand extends Command {
       aliases: [],
       group: "game",
       memberName: "profile",
-      description: "Displays your profile.",
+      description: "View someone's profile.",
       examples: [`${client.commandPrefix}profile [@user/id]`],
       clientPermissions: [],
       userPermissions: [],

@@ -3,11 +3,13 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 const { findPlayer, createNewPlayer } = require("../../database/Database");
+const { changeValue } = require("../../database/functions");
 
 const { colors } = require("../../utils/helpers/enumHelper");
-const { confirmation } = require("../../utils/helpers/msgHelper");
+const { confirmation, Messages } = require("../../utils/helpers/msgHelper");
 const { titleCase } = require("../../utils/helpers/strHelper");
 
+const { positions } = require("../../docs/data/Emojis");
 const Families = require("../../docs/data/Families");
 const Positions = require("../../docs/data/Positions");
 const Races = require("../../docs/data/Races");
@@ -21,8 +23,8 @@ module.exports = class StartCommand extends Command {
       aliases: [],
       group: "game",
       memberName: "start",
-      description: "Begin your adventure up the Tower.",
-      examples: [`${client.commandPrefix}start`],
+      description: "Start your adventure.",
+      examples: [],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
@@ -35,7 +37,7 @@ module.exports = class StartCommand extends Command {
   }
 
   async run(msg) {
-    const player = await findPlayer(msg.author);
+    const player = await findPlayer(msg.author, msg, false);
     if (player) {
       const res = await confirmation(
         msg,
@@ -53,7 +55,10 @@ module.exports = class StartCommand extends Command {
         for (var value of Object.values(Positions)) {
           if (!(value.category == "basic")) break;
           i++;
-          description += `${i} - **${value.name}** ${value.emoji}\n`;
+          console.log(value);
+          description += `${i} - **${value.name}** ${
+            positions[value.name.toLowerCase().replace(/ /g, "_")]
+          }\n`;
         }
         return {
           title: "Choose your position:",
@@ -61,10 +66,9 @@ module.exports = class StartCommand extends Command {
         };
       },
     ];
-    
+
     const traitsChosen = [];
     for (var i = 0; i < traits.length; i++) {
-      console.log(choose[i]);
       const { title, description, footer } = choose[i]();
       messageEmbed.setTitle(title);
       messageEmbed.setDescription(description);
@@ -77,20 +81,11 @@ module.exports = class StartCommand extends Command {
             .includes(res.content) && res.author.id === msg.author.id
         );
       };
-
-      traitsChosen.push(
-        await msg.say(messageEmbed).then((msgSent) => {
-          return msgSent.channel
-            .awaitMessages(filter, { max: 1, time: 60000 })
-            .then((res) => {
-              msgSent.delete();
-              return Object.keys(traits[i])[res.first().content - 1];
-            })
-            .catch((err) => {
-              return;
-            });
-        })
-      );
+      const res = await Messages(msg, filter, messageEmbed);
+      console.log(res)
+      if (res.size == 0) return;
+      traitsChosen.push(Object.keys(traits[i])[res.first().content - 1]);
+      console.log(traitsChosen[i])
       if (!traitsChosen[i]) return;
     }
 

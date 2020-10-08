@@ -1,5 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 
+const { waitingForRes } = require("../../database/Database");
+
 const { titleCase } = require("../helpers/strHelper");
 const { secondsToDhms } = require("../helpers/intHelper");
 const { colors } = require("./enumHelper");
@@ -9,12 +11,28 @@ const Emojis = require("../../docs/data/Emojis.js");
 const Pagination = require("discord-paginationembed");
 
 const msgHelper = {
-  emoji(msg, emoji) {
-    
-    return msg.client.emojis.cache.get(Emojis[emoji]).toString();
+  async Messages(msg, filter, description) {
+    if (waitingForRes.has(msg.author.id)) return;
+    return await msg.say(description).then((msgSent) => {
+      waitingForRes.add(msg.author.id);
+      return msgSent.channel
+        .awaitMessages(filter, { max: 1, time: 60000 })
+        .then((res) => {
+          msgSent.delete();
+          waitingForRes.clear(msg.author.id);
+          return res;
+        })
+        .catch((err) => {
+          msgSent.delete();
+          waitingForRes.clear(msg.author.id);
+          return;
+        });
+    });
   },
-  chooseOne(msg, array, content, embed) {
+  chooseOne(msg, player, array, content, embed) {
+    if (waitingForRes.has(msg.author.id)) return;
     return msg.reply(content, embed).then(async (msgSent) => {
+      waitingForRes.add(msg.author.id);
       for (var i = 0; i < array.length; i++) {
         await msgSent.react(array[i]);
       }
@@ -27,21 +45,27 @@ const msgHelper = {
         .awaitReactions(filter, { max: 1, time: 60000, errors: ["time"] })
         .then((collected) => {
           msgSent.delete();
+          waitingForRes.clear(msg.author.id);
           return array.indexOf(collected.first().emoji.name);
         })
         .catch(() => {
           msgSent.delete();
+          waitingForRes.clear(msg.author.id);
           return false;
         });
     });
   },
   confirmation(msg, content) {
+    if (waitingForRes.has(msg.author.id)) return;
     return msg.say(content).then((msgSent) => {
-      msgSent.react(Emojis["check"]).then(() => msgSent.react(Emojis["cross"]));
+      waitingForRes.add(msg.author.id);
+      msgSent
+        .react(Emojis["green_check"])
+        .then(() => msgSent.react(Emojis["red_cross"]));
 
       const filter = (reaction, user) => {
         return (
-          ["check", "cross"].includes(reaction.emoji.name) &&
+          ["green_check", "red_cross"].includes(reaction.emoji.name) &&
           user.id === msg.author.id
         );
       };
@@ -50,12 +74,25 @@ const msgHelper = {
         .awaitReactions(filter, { max: 1, time: 60000, errors: ["time"] })
         .then((collected) => {
           msgSent.delete();
-          if (collected.first().emoji.name == "check") return true;
+          waitingForRes.clear(msg.author.id);
+          if (collected.first().emoji.name == "green_check") return true;
           else return false;
         })
-        .catch(() => msgSent.delete());
+        .catch(() => {
+          msgSent.delete();
+          waitingForRes.clear(msg.author.id);
+        });
     });
   },
+  stars(msg, rarity) {
+    return `${"⭐".repeat(rarity)}${msgHelper
+      .emoji(msg, "empty_star")
+      .repeat(5 - rarity)}`;
+  },
+  emoji(msg, emoji) {
+    return msg.client.emojis.cache.get(Emojis[emoji]).toString();
+  },
+
   commandInfo(msg, command) {
     const messageEmbed = new MessageEmbed()
       .setColor(colors.embed.bot)

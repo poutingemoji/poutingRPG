@@ -42,7 +42,8 @@ const arrHelper = {
         pool.push(i);
       }
     }
-    return values[arrHelper.arrayShuffle(pool)["0"]];
+    console.log(pool.length)
+    return values[arrHelper.arrayShuffle(pool)[0]];
   },
 };
 

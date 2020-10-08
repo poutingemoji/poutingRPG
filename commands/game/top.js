@@ -24,6 +24,8 @@ const sorts = {
   },
 };
 
+const pageLength = 10
+
 module.exports = class TopCommand extends Command {
   constructor(client) {
     super(client, {
@@ -31,7 +33,7 @@ module.exports = class TopCommand extends Command {
       aliases: ["leaderboard"],
       group: "game",
       memberName: "top",
-      description: "Displays the top players.",
+      description: "View the top players.",
       examples: [
         `${client.commandPrefix}top`,
         `${client.commandPrefix}top points`,
@@ -50,7 +52,7 @@ module.exports = class TopCommand extends Command {
       ],
       throttling: {
         usages: 1,
-        duration: 2,
+        duration: 5,
       },
     });
   }
