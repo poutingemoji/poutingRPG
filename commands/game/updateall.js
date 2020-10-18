@@ -1,9 +1,17 @@
-require("dotenv").config();
+//BASE
 const { Command } = require("discord.js-commando");
+const BaseHelper = require("../../Base/Helper");
+const { aggregation } = require("../../Base/Util");
 
-const { updateAllPlayers } = require("../../database/Database");
+const { MessageEmbed } = require("discord.js");
 
-module.exports = class UpdateAllCommand extends Command {
+//DATA
+require("dotenv").config();
+
+module.exports = class UpdateAllCommand extends aggregation(
+  Command,
+  BaseHelper
+) {
   constructor(client) {
     super(client, {
       name: "updateall",
@@ -16,6 +24,7 @@ module.exports = class UpdateAllCommand extends Command {
       userPermissions: [],
       guildOnly: true,
       hidden: true,
+      ownerOnly: true,
       args: [],
       throttling: {
         usages: 1,
@@ -25,7 +34,6 @@ module.exports = class UpdateAllCommand extends Command {
   }
 
   run(msg) {
-    if (msg.author.id !== "257641125135908866") return;
     updateAllPlayers();
     return msg.say("Updated all MongoDB documents, master.");
   }

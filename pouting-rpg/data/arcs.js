@@ -1,6 +1,7 @@
+//DATA
 const { newQuest } = require("../../database/Objects");
 
-const Arcs = [
+const arcs = [
   {
     name: "Headon's Floor",
     image:
@@ -174,4 +175,4 @@ const Arcs = [
   },
 ];
 
-module.exports = Arcs;
+module.exports = arcs;

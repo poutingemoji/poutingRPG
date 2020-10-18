@@ -1,24 +1,18 @@
-require("dotenv").config();
+//BASE
 const { Command } = require("discord.js-commando");
+const BaseHelper = require("../../Base/Helper");
+const { aggregation } = require("../../Base/Util");
+
 const { MessageEmbed } = require("discord.js");
-
-const { findPlayer } = require("../../database/Database");
-const { numberWithCommas } = require("../../utils/helpers/intHelper");
-const {
-  maxHealth,
-  maxEnergy,
-  colors,
-} = require("../../utils/helpers/enumHelper");
-
-const Arcs = require("../../docs/data/Arcs");
-const Emojis = require("../../docs/data/Emojis");
-const Families = require("../../docs/data/Families");
-const Positions = require("../../docs/data/Positions");
-const Races = require("../../docs/data/Races");
-
 const dateFormat = require("dateformat");
 
-module.exports = class ProfileCommand extends Command {
+//DATA
+require("dotenv").config();
+
+// UTILS
+const { Game } = require("../../DiscordBot");
+
+module.exports = class ProfileCommand extends aggregation(Command, BaseHelper) {
   constructor(client) {
     super(client, {
       name: "profile",
@@ -52,10 +46,11 @@ module.exports = class ProfileCommand extends Command {
     const profile = {
       ["Level"]: player.level,
       ["EXP"]: `${player.EXP}/${player.Max_EXP}`,
+      ["Points"]: player.points,
     };
-    var description = "";
+    let description = "";
 
-    for (var key in profile) {
+    for (let key in profile) {
       description += `${key}: **${profile[key]}**\n`;
     }
 

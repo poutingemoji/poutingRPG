@@ -8,37 +8,38 @@ const { MessageEmbed } = require("discord.js");
 //DATA
 require("dotenv").config();
 
-// UTILS
-const { Game } = require("../../DiscordBot");
-
-module.exports = class GiveCommand extends aggregation(Command, BaseHelper) {
+module.exports = class TopCommand extends aggregation(Command, BaseHelper) {
   constructor(client) {
     super(client, {
-      name: "give",
-      aliases: [],
+      name: "top",
+      aliases: ["leaderboard"],
       group: "game",
-      memberName: "give",
-      description: "Give your character a weapon.",
-      examples: [],
+      memberName: "top",
+      description: "View the top players.",
+      examples: [
+        `${client.commandPrefix}top`,
+        `${client.commandPrefix}top points`,
+        `${client.commandPrefix}top dallars`,
+      ],
       clientPermissions: [],
       userPermissions: [],
       guildOnly: true,
       args: [
         {
-          key: "weapon",
-          prompt: `What weapon would you like to give to the selected character?`,
+          key: "type",
+          prompt: "What would you like to sort the leaderboard by?",
           type: "string",
           default: false,
         },
       ],
       throttling: {
         usages: 1,
-        duration: 2,
+        duration: 5,
       },
     });
   }
 
-  async run(msg, { weapon }) {
-    this.Game.Database.addCharacter(msg.author.id, "Test Dummy");
+  async run(msg, { type }) {
+    await Game.leaderboard(msg);
   }
 };

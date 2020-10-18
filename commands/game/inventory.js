@@ -1,16 +1,20 @@
-require("dotenv").config();
+//BASE
 const { Command } = require("discord.js-commando");
+const BaseHelper = require("../../Base/Helper");
+const { aggregation } = require("../../Base/Util");
+
 const { MessageEmbed } = require("discord.js");
 
-const { findPlayer } = require("../../database/Database");
+//DATA
+require("dotenv").config();
 
-const { paginate } = require("../../utils/helpers/arrHelper");
-const { buildEmbeds } = require("../../utils/helpers/msgHelper");
-const { titleCase } = require("../../utils/helpers/strHelper");
+// UTILS
+const { Game } = require("../../DiscordBot");
 
-const Items = require("../../docs/data/Items");
-
-module.exports = class InventoryCommand extends Command {
+module.exports = class InventoryCommand extends aggregation(
+  Command,
+  BaseHelper
+) {
   constructor(client) {
     super(client, {
       name: "inventory",
@@ -43,11 +47,11 @@ module.exports = class InventoryCommand extends Command {
 
     const embeds = [];
 
-    var { maxPage } = paginate(inventory);
-    for (var page = 0; page < maxPage; page++) {
-      var { items } = paginate(inventory, page + 1);
-      var description = "";
-      for (var i = 0; i < items.length; i++) {
+    let { maxPage } = paginate(inventory);
+    for (let page = 0; page < maxPage; page++) {
+      let { items } = paginate(inventory, page + 1);
+      let description = "";
+      for (let i = 0; i < items.length; i++) {
         const id = inventory[i];
         const item = Items[id];
         switch (item.type) {

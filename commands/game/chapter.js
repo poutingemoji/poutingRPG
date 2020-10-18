@@ -1,15 +1,13 @@
-require("dotenv").config();
+//BASE
 const { Command } = require("discord.js-commando");
+
 const { MessageEmbed } = require("discord.js");
 
-const { findPlayer } = require("../../database/Database");
-const { addQuests } = require("../../database/functions");
+//DATA
+require("dotenv").config();
 
-const { colors, fishes } = require("../../utils/helpers/enumHelper");
-
-const Arcs = require("../../docs/data/Arcs");
-const Emojis = require("../../docs/data/Emojis");
-const Enemies = require("../../docs/data/Enemies");
+// UTILS
+const { Game } = require("../../DiscordBot");
 
 module.exports = class ChapterCommand extends Command {
   constructor(client) {
@@ -59,8 +57,8 @@ module.exports = class ChapterCommand extends Command {
 };
 
 function getQuestsInfo(quests) {
-  var content = "";
-  var totalPercent = 0;
+  let content = "";
+  let totalPercent = 0;
   for (const quest of quests) {
     content += `- ${quest.type} **${quest.goal}** `;
     switch (quest.type) {

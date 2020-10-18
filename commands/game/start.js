@@ -1,22 +1,16 @@
-require("dotenv").config();
+//BASE
 const { Command } = require("discord.js-commando");
-const { MessageEmbed } = require("discord.js");
+const BaseHelper = require("../../Base/Helper");
+const { aggregation } = require("../../Base/Util");
 
-const { findPlayer, createNewPlayer } = require("../../database/Database");
-const { changeValue } = require("../../database/functions");
+//DATA
+const factions = require("../../pouting-rpg/data/factions");
 
-const { colors } = require("../../utils/helpers/enumHelper");
-const { confirmation, Messages } = require("../../utils/helpers/msgHelper");
-const { titleCase } = require("../../utils/helpers/strHelper");
+// UTILS
+const { Game } = require("../../DiscordBot");
+const Pagination = require("../../utils/discord/Pagination");
 
-const { positions } = require("../../docs/data/Emojis");
-const Families = require("../../docs/data/Families");
-const Positions = require("../../docs/data/Positions");
-const Races = require("../../docs/data/Races");
-
-const traits = [Positions];
-
-module.exports = class StartCommand extends Command {
+module.exports = class StartCommand extends aggregation(Command, BaseHelper) {
   constructor(client) {
     super(client, {
       name: "start",
@@ -34,66 +28,51 @@ module.exports = class StartCommand extends Command {
         duration: 60,
       },
     });
+    this.Discord = Game.Discord;
+    this.Game = Game;
   }
 
   async run(msg) {
-    const player = await findPlayer(msg.author, msg, false);
-    if (player) {
-      const res = await confirmation(
-        msg,
-        `${msg.author}, do you want to start over?`
-      );
-      if (!res) return;
+    const player = await this.Game.findPlayer(msg.author, msg);
+    console.log(player);
+    if (!player) return;
+
+    var description = "Choose between the factions below:\n";
+    for (const faction of Object.keys(factions)) {
+      description += `${this.Discord.emoji(
+        faction
+      )} - **${faction}**\n${faction} favours ${factions[
+        faction
+      ].favoured_positions.join(" and ")}.\n`;
     }
 
-    const messageEmbed = new MessageEmbed().setColor(colors.embed.game);
-
-    const choose = [
-      function () {
-        var description = "";
-        var i = 0;
-        for (var value of Object.values(Positions)) {
-          if (!(value.category == "basic")) break;
-          i++;
-          console.log(value);
-          description += `${i} - **${value.name}** ${
-            positions[value.name.toLowerCase().replace(/ /g, "_")]
-          }\n`;
-        }
-        return {
-          title: "Choose your position:",
-          description: description,
-        };
-      },
-    ];
-
-    const traitsChosen = [];
-    for (var i = 0; i < traits.length; i++) {
-      const { title, description, footer } = choose[i]();
-      messageEmbed.setTitle(title);
-      messageEmbed.setDescription(description);
-      if (footer) messageEmbed.setFooter(footer);
-
-      const filter = (res) => {
-        return (
-          Object.keys(Object.keys(traits[i]))
-            .map((n) => `${parseInt(n) + 1}`)
-            .includes(res.content) && res.author.id === msg.author.id
+    msg
+      .reply(description)
+      .then(async (msgSent) => {
+        const faction = await this.Discord.awaitResponse({
+          type: "reaction",
+          author: msg.author.id,
+          msg: msgSent,
+          chooseFrom: factions,
+        });
+        this.Game.Database.createNewPlayer(msg.author.id, faction);
+        msg.say(
+          `${this.Discord.emoji(factions[faction].leader)} **${
+            factions[faction].leader
+          }**: ${msg.author}, ${joinedFactionMsg[faction]}`
         );
-      };
-      const res = await Messages(msg, filter, messageEmbed);
-      console.log(res)
-      if (res.size == 0) return;
-      traitsChosen.push(Object.keys(traits[i])[res.first().content - 1]);
-      console.log(traitsChosen[i])
-      if (!traitsChosen[i]) return;
-    }
-
-    msg.say(
-      new MessageEmbed()
-        .setColor(colors.embed.game)
-        .setDescription(`I sincerely welcome you to the Tower.`)
-    );
-    createNewPlayer(msg.author, traitsChosen);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
+};
+
+const joinedFactionMsg = {
+  ["Zahard"]:
+    "I'll give you the privilege of joining my empire, the correct choice was pretty obvious wasn't it?",
+  ["FUG"]:
+    "We're not nice people, I hope you can handle the difficult training in FUG.",
+  ["Wolhaiksong"]:
+    "Glad you made the right choice baby, welcome to Wolhaiksong!",
 };

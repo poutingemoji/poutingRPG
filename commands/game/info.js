@@ -1,15 +1,17 @@
-require("dotenv").config();
+//BASE
 const { Command } = require("discord.js-commando");
+const BaseHelper = require("../../Base/Helper");
+const { aggregation } = require("../../Base/Util");
+
 const { MessageEmbed } = require("discord.js");
 
-const { findPlayer } = require("../../database/Database");
-const { getCharProperty } = require("../../database/functions");
+//DATA
+require("dotenv").config();
 
-const { stars } = require("../../utils/helpers/msgHelper");
+// UTILS
+const { Game } = require("../../DiscordBot");
 
-const { positions } = require("../../docs/data/Emojis");
-
-module.exports = class InfoCommand extends Command {
+module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
   constructor(client) {
     super(client, {
       name: "info",
@@ -41,24 +43,33 @@ module.exports = class InfoCommand extends Command {
     if (!player.characters_Owned.hasOwnProperty(char)) return;
     player.getCharProperty = getCharProperty;
     console.log(player.getCharProperty("rarity"));
-    const [name, position, rarity, weapon, level, EXP, Max_EXP, attributes] = [
+    const [
+      name,
+      position,
+      rarity,
+      weapon,
+      level,
+      current_exp,
+      total_exp,
+      attributes,
+    ] = [
       player.getCharProperty("name", msg),
       player.getCharProperty("position"),
       player.getCharProperty("rarity"),
       player.getCharProperty("weapon"),
       player.getCharProperty("level"),
-      player.getCharProperty("EXP"),
-      player.getCharProperty("Max_EXP"),
+      player.getCharProperty("current_exp"),
+      player.getCharProperty("total_exp"),
       player.getCharProperty("attributes"),
     ];
 
     const messageEmbed = new MessageEmbed()
       .setTitle(`${name} ${positions[position]}\n` + `${stars(msg, rarity)}`)
       .setImage(msg.author.displayAvatarURL());
-    var description = `Weapon: ${weapon}\n`;
+    let description = `Weapon: ${weapon}\n`;
     description += `Level ${level}/${(rarity + 1) * 20}\n`;
-    description += `EXP: ${EXP}/${Max_EXP}\n\n`;
-    for (var attribute in attributes) {
+    description += `EXP: ${current_exp}/${total_exp}\n\n`;
+    for (let attribute in attributes) {
       description += `${attribute.replace(/_/g, " ")}: ${
         attributes[attribute]
       }\n`;

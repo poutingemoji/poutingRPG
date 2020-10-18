@@ -1,7 +1,7 @@
 const { percentageChance } = require("../../utils/helpers/arrHelper");
 
-const Characters = require("./Characters");
-const Items = require("./Items");
+const Characters = require("./characters");
+const Items = require("./items");
 const charactersAndItems = Object.assign({}, Characters, Items);
 
 const filtered = Object.keys(charactersAndItems)
@@ -11,7 +11,7 @@ const filtered = Object.keys(charactersAndItems)
     return obj;
   }, {});
 
-const Banners = [
+const banners = [
   {
     name: "The Arsenal Of The King",
     banner: "",
@@ -25,4 +25,4 @@ const Banners = [
   },
 ];
 
-module.exports = Banners;
+module.exports = banners;

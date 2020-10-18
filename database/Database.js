@@ -1,11 +1,14 @@
+//BASE
 const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
-const playerSchema = require("./schemas/player");
+
+//DATA
+const { newCharacter } = require("./schemas/character");
+const { playerSchema, newPlayerObj } = require("./schemas/player");
+const enumHelper = require("../utils/enumHelper");
+require("dotenv").config();
+
 const Player = mongoose.model("Player", playerSchema);
-
-const { newPlayer } = require("./Objects");
-
-const waitingForRes = new Set();
 
 process.on("close", () => {
   console.log("Database disconnecting on app termination");
@@ -44,62 +47,65 @@ mongoose.connection.on("error", (err) => {
 
 connect();
 
-const Database = {
-  waitingForRes: waitingForRes,
-  findPlayer(player, msg, sayMsg = true) {
-    if (waitingForRes.has(player.id)) {
-      msg.say(
-        "Please provide a response to the command before executing another."
-      );
-      return;
-    }
+class Database {
+  constructor() {
+    connect();
+  }
 
-    return new Promise((resolve, reject) =>
-      Player.findOne({ id: player.id }, (err, res) => {
-        if (err) {
-          return reject(err);
-        }
-        if (!res && sayMsg) {
-          const startCommand = `${msg.client.commandPrefix}start`;
-          return msg.say(
-            msg.author.id == player.id
-              ? `Please type \`${startCommand}\` to begin.`
-              : `${player.username} hasn't started their adventure. If you know them, tell them to type \`${startCommand}\` to begin.`
-          );
-        }
-        return resolve(res);
-      })
-    );
-  },
-
-  createNewPlayer(player, traits) {
-    console.log(player.id, traits);
+  // PLAYER
+  createNewPlayer(discordId, faction) {
     return new Promise((resolve, reject) =>
       Player.replaceOne(
-        { id: player.id },
-        newPlayer(player.id, traits),
+        { discordId: discordId },
+        newPlayerObj(discordId, faction),
         { upsert: true },
         (err, res) => {
           if (err) {
             return reject(err);
           }
-          console.log(res);
           return resolve(res);
         }
       )
     );
-  },
+  }
 
-  loadTopPlayers(sort, where, gte) {
+  async addCharacter(discordId, character) {
+    const player = await this.loadPlayer(discordId);
+    player.characters.get(character)
+      ? player.characters.get(character).constellation++
+      : player.characters.set(character, newCharacter(character));
+    this.savePlayer(player);
+  }
+
+  loadLeaderboard(type) {
+    const { where, gte = 0, sort } = enumHelper.leaderboardFilters[type];
     return Player.find().where(where).gte(gte).sort(sort).exec();
-  },
+  }
 
-  updateAllPlayers(update) {
-    Player.updateMany({}, update, { upsert: true }, (err, res) => {
-      console.log(res);
-    });
-  },
-};
+  async loadPlayer(discordId) {
+    return new Promise((resolve, reject) =>
+      Player.findOne({ discordId: discordId }, (err, res) => {
+        if (err) {
+          return reject(res);
+        }
+        return resolve(res);
+      })
+    );
+  }
+
+  savePlayer(player, update) {
+    if (update && !update.hasOwnProperty("$unset"))
+      update = Object.assign(player, update);
+    Player.updateOne(
+      { discordId: player.discordId },
+      update || player,
+      { upsert: true },
+      (err, res) => {
+        //console.log(res);
+      }
+    );
+  }
+}
 
 module.exports = Database;
 
