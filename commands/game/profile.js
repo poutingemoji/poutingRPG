@@ -3,11 +3,10 @@ const { Command } = require("discord.js-commando");
 const BaseHelper = require("../../Base/Helper");
 const { aggregation } = require("../../Base/Util");
 
-const { MessageEmbed } = require("discord.js");
 const dateFormat = require("dateformat");
 
 //DATA
-require("dotenv").config();
+const arcs = require("../../pouting-rpg/data/arcs");
 
 // UTILS
 const { Game } = require("../../DiscordBot");
@@ -16,14 +15,10 @@ module.exports = class ProfileCommand extends aggregation(Command, BaseHelper) {
   constructor(client) {
     super(client, {
       name: "profile",
-      aliases: [],
       group: "game",
       memberName: "profile",
       description: "View someone's profile.",
       examples: [`${client.commandPrefix}profile [@user/id]`],
-      clientPermissions: [],
-      userPermissions: [],
-      guildOnly: true,
       args: [
         {
           key: "user",
@@ -36,34 +31,34 @@ module.exports = class ProfileCommand extends aggregation(Command, BaseHelper) {
         usages: 1,
         duration: 2,
       },
+      guildOnly: true,
     });
+    this.Discord = Game.Discord;
+    this.Game = Game;
   }
 
   async run(msg, { user }) {
     user = user || msg.author;
-    const player = await findPlayer(user, msg);
-    const arc = Arcs[player.arc];
-    const profile = {
-      ["Level"]: player.level,
-      ["EXP"]: `${player.EXP}/${player.Max_EXP}`,
-      ["Points"]: player.points,
+    const player = await this.Game.findPlayer(user, msg);
+    const arc = arcs[player.arc];
+    const data = {
+      ["Adventure Rank"]: player.adventureRank.current,
+      [`[${player.exp.current}/${player.exp.total} EXP]`]: "",
+      [`${this.Discord.emoji("point")} Points`]: player.points,
+      [`${this.Discord.emoji("dallar")} Dallars`]: player.dallars,
+      [`${this.Discord.emoji("suspendium")} Suspendium`]: player.suspendium,
     };
-    let description = "";
 
-    for (let key in profile) {
-      description += `${key}: **${profile[key]}**\n`;
-    }
-
-    const messageEmbed = new MessageEmbed()
-      .setTitle(`${user.username}`)
-      .setThumbnail(user.displayAvatarURL())
-      .setDescription(description)
-      .setFooter(
-        `Born: ${dateFormat(
-          player._id.getTimestamp(),
-          "dddd, mmmm dS, yyyy, h:MM TT"
-        )}`
-      );
+    const messageEmbed = this.Discord.buildEmbed({
+      thumbnail: user.displayAvatarURL(),
+      title: "Profile",
+      author: user,
+      description: this.objectToString(data),
+      footer: `Born: ${dateFormat(
+        player._id.getTimestamp(),
+        "dddd, mmmm dS, yyyy, h:MM TT"
+      )}`,
+    });
     msg.say(messageEmbed);
   }
 };

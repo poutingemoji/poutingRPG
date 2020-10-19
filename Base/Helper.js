@@ -41,243 +41,6 @@ class Helper {
     return array[this.randomBetween(0, array.length - 1)];
   }
 
-  // TODO rework % have to track better pvp and pve stats
-  /**
-   * Generates stats String from player object
-   * @param {Object} player
-   * @returns String
-   */
-  generateStatsString(player) {
-    return `\`\`\`Here are your stats!
-    Title: ${player.titles.current}
-    Health: ${player.health} / ${enumHelper.maxHealth(player.level)}
-    Level: ${player.level}
-    Personal Multiplier: ${player.personalMultiplier}x
-    Experience: 
-      Current: ${player.experience.current}
-      Lost: ${player.experience.lost} (${(
-      (player.experience.lost / player.experience.total) *
-      100
-    ).toFixed(2)}%)
-      Total: ${player.experience.total}
-      TNL: ${player.level * 15 - player.experience.current} / ${
-      player.level * 15
-    }
-    Class: ${player.class}
-    Gender: ${player.gender}
-    Gold:
-      Current: ${player.gold.current}
-      Lost: ${player.gold.lost} (${(
-      (player.gold.lost / player.gold.total) *
-      100
-    ).toFixed(2)}%)
-      Stolen from you: ${player.gold.stolen} (${(
-      (player.gold.stolen / player.gold.total) *
-      100
-    ).toFixed(2)}%)
-      Stole from others: ${player.gold.stole} (${(
-      (player.gold.stole / player.gold.total) *
-      100
-    ).toFixed(2)}%)
-      Lottery: ${player.gold.dailyLottery} (${(
-      (player.gold.dailyLottery / player.gold.total) *
-      100
-    ).toFixed(2)}%)
-      Gambles: 
-        Count: ${player.gambles}
-        Won: ${player.gold.gambles.won} (${(
-      (player.gold.gambles.won / player.gold.total) *
-      100
-    ).toFixed(2)}%)
-        Lost: ${player.gold.gambles.lost} (${(
-      (player.gold.gambles.lost / player.gold.total) *
-      100
-    ).toFixed(2)}%)
-      Total: ${player.gold.total}
-    Map: ${player.map.name}
-    Bounty: ${player.currentBounty}
-    Stats (Sum of stats with equipment):
-      Strength: ${player.stats.str} (${this.sumPlayerTotalStrength(player)})
-      Dexterity: ${player.stats.dex} (${this.sumPlayerTotalDexterity(player)})
-      Endurance: ${player.stats.end} (${this.sumPlayerTotalEndurance(player)})
-      Intelligence: ${player.stats.int} (${this.sumPlayerTotalIntelligence(
-      player
-    )})
-      Luck: ${player.stats.luk} (${this.sumPlayerTotalLuck(player)})
-    Quest:
-      Monster: ${player.quest.questMob.name}
-      Count: ${player.quest.questMob.count}
-      Kills Left: ${
-        player.quest.questMob.count - player.quest.questMob.killCount
-      }
-      Completed: ${player.quest.completed}
-      Last Update: ${this.getTimePassed(player.quest.updated_at.getTime())}
-    Born: ${this.getTimePassed(player.createdAt)}
-    Travelled: ${player.travelled} (${(
-      (player.travelled / player.events) *
-      100
-    ).toFixed(2)}%)
-    Events: ${player.events}
-    Items Stolen: ${player.stole}
-    Items Lost: ${player.stolen}
-    Spells Cast: ${player.spellCast}
-    Kills:
-      Monsters: ${player.kills.mob}
-      Players: ${player.kills.player}
-    Fled:
-      Monsters: ${player.fled.mob}
-      Players: ${player.fled.player}
-      You: ${player.fled.you}
-    Battles:
-      Won: ${player.battles.won}
-      Lost: ${player.battles.lost}
-    Deaths:
-      By Monsters: ${player.deaths.mob}
-      By Players: ${player.deaths.player}\`\`\``;
-  }
-
-  /**
-   * Generates equipment string
-   * @param {Object} player
-   * @returns String
-   */
-  generateEquipmentsString(player) {
-    const weaponRating = this.calculateItemRating(
-      player,
-      player.equipment.weapon
-    );
-    return `\`\`\`Here is your equipment!
-        Helmet: ${player.equipment.helmet.name}
-          Defense: ${player.equipment.helmet.power}
-          ${this.generatePreviousOwnerString(player.equipment.helmet)}
-        Armor: ${player.equipment.armor.name}
-          Defense: ${player.equipment.armor.power}
-          ${this.generatePreviousOwnerString(player.equipment.armor)}
-        Weapon: ${player.equipment.weapon.name}
-          BaseAttackPower: ${player.equipment.weapon.power}
-          AttackPower: ${Number(weaponRating)}
-          AttackType: ${player.equipment.weapon.attackType}
-          ${this.generatePreviousOwnerString(player.equipment.weapon)}
-        Relic: ${player.equipment.relic.name}
-          Stats:
-            Strength: ${player.equipment.relic.str}
-            Dexterity: ${player.equipment.relic.dex}
-            Endurance: ${player.equipment.relic.end}
-            Intelligence: ${player.equipment.relic.int}
-            Luck: ${player.equipment.relic.luk}
-          ${this.generatePreviousOwnerString(player.equipment.relic)}
-            \`\`\``;
-  }
-
-  generateInventoryString(player) {
-    return this.generateInventoryEquipmentString(player).then((equipment) => {
-      return `\`\`\`Here is your inventory!
-        Equipment:
-          ${equipment}
-        
-        Items:
-          ${player.inventory.items
-            .map((item) => item.name)
-            .join("\n      ")}\`\`\``;
-    });
-  }
-
-  generateInventoryEquipmentString(player) {
-    return new Promise((resolve) => {
-      let equipString = "";
-      player.inventory.equipment.forEach((equip, index, array) => {
-        switch (equip.position) {
-          case enumHelper.equipment.types.helmet.position:
-            equipString = equipString.concat(`${equip.name}:
-            Defense: ${equip.power}
-          ${this.generatePreviousOwnerString(equip)}`);
-            break;
-
-          case enumHelper.equipment.types.armor.position:
-            equipString = equipString.concat(`${equip.name}:
-            Defense: ${equip.power}
-          ${this.generatePreviousOwnerString(equip)}`);
-            break;
-
-          case enumHelper.equipment.types.weapon.position:
-            const weaponRating = this.calculateItemRating(player, equip);
-            equipString = equipString.concat(`${equip.name}:
-            BaseAttackPower: ${equip.power}
-            AttackPower: ${Number(weaponRating)}
-            AttackType: ${equip.attackType}
-          ${this.generatePreviousOwnerString(equip)}`);
-            break;
-        }
-
-        if (index !== array.length - 1) {
-          equipString = equipString.concat("\n          ");
-        }
-      });
-
-      return resolve(equipString);
-    });
-  }
-
-  generateSpellBookString(player) {
-    let spellBookString = "```Here's your spellbook!\n";
-    player.spells.forEach((spell) => {
-      spellBookString += `    ${spell.name} - ${spell.description}\n`;
-    });
-    spellBookString += "```";
-
-    return spellBookString;
-  }
-
-  /**
-   * Generates List of owners of equipment
-   * @param {Object} equipment
-   * @returns String
-   */
-  generatePreviousOwnerString(equipment) {
-    if (equipment.previousOwners && equipment.previousOwners.length > 0) {
-      let result = "Previous Owners:\n            ";
-      result += equipment.previousOwners.join("\n            ");
-      result += "\n";
-      return result;
-    }
-
-    return "";
-  }
-
-  /**
-   * Returns a player name as a String formatted with discords <@!Mention> if player has isMention activated
-   * @param {PlayerObj} player
-   * @param {Boolean} isAction
-   * @returns {String}
-   */
-  generatePlayerName(player, isAction) {
-    if (
-      player.isMentionInDiscord === "off" ||
-      (player.isMentionInDiscord === "action" && !isAction) ||
-      (player.isMentionInDiscord === "move" && isAction)
-    ) {
-      return player.titles.current !== "None"
-        ? `\`${player.name} the ${player.titles.current}\``
-        : `\`${player.name}\``;
-    }
-
-    return player.titles.current !== "None"
-      ? `<@!${player.discordId}> the ${player.titles.current}`
-      : `<@!${player.discordId}>`;
-  }
-
-  /**
-   * Based on player setting, transform into the correct gender
-   * @param {PlayerObj} player
-   * @param {String} word
-   * @returns {String}
-   */
-  generateGenderString(player, word) {
-    return enumHelper.genders[player.gender]
-      ? enumHelper.genders[player.gender][word]
-      : word;
-  }
-
   /*
     BATTLE HELPERS
   */
@@ -396,7 +159,7 @@ ${mobListResult.join("\n")}\`\`\``;
       );
       eventLog.push(`${killerMob} just killed you!`);
     }
-    const eventMsgResults = `↳ ${this.capitalizeFirstLetter(
+    const eventMsgResults = `↳ ${this.titleCase(
       this.generateGenderString(updatedPlayer, "he")
     )} dealt \`${results.attackerDamage}\` dmg, received \`${
       results.defenderDamage
@@ -622,12 +385,16 @@ ${mobListResult.join("\n")}\`\`\``;
   }
 
   /**
-   * Capitalizes first letter of string
-   * @param {String} stringToCapitalize
+   * Capitalizes first letter of every word in a strong
+   * @param {String} str
    * @returns {String}
    */
-  capitalizeFirstLetter(stringToCapitalize) {
-    return stringToCapitalize[0].toUpperCase() + stringToCapitalize.slice(1);
+  titleCase(str) {
+    str = str.toLowerCase().split(" ");
+    for (const i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+    }
+    return str.join(" ");
   }
 
   /**
@@ -658,234 +425,26 @@ ${mobListResult.join("\n")}\`\`\``;
     return false;
   }
 
-  printBattleDebug(debugMsg) {
-    if (battleDebug) {
-      console.log(debugMsg);
-    }
+  romanize(num) {
+    if (isNaN(num)) return NaN;
+    //prettier-ignore
+    let digits = String(+num).split(""),
+        key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+               "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+               "","I","II","III","IV","V","VI","VII","VIII","IX"],
+        roman = "",
+        i = 3;
+    while (i--) roman = (key[+digits.pop() + i * 10] || "") + roman;
+    return Array(+digits.join("") + 1).join("M") + roman;
   }
 
-  logEvent(selectedPlayer, Database, msg, eventType) {
-    return new Promise((resolve) => {
-      switch (eventType) {
-        case enumHelper.logTypes.move:
-          Database.loadMoveLog(selectedPlayer.discordId)
-            .then((playerMoveLog) => {
-              if (playerMoveLog.log.length > 25) {
-                playerMoveLog.log.shift();
-              }
-
-              playerMoveLog.log.push({
-                event: msg.includes("`") ? msg.replace(/`/g, "") : msg,
-                timeStamp: new Date().getTime(),
-              });
-
-              return playerMoveLog;
-            })
-            .then((playerMoveLog) =>
-              Database.saveMoveLog(selectedPlayer.discordId, playerMoveLog)
-            )
-            .catch((err) => {
-              errorLog.error(err);
-            });
-          break;
-
-        case enumHelper.logTypes.action:
-          Database.loadActionLog(selectedPlayer.discordId)
-            .then((playerActionLog) => {
-              if (playerActionLog.log.length > 25) {
-                playerActionLog.log.shift();
-              }
-
-              playerActionLog.log.push({
-                event: msg.includes("`") ? msg.replace(/`/g, "") : msg,
-                timeStamp: new Date().getTime(),
-              });
-
-              return playerActionLog;
-            })
-            .then((playerActionLog) =>
-              Database.saveActionLog(selectedPlayer.discordId, playerActionLog)
-            );
-          break;
-
-        case enumHelper.logTypes.pvp:
-          Database.loadPvpLog(selectedPlayer.discordId)
-            .then((playerPvpLog) => {
-              if (playerPvpLog.log.length > 25) {
-                playerPvpLog.log.shift();
-              }
-
-              playerPvpLog.log.push({
-                event: msg.includes("`") ? msg.replace(/`/g, "") : msg,
-                timeStamp: new Date().getTime(),
-              });
-
-              return playerPvpLog;
-            })
-            .then((playerPvpLog) =>
-              Database.savePvpLog(selectedPlayer.discordId, playerPvpLog)
-            );
-          break;
-      }
-
-      return resolve(selectedPlayer);
-    });
-  }
-
-  generateLog(log, count) {
-    if (log.length === 0) {
-      return "";
+  objectToString(obj) {
+    let string = "";
+    for (const prop in obj) {
+      string +=
+        obj[prop].length == 0 ? `*${prop}*\n` : `**${prop}**: ${obj[prop]}\n`;
     }
-
-    let logResult = "Heres what you have done so far:\n      ";
-    let logCount = 0;
-    for (let i = log.length - 1; i >= 0; i--) {
-      if (logCount === count) {
-        break;
-      }
-      let eventText;
-      if (typeof log[i].event === "string") {
-        eventText = log[i].event;
-      } else {
-        eventText = log[i].event[0];
-      }
-      logResult += `${eventText} [${this.getTimePassed(
-        log[i].timeStamp
-      )} ago]\n      `.replace(/`/g, "");
-      logCount++;
-    }
-
-    return logResult;
-  }
-
-  generateMessageWithNames(
-    eventMsg,
-    eventLog,
-    selectedPlayer,
-    item,
-    luckGambleGold,
-    victimPlayer,
-    otherPlayerLog
-  ) {
-    // TODO: Maybe change these ^^^^^ into an array???
-    eventMsg = eventMsg
-      .replace(/(\$\$)/g, selectedPlayer.map.name)
-      .replace(/(##)/g, this.generatePlayerName(selectedPlayer, true))
-      .replace(/(@@)/g, this.generateGenderString(selectedPlayer, "him"))
-      .replace(/(\^\^)/g, this.generateGenderString(selectedPlayer, "his"))
-      .replace(/(&&)/g, this.generateGenderString(selectedPlayer, "he"));
-
-    eventLog = eventLog
-      .replace("$$", selectedPlayer.map.name)
-      .replace(/(##)/g, selectedPlayer.name)
-      .replace(/(@@)/g, this.generateGenderString(selectedPlayer, "him"))
-      .replace(/(\^\^)/g, this.generateGenderString(selectedPlayer, "his"))
-      .replace(/(&&)/g, this.generateGenderString(selectedPlayer, "he"));
-
-    if (item) {
-      eventMsg = eventMsg.replace(/(%%)/g, item.name);
-      eventLog = eventLog.replace(/(%%)/g, item.name);
-    }
-    if (luckGambleGold) {
-      eventMsg = eventMsg.replace(/(\$&)/g, luckGambleGold);
-      eventLog = eventLog.replace(/(\$&)/g, luckGambleGold);
-    }
-    if (victimPlayer) {
-      eventMsg = eventMsg.replace(
-        /(!!)/g,
-        this.generatePlayerName(victimPlayer, true)
-      );
-      eventLog = eventLog.replace(/(!!)/g, victimPlayer.name);
-    }
-
-    return {
-      eventMsg,
-      eventLog,
-      selectedPlayer,
-      item,
-      victimPlayer,
-      otherPlayerLog,
-    };
-  }
-
-  async randomCampEventMessage(selectedPlayer) {
-    const randomEventInt = await this.randomBetween(
-      0,
-      messages.event.camp.length - 1
-    );
-    const { eventMsg, eventLog } = messages.event.camp[randomEventInt];
-
-    return this.generateMessageWithNames(eventMsg, eventLog, selectedPlayer);
-  }
-
-  async randomItemEventMessage(selectedPlayer, item) {
-    const randomEventInt = await this.randomBetween(
-      0,
-      messages.event.item.length - 1
-    );
-    const { eventMsg, eventLog } = messages.event.item[randomEventInt];
-
-    return this.generateMessageWithNames(
-      eventMsg,
-      eventLog,
-      selectedPlayer,
-      item
-    );
-  }
-
-  async randomGambleEventMessage(selectedPlayer, luckGambleGold, isWin) {
-    if (isWin) {
-      const randomEventInt = await this.randomBetween(
-        0,
-        messages.event.gamble.win.length - 1
-      );
-      const { eventMsg, eventLog } = messages.event.gamble.win[randomEventInt];
-
-      return this.generateMessageWithNames(
-        eventMsg,
-        eventLog,
-        selectedPlayer,
-        undefined,
-        luckGambleGold
-      );
-    }
-
-    const randomEventInt = await this.randomBetween(
-      0,
-      messages.event.gamble.lose.length - 1
-    );
-    const { eventMsg, eventLog } = messages.event.gamble.lose[randomEventInt];
-
-    return this.generateMessageWithNames(
-      eventMsg,
-      eventLog,
-      selectedPlayer,
-      undefined,
-      luckGambleGold
-    );
-  }
-
-  formatLeaderboards(subjectKey) {
-    if (subjectKey.includes(".")) {
-      if (subjectKey.includes("deaths.mob")) {
-        return subjectKey.replace("deaths.mob", "Killed by mob");
-      }
-      if (subjectKey.includes("deaths.player")) {
-        return subjectKey.replace("deaths.player", "Killed by player");
-      }
-      if (subjectKey.includes("kills.player")) {
-        return subjectKey.replace("kills.player", "Player kills");
-      }
-      if (subjectKey.includes("quest.completed")) {
-        return subjectKey.replace("quest.completed", "Completed Quests");
-      }
-
-      return subjectKey.split(".")[0];
-    }
-
-    return subjectKey
-      .replace("currentBounty", "Bounty")
-      .replace("spellCast", "Spells Cast");
+    return string;
   }
 }
 

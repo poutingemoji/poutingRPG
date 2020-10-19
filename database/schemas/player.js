@@ -3,14 +3,21 @@ const mongoose = require("mongoose");
 const Parser = require("expr-eval").Parser;
 
 //DATA
+const { newCharacter } = require("../schemas/character");
 const enumHelper = require("../../utils/enumHelper");
 
 const playerSchema = mongoose.Schema({
   discordId: String,
   faction: String,
-  level: {
-    type: Number,
-    default: 1,
+  adventureRank: {
+    current: {
+      type: Number,
+      default: 1,
+    },
+    total: {
+      type: Number,
+      default: 25,
+    },
   },
   exp: {
     current: {
@@ -26,6 +33,10 @@ const playerSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  dallars: {
+    type: Number,
+    default: 0,
+  },
   suspendium: {
     type: Number,
     default: 0,
@@ -33,7 +44,7 @@ const playerSchema = mongoose.Schema({
   battleEnergy: {
     current: {
       type: Number,
-      default: 0,
+      default: 120,
     },
     total: {
       type: Number,
@@ -114,7 +125,7 @@ const playerSchema = mongoose.Schema({
     arc: {
       type: Number,
       default: 0,
-    },    
+    },
   },
   storyQuests: {
     type: Array,
@@ -130,12 +141,14 @@ const playerSchema = mongoose.Schema({
   },
 });
 
-const newPlayerObj = (discordId, faction) => {
-  console.log(faction)
+const newPlayerObj = (discordId, faction, position = "Wave Controller") => {
+  const character = newCharacter();
+  character.position = position;
   return {
     discordId: discordId,
     faction: faction,
-  }
+    characters: { ["Traveller"]: character },
+  };
 };
 
 module.exports = { playerSchema, newPlayerObj };

@@ -6,35 +6,56 @@ const { aggregation } = require("../Base/Util");
 
 // DATA
 const { newQuest } = require("../database/schemas/quest");
+const characters = require("../pouting-rpg/data/characters");
 const emojis = require("../pouting-rpg/data/emojis");
 const enumHelper = require("../utils/enumHelper");
 
 // UTILS
 const Database = require("../database/Database");
+const Pagination = require("../utils/discord/Pagination");
 
 class Game extends aggregation(BaseGame, BaseHelper) {
   constructor(client) {
     super();
+    this.client = client;
     this.Discord = new BaseDiscord(client);
-    this.Database = new Database();
+    this.Database = new Database(client);
+    this.Pagination = new Pagination();
   }
 
   async findPlayer(user, msg) {
-    if (this.Discord.waitingOnResponse.has(user.id)) {
-      msg.reply(
-        "Please respond to the previous command before executing another."
-      );
-      return false;
-    }
     const res = await this.Database.loadPlayer(user.id);
-    if (!res && msg) {
-      return msg.say(
-        msg.author.id == user.id
-          ? `Please type \`${msg.client.commandPrefix}start\` to begin.`
-          : `${user.username} hasn't started climbing the Tower.`
-      );
+    const startMsg = `Please type \`${msg.client.commandPrefix}start\` to begin.`;
+    if (!res) {
+      if (msg) {
+        return msg.author.id == user.id
+          ? startMsg
+          : `${user.username} hasn't started climbing the Tower.`;
+      }
+      return startMsg;
     }
     return res;
+  }
+
+  async getCharacterProps(characterName, player) {
+    const character = player.characters.get(characterName);
+    const user = await this.client.users.fetch(player.discordId);
+    const isMC = enumHelper.isMC(characterName);
+    return {
+      attributes: characters[characterName].attributes,
+      rarity: characters[characterName].rarity,
+      name: isMC ? user.username : characterName,
+      positionName: isMC
+        ? character.position
+        : characters[characterName].position,
+      level: character.level,
+      exp: character.exp,
+      constellation: `${
+        character.constellation == 0 ? "No " : ""
+      }Constellation${character.constellation == 0 ? "" : " "}${this.romanize(
+        character.constellation
+      )}`,
+    };
   }
 
   /**
@@ -62,7 +83,7 @@ class Game extends aggregation(BaseGame, BaseHelper) {
           let attributes = [];
           const player = items[i];
           try {
-            const user = await msg.client.users.fetch(player.discordId);
+            const user = await this.client.users.fetch(player.discordId);
             switch (type) {
               case "level":
                 attributes.push(`Level: ${player.level}`);
@@ -81,70 +102,6 @@ class Game extends aggregation(BaseGame, BaseHelper) {
       }
       this.Pagination.buildEmbeds(embeds, msg);
     });
-  }
-
-  async activateEvent(guildId, player, onlinePlayers) {
-    try {
-      const loadedPlayer = await this.Database.loadPlayer(player.discordId);
-      if (!loadedPlayer) {
-        const newPlayer = await this.Database.createNewPlayer(player.discordId);
-
-        return await this.updatePlayer({
-          type: "actions",
-          updatedPlayer: newPlayer,
-          msg: [
-            `${this.generatePlayerName(newPlayer, true)} was born in \`${
-              newPlayer.map.name
-            }\`! Welcome to the world of Idle-RPG!`,
-          ],
-          pm: ["You were born."],
-        });
-      }
-      if (loadedPlayer.guildId !== guildId) {
-        return;
-      }
-
-      // Update players name in case they altered their Discord name
-      loadedPlayer.name = player.name;
-
-      if (!loadedPlayer.quest && !loadedPlayer.quest.questMob) {
-        loadedPlayer.quest = newQuest;
-      }
-
-      const loadedGuildConfig = await this.Database.loadGame(player.guildId);
-      await this.passiveRegen(
-        loadedPlayer,
-        (5 * loadedPlayer.level) / 4 + loadedPlayer.stats.end / 8,
-        (5 * loadedPlayer.level) / 4 + loadedPlayer.stats.int / 8
-      );
-      let eventResults = await this.selectEvent(
-        loadedGuildConfig,
-        loadedPlayer,
-        onlinePlayers
-      );
-      eventResults = await this.setPlayerTitles(eventResults);
-      const msgResults = await this.updatePlayer(eventResults);
-
-      return msgResults;
-    } catch (err) {
-      errorLog.error(err);
-    }
-  }
-
-  async setPlayerTitles(eventResults) {
-    if (
-      roamingNpcs.find(
-        (npc) => npc.discordId === eventResults.updatedPlayer.discordId
-      )
-    ) {
-      return eventResults;
-    }
-
-    await Object.keys(titles).forEach((title) => {
-      eventResults.updatedPlayer = this.manageTitles(eventResults, title);
-    });
-
-    return eventResults;
   }
 }
 

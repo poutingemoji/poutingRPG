@@ -1,10 +1,8 @@
 //BASE
-const { CommandoClient, SQLiteProvider } = require("discord.js-commando");
+const { CommandoClient } = require("discord.js-commando");
 const DBL = require("dblapi.js");
 const path = require("path");
 const fs = require("fs");
-const { open } = require('sqlite');
-const sqlite3 = require('sqlite3');
 
 //DATA
 const characters = require("./pouting-rpg/data/characters");
@@ -22,7 +20,6 @@ class DiscordBot {
       disableEveryone: true,
       shards: "auto",
     });
-    this.setProvider();
     this.Game = new Game(this.client);
     this.Discord = this.Game.Discord;
     this.loadEventListeners();
@@ -31,17 +28,19 @@ class DiscordBot {
     this.talkedRecently = new Set();
   }
 
-  setProvider() {
-    open({
-      filename: "./sqlite3.db",
-      driver: sqlite3.Database
-    }).then((db) => {
-    this.client.setProvider(new SQLiteProvider(db)).catch(console.error);;
-    }).catch(console.error);
-  }
-
   loadEventListeners() {
-    this.client.on("error", (err) => errorLog.error(err));
+    this.client.dispatcher.addInhibitor((msg) => {
+      if (this.Discord.waitingOnResponse.has(msg.author.id)) {
+        return {
+          reason: "Already has message listening.",
+          response: msg.reply(
+            "Please respond to the previous command before executing another."
+          ),
+        };
+      }
+    });
+
+    this.client.on("error", console.error);
     this.client.once("ready", () => {
       console.log(
         `Logged in as ${this.client.user.tag}! (${this.client.user.id})`
@@ -75,43 +74,48 @@ class DiscordBot {
     });*/
 
     this.client.on("message", async (msg) => {
+      if (!msg.guild == null && !this.Game.Database.isSpawnsEnabled(msg.channel)) return;
       if (msg.author.bot) return;
       if (this.talkedRecently.has(msg.author.id)) return;
       if (Math.random() < 0.5) return;
-      console.log(this.talkedRecently);
+
       this.talkedRecently.add(msg.author.id);
-      const character = randomKey(characters);
+      let characterName = randomKey(characters);
+      do {
+        characterName = randomKey(characters);
+      } while (enumHelper.isMC(characterName));
+
       const filter = (msg) => {
-        return msg.content.toLowerCase() == character.toLowerCase();
+        return msg.content.toLowerCase() == characterName.toLowerCase();
       };
 
-      var messageEmbed = this.Discord.buildEmbed({
+      let messageEmbed = this.Discord.buildEmbed({
         title: "A regular has appeared!",
         description:
           "Guess their name and type it in\nthe chat to recruit them.",
-        filePath: `./images/characters/${character.replace(" ", "_")}.png`,
+        filePath: `./images/characters/${characterName.replace(" ", "_")}.png`,
       });
 
       setTimeout(() => {
-        this.talkedRecently.delete(msg.author.id);
         msg.channel.send(messageEmbed).then((msgSent) => {
           msg.channel
             .awaitMessages(filter, { max: 1, time: 60000, errors: ["time"] })
             .then((collected) => {
-              messageEmbed.setTitle("Successfully recruited!");
-              messageEmbed.setDescription(
-                `After some convincing from ${
-                  collected.first().author
-                },\n**${character}** reluctantly joined their team.`
-              );
-              msgSent.edit(messageEmbed);
+              msg.say(`After some convincing from ${
+                collected.first().author
+              },\n**${characterName}** decided to join them on their adventure.`)
+              msgSent.delete();
               collected.first().delete();
+              this.Game.Database.addCharacter(msg.author.id, characterName);
             })
             .catch((err) => {
+              console.log(err);
               msgSent.delete();
             });
         });
-      }, 10000);
+        console.log("deleted")
+        this.talkedRecently.delete(msg.author.id);
+      }, 45*60000);
     });
   }
 
@@ -131,12 +135,7 @@ class DiscordBot {
     this.client.registry
       .registerDefaultTypes()
       .registerGroups([
-        ["moderation", "Moderation Commands"],
         ["game", "Tower of God Commands"],
-        ["info", "Info Commands"],
-        ["fun", "Fun Commands"],
-        ["social", "Social Commands"],
-        ["utility", "Utility Commands"],
       ])
       .registerDefaultGroups()
       .registerDefaultCommands({
@@ -146,6 +145,7 @@ class DiscordBot {
       .registerCommandsIn(path.join(__dirname, "commands"));
 
     //Updates Commands on website
+
     const groups = this.client.registry.groups;
     let commands = [];
     const jsonFiles = {
@@ -169,8 +169,8 @@ class DiscordBot {
               commands.push([
                 `${cmd.name}`,
                 `${cmd.description}${cmd.nsfw ? " (NSFW)" : ""}`,
-                cmd.examples.join("\n"),
-                cmd.aliases.join("\n"),
+                `${cmd.examples ? cmd.examples.join("\n") : ""}`,
+                `${cmd.aliases ? cmd.aliases.join("\n") : ""}`,
                 secondsToTimeFormat(cmd.throttling.duration),
               ])
             );
@@ -190,7 +190,7 @@ class DiscordBot {
 
 module.exports = new DiscordBot();
 
-var randomKey = function (obj) {
-  var keys = Object.keys(obj);
+let randomKey = function (obj) {
+  let keys = Object.keys(obj);
   return keys[(keys.length * Math.random()) << 0];
 };

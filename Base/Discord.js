@@ -11,6 +11,19 @@ class Discord {
     this.waitingOnResponse = new Set();
   }
 
+  confirmation(msg, response) {
+    return msg.reply(response).then(async (msgSent) => {
+      const res = await this.awaitResponse({
+        type: "reaction",
+        author: msg.author.id,
+        msg: msgSent,
+        chooseFrom: ["green check", "red cross"],
+      });
+      console.log(res);
+      return res == "green check";
+    });
+  }
+
   emoji(emoji) {
     return isNaN(emojis[emoji])
       ? emojis[emoji]
@@ -20,15 +33,19 @@ class Discord {
   buildEmbed(params) {
     const {
       color,
+      thumbnail,
       title,
       author,
       description,
       filePath,
       fileName = "nicetry",
+      image,
       footer,
     } = params;
     const messageEmbed = new MessageEmbed();
     if (color) messageEmbed.setColor(color);
+    if (thumbnail) messageEmbed.setThumbnail(thumbnail);
+
     if (title)
       messageEmbed.setTitle(`${author ? `${author.username}'s ` : ""}${title}`);
     if (description) messageEmbed.setDescription(description);
@@ -37,26 +54,35 @@ class Discord {
       messageEmbed.attachFiles(attachment);
       messageEmbed.setImage(`attachment://${fileName}.png`);
     }
+    if (image) messageEmbed.setImage(image);
     if (footer) messageEmbed.setFooter(footer);
     return messageEmbed;
   }
 
   async awaitResponse(params) {
-    var { type, author, msg, chooseFrom } = params;
-    if (this.waitingOnResponse.has(author)) return false;
+    let { type, author, msg, chooseFrom } = params;
     switch (type) {
       case "message":
         break;
       case "reaction":
-        if (typeof chooseFrom == "object") {
-          chooseFrom = Object.keys(chooseFrom);
-        } else if (!(typeof chooseFrom == "array")) return;
+        if (!Array.isArray(chooseFrom)) {
+          if (typeof chooseFrom == "object") {
+            chooseFrom = Object.keys(chooseFrom);
+          } else {
+            return;
+          }
+        } 
+
         this.waitingOnResponse.add(author);
         for (const option of chooseFrom) await msg.react(emojis[option]);
 
         const filter = (reaction, user) => {
-          return chooseFrom.includes(reaction.emoji.name) && user.id === author;
+          return (
+            chooseFrom.includes(reaction.emoji.name.replace(/_/g, " ")) &&
+            user.id === author
+          );
         };
+
         return msg
           .awaitReactions(filter, { max: 1, time: 60000, errors: ["time"] })
           .then((collected) => {

@@ -3,79 +3,89 @@ const { Command } = require("discord.js-commando");
 const BaseHelper = require("../../Base/Helper");
 const { aggregation } = require("../../Base/Util");
 
-const { MessageEmbed } = require("discord.js");
-
 //DATA
-require("dotenv").config();
+const positions = require("../../pouting-rpg/data/positions");
 
 // UTILS
 const { Game } = require("../../DiscordBot");
+const enumHelper = require("../../utils/enumHelper");
 
 module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
   constructor(client) {
     super(client, {
       name: "info",
-      aliases: [],
       group: "game",
       memberName: "info",
       description: "Get info on your character.",
       examples: [],
-      clientPermissions: [],
-      userPermissions: [],
-      guildOnly: true,
       args: [
         {
-          key: "char",
+          key: "characterName",
           prompt: `What character would you like to get more info on?`,
           type: "string",
-          default: "irregular",
+          default: "Traveller",
         },
       ],
       throttling: {
         usages: 1,
         duration: 2,
       },
+      guildOnly: true,
     });
+    this.Discord = Game.Discord;
+    this.Game = Game;
   }
 
-  async run(msg, { char }) {
-    const player = await findPlayer(msg.author, msg);
-    if (!player.characters_Owned.hasOwnProperty(char)) return;
-    player.getCharProperty = getCharProperty;
-    console.log(player.getCharProperty("rarity"));
-    const [
-      name,
-      position,
-      rarity,
-      weapon,
-      level,
-      current_exp,
-      total_exp,
-      attributes,
-    ] = [
-      player.getCharProperty("name", msg),
-      player.getCharProperty("position"),
-      player.getCharProperty("rarity"),
-      player.getCharProperty("weapon"),
-      player.getCharProperty("level"),
-      player.getCharProperty("current_exp"),
-      player.getCharProperty("total_exp"),
-      player.getCharProperty("attributes"),
-    ];
+  async run(msg, { characterName }) {
+    const player = await this.Game.findPlayer(msg.author, msg);
+    isNaN(characterName)
+      ? (characterName = this.titleCase(characterName))
+      : (characterName = Array.from(player.characters.keys())[
+          characterName - 1
+        ]);
+    console.log(characterName);
+    if (!player.characters.get(characterName)) return;
 
-    const messageEmbed = new MessageEmbed()
-      .setTitle(`${name} ${positions[position]}\n` + `${stars(msg, rarity)}`)
-      .setImage(msg.author.displayAvatarURL());
-    let description = `Weapon: ${weapon}\n`;
-    description += `Level ${level}/${(rarity + 1) * 20}\n`;
-    description += `EXP: ${current_exp}/${total_exp}\n\n`;
-    for (let attribute in attributes) {
-      description += `${attribute.replace(/_/g, " ")}: ${
-        attributes[attribute]
-      }\n`;
+    const {
+      name,
+      positionName,
+      rarity,
+      level,
+      exp,
+      constellation,
+      attributes,
+    } = await this.Game.getCharacterProps(characterName, player);
+    const isMC = enumHelper.isMC(characterName);
+    console.log(rarity)
+    const data = {
+      [`${stars(this.Discord, rarity)}`]: "",
+      [`[${exp.current}/${exp.total} EXP]`]: "",
+      [constellation]: "",
+      ["Position"]: `${this.Discord.emoji(positionName)} ${positionName}`,
+    };
+    for (const attributeName in attributes) {
+      data[attributeName.replace(/_/g, " ")] = attributes[attributeName];
     }
 
-    messageEmbed.setDescription(description);
+    const params = {
+      title: `${name} | Level ${level}/${(rarity + 1) * 20}\n`,
+      description: this.objectToString(data),
+    };
+
+    if (isMC) {
+      params.image = msg.author.displayAvatarURL();
+    } else {
+      //prettier-ignore
+      params.filePath = `./images/characters/${characterName.replace(" ", "_")}.png`
+    }
+    const messageEmbed = this.Discord.buildEmbed(params);
+    //`Weapon: ${weapon}\n`;
     msg.say(messageEmbed);
   }
 };
+
+function stars(Discord, rarity) {
+  return `${"⭐".repeat(rarity)}${Discord.emoji("empty star").repeat(
+    5 - rarity
+  )}`;
+}

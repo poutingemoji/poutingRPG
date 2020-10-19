@@ -81,7 +81,7 @@ class Game extends BaseHelper {
         updatedPlayer.experience.lost += expLoss;
         updatedPlayer.gold.current -= goldLoss;
         updatedPlayer.gold.lost += goldLoss;
-        updatedPlayer.inventory = {
+        updatedPlayer.characters = {
           equipment: [],
           items: [],
         };

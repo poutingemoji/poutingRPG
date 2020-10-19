@@ -3,10 +3,7 @@ const { Command } = require("discord.js-commando");
 const BaseHelper = require("../../Base/Helper");
 const { aggregation } = require("../../Base/Util");
 
-const { MessageEmbed } = require("discord.js");
-
 //DATA
-require("dotenv").config();
 
 module.exports = class TopCommand extends aggregation(Command, BaseHelper) {
   constructor(client) {
@@ -21,9 +18,6 @@ module.exports = class TopCommand extends aggregation(Command, BaseHelper) {
         `${client.commandPrefix}top points`,
         `${client.commandPrefix}top dallars`,
       ],
-      clientPermissions: [],
-      userPermissions: [],
-      guildOnly: true,
       args: [
         {
           key: "type",
@@ -36,6 +30,7 @@ module.exports = class TopCommand extends aggregation(Command, BaseHelper) {
         usages: 1,
         duration: 5,
       },
+      guildOnly: true,
     });
   }
 

@@ -1,4 +1,7 @@
 const enumHelper = {
+  isMC: (characterName) => {
+    return characterName == "Traveller";
+  },
   maxHealth: (level) => {
     return 100 + level * 5;
   },

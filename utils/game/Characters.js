@@ -1,9 +1,6 @@
-const { inventory } = require('../enumHelper');
-const enumHelper = require('../enumHelper');
+const { characters } = require("../enumHelper");
+const enumHelper = require("../enumHelper");
 
-class Characters {
-
-
-}
+class Characters {}
 
 module.exports = Characters;

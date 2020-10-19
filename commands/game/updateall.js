@@ -6,7 +6,6 @@ const { aggregation } = require("../../Base/Util");
 const { MessageEmbed } = require("discord.js");
 
 //DATA
-require("dotenv").config();
 
 module.exports = class UpdateAllCommand extends aggregation(
   Command,
@@ -15,21 +14,16 @@ module.exports = class UpdateAllCommand extends aggregation(
   constructor(client) {
     super(client, {
       name: "updateall",
-      aliases: [],
       group: "game",
       memberName: "updateall",
       description: "Update all MongoDB documents.",
-      examples: [],
-      clientPermissions: [],
-      userPermissions: [],
-      guildOnly: true,
-      hidden: true,
-      ownerOnly: true,
-      args: [],
       throttling: {
         usages: 1,
         duration: 2000000000,
       },
+      guildOnly: true,
+      hidden: true,
+      ownerOnly: true,
     });
   }
 

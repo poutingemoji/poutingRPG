@@ -6,7 +6,6 @@ const { aggregation } = require("../../Base/Util");
 const { MessageEmbed } = require("discord.js");
 
 //DATA
-require("dotenv").config();
 
 // UTILS
 const { Game } = require("../../DiscordBot");
@@ -23,15 +22,11 @@ module.exports = class CharactersCommand extends aggregation(
       group: "game",
       memberName: "characters",
       description: "View your characters.",
-      examples: [],
-      clientPermissions: [],
-      userPermissions: [],
-      guildOnly: true,
-      args: [],
       throttling: {
         usages: 1,
         duration: 2,
       },
+      guildOnly: true,
     });
     this.Discord = Game.Discord;
     this.Pagination = new Pagination();
@@ -40,7 +35,7 @@ module.exports = class CharactersCommand extends aggregation(
 
   async run(msg) {
     const player = await this.Game.findPlayer(msg.author, msg);
-    const charactersOwned = Object.keys(player.characters);
+    const charactersOwned = Array.from(player.characters.keys());
 
     const embeds = [];
 
@@ -49,17 +44,30 @@ module.exports = class CharactersCommand extends aggregation(
       let { items } = this.Pagination.paginate(charactersOwned, page + 1);
       let description = "";
       for (let i = 0; i < items.length; i++) {
-        const id = charactersOwned[i];
-        //const [name, position, level, duplicates]
-        description += `**${name}** ${positions[position]} | Level: ${level} | Duplicates: ${duplicates} | [ID: ${id}](https://www.twitch.tv/pokimane)`;
+        const characterName = charactersOwned[i];
+        const {
+          name,
+          positionName,
+          level,
+          constellation,
+        } = await this.Game.getCharacterProps(characterName, player);
+        description += `**${name}** ${this.Discord.emoji(
+          positionName
+        )} | Level: ${level} | ${constellation}\n`;
       }
       embeds.push(
         new MessageEmbed()
-          .setTitle(`[Page ${page + 1}/${maxPage}]`)
           .setDescription(description)
+          .setFooter(`Page ${page + 1}/${maxPage}`)
       );
     }
 
-    buildEmbeds(msg, embeds);
+    this.Pagination.buildEmbeds({
+      title: "Characters",
+      author: msg.author,
+      embeds,
+      msg,
+    });
   }
 };
+

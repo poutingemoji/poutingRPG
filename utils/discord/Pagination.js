@@ -7,7 +7,7 @@ const emojis = require("../../pouting-rpg/data/emojis");
 
 class Pagination {
   async buildEmbeds(params) {
-    const { embeds, msg, color, footer } = params
+    const { color, title, author, embeds, msg } = params;
     /*
     const embeds = [];
     let { maxPage } = this.paginate(totalItems, 1, pageLength);
@@ -42,7 +42,8 @@ class Pagination {
       })
       .setDisabledNavigationEmojis(["delete"]);
     if (color) Embeds.setColor(color);
-    if (footer) Embeds.setFooter(footer);
+    if (title)
+      Embeds.setTitle(`${author ? `${author.username}'s ` : ""}${title}`);
     await Embeds.build();
   }
 

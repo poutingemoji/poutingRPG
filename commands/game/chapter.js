@@ -4,7 +4,6 @@ const { Command } = require("discord.js-commando");
 const { MessageEmbed } = require("discord.js");
 
 //DATA
-require("dotenv").config();
 
 // UTILS
 const { Game } = require("../../DiscordBot");
@@ -13,19 +12,15 @@ module.exports = class ChapterCommand extends Command {
   constructor(client) {
     super(client, {
       name: "chapter",
-      aliases: [],
       group: "game",
       memberName: "chapter",
       description: "View your chapter progression.",
-      examples: [],
-      clientPermissions: [],
-      userPermissions: [],
-      guildOnly: true,
       args: [],
       throttling: {
         usages: 1,
         duration: 2,
       },
+      guildOnly: true,
     });
   }
 

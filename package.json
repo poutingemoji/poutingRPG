@@ -10,6 +10,7 @@
   "dependencies": {
     "bluebird": "^3.7.2",
     "canvas": "^2.6.1",
+    "commando-mongodb": "^1.1.0",
     "dateformat": "^3.0.3",
     "dblapi.js": "^2.4.1",
     "discord-paginationembed": "^2.1.0",
@@ -18,12 +19,11 @@
     "dotenv": "^8.2.0",
     "expr-eval": "^2.0.2",
     "moment": "^2.29.1",
+    "mongodb": "^3.6.2",
     "mongoose": "^5.10.4",
     "node-pre-gyp": "0.12.0",
     "prettier": "^2.1.2",
-    "seedrandom": "^3.0.5",
-    "sqlite": "^4.0.15",
-    "sqlite3": "^5.0.0"
+    "seedrandom": "^3.0.5"
   },
   "directories": {
     "doc": "docs"
