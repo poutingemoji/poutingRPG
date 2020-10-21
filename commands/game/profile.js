@@ -43,10 +43,11 @@ module.exports = class ProfileCommand extends aggregation(Command, BaseHelper) {
     const arc = arcs[player.arc];
     const data = {
       ["Adventure Rank"]: player.adventureRank.current,
-      [`[${player.exp.current}/${player.exp.total} EXP]`]: "",
+      [`*[${player.exp.current}/${player.exp.total} EXP]*`]: "",
       [`${this.Discord.emoji("point")} Points`]: player.points,
       [`${this.Discord.emoji("dallar")} Dallars`]: player.dallars,
       [`${this.Discord.emoji("suspendium")} Suspendium`]: player.suspendium,
+      [`${this.Discord.emoji(player.faction)} Faction`]: player.faction,
     };
 
     const messageEmbed = this.Discord.buildEmbed({

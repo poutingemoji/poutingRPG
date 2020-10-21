@@ -56,19 +56,10 @@ const playerSchema = mongoose.Schema({
     of: Object,
     default: {},
   },
-  titles: {
-    current: {
-      type: String,
-      default: "None",
-    },
-    unlocked: {
-      type: Array,
-      default: [],
-    },
-  },
-  events: {
-    type: Array,
-    default: [],
+  inventory: {
+    type: Map,
+    of: Number,
+    default: {},
   },
   gambles: {
     type: Number,
@@ -112,10 +103,9 @@ const playerSchema = mongoose.Schema({
       default: "never",
     },
   },
-  fishes: {
-    type: Map,
-    of: Number,
-    default: {},
+  events: {
+    type: Array,
+    default: [],
   },
   story: {
     chapter: {
@@ -148,6 +138,7 @@ const newPlayerObj = (discordId, faction, position = "Wave Controller") => {
     discordId: discordId,
     faction: faction,
     characters: { ["Traveller"]: character },
+    inventory: { ["Baby Zygaena"]: 6, ["Crystal Shard"]: 4 },
   };
 };
 

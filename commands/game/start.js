@@ -56,6 +56,10 @@ module.exports = class StartCommand extends aggregation(Command, BaseHelper) {
       );
       if (!traitsChosen[i]) return;
     }
+    this.Game.Database.createNewPlayer(msg.author.id, {
+      faction: traitsChosen[1],
+      position: traitsChosen[0],
+    })
     msg.say(generateStartedMsg(Discord, msg, traitsChosen));
   }
 };

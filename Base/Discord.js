@@ -5,10 +5,14 @@ const { MessageAttachment, MessageEmbed } = require("discord.js");
 const emojis = require("../pouting-rpg/data/emojis");
 const enumHelper = require("../utils/enumHelper");
 
+//UTILS
+const Pagination = require("../utils/discord/Pagination")
+
 class Discord {
   constructor(client) {
     this.client = client;
     this.waitingOnResponse = new Set();
+    this.Pagination = new Pagination(this);
   }
 
   confirmation(msg, response) {
@@ -31,18 +35,10 @@ class Discord {
   }
 
   buildEmbed(params) {
-    const {
-      color,
-      thumbnail,
-      title,
-      author,
-      description,
-      filePath,
-      fileName = "nicetry",
-      image,
-      footer,
-    } = params;
-    const messageEmbed = new MessageEmbed();
+    //prettier-ignore
+    const { Embed, color, thumbnail, title, author, description, filePath, fileName = "nicetry", image, footer } = params;
+
+    const messageEmbed = Embed || new MessageEmbed();
     if (color) messageEmbed.setColor(color);
     if (thumbnail) messageEmbed.setThumbnail(thumbnail);
 
@@ -71,7 +67,7 @@ class Discord {
           } else {
             return;
           }
-        } 
+        }
 
         this.waitingOnResponse.add(author);
         for (const option of chooseFrom) await msg.react(emojis[option]);

@@ -3,22 +3,25 @@ const { Command } = require("discord.js-commando");
 const BaseHelper = require("../../Base/Helper");
 const { aggregation } = require("../../Base/Util");
 
+const { MessageEmbed } = require("discord.js");
+
 //DATA
+const items = require("../../pouting-rpg/data/items");
 
 // UTILS
 const { Game } = require("../../DiscordBot");
 
-module.exports = class CharactersCommand extends aggregation(
+module.exports = class InventoryCommand extends aggregation(
   Command,
   BaseHelper
 ) {
   constructor(client) {
     super(client, {
-      name: "characters",
-      aliases: ["chars"],
+      name: "inventory",
+      aliases: ["inv"],
       group: "game",
-      memberName: "characters",
-      description: "View your characters.",
+      memberName: "inventory",
+      description: "View your inventory.",
       throttling: {
         usages: 1,
         duration: 2,
@@ -31,29 +34,26 @@ module.exports = class CharactersCommand extends aggregation(
 
   async run(msg) {
     const player = await this.Game.findPlayer(msg.author, msg);
-    const charactersOwned = Array.from(player.characters.keys());
+    const inventoryOwned = Array.from(player.inventory.keys());
 
-    const format = async (i) => {
-      const characterName = charactersOwned[i];
-      const {
-        name,
-        positionName,
-        level,
-        constellation,
-      } = await this.Game.getCharacterProps(characterName, player);
-      return `**${name}** ${this.Discord.emoji(
-        positionName
-      )} | Level: ${level} | ${constellation}`;
+    const format = (i) => {
+      const itemName = inventoryOwned[i];
+      const item = items[itemName];
+      return `${player.inventory.get(
+        itemName
+      )} **${itemName}** ${this.Discord.emoji(itemName)} | Rarity: ${
+        item.rarity
+      }`;
     };
 
     this.Discord.Pagination.buildEmbeds(
       {
-        title: "Characters",
+        title: "Inventory",
         author: msg.author,
         msg,
       },
       format,
-      charactersOwned
+      inventoryOwned
     );
   }
 };

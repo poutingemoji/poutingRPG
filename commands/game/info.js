@@ -38,12 +38,14 @@ module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
 
   async run(msg, { characterName }) {
     const player = await this.Game.findPlayer(msg.author, msg);
-    isNaN(characterName)
-      ? (characterName = this.titleCase(characterName))
-      : (characterName = Array.from(player.characters.keys())[
-          characterName - 1
-        ]);
-    console.log(characterName);
+    console.log(characterName)
+    if(isNaN(characterName)) {
+      characterName = this.titleCase(characterName)
+    } else {
+      characterName = Array.from(player.characters.keys())[
+        characterName - 1
+      ]
+    }
     if (!player.characters.get(characterName)) return;
 
     const {
@@ -59,7 +61,7 @@ module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
     console.log(rarity)
     const data = {
       [`${stars(this.Discord, rarity)}`]: "",
-      [`[${exp.current}/${exp.total} EXP]`]: "",
+      [`*[${exp.current}/${exp.total} EXP]*`]: "",
       [constellation]: "",
       ["Position"]: `${this.Discord.emoji(positionName)} ${positionName}`,
     };

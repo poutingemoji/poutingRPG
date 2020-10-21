@@ -1,14 +1,21 @@
 //BASE
-const PaginationEmbed = require("Discord-paginationembed");
-const { MessageEmbed } = require("Discord.js");
+const PaginationEmbed = require("discord-paginationembed");
+const { MessageEmbed } = require("discord.js");
 
 //DATA
 const emojis = require("../../pouting-rpg/data/emojis");
 
+// UTILS
+
 class Pagination {
-  async buildEmbeds(params) {
-    const { color, title, author, embeds, msg } = params;
-    /*
+  constructor(Discord) {
+    this.Discord = Discord;
+  }
+
+  async buildEmbeds(params, format, totalItems, pageLength = 10) {
+    //prettier-ignore
+    const { msg, color, thumbnail, title, author, description, image, footer } = params;
+
     const embeds = [];
     let { maxPage } = this.paginate(totalItems, 1, pageLength);
 
@@ -16,17 +23,16 @@ class Pagination {
       let { items } = this.paginate(totalItems, page + 1, pageLength);
       let description = "";
       for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        description += `\n`;
+        description += `${await format(i)}\n`;
       }
       embeds.push(
         new MessageEmbed()
-          .setTitle(`[Page ${page + 1}/${maxPage}]`)
           .setDescription(description)
+          .setFooter(`Page ${page + 1}/${maxPage}`)
       );
     }
-    */
-    const Embeds = new PaginationEmbed.Embeds()
+
+    let Embeds = new PaginationEmbed.Embeds()
       .setArray(embeds)
       .setAuthorizedUsers([msg.author.id])
       .setChannel(msg.channel)
@@ -41,9 +47,9 @@ class Pagination {
         jump: "🔢",
       })
       .setDisabledNavigationEmojis(["delete"]);
-    if (color) Embeds.setColor(color);
-    if (title)
-      Embeds.setTitle(`${author ? `${author.username}'s ` : ""}${title}`);
+
+    params.Embed = Embeds;
+    Embeds = this.Discord.buildEmbed(params)
     await Embeds.build();
   }
 

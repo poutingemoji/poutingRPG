@@ -69,11 +69,11 @@ class Database {
   }
 
   // PLAYER
-  createNewPlayer(discordId, faction) {
+  createNewPlayer(discordId, {faction, position}) {
     return new Promise((resolve, reject) =>
       Player.replaceOne(
         { discordId: discordId },
-        newPlayerObj(discordId, faction),
+        newPlayerObj(discordId, faction, position),
         { upsert: true },
         (err, res) => {
           if (err) {
@@ -120,6 +120,7 @@ class Database {
 
   //LEADERBOARD
   loadLeaderboard(type) {
+    console.log(type)
     const { where, gte = 0, sort } = enumHelper.leaderboardFilters[type];
     return Player.find().where(where).gte(gte).sort(sort).exec();
   }
@@ -131,7 +132,6 @@ class Database {
   }
 
   async setSpawnsEnabled(channel) {
-    console.log(channel)
     const setting = await this.loadSetting(channel.guild.id);
     if (!setting.settings.hasOwnProperty("spawnsEnabled")) {
       setting.settings.spawnsEnabled = [];
@@ -147,7 +147,6 @@ class Database {
       setting.settings.spawnsEnabled.push(channel.id);
       response = `${channel} will now be used for spawning regulars!`;
     }
-    console.log(setting.settings.spawnsEnabled)
     this.saveSetting(setting);
     return response;
   }

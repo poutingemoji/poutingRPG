@@ -25,6 +25,19 @@ const emojis = {
   ["Khel Hellam"]: "766038373847924746",
   ["Urek Mazino"]: "766037035822612520",
   ["Rak"]: "729190277511905301",
+
+  //ITEMS
+  ["Shrimp"]: "🦐",
+  ["Fish"]: "🐟",
+  ["Tropical Fish"]: "🐠",
+  ["Blowfish"]: "🐡",
+  ["Squid"]: "🦑",
+  ["Octopus"]: "🐙",
+  ["Metalfish"]: "⚙️",
+  ["Silver Fish"]: "⛓️",
+  ["Crystal Shard"]: "💠",
+  ["Baby Zygaena"]: "💮",
+  ["Sweetfish"]: "🦈",
 };
 
 module.exports = emojis;

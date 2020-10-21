@@ -10,8 +10,8 @@ const enumHelper = {
   },
   leaderboardFilters: {
     level: {
-      sort: { level: -1, "experience.current": -1 },
-      where: "level",
+      sort: { "adventureRank.current": -1, "exp.current": -1 },
+      where: "adventureRank.current",
     },
     points: {
       sort: { points: -1 },
@@ -93,81 +93,6 @@ const enumHelper = {
     wash: "hygiene",
     play: "fun",
     pat: "energy",
-  },
-  fishes: {
-    ["Shrimp"]: {
-      emoji: "🦐",
-      points: 15,
-      rarity: 60,
-    },
-    ["Fish"]: {
-      emoji: "🐟",
-      points: 20,
-      rarity: 50,
-    },
-    ["Tropical Fish"]: {
-      emoji: "🐠",
-      points: 20,
-      rarity: 40,
-    },
-    ["Blowfish"]: {
-      emoji: "🐡",
-      points: 25,
-      rarity: 35,
-    },
-    ["Squid"]: {
-      emoji: "🦑",
-      points: 30,
-      rarity: 30,
-    },
-    ["Octopus"]: {
-      emoji: "🐙",
-      points: 30,
-      rarity: 30,
-    },
-    ["Metalfish"]: {
-      emoji: "⚙️",
-      points: 40,
-      rarity: 20,
-    },
-    ["Silver Fish"]: {
-      emoji: "⛓️",
-      points: 50,
-      rarity: 15,
-    },
-    ["Crystal Shard"]: {
-      emoji: "💠",
-      points: 90,
-      rarity: 10,
-    },
-    ["Valuable Object"]: {
-      emoji: "🏺",
-      points: 100,
-      rarity: 5,
-    },
-    ["Baby Zygaena"]: {
-      emoji: "💮",
-      points: 150,
-      rarity: 1,
-    },
-    ["Sweetfish"]: {
-      emoji: "🦈",
-      dallars: 5,
-      rarity: 5,
-    },
-    ["Boot"]: {
-      emoji: "👢",
-      points: 0,
-      rarity: 3,
-    },
-    ["Brick"]: {
-      emoji: "🧱",
-      points: 0,
-      rarity: 3,
-    },
-    ["\nTotal Amount"]: {
-      emoji: "",
-    },
   },
 };
 

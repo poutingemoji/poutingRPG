@@ -57,52 +57,7 @@ class Game extends aggregation(BaseGame, BaseHelper) {
       )}`,
     };
   }
-
-  /**
-   * Returns leaderboard of a certain attribute
-   * @param {Object} msg
-   * @param {String} type
-   */
-  leaderboard(msg, type = "level") {
-    this.Database.loadLeaderboard(type).then(async (leaderboard) => {
-      const embeds = [];
-      let { maxPage } = this.Pagination.paginate(
-        leaderboard,
-        1,
-        enumHelper.pageLength
-      );
-
-      for (let page = 0; page < maxPage; page++) {
-        let { items } = this.Pagination.paginate(
-          leaderboard,
-          page + 1,
-          enumHelper.pageLength
-        );
-        let description = "";
-        for (let i = 0; i < items.length; i++) {
-          let attributes = [];
-          const player = items[i];
-          try {
-            const user = await this.client.users.fetch(player.discordId);
-            switch (type) {
-              case "level":
-                attributes.push(`Level: ${player.level}`);
-                break;
-            }
-            description += `${user.username} | ${attributes.join(" - ")}\n`;
-          } catch (err) {
-            console.log(err);
-          }
-        }
-        embeds.push(
-          new MessageEmbed()
-            .setTitle(`[Page ${page + 1}/${maxPage}]`)
-            .setDescription(description)
-        );
-      }
-      this.Pagination.buildEmbeds(embeds, msg);
-    });
-  }
+  
 }
 
 module.exports = Game;
