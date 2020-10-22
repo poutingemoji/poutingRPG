@@ -1,22 +1,15 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
 
 //DATA
 const items = require("../../pouting-rpg/data/items");
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
 const enumHelper = require("../../utils/enumHelper");
+const Helper = require("../../utils/Helper");
 
-//FILTERED DATA
-const filter = (key) => {
-  return items[key].type == "Fish";
-};
-const fishes = Game.filterObject(items, filter);
-
-module.exports = class FishCommand extends aggregation(Command, BaseHelper) {
+module.exports = class FishCommand extends Command {
   constructor(client) {
     super(client, {
       name: "fish",
@@ -29,17 +22,19 @@ module.exports = class FishCommand extends aggregation(Command, BaseHelper) {
       },
       guildOnly: true,
     });
-    this.Discord = Game.Discord;
+    this.Discord = Discord;
     this.Game = Game;
   }
 
   async run(msg) {
     const player = await this.Game.findPlayer(msg.author, msg);
-    const fish = this.percentageChance(
-      Object.keys(fishes),
-      Object.values(fishes).map((res) => res.rarity)
-    );
-    //player.addItem(fish);
+    if (!player) return;
+   
+    const itemFilter = (item) => {
+      return item.type == "Fish";
+    };
+    const fish = this.Game.roguelike(items, 10, itemFilter)
+    this.Game.Database.addItem(msg.author.id, fish);
     msg.reply(`You fished out: **${fish} ${this.Discord.emoji(fish)}** !`);
   }
 };

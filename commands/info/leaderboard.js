@@ -1,19 +1,18 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
 
 //DATA
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
+const Helper = require("../../utils/Helper");
 
-module.exports = class TopCommand extends aggregation(Command, BaseHelper) {
+module.exports = class TopCommand extends Command {
   constructor(client) {
     super(client, {
       name: "top",
       aliases: ["leaderboard"],
-      group: "game",
+      group: "info",
       memberName: "top",
       description: "View the top players.",
       examples: [
@@ -35,15 +34,14 @@ module.exports = class TopCommand extends aggregation(Command, BaseHelper) {
       },
       guildOnly: true,
     });
-    this.Discord = Game.Discord;
+    this.Discord = Discord;
     this.Game = Game;
   }
 
   async run(msg, { type }) {
     this.Game.Database.loadLeaderboard(type).then(async (leaderboard) => {
-      const format = async (i) => {
+      const formatFilter = async (player) => {
         let attributes = [];
-        const player = leaderboard[i];
         try {
           const user = await this.client.users.fetch(player.discordId);
           switch (type) {
@@ -51,11 +49,11 @@ module.exports = class TopCommand extends aggregation(Command, BaseHelper) {
               attributes.push(`AR: ${player.adventureRank.current}`);
               break;
           }
-          return `${user.username} ${this.Discord.emoji(
+          return `${user.tag} ${this.Discord.emoji(
             player.faction
           )} | ${attributes.join(" - ")}`;
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
       };
 
@@ -64,7 +62,7 @@ module.exports = class TopCommand extends aggregation(Command, BaseHelper) {
           title: "Leaderboard",
           msg,
         },
-        format,
+        formatFilter,
         leaderboard
       );
     });

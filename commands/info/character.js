@@ -1,21 +1,21 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
 
 //DATA
 const positions = require("../../pouting-rpg/data/positions");
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
 const enumHelper = require("../../utils/enumHelper");
+const Helper = require("../../utils/Helper");
 
-module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
+module.exports = class CharacterCommand extends Command {
   constructor(client) {
     super(client, {
-      name: "info",
-      group: "game",
-      memberName: "info",
+      name: "character",
+      aliases: ["char"],
+      group: "info",
+      memberName: "character",
       description: "Get info on your character.",
       examples: [],
       args: [
@@ -32,15 +32,17 @@ module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
       },
       guildOnly: true,
     });
-    this.Discord = Game.Discord;
+    this.Discord = Discord;
     this.Game = Game;
   }
 
   async run(msg, { characterName }) {
     const player = await this.Game.findPlayer(msg.author, msg);
+    if (!player) return;
+    
     console.log(characterName)
     if(isNaN(characterName)) {
-      characterName = this.titleCase(characterName)
+      characterName = Helper.titleCase(characterName)
     } else {
       characterName = Array.from(player.characters.keys())[
         characterName - 1
@@ -60,10 +62,10 @@ module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
     const isMC = enumHelper.isMC(characterName);
     console.log(rarity)
     const data = {
-      [`${stars(this.Discord, rarity)}`]: "",
+      [`${this.Discord.stars(rarity)}`]: "",
       [`*[${exp.current}/${exp.total} EXP]*`]: "",
       [constellation]: "",
-      ["Position"]: `${this.Discord.emoji(positionName)} ${positionName}`,
+      ["Position"]: `${positionName} ${this.Discord.emoji(positionName)}`,
     };
     for (const attributeName in attributes) {
       data[attributeName.replace(/_/g, " ")] = attributes[attributeName];
@@ -71,7 +73,7 @@ module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
 
     const params = {
       title: `${name} | Level ${level}/${(rarity + 1) * 20}\n`,
-      description: this.objectToString(data),
+      description: Helper.objectToString(data),
     };
 
     if (isMC) {
@@ -85,9 +87,3 @@ module.exports = class InfoCommand extends aggregation(Command, BaseHelper) {
     msg.say(messageEmbed);
   }
 };
-
-function stars(Discord, rarity) {
-  return `${"⭐".repeat(rarity)}${Discord.emoji("empty star").repeat(
-    5 - rarity
-  )}`;
-}

@@ -1,22 +1,19 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
 
 //DATA
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
+const Helper = require("../../utils/Helper");
 
-module.exports = class CharactersCommand extends aggregation(
-  Command,
-  BaseHelper
-) {
+module.exports = class CharactersCommand extends 
+  Command {
   constructor(client) {
     super(client, {
       name: "characters",
       aliases: ["chars"],
-      group: "game",
+      group: "storage",
       memberName: "characters",
       description: "View your characters.",
       throttling: {
@@ -25,22 +22,21 @@ module.exports = class CharactersCommand extends aggregation(
       },
       guildOnly: true,
     });
-    this.Discord = Game.Discord;
+    this.Discord = Discord;
     this.Game = Game;
   }
 
   async run(msg) {
     const player = await this.Game.findPlayer(msg.author, msg);
+    console.log(player);
+    if (!player) return;
+
     const charactersOwned = Array.from(player.characters.keys());
 
-    const format = async (i) => {
-      const characterName = charactersOwned[i];
-      const {
-        name,
-        positionName,
-        level,
-        constellation,
-      } = await this.Game.getCharacterProps(characterName, player);
+    const formatFilter = async (characterName) => {
+      //prettier-ignore
+      const { name, positionName, level, constellation } 
+      = await this.Game.getCharacterProps(characterName, player);
       return `**${name}** ${this.Discord.emoji(
         positionName
       )} | Level: ${level} | ${constellation}`;
@@ -52,7 +48,7 @@ module.exports = class CharactersCommand extends aggregation(
         author: msg.author,
         msg,
       },
-      format,
+      formatFilter,
       charactersOwned
     );
   }

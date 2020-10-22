@@ -1,25 +1,19 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
-
-const { MessageEmbed } = require("discord.js");
 
 //DATA
 const items = require("../../pouting-rpg/data/items");
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
+const Helper = require("../../utils/Helper");
 
-module.exports = class InventoryCommand extends aggregation(
-  Command,
-  BaseHelper
-) {
+module.exports = class InventoryCommand extends Command {
   constructor(client) {
     super(client, {
       name: "inventory",
       aliases: ["inv"],
-      group: "game",
+      group: "storage",
       memberName: "inventory",
       description: "View your inventory.",
       throttling: {
@@ -28,16 +22,17 @@ module.exports = class InventoryCommand extends aggregation(
       },
       guildOnly: true,
     });
-    this.Discord = Game.Discord;
+    this.Discord = Discord;
     this.Game = Game;
   }
 
   async run(msg) {
     const player = await this.Game.findPlayer(msg.author, msg);
+    if (!player) return;
+
     const inventoryOwned = Array.from(player.inventory.keys());
 
-    const format = (i) => {
-      const itemName = inventoryOwned[i];
+    const formatFilter = (itemName) => {
       const item = items[itemName];
       return `${player.inventory.get(
         itemName
@@ -52,7 +47,7 @@ module.exports = class InventoryCommand extends aggregation(
         author: msg.author,
         msg,
       },
-      format,
+      formatFilter,
       inventoryOwned
     );
   }

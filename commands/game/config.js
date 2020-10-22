@@ -1,14 +1,13 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
 
 //DATA
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
+const Helper = require("../../utils/Helper");
 
-module.exports = class ConfigCommand extends aggregation(Command, BaseHelper) {
+module.exports = class ConfigCommand extends Command {
   constructor(client) {
     super(client, {
       name: "config",
@@ -31,7 +30,7 @@ module.exports = class ConfigCommand extends aggregation(Command, BaseHelper) {
       guildOnly: true,
       userPermissions: ["ADMINISTRATOR"],
     });
-    this.Discord = Game.Discord;
+    this.Discord = Discord;
     this.Game = Game;
   }
 

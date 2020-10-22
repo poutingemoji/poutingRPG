@@ -3,16 +3,23 @@ const { MessageAttachment, MessageEmbed } = require("discord.js");
 
 //DATA
 const emojis = require("../pouting-rpg/data/emojis");
-const enumHelper = require("../utils/enumHelper");
+
 
 //UTILS
-const Pagination = require("../utils/discord/Pagination")
+const Pagination = require("../utils/discord/Pagination");
+const enumHelper = require("../utils/enumHelper");
 
 class Discord {
   constructor(client) {
     this.client = client;
     this.waitingOnResponse = new Set();
     this.Pagination = new Pagination(this);
+  }
+
+  stars(rarity) {
+    return `${"⭐".repeat(rarity)}${this.emoji("empty star").repeat(
+      5 - rarity
+    )}`;
   }
 
   confirmation(msg, response) {
@@ -36,7 +43,12 @@ class Discord {
 
   buildEmbed(params) {
     //prettier-ignore
-    const { Embed, color, thumbnail, title, author, description, filePath, fileName = "nicetry", image, footer } = params;
+    const { Embed,
+      color, thumbnail, 
+      title, author, description, 
+      filePath, fileName = "nicetry", 
+      image, footer 
+    } = params;
 
     const messageEmbed = Embed || new MessageEmbed();
     if (color) messageEmbed.setColor(color);
@@ -51,7 +63,7 @@ class Discord {
       messageEmbed.setImage(`attachment://${fileName}.png`);
     }
     if (image) messageEmbed.setImage(image);
-    if (footer) messageEmbed.setFooter(footer);
+    if (footer && !Embed) messageEmbed.setFooter(footer);
     return messageEmbed;
   }
 
@@ -72,7 +84,7 @@ class Discord {
         this.waitingOnResponse.add(author);
         for (const option of chooseFrom) await msg.react(emojis[option]);
 
-        const filter = (reaction, user) => {
+        const reactionFilter = (reaction, user) => {
           return (
             chooseFrom.includes(reaction.emoji.name.replace(/_/g, " ")) &&
             user.id === author
@@ -80,7 +92,7 @@ class Discord {
         };
 
         return msg
-          .awaitReactions(filter, { max: 1, time: 60000, errors: ["time"] })
+          .awaitReactions(reactionFilter, { max: 1, time: 60000, errors: ["time"] })
           .then((collected) => {
             msg.delete();
             this.waitingOnResponse.clear(author);

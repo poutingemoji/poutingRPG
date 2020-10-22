@@ -1,7 +1,5 @@
 //BASE
 const mongoose = require("mongoose");
-mongoose.Promise = require("bluebird");
-
 const MongoClient = require("mongodb").MongoClient;
 const MongoDBProvider = require("commando-mongodb");
 
@@ -9,6 +7,9 @@ const MongoDBProvider = require("commando-mongodb");
 const { newCharacter } = require("./schemas/character");
 const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
+const arcs = require("../pouting-rpg/data/arcs")
+
+//UTILS
 const enumHelper = require("../utils/enumHelper");
 require("dotenv").config();
 
@@ -69,11 +70,11 @@ class Database {
   }
 
   // PLAYER
-  createNewPlayer(discordId, {faction, position}) {
+  createNewPlayer(discordId, { factionName, positionName }) {
     return new Promise((resolve, reject) =>
       Player.replaceOne(
         { discordId: discordId },
-        newPlayerObj(discordId, faction, position),
+        newPlayerObj(discordId, factionName, positionName),
         { upsert: true },
         (err, res) => {
           if (err) {
@@ -118,17 +119,47 @@ class Database {
     this.savePlayer(player);
   }
 
+  //INVENTORY
+  async addItem(discordId, item) {
+    const player = await this.loadPlayer(discordId);
+    player.inventory.get(item)
+      ? player.inventory.set(item, player.inventory.get(item)+1)
+      : player.inventory.set(item, 1);
+    this.savePlayer(player);
+  }
+
   //LEADERBOARD
   loadLeaderboard(type) {
-    console.log(type)
     const { where, gte = 0, sort } = enumHelper.leaderboardFilters[type];
     return Player.find().where(where).gte(gte).sort(sort).exec();
+  }
+
+  //QUEST
+  async addQuests(discordId) {
+    const player = await this.loadPlayer(discordId);
+    this.savePlayer(player, { storyQuests: arcs[player.story.arc].chapters[player.story.chapter].quests });
+  }
+
+  async incrementQuestProgress(discordId) {
+    const player = await this.loadPlayer(discordId);
+    let quest;
+    for (const i = 0; i < player.storyQuests.length; i++) {
+      if (player.storyQuests[i].type == type && player.storyQuests[i].id == id) {
+        quest = player.storyQuests[i];
+      }
+    }
+    if (!quest || quest.progress == quest.goal) return;
+    if (isNaN(value)) {
+      quest.progress = value;
+    } else {
+      quest.progress += Math.min(value, quest.goal - quest.progress);
+    }
   }
 
   //SETTING
   async isSpawnsEnabled(channel) {
     const setting = await this.loadSetting(channel.guild.id);
-    return setting.settings.spawnsEnabled.includes(channel.id)
+    return setting.settings.spawnsEnabled.includes(channel.id);
   }
 
   async setSpawnsEnabled(channel) {

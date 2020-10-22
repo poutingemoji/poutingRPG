@@ -8,7 +8,8 @@ const arcs = [
       "https://cdn.discordapp.com/attachments/722720878932262952/751752544027410462/Headons_Floor.png",
     chapters: [
       {
-        name: "1st Floor: Entering the Tower",
+        location: "1st Floor",
+        name: "Entering the Tower",
         emoji: "🚪",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",

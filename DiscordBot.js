@@ -1,13 +1,17 @@
 //BASE
+const BaseDiscord = require("./Base/Discord")
 const { CommandoClient } = require("discord.js-commando");
 const DBL = require("dblapi.js");
 const path = require("path");
 const fs = require("fs");
 
 //DATA
-const characters = require("./pouting-rpg/data/characters");
 const Game = require("./pouting-rpg/Game");
+const characters = require("./pouting-rpg/data/characters");
+
+//UTILS
 const enumHelper = require("./utils/enumHelper");
+const Helper = require("./utils/Helper");
 
 require("dotenv").config();
 
@@ -21,7 +25,7 @@ class DiscordBot {
       shards: "auto",
     });
     this.Game = new Game(this.client);
-    this.Discord = this.Game.Discord;
+    this.Discord = new BaseDiscord(this.client);
     this.loadEventListeners();
     this.postStatisticsOnDBL();
     this.client.login(process.env.TOKEN);
@@ -85,7 +89,7 @@ class DiscordBot {
         characterName = randomKey(characters);
       } while (enumHelper.isMC(characterName));
 
-      const filter = (msg) => {
+      const msgFilter = (msg) => {
         return msg.content.toLowerCase() == characterName.toLowerCase();
       };
 
@@ -99,7 +103,7 @@ class DiscordBot {
       setTimeout(() => {
         msg.channel.send(messageEmbed).then((msgSent) => {
           msg.channel
-            .awaitMessages(filter, { max: 1, time: 60000, errors: ["time"] })
+            .awaitMessages(msgFilter, { max: 1, time: 60000, errors: ["time"] })
             .then((collected) => {
               msg.say(`After some convincing from ${
                 collected.first().author
@@ -114,8 +118,10 @@ class DiscordBot {
             });
         });
         console.log("deleted")
-        this.talkedRecently.delete(msg.author.id);
-      }, 45*60000);
+        setTimeout(() => {
+          this.talkedRecently.delete(msg.author.id);
+        }, 10000)
+      }, 5*60000);
     });
   }
 
@@ -135,7 +141,9 @@ class DiscordBot {
     this.client.registry
       .registerDefaultTypes()
       .registerGroups([
-        ["game", "Tower of God Commands"],
+        ["game", "Game Commands"],
+        ["info", "Info Commands"],
+        ["storage", "Storage Commands"],
       ])
       .registerDefaultGroups()
       .registerDefaultCommands({
@@ -144,19 +152,17 @@ class DiscordBot {
       })
       .registerCommandsIn(path.join(__dirname, "commands"));
 
-    //Updates Commands on website
-
+    /*
+      Updates Commands on website
+    */
     const groups = this.client.registry.groups;
     let commands = [];
     const jsonFiles = {
-      ["Moderation Commands"]: "moderation",
-      ["Tower of God Commands"]: "game",
+      ["Game Commands"]: "game",
       ["Info Commands"]: "info",
-      ["Social Commands"]: "social",
-      ["Utility Commands"]: "utility",
+      ["Storage Commands"]: "storage",
     };
     let commandsInfo = {};
-    const secondsToTimeFormat = this.Game.secondsToTimeFormat;
     Object.keys(jsonFiles).forEach(function (key) {
       groups
         .filter(
@@ -171,13 +177,14 @@ class DiscordBot {
                 `${cmd.description}${cmd.nsfw ? " (NSFW)" : ""}`,
                 `${cmd.examples ? cmd.examples.join("\n") : ""}`,
                 `${cmd.aliases ? cmd.aliases.join("\n") : ""}`,
-                secondsToTimeFormat(cmd.throttling.duration),
+                Helper.secondsToTimeFormat(cmd.throttling.duration, ", ", false),
               ])
             );
         });
       commandsInfo[jsonFiles[key]] = commands;
       commands = [];
     });
+    
     fs.writeFile(
       `./docs/commandinfo.json`,
       JSON.stringify(commandsInfo),
@@ -185,6 +192,8 @@ class DiscordBot {
         console.log("commandinfo.json Refreshed.");
       }
     );
+    
+    
   }
 }
 

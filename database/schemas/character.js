@@ -3,6 +3,8 @@ const Parser = require("expr-eval").Parser;
 
 //DATA
 const characters = require("../../pouting-rpg/data/characters");
+
+//UTILS
 const enumHelper = require("../../utils/enumHelper");
 
 const newCharacter = (character) => {

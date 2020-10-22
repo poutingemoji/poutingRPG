@@ -12,23 +12,23 @@ class Pagination {
     this.Discord = Discord;
   }
 
-  async buildEmbeds(params, format, totalItems, pageLength = 10) {
+  async buildEmbeds(params, formatFilter, data, pageLength = 10) {
     //prettier-ignore
-    const { msg, color, thumbnail, title, author, description, image, footer } = params;
+    const { msg, footer } = params;
 
     const embeds = [];
-    let { maxPage } = this.paginate(totalItems, 1, pageLength);
+    let { maxPage } = this.paginate(data, 1, pageLength);
 
     for (let page = 0; page < maxPage; page++) {
-      let { items } = this.paginate(totalItems, page + 1, pageLength);
+      let { items } = this.paginate(data, page + 1, pageLength);
       let description = "";
       for (let i = 0; i < items.length; i++) {
-        description += `${await format(i)}\n`;
+        description += `${await formatFilter(items[i], i)}\n`;
       }
       embeds.push(
         new MessageEmbed()
           .setDescription(description)
-          .setFooter(`Page ${page + 1}/${maxPage}`)
+          .setFooter(`Page ${page + 1}/${maxPage}${footer ? ` | ${footer}` : ""}`)
       );
     }
 

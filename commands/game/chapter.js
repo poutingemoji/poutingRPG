@@ -1,12 +1,14 @@
 //BASE
 const { Command } = require("discord.js-commando");
 
-const { MessageEmbed } = require("discord.js");
+const { stripIndents } = require("common-tags");
 
 //DATA
+const arcs = require("../../pouting-rpg/data/arcs");
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
+const Helper = require("../../utils/Helper");
 
 module.exports = class ChapterCommand extends Command {
   constructor(client) {
@@ -22,52 +24,54 @@ module.exports = class ChapterCommand extends Command {
       },
       guildOnly: true,
     });
+    this.Discord = Discord;
+    this.Game = Game;
   }
 
   async run(msg) {
-    const player = await findPlayer(msg.author, msg);
-    player.addQuests = addQuests;
-    //player.addQuests();
-    console.log(player.quests[3].progress);
-    const arc = Arcs[player.arc];
-    const chapter = arc.chapters[player.chapter];
-    const { totalPercent, questsInfo } = getQuestsInfo(player.quests);
-    const messageEmbed = new MessageEmbed()
-      .setColor(colors.embed.game)
-      .setTitle(`${chapter.emoji} ${chapter.name}`)
-      .addFields(
-        {
-          name: `${Emojis["chapter"]} ${arc.name} - Chapter ${
-            player.chapter + 1
-          }/${arc.chapters.length}`,
-          value: chapter.description,
-        },
-        {
-          name: `${Emojis["quests"]} Quests (${totalPercent}%)`,
-          value: questsInfo,
-        }
-      );
-    msg.say(msg.author, messageEmbed);
+    const player = await this.Game.findPlayer(msg.author, msg);
+    if (!player) return;
+
+    //this.Game.Database.addQuests(msg.author.id);
+    console.log(player.storyQuests[3].progress);
+    const arc = arcs[player.story.arc];
+    const chapter = arc.chapters[player.story.chapter];
+    const { totalPercent, questsInfo } = getQuestsInfo(
+      this.Discord,
+      player.storyQuests
+    );
+
+    //prettier-ignore
+    let description = stripIndents(`
+    ${chapter.emoji} **${chapter.location.toUpperCase()}**
+
+    📖 **__${arc.name} Arc__  - Chapter ${player.story.chapter + 1}/${arc.chapters.length}** : ${chapter.name}
+    ${Helper.setImportantMessage(chapter.description)}
+  
+    ${this.Discord.emoji("quest")} **__Quests__**: (${totalPercent}%)
+    ${questsInfo}
+    `);
+    msg.reply(`\n${description}`);
   }
 };
 
-function getQuestsInfo(quests) {
+function getQuestsInfo(Discord, storyQuests) {
   let content = "";
   let totalPercent = 0;
-  for (const quest of quests) {
+  for (const quest of storyQuests) {
     content += `- ${quest.type} **${quest.goal}** `;
     switch (quest.type) {
       case "Defeat":
         content += `Enemies`;
         break;
       case "Fish":
-        content += `${quest.id} ${fishes[quest.id].emoji}`;
+        content += `${quest.questId} ${Discord.emoji(quest.questId)} `;
         break;
       case "Collect":
-        content += `${quest.id} ${Emojis[quest.id]}`;
+        content += `${quest.questId}${Discord.emoji(quest.questId)}`;
         break;
       case "Use":
-        content += `${quest.id}`;
+        content += `${quest.questId}`;
         break;
     }
     const percent = Math.floor((quest.progress / quest.goal) * 100);
@@ -76,6 +80,6 @@ function getQuestsInfo(quests) {
   }
   return {
     questsInfo: content,
-    totalPercent: Math.floor(totalPercent / quests.length),
+    totalPercent: Math.floor(totalPercent / storyQuests.length),
   };
 }

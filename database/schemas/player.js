@@ -4,6 +4,8 @@ const Parser = require("expr-eval").Parser;
 
 //DATA
 const { newCharacter } = require("../schemas/character");
+
+//UTILS
 const enumHelper = require("../../utils/enumHelper");
 
 const playerSchema = mongoose.Schema({
@@ -131,12 +133,12 @@ const playerSchema = mongoose.Schema({
   },
 });
 
-const newPlayerObj = (discordId, faction, position = "Wave Controller") => {
+const newPlayerObj = (discordId, factionName, positionName = "Wave Controller") => {
   const character = newCharacter();
-  character.position = position;
+  character.position = positionName;
   return {
     discordId: discordId,
-    faction: faction,
+    faction: factionName,
     characters: { ["Traveller"]: character },
     inventory: { ["Baby Zygaena"]: 6, ["Crystal Shard"]: 4 },
   };

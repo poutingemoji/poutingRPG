@@ -1,21 +1,19 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
 
-const dateFormat = require("dateformat");
+const moment = require("moment");
 
 //DATA
-const arcs = require("../../pouting-rpg/data/arcs");
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
+const Helper = require("../../utils/Helper");
 
-module.exports = class ProfileCommand extends aggregation(Command, BaseHelper) {
+module.exports = class ProfileCommand extends Command {
   constructor(client) {
     super(client, {
       name: "profile",
-      group: "game",
+      group: "info",
       memberName: "profile",
       description: "View someone's profile.",
       examples: [`${client.commandPrefix}profile [@user/id]`],
@@ -33,31 +31,30 @@ module.exports = class ProfileCommand extends aggregation(Command, BaseHelper) {
       },
       guildOnly: true,
     });
-    this.Discord = Game.Discord;
+    this.Discord = Discord;
     this.Game = Game;
   }
 
   async run(msg, { user }) {
     user = user || msg.author;
     const player = await this.Game.findPlayer(user, msg);
-    const arc = arcs[player.arc];
+    if (!player) return;
+
     const data = {
       ["Adventure Rank"]: player.adventureRank.current,
       [`*[${player.exp.current}/${player.exp.total} EXP]*`]: "",
-      [`${this.Discord.emoji("point")} Points`]: player.points,
-      [`${this.Discord.emoji("dallar")} Dallars`]: player.dallars,
+      [`${this.Discord.emoji("points")} Points`]: player.points,
+      [`${this.Discord.emoji("dallars")} Dallars`]: player.dallars,
       [`${this.Discord.emoji("suspendium")} Suspendium`]: player.suspendium,
-      [`${this.Discord.emoji(player.faction)} Faction`]: player.faction,
     };
 
     const messageEmbed = this.Discord.buildEmbed({
       thumbnail: user.displayAvatarURL(),
-      title: "Profile",
+      title: `Profile ${this.Discord.emoji(player.faction)}`,
       author: user,
-      description: this.objectToString(data),
-      footer: `Born: ${dateFormat(
-        player._id.getTimestamp(),
-        "dddd, mmmm dS, yyyy, h:MM TT"
+      description: Helper.objectToString(data),
+      footer: `Born: ${moment(player._id.getTimestamp()).format(
+        "dddd, MMMM Do YYYY, h:mm:ss A"
       )}`,
     });
     msg.say(messageEmbed);

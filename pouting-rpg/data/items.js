@@ -6,6 +6,9 @@ const items = {
     price: {
       points: 15,
     },
+    level: 1,
+    weight: 1.0,
+    spread: 1,
   },
   ["Fish"]: {
     type: "Fish",
@@ -13,6 +16,9 @@ const items = {
     price: {
       points: 20,
     },
+    level: 1,
+    weight: 1.0,
+    spread: 1,
   },
   ["Tropical Fish"]: {
     type: "Fish",
@@ -20,6 +26,9 @@ const items = {
     price: {
       points: 20,
     },
+    level: 2,
+    weight: 2.0,
+    spread: 2,
   },
   ["Blowfish"]: {
     type: "Fish",
@@ -27,6 +36,9 @@ const items = {
     price: {
       points: 25,
     },
+    level: 3,
+    weight: 3.0,
+    spread: 3,
   },
   ["Squid"]: {
     type: "Fish",
@@ -34,6 +46,9 @@ const items = {
     price: {
       points: 30,
     },
+    level: 3,
+    weight: 3.0,
+    spread: 3,
   },
   ["Octopus"]: {
     type: "Fish",
@@ -41,6 +56,9 @@ const items = {
     price: {
       points: 15,
     },
+    level: 3,
+    weight: 3.0,
+    spread: 3,
   },
   ["Metalfish"]: {
     type: "Fish",
@@ -48,6 +66,9 @@ const items = {
     price: {
       points: 40,
     },
+    level: 4,
+    weight: 4.0,
+    spread: 4,
   },
   ["Silver Fish"]: {
     type: "Fish",
@@ -55,6 +76,9 @@ const items = {
     price: {
       points: 50,
     },
+    level: 5,
+    weight: 5.0,
+    spread: 5,
   },
   ["Crystal Shard"]: {
     type: "Fish",
@@ -62,6 +86,9 @@ const items = {
     price: {
       points: 90,
     },
+    level: 6,
+    weight: 6.0,
+    spread: 6,
   },
   ["Baby Zygaena"]: {
     type: "Fish",
@@ -69,6 +96,9 @@ const items = {
     price: {
       points: 150,
     },
+    level: 10,
+    weight: 10.0,
+    spread: 10,
   },
   ["Sweetfish"]: {
     type: "Fish",
@@ -76,6 +106,9 @@ const items = {
     price: {
       dallars: 5,
     },
+    level: 12,
+    weight: 12.0,
+    spread: 12,
   },
 };
 

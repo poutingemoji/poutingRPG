@@ -1,16 +1,12 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
-
-const { MessageEmbed } = require("discord.js");
 
 //DATA
 
-module.exports = class UpdateAllCommand extends aggregation(
-  Command,
-  BaseHelper
-) {
+//UTILS
+const Helper = require("../../utils/Helper");
+
+module.exports = class UpdateAllCommand extends Command {
   constructor(client) {
     super(client, {
       name: "updateall",

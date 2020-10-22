@@ -4,9 +4,11 @@ const seedrandom = require("seedrandom");
 const RNG = seedrandom();
 
 //DATA
-const enumHelper = require("../utils/enumHelper");
 
-class Helper {
+//UTILS
+const enumHelper = require("./enumHelper");
+
+const Helper = {
   /*
     GAME HELPERS
   */
@@ -35,7 +37,7 @@ class Helper {
       result = Math.trunc(result * factor) / factor;
     } while (result === exclude);
     return result;
-  }
+  },
 
   /**
    * Returns a random value from an array
@@ -44,7 +46,7 @@ class Helper {
    */
   randomChoice(array) {
     return array[this.randomBetween(0, array.length - 1)];
-  }
+  },
 
   /**
    * Returns sum of players strength
@@ -53,7 +55,7 @@ class Helper {
    */
   sumPlayerTotalStrength(player) {
     return player.stats.str + player.equipment.relic.str;
-  }
+  },
 
   /*
     GENERAL HELPERS
@@ -66,15 +68,15 @@ class Helper {
    */
   numberWithCommas(int) {
     return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+  },
 
   clamp(int, min, max) {
     return int <= min ? min : int >= max ? max : int;
-  }
+  },
 
   isBetween(n, a, b) {
     return (n - a) * (n - b) <= 0;
-  }
+  },
 
   romanize(num) {
     if (isNaN(num)) return NaN;
@@ -87,7 +89,7 @@ class Helper {
         i = 3;
     while (i--) roman = (key[+digits.pop() + i * 10] || "") + roman;
     return Array(+digits.join("") + 1).join("M") + roman;
-  }
+  },
 
   /**
    * Converts seconds to time format
@@ -101,12 +103,12 @@ class Helper {
   secondsToTimeFormat(seconds, conjunction = " and ", abbreviate = true) {
     seconds = parseInt(seconds);
 
-    var d = Math.floor(seconds / (3600 * 24));
-    var h = Math.floor((seconds % (3600 * 24)) / 3600);
-    var m = Math.floor((seconds % 3600) / 60);
-    var s = Math.floor(seconds % 60);
+    const d = Math.floor(seconds / (3600 * 24));
+    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
 
-    var Display = [
+    let Display = [
       d > 0 ? d + (abbreviate ? "d" : d == 1 ? " day" : " days") : false,
       h > 0 ? h + (abbreviate ? "h" : h == 1 ? " hour" : " hours") : false,
       m > 0 ? m + (abbreviate ? "m" : m == 1 ? " minute" : " minutes") : false,
@@ -118,17 +120,18 @@ class Helper {
       Display.length = Math.min(Display.length, 2);
     }
     return Display.join(conjunction);
-  }
+  },
 
   //STRING
   /**
    * Returns a codeblock for Discord
    * @param {String} message
+   * @param {String} syntax
    * @returns {String} codeblock
    */
-  setImportantMessage(message) {
-    return `\`\`\`css\n${message}\`\`\``;
-  }
+  setImportantMessage(message, syntax = "") {
+    return `\`\`\`${syntax}\n${message}\`\`\``;
+  },
 
   /**
    * Capitalizes first letter of every word in a string
@@ -141,7 +144,7 @@ class Helper {
       str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
     }
     return str.join(" ");
-  }
+  },
 
   //OBJECT
   /**
@@ -170,8 +173,8 @@ class Helper {
     }
 
     return false;
-  }
-  
+  },
+
   objectToString(obj) {
     let string = "";
     for (const prop in obj) {
@@ -179,7 +182,7 @@ class Helper {
         obj[prop].length == 0 ? `${prop}\n` : `**${prop}**: ${obj[prop]}\n`;
     }
     return string;
-  }
+  },
 
   /**
    * Returns a shallow copy of the object only with filtered properties.
@@ -191,16 +194,17 @@ class Helper {
 
   filterObject(raw, filter) {
     return Object.keys(raw)
-    .filter(filter)
-    .reduce((obj, key) => {
-      obj[key] = raw[key];
-      return obj;
-    }, {});
-  }
+      .filter(filter)
+      .reduce((obj, key) => {
+        obj[key] = raw[key];
+        return obj;
+      }, {});
+  },
   //ARRAY
+  //https://stackoverflow.com/a/53672813
   arrayShuffle(array) {
     for (
-      var i = 0, length = array.length, swap = 0, temp = "";
+      let i = 0, length = array.length, swap = 0, temp = "";
       i < length;
       i++
     ) {
@@ -210,17 +214,17 @@ class Helper {
       array[i] = temp;
     }
     return array;
-  }
+  },
 
   percentageChance(values, chances) {
-    for (var i = 0, pool = []; i < chances.length; i++) {
-      for (var i2 = 0; i2 < chances[i]; i2++) {
+    const pool = [];
+    for (let i = 0; i < chances.length; i++) {
+      for (let i2 = 0; i2 < chances[i]; i2++) {
         pool.push(i);
       }
     }
-    console.log(pool.length);
     return values[this.arrayShuffle(pool)[0]];
-  }
+  },
 
   //DATE
   /**
@@ -230,7 +234,7 @@ class Helper {
    */
   getTimePassed(timeStamp) {
     return this.secondsToTimeFormat((new Date().getTime() - timeStamp) / 1000);
-  }
-}
+  },
+};
 
 module.exports = Helper;

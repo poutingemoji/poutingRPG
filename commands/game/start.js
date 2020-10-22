@@ -1,16 +1,15 @@
 //BASE
 const { Command } = require("discord.js-commando");
-const BaseHelper = require("../../Base/Helper");
-const { aggregation } = require("../../Base/Util");
 
 //DATA
 const factions = require("../../pouting-rpg/data/factions");
 const positions = require("../../pouting-rpg/data/positions");
 
 // UTILS
-const { Game } = require("../../DiscordBot");
+const { Game, Discord } = require("../../DiscordBot");
+const Helper = require("../../utils/Helper");
 
-module.exports = class StartCommand extends aggregation(Command, BaseHelper) {
+module.exports = class StartCommand extends Command {
   constructor(client) {
     super(client, {
       name: "start",
@@ -23,12 +22,12 @@ module.exports = class StartCommand extends aggregation(Command, BaseHelper) {
       },
       guildOnly: true,
     });
-    this.Discord = Game.Discord;
+    this.Discord = Discord;
     this.Game = Game;
   }
 
   async run(msg) {
-    const player = await this.Game.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author);
     if (player) {
       const res = await this.Discord.confirmation(
         msg,
@@ -36,6 +35,7 @@ module.exports = class StartCommand extends aggregation(Command, BaseHelper) {
       );
       if (!res) return;
     }
+
     const Discord = this.Discord;
     const getDescriptions = [getPositionsDescription, getFactionsDescription];
     const traits = [positions, factions];
@@ -57,8 +57,8 @@ module.exports = class StartCommand extends aggregation(Command, BaseHelper) {
       if (!traitsChosen[i]) return;
     }
     this.Game.Database.createNewPlayer(msg.author.id, {
-      faction: traitsChosen[1],
-      position: traitsChosen[0],
+      factionName: traitsChosen[1],
+      positionName: traitsChosen[0],
     })
     msg.say(generateStartedMsg(Discord, msg, traitsChosen));
   }
