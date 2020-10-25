@@ -6,8 +6,7 @@ const factions = require("../../pouting-rpg/data/factions");
 const positions = require("../../pouting-rpg/data/positions");
 
 // UTILS
-const { Game, Discord } = require("../../DiscordBot");
-const Helper = require("../../utils/Helper");
+const { Discord, Game } = require("../../DiscordBot");
 
 module.exports = class StartCommand extends Command {
   constructor(client) {
@@ -27,7 +26,7 @@ module.exports = class StartCommand extends Command {
   }
 
   async run(msg) {
-    const player = await this.Game.findPlayer(msg.author);
+    const player = await this.Game.Database.findPlayer(msg.author);
     if (player) {
       const res = await this.Discord.confirmation(
         msg,
@@ -44,7 +43,7 @@ module.exports = class StartCommand extends Command {
     for (let i = 0; i < getDescriptions.length; i++) {
       traitsChosen.push(
         await msg
-          .reply(getDescriptions[i](Discord, traitsChosen[0]))
+          .reply(getDescriptions[i](Discord, traitsChosen[i-1]))
           .then((msgSent) => {
             return this.Discord.awaitResponse({
               type: "reaction",
@@ -54,12 +53,13 @@ module.exports = class StartCommand extends Command {
             });
           })
       );
+      console.log(traitsChosen[i])
       if (!traitsChosen[i]) return;
     }
     this.Game.Database.createNewPlayer(msg.author.id, {
       factionName: traitsChosen[1],
       positionName: traitsChosen[0],
-    })
+    });
     msg.say(generateStartedMsg(Discord, msg, traitsChosen));
   }
 };
@@ -70,10 +70,10 @@ function generateStartedMsg(Discord, msg, traitsChosen) {
   const leader = factions[factionName].leader;
   const msgs = {
     Zahard:
-      "I'll give you the privilege of joining my empire, the correct choice was pretty obvious wasn't it?",
+      `I'll give you the privilege of joining my empire, I needed a ${positionName} anyways.`,
     FUG:
-      "We're not nice people, I hope you can handle the difficult training in FUG.",
-    Wolhaiksong: "Glad you made the right choice baby, welcome to Wolhaiksong!",
+      `We're not nice people, I hope you can handle the difficult training in FUG. You are lucky we wanted a ${positionName}...`,
+    Wolhaiksong: `Glad you made the right choice baby, we could really use another ${positionName}. Welcome to Wolhaiksong!`,
   };
 
   return `${Discord.emoji(leader)} **${leader}**: ${msg.author}, ${
@@ -82,14 +82,14 @@ function generateStartedMsg(Discord, msg, traitsChosen) {
 }
 
 function getFactionsDescription(Discord, positionName) {
-  let description = `You are a ${Discord.emoji(
+  let description = `You are a **${positionName}** ${Discord.emoji(
     positionName
-  )} ${positionName}. \nChoose between the factions below:\n`;
+  )}. \nChoose between the factions below:\n`;
   for (const factionName of Object.keys(factions)) {
-    const faction = factions[factionName];
+    const factionData = factions[factionName];
     description += `${Discord.emoji(
       factionName
-    )} - **${factionName}**\n${factionName} favours ${faction.favouredPositions.join(
+    )} - **${factionName}**\n${factionName} favours ${factionData.favouredPositions.join(
       " and "
     )}.\n`;
   }
@@ -99,10 +99,11 @@ function getFactionsDescription(Discord, positionName) {
 function getPositionsDescription(Discord) {
   let description = "Choose between the positions below:\n";
   for (const positionName of Object.keys(positions)) {
-    const position = positions[positionName];
-    const advantageOver = position.advantageOver;
+    const positionData = positions[positionName];
+    const advantageOver = positionData.advantageOver;
     const keys = Object.keys(advantageOver);
     console.log(advantageOver);
+    console.log(positionName)
     description += `${Discord.emoji(
       positionName
     )} - **${positionName}**\n${positionName} has a ${

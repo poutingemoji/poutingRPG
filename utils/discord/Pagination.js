@@ -47,7 +47,6 @@ class Pagination {
         jump: "🔢",
       })
       .setDisabledNavigationEmojis(["delete"]);
-
     params.Embed = Embeds;
     Embeds = this.Discord.buildEmbed(params)
     await Embeds.build();

@@ -4,8 +4,7 @@ const { Command } = require("discord.js-commando");
 //DATA
 
 // UTILS
-const { Game, Discord } = require("../../DiscordBot");
-const Helper = require("../../utils/Helper");
+const { Game } = require("../../DiscordBot");
 
 module.exports = class ConfigCommand extends Command {
   constructor(client) {
@@ -30,7 +29,6 @@ module.exports = class ConfigCommand extends Command {
       guildOnly: true,
       userPermissions: ["ADMINISTRATOR"],
     });
-    this.Discord = Discord;
     this.Game = Game;
   }
 

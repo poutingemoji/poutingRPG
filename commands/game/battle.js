@@ -1,19 +1,22 @@
 //BASE
+const Battle = require("../../utils/game/Battle")
 const { Command } = require("discord.js-commando");
+const { stripIndents } = require("common-tags");
 
 //DATA
-const items = require("../../pouting-rpg/data/items");
+const arcs = require("../../pouting-rpg/data/arcs");
 
 // UTILS
 const { Discord, Game } = require("../../DiscordBot");
+const Helper = require("../../utils/Helper");
 
-module.exports = class FishCommand extends Command {
+module.exports = class BattleCommand extends Command {
   constructor(client) {
     super(client, {
-      name: "fish",
+      name: "battle",
       group: "game",
-      memberName: "fish",
-      description: "Do your fishing.",
+      memberName: "battle",
+      description: "Battle enemies.",
       throttling: {
         usages: 1,
         duration: 2,
@@ -27,13 +30,13 @@ module.exports = class FishCommand extends Command {
   async run(msg) {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
-
-    const itemFilter = (item) => {
-      return item.type == "Fish";
-    };
-
-    const fish = this.Game.roguelike(items, 1, itemFilter);
-    this.Game.Database.addItem(player, fish);
-    msg.reply(`You fished out: **${fish} ${this.Discord.emoji(fish)}** !`);
+    
+    new Battle({
+      player,
+      target: "Test Dummy",
+      Discord: this.Discord,
+      msg
+    })
+    return 
   }
 };

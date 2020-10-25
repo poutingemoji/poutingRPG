@@ -7,10 +7,12 @@ const MongoDBProvider = require("commando-mongodb");
 const { newCharacter } = require("./schemas/character");
 const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
-const arcs = require("../pouting-rpg/data/arcs")
+const arcs = require("../pouting-rpg/data/arcs");
+const characters = require("../pouting-rpg/data/characters");
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");
+const Helper = require("../utils/Helper");
 require("dotenv").config();
 
 const Player = mongoose.model("Player", playerSchema);
@@ -69,6 +71,21 @@ class Database {
       .catch(console.error);
   }
 
+  async findPlayer(user, msg) {
+    const res = await this.loadPlayer(user.id);
+    if (!res) {
+      if (msg) {
+        msg.reply(
+          msg.author.id == user.id
+            ? `Please type \`${msg.guild.commandPrefix}start\` to begin.`
+            : `${user.username} hasn't started climbing the Tower.`
+        );
+      }
+      return false;
+    }
+    return res;
+  }
+
   // PLAYER
   createNewPlayer(discordId, { factionName, positionName }) {
     return new Promise((resolve, reject) =>
@@ -111,20 +128,45 @@ class Database {
   }
 
   //CHARACTER
-  async addCharacter(discordId, character) {
-    const player = await this.loadPlayer(discordId);
-    player.characters.get(character)
-      ? player.characters.get(character).constellation++
-      : player.characters.set(character, newCharacter(character));
+  async addCharacter(player, characterName) {
+    player.characters.get(characterName)
+      ? player.characters.get(characterName).constellation++
+      : player.characters.set(characterName, newCharacter(characterName));
     this.savePlayer(player);
   }
 
+  async getCharacterProperties(characterName, player) {
+    const character = player.characters.get(characterName);
+    const user = await this.client.users.fetch(player.discordId);
+    const isMC = enumHelper.isMC(characterName);
+    const characterData = characters[characterName];
+    return {
+      baseStats: characterData.baseStats,
+      rarity: characterData.rarity,
+      name: isMC ? user.username : characterName,
+      positionName: isMC ? character.position : characterData.position,
+      level: character.level,
+      exp: character.exp,
+      constellation: `${
+        character.constellation == 0 ? "No " : ""
+      }Constellation${character.constellation == 0 ? "" : " "}${Helper.romanize(
+        character.constellation
+      )}`,
+    };
+  }
+
   //INVENTORY
-  async addItem(discordId, item) {
-    const player = await this.loadPlayer(discordId);
+  addItem(player, item) {
     player.inventory.get(item)
-      ? player.inventory.set(item, player.inventory.get(item)+1)
+      ? player.inventory.set(item, player.inventory.get(item) + 1)
       : player.inventory.set(item, 1);
+    this.savePlayer(player);
+  }
+
+  removeItem(player, item) {
+    player.inventory.get(item) >= 2
+      ? player.inventory.set(item, player.inventory.get(item) - 1)
+      : player.inventory.delete(item);
     this.savePlayer(player);
   }
 
@@ -135,16 +177,19 @@ class Database {
   }
 
   //QUEST
-  async addQuests(discordId) {
-    const player = await this.loadPlayer(discordId);
-    this.savePlayer(player, { storyQuests: arcs[player.story.arc].chapters[player.story.chapter].quests });
+  async addQuests(player) {
+    this.savePlayer(player, {
+      storyQuests: arcs[player.story.arc].chapters[player.story.chapter].quests,
+    });
   }
 
-  async incrementQuestProgress(discordId) {
-    const player = await this.loadPlayer(discordId);
+  async incrementQuestProgress(player) {
     let quest;
     for (const i = 0; i < player.storyQuests.length; i++) {
-      if (player.storyQuests[i].type == type && player.storyQuests[i].id == id) {
+      if (
+        player.storyQuests[i].type == type &&
+        player.storyQuests[i].id == id
+      ) {
         quest = player.storyQuests[i];
       }
     }
@@ -159,13 +204,15 @@ class Database {
   //SETTING
   async isSpawnsEnabled(channel) {
     const setting = await this.loadSetting(channel.guild.id);
+    if (!setting) return;
     return setting.settings.spawnsEnabled.includes(channel.id);
   }
 
   async setSpawnsEnabled(channel) {
-    const setting = await this.loadSetting(channel.guild.id);
-    if (!setting.settings.hasOwnProperty("spawnsEnabled")) {
-      setting.settings.spawnsEnabled = [];
+    let setting = await this.loadSetting(channel.guild.id);
+    if (!setting) {
+      await this.createNewSetting(channel.guild.id)
+      setting = await this.loadSetting(channel.guild.id);
     }
     let response;
     if (setting.settings.spawnsEnabled.includes(channel.id)) {
@@ -180,6 +227,22 @@ class Database {
     }
     this.saveSetting(setting);
     return response;
+  }
+
+  createNewSetting(guild) {
+    return new Promise((resolve, reject) =>
+      Setting.replaceOne(
+        { guild: guild },
+        newSettingObj(guild),
+        { upsert: true },
+        (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(res);
+        }
+      )
+    );
   }
 
   async loadSetting(guild) {

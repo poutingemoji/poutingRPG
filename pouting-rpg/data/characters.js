@@ -2,51 +2,71 @@ const characters = {
   ["Traveller"]: {
     region: "The Outside",
     rarity: 5,
-    attributes: {
-      ATK: 10,
+    baseStats: {
+      HP: 150,
+      ATK: 30,
       DEF: 10,
+      SPEED: 10,
     },
-    signature_attack: "",
+    talents: {
+
+    },
   },
   ["Ja Wangnan"]: {
     position: "Fisherman",
     region: "Red-Light District",
     rarity: 4,
-    attributes: {
+    baseStats: {
+      HP: 10,
       ATK: 10,
       DEF: 10,
+      SPEED: 10,
     },
-    signature_attack: "",
+    talents: {
+
+    },
   },
   ["Rachel"]: {
     position: "Light Bearer",
     region: "Red-Light District",
     rarity: 4,
-    attributes: {
+    baseStats: {
+      HP: 10,
       ATK: 10,
       DEF: 10,
+      SPEED: 10,
     },
-    signature_attack: "",
+    talents: {
+
+    },
   },
   ["Ship Leesoo"]: {
     position: "Scout",
     region: "Red-Light District",
     rarity: 4,
-    attributes: {
+    baseStats: {
+      HP: 150,
       ATK: 10,
       DEF: 10,
+      SPEED: 10,
     },
-    signature_attack: "",
+    talents: {
+
+    },
   },
   ["Serena Rinnen"]: {
     position: "Scout",
     region: "Red-Light District",
     rarity: 4,
-    attributes: {
+    baseStats: {
+      HP: 10,
       ATK: 10,
       DEF: 10,
+      SPEED: 10,
     },
-    signature_attack: "",
+    talents: {
+
+    },
   },
 };
 

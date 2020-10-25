@@ -1,13 +1,13 @@
 //BASE
+const Battle = require("../../utils/game/Battle")
 const { Command } = require("discord.js-commando");
-
 const { stripIndents } = require("common-tags");
 
 //DATA
 const arcs = require("../../pouting-rpg/data/arcs");
 
 // UTILS
-const { Game, Discord } = require("../../DiscordBot");
+const { Discord, Game } = require("../../DiscordBot");
 const Helper = require("../../utils/Helper");
 
 module.exports = class ChapterCommand extends Command {
@@ -29,13 +29,13 @@ module.exports = class ChapterCommand extends Command {
   }
 
   async run(msg) {
-    const player = await this.Game.findPlayer(msg.author, msg);
+    const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
-
-    //this.Game.Database.addQuests(msg.author.id);
+    
+    this.Game.Database.addQuests(player);
     console.log(player.storyQuests[3].progress);
-    const arc = arcs[player.story.arc];
-    const chapter = arc.chapters[player.story.chapter];
+    const arcData = arcs[player.story.arc];
+    const chapter = arcData.chapters[player.story.chapter];
     const { totalPercent, questsInfo } = getQuestsInfo(
       this.Discord,
       player.storyQuests
@@ -45,7 +45,7 @@ module.exports = class ChapterCommand extends Command {
     let description = stripIndents(`
     ${chapter.emoji} **${chapter.location.toUpperCase()}**
 
-    📖 **__${arc.name} Arc__  - Chapter ${player.story.chapter + 1}/${arc.chapters.length}** : ${chapter.name}
+    📖 **__${arcData.name} Arc__  - Chapter ${player.story.chapter + 1}/${arcData.chapters.length}** : ${chapter.name}
     ${Helper.setImportantMessage(chapter.description)}
   
     ${this.Discord.emoji("quest")} **__Quests__**: (${totalPercent}%)

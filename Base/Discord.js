@@ -4,7 +4,6 @@ const { MessageAttachment, MessageEmbed } = require("discord.js");
 //DATA
 const emojis = require("../pouting-rpg/data/emojis");
 
-
 //UTILS
 const Pagination = require("../utils/discord/Pagination");
 const enumHelper = require("../utils/enumHelper");
@@ -12,7 +11,7 @@ const enumHelper = require("../utils/enumHelper");
 class Discord {
   constructor(client) {
     this.client = client;
-    this.waitingOnResponse = new Set();
+
     this.Pagination = new Pagination(this);
   }
 
@@ -28,14 +27,14 @@ class Discord {
         type: "reaction",
         author: msg.author.id,
         msg: msgSent,
-        chooseFrom: ["green check", "red cross"],
+        chooseFrom: ["green_check", "red_cross"],
       });
-      console.log(res);
       return res == "green check";
     });
   }
 
   emoji(emoji) {
+    emoji = emoji.replace(/ /g, "_");
     return isNaN(emojis[emoji])
       ? emojis[emoji]
       : this.client.emojis.cache.get(emojis[emoji]).toString();
@@ -68,40 +67,71 @@ class Discord {
   }
 
   async awaitResponse(params) {
-    let { type, author, msg, chooseFrom } = params;
+    let {
+      type,
+      author,
+      msg,
+      chooseFrom,
+      deleteOnResponse = true,
+      reactToMessage = true,
+      removeAuthorReaction = false,
+    } = params;
+    enumHelper.waitingOnResponse.add(author);
+    if (!Array.isArray(chooseFrom)) {
+      if (typeof chooseFrom == "object") {
+        chooseFrom = Object.keys(chooseFrom);
+      } else {
+        return;
+      }
+    }
+
     switch (type) {
       case "message":
         break;
       case "reaction":
-        if (!Array.isArray(chooseFrom)) {
-          if (typeof chooseFrom == "object") {
-            chooseFrom = Object.keys(chooseFrom);
-          } else {
-            return;
+        if (reactToMessage) {
+          for (let option of chooseFrom) {
+            option = option.replace(/ /g, "_");
+            console.log(option, emojis[option]);
+            await msg.react(emojis[option] || option);
           }
         }
 
-        this.waitingOnResponse.add(author);
-        for (const option of chooseFrom) await msg.react(emojis[option]);
-
         const reactionFilter = (reaction, user) => {
+          console.log(author);
           return (
-            chooseFrom.includes(reaction.emoji.name.replace(/_/g, " ")) &&
+            (chooseFrom.includes(reaction.emoji.name.replace(/_/g, " ")) ||
+              chooseFrom.includes(reaction.emoji.name.replace(/ /g, "_"))) &&
             user.id === author
           );
         };
 
         return msg
-          .awaitReactions(reactionFilter, { max: 1, time: 60000, errors: ["time"] })
+          .awaitReactions(reactionFilter, {
+            max: 1,
+            time: 60000,
+            errors: ["time"],
+          })
           .then((collected) => {
-            msg.delete();
-            this.waitingOnResponse.clear(author);
+            if (deleteOnResponse) msg.delete();
+            if (removeAuthorReaction) {
+              msg.reactions
+                .resolve(
+                  collected.first().emoji.id
+                    ? collected.first().emoji.id
+                    : collected.first().emoji.name
+                )
+                .users.remove(author);
+            }
+
+            enumHelper.waitingOnResponse.clear(author);
+            console.log(collected.first().emoji.name.replace(/_/g, " "));
             return collected.first().emoji.name.replace(/_/g, " ");
           })
           .catch((error) => {
             console.log(error);
-            msg.delete();
-            this.waitingOnResponse.clear(author);
+            if (deleteOnResponse) msg.delete();
+            enumHelper.waitingOnResponse.clear(author);
           });
     }
   }

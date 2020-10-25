@@ -6,7 +6,7 @@ const moment = require("moment");
 //DATA
 
 // UTILS
-const { Game, Discord } = require("../../DiscordBot");
+const { Discord, Game } = require("../../DiscordBot");
 const Helper = require("../../utils/Helper");
 
 module.exports = class ProfileCommand extends Command {
@@ -37,7 +37,7 @@ module.exports = class ProfileCommand extends Command {
 
   async run(msg, { user }) {
     user = user || msg.author;
-    const player = await this.Game.findPlayer(user, msg);
+    const player = await this.Game.Database.findPlayer(user, msg);
     if (!player) return;
 
     const data = {

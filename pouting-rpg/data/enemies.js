@@ -3,9 +3,11 @@ const enemies = {
     position: "Wave Controller",
     region: "The Outside",
     rarity: 5,
-    attributes: {
-      ATK: 10,
+    baseStats: {
+      HP: 150,
+      ATK: 30,
       DEF: 10,
+      SPEED: 10,
     },
     signature_attack: "",
   },

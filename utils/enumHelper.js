@@ -1,4 +1,7 @@
 const enumHelper = {
+  waitingOnResponse: new Set(),
+  talkedRecently: new Set(),
+  isInBattle: new Set(),
   isMC: (characterName) => {
     return characterName == "Traveller";
   },

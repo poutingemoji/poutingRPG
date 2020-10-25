@@ -5,7 +5,7 @@ const { Command } = require("discord.js-commando");
 const positions = require("../../pouting-rpg/data/positions");
 
 // UTILS
-const { Game, Discord } = require("../../DiscordBot");
+const { Discord, Game } = require("../../DiscordBot");
 const enumHelper = require("../../utils/enumHelper");
 const Helper = require("../../utils/Helper");
 
@@ -37,16 +37,14 @@ module.exports = class CharacterCommand extends Command {
   }
 
   async run(msg, { characterName }) {
-    const player = await this.Game.findPlayer(msg.author, msg);
+    const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
-    
-    console.log(characterName)
-    if(isNaN(characterName)) {
-      characterName = Helper.titleCase(characterName)
+
+    console.log(characterName);
+    if (isNaN(characterName)) {
+      characterName = Helper.titleCase(characterName);
     } else {
-      characterName = Array.from(player.characters.keys())[
-        characterName - 1
-      ]
+      characterName = Array.from(player.characters.keys())[characterName - 1];
     }
     if (!player.characters.get(characterName)) return;
 
@@ -57,22 +55,22 @@ module.exports = class CharacterCommand extends Command {
       level,
       exp,
       constellation,
-      attributes,
-    } = await this.Game.getCharacterProps(characterName, player);
+      baseStats,
+    } = await this.Game.Database.getCharacterProperties(characterName, player);
     const isMC = enumHelper.isMC(characterName);
-    console.log(rarity)
+    console.log(rarity);
     const data = {
       [`${this.Discord.stars(rarity)}`]: "",
       [`*[${exp.current}/${exp.total} EXP]*`]: "",
       [constellation]: "",
       ["Position"]: `${positionName} ${this.Discord.emoji(positionName)}`,
     };
-    for (const attributeName in attributes) {
-      data[attributeName.replace(/_/g, " ")] = attributes[attributeName];
+    for (const baseStat in baseStats) {
+      data[baseStat.replace(/_/g, " ")] = baseStats[baseStat];
     }
 
     const params = {
-      title: `${name} | Level ${level}/${(rarity + 1) * 20}\n`,
+      title: `${name} | Level ${level.current}/${level.total}\n`,
       description: Helper.objectToString(data),
     };
 

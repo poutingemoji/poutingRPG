@@ -53,6 +53,7 @@ const playerSchema = mongoose.Schema({
       default: 120,
     },
   },
+  selectedCharacter: String,
   characters: {
     type: Map,
     of: Object,

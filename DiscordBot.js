@@ -1,5 +1,5 @@
 //BASE
-const BaseDiscord = require("./Base/Discord")
+const BaseDiscord = require("./Base/Discord");
 const { CommandoClient } = require("discord.js-commando");
 const DBL = require("dblapi.js");
 const path = require("path");
@@ -29,12 +29,11 @@ class DiscordBot {
     this.loadEventListeners();
     this.postStatisticsOnDBL();
     this.client.login(process.env.TOKEN);
-    this.talkedRecently = new Set();
   }
 
   loadEventListeners() {
     this.client.dispatcher.addInhibitor((msg) => {
-      if (this.Discord.waitingOnResponse.has(msg.author.id)) {
+      if (enumHelper.waitingOnResponse.has(msg.author.id)) {
         return {
           reason: "Already has message listening.",
           response: msg.reply(
@@ -78,12 +77,12 @@ class DiscordBot {
     });*/
 
     this.client.on("message", async (msg) => {
-      if (!msg.guild == null && !this.Game.Database.isSpawnsEnabled(msg.channel)) return;
-      if (msg.author.bot) return;
-      if (this.talkedRecently.has(msg.author.id)) return;
+      if (msg.author.bot || !msg.guild) return;
+      if (!(await this.Game.Database.isSpawnsEnabled(msg.channel))) return;
+      if (enumHelper.talkedRecently.has(msg.author.id)) return;
       if (Math.random() < 0.5) return;
 
-      this.talkedRecently.add(msg.author.id);
+      enumHelper.talkedRecently.add(msg.author.id);
       let characterName = randomKey(characters);
       do {
         characterName = randomKey(characters);
@@ -104,24 +103,27 @@ class DiscordBot {
         msg.channel.send(messageEmbed).then((msgSent) => {
           msg.channel
             .awaitMessages(msgFilter, { max: 1, time: 60000, errors: ["time"] })
-            .then((collected) => {
-              msg.say(`After some convincing from ${
-                collected.first().author
-              },\n**${characterName}** decided to join them on their adventure.`)
+            .then(async (collected) => {
+              msg.say(
+                `After some convincing from ${
+                  collected.first().author
+                },\n**${characterName}** decided to join them on their adventure.`
+              );
               msgSent.delete();
               collected.first().delete();
-              this.Game.Database.addCharacter(msg.author.id, characterName);
+              const player = await this.Game.Database.findPlayer(msg.author);
+              this.Game.Database.addCharacter(player, characterName);
             })
             .catch((err) => {
               console.log(err);
               msgSent.delete();
             });
         });
-        console.log("deleted")
+        console.log("deleted");
         setTimeout(() => {
-          this.talkedRecently.delete(msg.author.id);
-        }, 10000)
-      }, 5*60000);
+          enumHelper.talkedRecently.delete(msg.author.id);
+        }, 10000);
+      }, 5 * 60000);
     });
   }
 
@@ -177,14 +179,18 @@ class DiscordBot {
                 `${cmd.description}${cmd.nsfw ? " (NSFW)" : ""}`,
                 `${cmd.examples ? cmd.examples.join("\n") : ""}`,
                 `${cmd.aliases ? cmd.aliases.join("\n") : ""}`,
-                Helper.secondsToTimeFormat(cmd.throttling.duration, ", ", false),
+                Helper.secondsToTimeFormat(
+                  cmd.throttling.duration,
+                  ", ",
+                  false
+                ),
               ])
             );
         });
       commandsInfo[jsonFiles[key]] = commands;
       commands = [];
     });
-    
+
     fs.writeFile(
       `./docs/commandinfo.json`,
       JSON.stringify(commandsInfo),
@@ -192,8 +198,6 @@ class DiscordBot {
         console.log("commandinfo.json Refreshed.");
       }
     );
-    
-    
   }
 }
 

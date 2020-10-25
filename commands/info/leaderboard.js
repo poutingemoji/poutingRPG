@@ -4,7 +4,7 @@ const { Command } = require("discord.js-commando");
 //DATA
 
 // UTILS
-const { Game, Discord } = require("../../DiscordBot");
+const { Discord, Game } = require("../../DiscordBot");
 const Helper = require("../../utils/Helper");
 
 module.exports = class TopCommand extends Command {
