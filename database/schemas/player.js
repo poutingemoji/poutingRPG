@@ -56,13 +56,27 @@ const playerSchema = mongoose.Schema({
   selectedCharacter: String,
   characters: {
     type: Map,
-    of: Object,
-    default: {},
+    of: {
+      position: String,
+      level: {
+        current: Number,
+        total: Number,
+      },
+      exp: {
+        current: Number,
+        total: Number,
+      },
+      constellation: Number,
+      HP: {
+        current: Number,
+        total: Number,
+      },
+      updatedAt: Date,
+    },
   },
   inventory: {
     type: Map,
     of: Number,
-    default: {},
   },
   gambles: {
     type: Number,
@@ -135,8 +149,7 @@ const playerSchema = mongoose.Schema({
 });
 
 const newPlayerObj = (discordId, factionName, positionName = "Wave Controller") => {
-  const character = newCharacter();
-  character.position = positionName;
+  const character = newCharacter("Traveller", positionName);
   return {
     discordId: discordId,
     faction: factionName,

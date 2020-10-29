@@ -6,9 +6,9 @@ const RNG = seedrandom();
 //DATA
 
 //UTILS
-const enumHelper = require("./enumHelper");
+const enumHelper = require("../utils/enumHelper");
 
-const Helper = {
+class Helper {
   /*
     GAME HELPERS
   */
@@ -37,7 +37,7 @@ const Helper = {
       result = Math.trunc(result * factor) / factor;
     } while (result === exclude);
     return result;
-  },
+  }
 
   /**
    * Returns a random value from an array
@@ -46,7 +46,7 @@ const Helper = {
    */
   randomChoice(array) {
     return array[this.randomBetween(0, array.length - 1)];
-  },
+  }
 
   /**
    * Returns sum of players strength
@@ -55,7 +55,7 @@ const Helper = {
    */
   sumPlayerTotalStrength(player) {
     return player.stats.str + player.equipment.relic.str;
-  },
+  }
 
   /*
     GENERAL HELPERS
@@ -68,15 +68,15 @@ const Helper = {
    */
   numberWithCommas(int) {
     return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  },
+  }
 
   clamp(int, min, max) {
     return int <= min ? min : int >= max ? max : int;
-  },
+  }
 
   isBetween(n, a, b) {
     return (n - a) * (n - b) <= 0;
-  },
+  }
 
   romanize(num) {
     if (isNaN(num)) return NaN;
@@ -89,7 +89,7 @@ const Helper = {
         i = 3;
     while (i--) roman = (key[+digits.pop() + i * 10] || "") + roman;
     return Array(+digits.join("") + 1).join("M") + roman;
-  },
+  }
 
   /**
    * Converts seconds to time format
@@ -102,7 +102,6 @@ const Helper = {
 
   secondsToTimeFormat(seconds, conjunction = " and ", abbreviate = true) {
     seconds = parseInt(seconds);
-
     const d = Math.floor(seconds / (3600 * 24));
     const h = Math.floor((seconds % (3600 * 24)) / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -119,8 +118,9 @@ const Helper = {
     if (abbreviate) {
       Display.length = Math.min(Display.length, 2);
     }
+    
     return Display.join(conjunction);
-  },
+  }
 
   //STRING
   /**
@@ -131,7 +131,7 @@ const Helper = {
    */
   setImportantMessage(message, syntax = "") {
     return `\`\`\`${syntax}\n${message}\`\`\``;
-  },
+  }
 
   /**
    * Capitalizes first letter of every word in a string
@@ -144,7 +144,7 @@ const Helper = {
       str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
     }
     return str.join(" ");
-  },
+  }
 
   //OBJECT
   /**
@@ -173,7 +173,7 @@ const Helper = {
     }
 
     return false;
-  },
+  }
 
   objectToString(obj) {
     let string = "";
@@ -182,7 +182,7 @@ const Helper = {
         obj[prop].length == 0 ? `${prop}\n` : `**${prop}**: ${obj[prop]}\n`;
     }
     return string;
-  },
+  }
 
   /**
    * Returns a shallow copy of the object only with filtered properties.
@@ -199,7 +199,8 @@ const Helper = {
         obj[key] = raw[key];
         return obj;
       }, {});
-  },
+  }
+
   //ARRAY
   //https://stackoverflow.com/a/53672813
   arrayShuffle(array) {
@@ -214,7 +215,7 @@ const Helper = {
       array[i] = temp;
     }
     return array;
-  },
+  }
 
   percentageChance(values, chances) {
     const pool = [];
@@ -224,7 +225,7 @@ const Helper = {
       }
     }
     return values[this.arrayShuffle(pool)[0]];
-  },
+  }
 
   //DATE
   /**
@@ -233,8 +234,8 @@ const Helper = {
    * @returns String
    */
   getTimePassed(timeStamp) {
-    return this.secondsToTimeFormat((new Date().getTime() - timeStamp) / 1000);
-  },
+    return (new Date().getTime() - timeStamp) / 1000;
+  }
 };
 
 module.exports = Helper;

@@ -5,7 +5,6 @@ const gacha = require("gacha")
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");
-const Helper = require("../utils/Helper");
 
 class Game {
   roguelike(items, level, itemFilter) {

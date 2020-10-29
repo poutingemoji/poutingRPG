@@ -14,10 +14,10 @@ const arcs = [
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         quests: [
-          newQuest("Defeat", 6, "testdummy", { EXP: 500, points: 124 }),
-          newQuest("Collect", 100, "points"),
+          newQuest("Defeat", 6, "Test Dummy", { exp: 500, points: 124 }),
+          newQuest("Earn", 100, "points"),
           newQuest("Use", 5, "skillpoints"),
-          newQuest("Fish", 5, "Fish"),
+          newQuest("Collect", 5, "Fish"),
         ],
       },
     ],
@@ -166,10 +166,10 @@ const arcs = [
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         quests: [
-          newQuest("Defeat", 6, "testdummy"),
-          newQuest("Collect", 100, "points"),
+          newQuest("Defeat", 6, "Test Dummy"),
+          newQuest("Earn", 100, "points"),
           newQuest("Use", 5, "skillpoints"),
-          newQuest("Fish", 5, "Fish"),
+          newQuest("Collect", 5, "Fish"),
         ],
       },
     ],

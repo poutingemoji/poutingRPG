@@ -1,19 +1,19 @@
 //BASE
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 
 //DATA
 
 // UTILS
 const { Game } = require("../../DiscordBot");
 
-module.exports = class ConfigCommand extends Command {
+module.exports = class ToggleCommand extends Command {
   constructor(client) {
     super(client, {
-      name: "config",
+      name: "toggle",
       group: "game",
-      memberName: "config",
-      description: "View your config.",
-      examples: [`${client.commandPrefix} config`],
+      memberName: "toggle",
+      description: "Toggle a setting.",
+      examples: [`${client.commandPrefix} toggle`],
       args: [
         {
           key: "setting",

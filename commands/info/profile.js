@@ -1,13 +1,9 @@
 //BASE
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 
 const moment = require("moment");
 
 //DATA
-
-// UTILS
-const { Discord, Game } = require("../../DiscordBot");
-const Helper = require("../../utils/Helper");
 
 module.exports = class ProfileCommand extends Command {
   constructor(client) {
@@ -31,8 +27,8 @@ module.exports = class ProfileCommand extends Command {
       },
       guildOnly: true,
     });
-    this.Discord = Discord;
-    this.Game = Game;
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
   }
 
   async run(msg, { user }) {
@@ -52,7 +48,7 @@ module.exports = class ProfileCommand extends Command {
       thumbnail: user.displayAvatarURL(),
       title: `Profile ${this.Discord.emoji(player.faction)}`,
       author: user,
-      description: Helper.objectToString(data),
+      description: this.objectToString(data),
       footer: `Born: ${moment(player._id.getTimestamp()).format(
         "dddd, MMMM Do YYYY, h:mm:ss A"
       )}`,

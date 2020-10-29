@@ -1,11 +1,7 @@
 //BASE
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 
 //DATA
-
-// UTILS
-const { Discord, Game } = require("../../DiscordBot");
-const Helper = require("../../utils/Helper");
 
 module.exports = class CharactersCommand extends Command {
   constructor(client) {
@@ -21,8 +17,8 @@ module.exports = class CharactersCommand extends Command {
       },
       guildOnly: true,
     });
-    this.Discord = Discord;
-    this.Game = Game;
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
   }
 
   async run(msg) {
@@ -35,7 +31,7 @@ module.exports = class CharactersCommand extends Command {
     const formatFilter = async (characterName) => {
       //prettier-ignore
       const { name, positionName, level, constellation } 
-      = await this.Game.Database.getCharacterProperties(characterName, player);
+      = await this.Game.Database.getCharacterProperties(player, characterName);
       return `**${name}** ${this.Discord.emoji(positionName)} | Level: ${
         level.current
       } | ${constellation}`;

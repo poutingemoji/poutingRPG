@@ -15,10 +15,15 @@ class Discord {
     this.Pagination = new Pagination(this);
   }
 
-  stars(rarity) {
-    return `${"⭐".repeat(rarity)}${this.emoji("empty star").repeat(
-      5 - rarity
-    )}`;
+  healthBar(currentHP, totalHP) {
+    return `${this.progressBar(currentHP / totalHP, 13, "█", "░")} \`[${currentHP}/${totalHP}]\` ❤`
+  }
+
+  progressBar(progress, maxLength, progressEmoji, emptyEmoji) {
+    const length = Math.max(0, Math.round(progress * maxLength));
+    return `${this.emoji(progressEmoji).repeat(length)}${this.emoji(
+      emptyEmoji
+    ).repeat(maxLength - length)}`;
   }
 
   confirmation(msg, response) {
@@ -36,7 +41,7 @@ class Discord {
   emoji(emoji) {
     emoji = emoji.replace(/ /g, "_");
     return isNaN(emojis[emoji])
-      ? emojis[emoji]
+      ? emojis[emoji] || emoji
       : this.client.emojis.cache.get(emojis[emoji]).toString();
   }
 
@@ -90,15 +95,14 @@ class Discord {
         break;
       case "reaction":
         if (reactToMessage) {
-          for (let option of chooseFrom) {
-            option = option.replace(/ /g, "_");
-            console.log(option, emojis[option]);
-            await msg.react(emojis[option] || option);
+          for (let choice of chooseFrom) {
+            choice = choice.replace(/ /g, "_");
+            console.log(choice);
+            await msg.react(emojis[choice] || choice);
           }
         }
 
         const reactionFilter = (reaction, user) => {
-          console.log(author);
           return (
             (chooseFrom.includes(reaction.emoji.name.replace(/_/g, " ")) ||
               chooseFrom.includes(reaction.emoji.name.replace(/ /g, "_"))) &&
@@ -125,7 +129,6 @@ class Discord {
             }
 
             enumHelper.waitingOnResponse.clear(author);
-            console.log(collected.first().emoji.name.replace(/_/g, " "));
             return collected.first().emoji.name.replace(/_/g, " ");
           })
           .catch((error) => {

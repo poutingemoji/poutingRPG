@@ -2,6 +2,8 @@
 const mongoose = require("mongoose");
 const MongoClient = require("mongodb").MongoClient;
 const MongoDBProvider = require("commando-mongodb");
+const Parser = require("expr-eval").Parser;
+const BaseHelper = require("../Base/Helper");
 
 //DATA
 const { newCharacter } = require("./schemas/character");
@@ -9,10 +11,11 @@ const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
 const arcs = require("../pouting-rpg/data/arcs");
 const characters = require("../pouting-rpg/data/characters");
+const enemies = require("../pouting-rpg/data/enemies")
+const items = require("../pouting-rpg/data/items")
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");
-const Helper = require("../utils/Helper");
 require("dotenv").config();
 
 const Player = mongoose.model("Player", playerSchema);
@@ -53,8 +56,9 @@ mongoose.connection.on("error", (err) => {
   disconnect();
 });
 
-class Database {
+class Database extends BaseHelper {
   constructor(client) {
+    super();
     this.client = client;
     this.setProvider();
     connect();
@@ -87,6 +91,37 @@ class Database {
   }
 
   // PLAYER
+  addExpPlayer(player, expToAdd, msg) {
+    const previousAR = player.adventureRank.current;
+    player.exp.current += expToAdd;
+
+    while (
+      player.exp.current >= player.exp.total &&
+      player.adventureRank.current < player.adventureRank.total
+    ) {
+      player.adventureRank.current++;
+      player.exp.current -= player.exp.total;
+      player.exp.total = Parser.evaluate(enumHelper.expFormulas["player"], {
+        n: player.adventureRank.current + 1,
+      });
+    }
+
+    if (player.adventureRank.current !== previousAR) {
+      msg.say(
+        `🆙 Congratulations ${msg.author.toString()}, you've reached Adventure Rank **${
+          player.adventureRank.current
+        }**!\n\n`
+      );
+    }
+    this.savePlayer(player);
+  }
+
+  async addValuePlayer(player, key, value) {
+    player[key] += value;
+    await this.addQuestProgress(player, "Earn", key, value);
+    this.savePlayer(player);
+  }
+
   createNewPlayer(discordId, { factionName, positionName }) {
     return new Promise((resolve, reject) =>
       Player.replaceOne(
@@ -128,6 +163,35 @@ class Database {
   }
 
   //CHARACTER
+  addExpCharacter(player, characterName, expToAdd, msg) {
+    const character = player.characters.get(characterName);
+    const previousLVL = character.level.current;
+    character.exp.current += expToAdd;
+
+    while (
+      character.exp.current >= character.exp.total &&
+      character.level.current < character.level.total
+    ) {
+      character.level.current++;
+      character.exp.current -= character.exp.total;
+      character.exp.total = Parser.evaluate(
+        enumHelper.expFormulas["character"],
+        {
+          n: character.level.current + 1,
+        }
+      );
+    }
+
+    if (character.level.current !== previousLVL) {
+      msg.say(
+        `🆙 Congratulations ${msg.author.toString()}, ${characterName} has reached Level **${
+          character.level.current
+        }**!\n\n`
+      );
+    }
+    this.savePlayer(player);
+  }
+
   async addCharacter(player, characterName) {
     player.characters.get(characterName)
       ? player.characters.get(characterName).constellation++
@@ -135,37 +199,50 @@ class Database {
     this.savePlayer(player);
   }
 
-  async getCharacterProperties(characterName, player) {
+  async getCharacterProperties(player, characterName) {
     const character = player.characters.get(characterName);
     const user = await this.client.users.fetch(player.discordId);
     const isMC = enumHelper.isMC(characterName);
     const characterData = characters[characterName];
     return {
       baseStats: characterData.baseStats,
-      rarity: characterData.rarity,
+      rarity: characterData.level,
       name: isMC ? user.username : characterName,
       positionName: isMC ? character.position : characterData.position,
       level: character.level,
       exp: character.exp,
       constellation: `${
         character.constellation == 0 ? "No " : ""
-      }Constellation${character.constellation == 0 ? "" : " "}${Helper.romanize(
+      }Constellation${character.constellation == 0 ? "" : " "}${this.romanize(
         character.constellation
       )}`,
     };
   }
 
+  passiveRegenCharacter(player, characterName) {
+    const character = player.characters.get(characterName);
+    const timePassed =
+      (this.getTimePassed(character.updatedAt) /
+        enumHelper.timeUntilFull.HP) *
+      character.HP.total;
+    character.updatedAt = Date.now()
+    //prettier-ignore
+    character.HP.current += this.clamp((timePassed / enumHelper.timeUntilFull.HP) * character.HP.total, 0, character.HP.total-character.HP.current)
+    this.savePlayer(player)
+  }
+
   //INVENTORY
-  addItem(player, item) {
+  async addItem(player, item, amount = 1) {
     player.inventory.get(item)
-      ? player.inventory.set(item, player.inventory.get(item) + 1)
-      : player.inventory.set(item, 1);
+      ? player.inventory.set(item, player.inventory.get(item) + amount)
+      : player.inventory.set(item, amount);
+    await this.addQuestProgress(player, "Collect", item)
     this.savePlayer(player);
   }
 
-  removeItem(player, item) {
+  removeItem(player, item, amount = 1) {
     player.inventory.get(item) >= 2
-      ? player.inventory.set(item, player.inventory.get(item) - 1)
+      ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
       : player.inventory.delete(item);
     this.savePlayer(player);
   }
@@ -183,21 +260,24 @@ class Database {
     });
   }
 
-  async incrementQuestProgress(player) {
+  async addQuestProgress(player, type, id, value = 1) {
     let quest;
-    for (const i = 0; i < player.storyQuests.length; i++) {
+    for (let i = 0; i < player.storyQuests.length; i++) {
       if (
         player.storyQuests[i].type == type &&
-        player.storyQuests[i].id == id
+        player.storyQuests[i].questId == id
       ) {
         quest = player.storyQuests[i];
       }
     }
+    console.log(quest, id)
     if (!quest || quest.progress == quest.goal) return;
+    console.log(quest, id)
     if (isNaN(value)) {
       quest.progress = value;
     } else {
       quest.progress += Math.min(value, quest.goal - quest.progress);
+      console.log(quest.progress)
     }
   }
 
@@ -211,7 +291,7 @@ class Database {
   async setSpawnsEnabled(channel) {
     let setting = await this.loadSetting(channel.guild.id);
     if (!setting) {
-      await this.createNewSetting(channel.guild.id)
+      await this.createNewSetting(channel.guild.id);
       setting = await this.loadSetting(channel.guild.id);
     }
     let response;

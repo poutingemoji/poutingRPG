@@ -1,13 +1,11 @@
 //BASE
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 
 //DATA
 const positions = require("../../pouting-rpg/data/positions");
 
 // UTILS
-const { Discord, Game } = require("../../DiscordBot");
 const enumHelper = require("../../utils/enumHelper");
-const Helper = require("../../utils/Helper");
 
 module.exports = class CharacterCommand extends Command {
   constructor(client) {
@@ -32,22 +30,22 @@ module.exports = class CharacterCommand extends Command {
       },
       guildOnly: true,
     });
-    this.Discord = Discord;
-    this.Game = Game;
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
   }
 
   async run(msg, { characterName }) {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
 
-    console.log(characterName);
     if (isNaN(characterName)) {
-      characterName = Helper.titleCase(characterName);
+      characterName = this.titleCase(characterName);
     } else {
       characterName = Array.from(player.characters.keys())[characterName - 1];
     }
-    if (!player.characters.get(characterName)) return;
-
+    const character = player.characters.get(characterName);
+    if (!character) return;
+    this.Game.Database.passiveRegenCharacter(player, characterName);
     const {
       name,
       positionName,
@@ -56,22 +54,29 @@ module.exports = class CharacterCommand extends Command {
       exp,
       constellation,
       baseStats,
-    } = await this.Game.Database.getCharacterProperties(characterName, player);
+    } = await this.Game.Database.getCharacterProperties(player, characterName);
     const isMC = enumHelper.isMC(characterName);
-    console.log(rarity);
+    const HPRegenTimeFormat = this.secondsToTimeFormat(
+      ((character.HP.total - character.HP.current) / character.HP.total) *
+        enumHelper.timeUntilFull.HP
+    );
     const data = {
-      [`${this.Discord.stars(rarity)}`]: "",
       [`*[${exp.current}/${exp.total} EXP]*`]: "",
       [constellation]: "",
-      ["Position"]: `${positionName} ${this.Discord.emoji(positionName)}`,
+      [`${Math.floor(character.HP.current)}**/${character.HP.total}** ❤ ${
+        HPRegenTimeFormat !== "" ? `(${HPRegenTimeFormat})` : ""
+      }`]: "",
     };
     for (const baseStat in baseStats) {
       data[baseStat.replace(/_/g, " ")] = baseStats[baseStat];
     }
-
+    data["Talent"] = "yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes."
+    data[`${this.Discord.progressBar(rarity / 5, 5, "⭐", "empty_star")}`] = "";
     const params = {
-      title: `${name} | Level ${level.current}/${level.total}\n`,
-      description: Helper.objectToString(data),
+      title: `${this.Discord.emoji(positionName)} ${name} | Level ${
+        level.current
+      }/${level.total}\n`,
+      description: this.objectToString(data),
     };
 
     if (isMC) {
@@ -81,7 +86,6 @@ module.exports = class CharacterCommand extends Command {
       params.filePath = `./images/characters/${characterName.replace(" ", "_")}.png`
     }
     const messageEmbed = this.Discord.buildEmbed(params);
-    //`Weapon: ${weapon}\n`;
     msg.say(messageEmbed);
   }
 };

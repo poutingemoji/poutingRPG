@@ -1,11 +1,7 @@
 //BASE
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 
 //DATA
-
-// UTILS
-const { Discord, Game } = require("../../DiscordBot");
-const Helper = require("../../utils/Helper");
 
 module.exports = class TopCommand extends Command {
   constructor(client) {
@@ -34,8 +30,8 @@ module.exports = class TopCommand extends Command {
       },
       guildOnly: true,
     });
-    this.Discord = Discord;
-    this.Game = Game;
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
   }
 
   async run(msg, { type }) {

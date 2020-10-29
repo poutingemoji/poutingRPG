@@ -15,7 +15,7 @@ const emojis = {
 
 
   //FACTIONS
-  ["Zahard"]: "765415066580287500",
+  ["Zahard_Empire"]: "765415066580287500",
   ["FUG"]: "765415092589690881",
   ["Wolhaiksong"]: "765415121337581648",
 
@@ -44,6 +44,21 @@ const emojis = {
   ["Crystal_Shard"]: "💠",
   ["Baby_Zygaena"]: "💮",
   ["Sweetfish"]: "🦈",
+
+  ["Leviathan"]: "🐍",
+  ["Mago"]: "🌋",
+  ["Great_Black_Hook"]: "⬛",
+  ["Eyes_Of_God"]: "👀",
+  ["Shinsu_Codex"]: "📔",
+
+  //QUALITIES
+  ["Wind"]: "🌬️",
+  ["Earth"]: "⛰️",
+  ["Lightning"]: "⚡",
+  ["Nature"]: "🌿",
+  ["Water"]: "💧",
+  ["Fire"]: "🔥",
+  ["Frost"]: "❄️",
 };
 
 module.exports = emojis;

@@ -1,10 +1,9 @@
 //BASE
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 
 //DATA
 
 //UTILS
-const Helper = require("../../utils/Helper");
 
 module.exports = class UpdateAllCommand extends Command {
   constructor(client) {

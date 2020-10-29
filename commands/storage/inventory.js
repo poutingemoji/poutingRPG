@@ -1,12 +1,8 @@
 //BASE
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 
 //DATA
 const items = require("../../pouting-rpg/data/items");
-
-// UTILS
-const { Discord, Game } = require("../../DiscordBot");
-const Helper = require("../../utils/Helper");
 
 module.exports = class InventoryCommand extends Command {
   constructor(client) {
@@ -22,8 +18,8 @@ module.exports = class InventoryCommand extends Command {
       },
       guildOnly: true,
     });
-    this.Discord = Discord;
-    this.Game = Game;
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
   }
 
   async run(msg) {
@@ -34,11 +30,9 @@ module.exports = class InventoryCommand extends Command {
 
     const formatFilter = (itemName) => {
       const itemData = items[itemName];
-      return `${player.inventory.get(
+      return `${ player.inventory.get(itemName)} **${itemName}** ${this.Discord.emoji(
         itemName
-      )} **${itemName}** ${this.Discord.emoji(itemName)} | Rarity: ${
-        itemData.rarity
-      }`;
+      )} | ${itemData.type} | Rarity: ${itemData.level}`;
     };
 
     this.Discord.Pagination.buildEmbeds(

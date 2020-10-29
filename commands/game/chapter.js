@@ -1,14 +1,12 @@
 //BASE
-const Battle = require("../../utils/game/Battle")
-const { Command } = require("discord.js-commando");
+const Battle = require("../../utils/game/Battle");
+const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
 const arcs = require("../../pouting-rpg/data/arcs");
 
 // UTILS
-const { Discord, Game } = require("../../DiscordBot");
-const Helper = require("../../utils/Helper");
 
 module.exports = class ChapterCommand extends Command {
   constructor(client) {
@@ -24,15 +22,15 @@ module.exports = class ChapterCommand extends Command {
       },
       guildOnly: true,
     });
-    this.Discord = Discord;
-    this.Game = Game;
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
   }
 
   async run(msg) {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
-    
-    this.Game.Database.addQuests(player);
+
+    //this.Game.Database.addQuests(player);
     console.log(player.storyQuests[3].progress);
     const arcData = arcs[player.story.arc];
     const chapter = arcData.chapters[player.story.chapter];
@@ -46,7 +44,7 @@ module.exports = class ChapterCommand extends Command {
     ${chapter.emoji} **${chapter.location.toUpperCase()}**
 
     📖 **__${arcData.name} Arc__  - Chapter ${player.story.chapter + 1}/${arcData.chapters.length}** : ${chapter.name}
-    ${Helper.setImportantMessage(chapter.description)}
+    ${this.setImportantMessage(chapter.description)}
   
     ${this.Discord.emoji("quest")} **__Quests__**: (${totalPercent}%)
     ${questsInfo}
@@ -62,13 +60,13 @@ function getQuestsInfo(Discord, storyQuests) {
     content += `- ${quest.type} **${quest.goal}** `;
     switch (quest.type) {
       case "Defeat":
-        content += `Enemies`;
+        content += `${quest.questId}`;
         break;
-      case "Fish":
-        content += `${quest.questId} ${Discord.emoji(quest.questId)} `;
+      case "Earn":
+        content += `${quest.questId}${Discord.emoji(quest.questId)}`;
         break;
       case "Collect":
-        content += `${quest.questId}${Discord.emoji(quest.questId)}`;
+        content += `${quest.questId} ${Discord.emoji(quest.questId)} `;
         break;
       case "Use":
         content += `${quest.questId}`;

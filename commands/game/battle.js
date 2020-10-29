@@ -1,14 +1,10 @@
 //BASE
 const Battle = require("../../utils/game/Battle")
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
 const arcs = require("../../pouting-rpg/data/arcs");
-
-// UTILS
-const { Discord, Game } = require("../../DiscordBot");
-const Helper = require("../../utils/Helper");
 
 module.exports = class BattleCommand extends Command {
   constructor(client) {
@@ -23,8 +19,8 @@ module.exports = class BattleCommand extends Command {
       },
       guildOnly: true,
     });
-    this.Discord = Discord;
-    this.Game = Game;
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
   }
 
   async run(msg) {
@@ -35,6 +31,7 @@ module.exports = class BattleCommand extends Command {
       player,
       target: "Test Dummy",
       Discord: this.Discord,
+      Game: this.Game,
       msg
     })
     return 

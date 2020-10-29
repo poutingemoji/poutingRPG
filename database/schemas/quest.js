@@ -5,7 +5,6 @@ const newQuest = (type, goal, questId, rewards) => {
     questId: questId,
     progress: 0,
     rewards: rewards,
-    updatedAt: Date.now(),
   };
 };
 

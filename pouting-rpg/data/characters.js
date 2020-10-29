@@ -1,7 +1,9 @@
 const characters = {
   ["Traveller"]: {
+    level: 5,
+    weight: 5.0,
+    spread: 5,
     region: "The Outside",
-    rarity: 5,
     baseStats: {
       HP: 150,
       ATK: 30,
@@ -13,9 +15,11 @@ const characters = {
     },
   },
   ["Ja Wangnan"]: {
+    level: 4,
+    weight: 4.0,
+    spread: 4,
     position: "Fisherman",
     region: "Red-Light District",
-    rarity: 4,
     baseStats: {
       HP: 10,
       ATK: 10,
@@ -27,9 +31,11 @@ const characters = {
     },
   },
   ["Rachel"]: {
+    level: 4,
+    weight: 4.0,
+    spread: 4,
     position: "Light Bearer",
     region: "Red-Light District",
-    rarity: 4,
     baseStats: {
       HP: 10,
       ATK: 10,
@@ -41,9 +47,11 @@ const characters = {
     },
   },
   ["Ship Leesoo"]: {
+    level: 4,
+    weight: 4.0,
+    spread: 4,
     position: "Scout",
     region: "Red-Light District",
-    rarity: 4,
     baseStats: {
       HP: 150,
       ATK: 10,
@@ -55,9 +63,11 @@ const characters = {
     },
   },
   ["Serena Rinnen"]: {
+    level: 4,
+    weight: 4.0,
+    spread: 4,
     position: "Scout",
     region: "Red-Light District",
-    rarity: 4,
     baseStats: {
       HP: 10,
       ATK: 10,

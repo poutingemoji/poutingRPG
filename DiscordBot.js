@@ -4,6 +4,7 @@ const { CommandoClient } = require("discord.js-commando");
 const DBL = require("dblapi.js");
 const path = require("path");
 const fs = require("fs");
+const BaseHelper = require("./base/Helper");
 
 //DATA
 const Game = require("./pouting-rpg/Game");
@@ -11,12 +12,12 @@ const characters = require("./pouting-rpg/data/characters");
 
 //UTILS
 const enumHelper = require("./utils/enumHelper");
-const Helper = require("./utils/Helper");
 
 require("dotenv").config();
 
-class DiscordBot {
+class DiscordBot extends BaseHelper {
   constructor() {
+    super();
     this.client = new CommandoClient({
       commandPrefix: process.env.PREFIX,
       owner: "257641125135908866",
@@ -83,10 +84,11 @@ class DiscordBot {
       if (Math.random() < 0.5) return;
 
       enumHelper.talkedRecently.add(msg.author.id);
-      let characterName = randomKey(characters);
-      do {
-        characterName = randomKey(characters);
-      } while (enumHelper.isMC(characterName));
+
+      const characterFilter = (characterName) => {
+        return !enumHelper.isMC(characterName);
+      };
+      const characterName = this.Game.roguelike(characters, 1, characterFilter);
 
       const msgFilter = (msg) => {
         return msg.content.toLowerCase() == characterName.toLowerCase();
@@ -165,6 +167,7 @@ class DiscordBot {
       ["Storage Commands"]: "storage",
     };
     let commandsInfo = {};
+    const secondsToTimeFormat = this.secondsToTimeFormat;
     Object.keys(jsonFiles).forEach(function (key) {
       groups
         .filter(
@@ -179,11 +182,7 @@ class DiscordBot {
                 `${cmd.description}${cmd.nsfw ? " (NSFW)" : ""}`,
                 `${cmd.examples ? cmd.examples.join("\n") : ""}`,
                 `${cmd.aliases ? cmd.aliases.join("\n") : ""}`,
-                Helper.secondsToTimeFormat(
-                  cmd.throttling.duration,
-                  ", ",
-                  false
-                ),
+                secondsToTimeFormat(cmd.throttling.duration, ", ", false),
               ])
             );
         });
@@ -202,8 +201,3 @@ class DiscordBot {
 }
 
 module.exports = new DiscordBot();
-
-let randomKey = function (obj) {
-  let keys = Object.keys(obj);
-  return keys[(keys.length * Math.random()) << 0];
-};

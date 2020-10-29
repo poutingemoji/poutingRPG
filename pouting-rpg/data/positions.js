@@ -1,39 +1,18 @@
 const positions = {
   ["Wave Controller"]: {
-    weapon: "catalyst",
-    advantageOver: {
-      ["Fisherman"]: 2,
-    },
+    nemesis: "Scout",
   },
   ["Fisherman"]: {
-    weapon: "hook",
-    advantageOver: {
-      ["Spear Bearer"]: 2,
-    },
+    nemesis: "Wave Controller",
   },
   ["Spear Bearer"]: {
-    weapon: "spear",
-    advantageOver: {
-      ["Wave Controller"]: 2,
-    },
+    nemesis: "Fisherman",
   },
   ["Light Bearer"]: {
-    weapon: "lighthouse",
-    advantageOver: {
-      ["Wave Controller"]: 1.5,
-      ["Fisherman"]: 1.5,
-      ["Spear Bearer"]: 1.5,
-      ["Scout"]: 1.5,
-    },
+    nemesis: "Spear Bearer",
   },
   ["Scout"]: {
-    weapon: "needle",
-    advantageOver: {
-      ["Wave Controller"]: 1.5,
-      ["Fisherman"]: 1.5,
-      ["Spear Bearer"]: 1.5,
-      ["Light Bearer"]: 1.5,
-    },
+    nemesis: "Light Bearer",
   },
 };
 

@@ -1,11 +1,8 @@
 //BASE
-const { Command } = require("discord.js-commando");
+const Command = require("../../Base/Command");
 
 //DATA
 const items = require("../../pouting-rpg/data/items");
-
-// UTILS
-const { Discord, Game } = require("../../DiscordBot");
 
 module.exports = class FishCommand extends Command {
   constructor(client) {
@@ -20,8 +17,8 @@ module.exports = class FishCommand extends Command {
       },
       guildOnly: true,
     });
-    this.Discord = Discord;
-    this.Game = Game;
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
   }
 
   async run(msg) {
@@ -32,8 +29,10 @@ module.exports = class FishCommand extends Command {
       return item.type == "Fish";
     };
 
-    const fish = this.Game.roguelike(items, 1, itemFilter);
-    this.Game.Database.addItem(player, fish);
-    msg.reply(`You fished out: **${fish} ${this.Discord.emoji(fish)}** !`);
+    //this.Game.Database.addExpPlayer(player, 132, msg)
+    //this.Game.Database.addValuePlayer(player, "points", 5)
+    const fishName = this.Game.roguelike(items, 1, itemFilter);
+    this.Game.Database.addItem(player, fishName);
+    msg.reply(`You fished out: **${fishName} ${this.Discord.emoji(fishName)}** !`);
   }
 };
