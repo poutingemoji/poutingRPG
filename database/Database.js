@@ -3,16 +3,17 @@ const mongoose = require("mongoose");
 const MongoClient = require("mongodb").MongoClient;
 const MongoDBProvider = require("commando-mongodb");
 const Parser = require("expr-eval").Parser;
+const BaseGame = require("../Base/Game");
 const BaseHelper = require("../Base/Helper");
-
+const { aggregation } = require("../Base/Util")
 //DATA
 const { newCharacter } = require("./schemas/character");
 const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
 const arcs = require("../pouting-rpg/data/arcs");
 const characters = require("../pouting-rpg/data/characters");
-const enemies = require("../pouting-rpg/data/enemies")
-const items = require("../pouting-rpg/data/items")
+const enemies = require("../pouting-rpg/data/enemies");
+const items = require("../pouting-rpg/data/items");
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");
@@ -56,7 +57,7 @@ mongoose.connection.on("error", (err) => {
   disconnect();
 });
 
-class Database extends BaseHelper {
+class Database extends aggregation(BaseHelper, BaseGame) {
   constructor(client) {
     super();
     this.client = client;
@@ -92,24 +93,24 @@ class Database extends BaseHelper {
 
   // PLAYER
   addExpPlayer(player, expToAdd, msg) {
-    const previousAR = player.adventureRank.current;
+    const previousAR = player.level.current;
     player.exp.current += expToAdd;
 
     while (
       player.exp.current >= player.exp.total &&
-      player.adventureRank.current < player.adventureRank.total
+      player.level.current < player.level.total
     ) {
-      player.adventureRank.current++;
+      player.level.current++;
       player.exp.current -= player.exp.total;
       player.exp.total = Parser.evaluate(enumHelper.expFormulas["player"], {
-        n: player.adventureRank.current + 1,
+        n: player.level.current + 1,
       });
     }
 
-    if (player.adventureRank.current !== previousAR) {
+    if (player.level.current !== previousAR) {
       msg.say(
         `🆙 Congratulations ${msg.author.toString()}, you've reached Adventure Rank **${
-          player.adventureRank.current
+          player.level.current
         }**!\n\n`
       );
     }
@@ -165,7 +166,7 @@ class Database extends BaseHelper {
   //CHARACTER
   addExpCharacter(player, characterName, expToAdd, msg) {
     const character = player.characters.get(characterName);
-    const previousLVL = character.level.current;
+    const previousLevel = character.level.current;
     character.exp.current += expToAdd;
 
     while (
@@ -182,7 +183,7 @@ class Database extends BaseHelper {
       );
     }
 
-    if (character.level.current !== previousLVL) {
+    if (character.level.current !== previousLevel) {
       msg.say(
         `🆙 Congratulations ${msg.author.toString()}, ${characterName} has reached Level **${
           character.level.current
@@ -222,13 +223,12 @@ class Database extends BaseHelper {
   passiveRegenCharacter(player, characterName) {
     const character = player.characters.get(characterName);
     const timePassed =
-      (this.getTimePassed(character.updatedAt) /
-        enumHelper.timeUntilFull.HP) *
+      (this.getTimePassed(character.updatedAt) / enumHelper.timeUntilFull.HP) *
       character.HP.total;
-    character.updatedAt = Date.now()
+    character.updatedAt = Date.now();
     //prettier-ignore
     character.HP.current += this.clamp((timePassed / enumHelper.timeUntilFull.HP) * character.HP.total, 0, character.HP.total-character.HP.current)
-    this.savePlayer(player)
+    this.savePlayer(player);
   }
 
   //INVENTORY
@@ -236,13 +236,17 @@ class Database extends BaseHelper {
     player.inventory.get(item)
       ? player.inventory.set(item, player.inventory.get(item) + amount)
       : player.inventory.set(item, amount);
-    await this.addQuestProgress(player, "Collect", item)
+    await this.addQuestProgress(player, "Collect", item);
     this.savePlayer(player);
   }
 
   removeItem(player, item, amount = 1) {
     player.inventory.get(item) >= 2
-      ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
+      ? player.inventory.set(
+          item,
+          player.inventory.get(item) -
+            this.clamp(amount, 0, player.inventory.get(item))
+        )
       : player.inventory.delete(item);
     this.savePlayer(player);
   }
@@ -261,23 +265,15 @@ class Database extends BaseHelper {
   }
 
   async addQuestProgress(player, type, id, value = 1) {
-    let quest;
-    for (let i = 0; i < player.storyQuests.length; i++) {
-      if (
-        player.storyQuests[i].type == type &&
-        player.storyQuests[i].questId == id
-      ) {
-        quest = player.storyQuests[i];
-      }
-    }
-    console.log(quest, id)
+    const quest = this.findQuestType(player,type, id)
+    console.log(quest, id);
     if (!quest || quest.progress == quest.goal) return;
-    console.log(quest, id)
+    console.log(quest, id);
     if (isNaN(value)) {
       quest.progress = value;
     } else {
       quest.progress += Math.min(value, quest.goal - quest.progress);
-      console.log(quest.progress)
+      console.log(quest.progress);
     }
   }
 

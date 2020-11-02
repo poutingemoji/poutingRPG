@@ -1,9 +1,7 @@
 // BASE
-const BaseDiscord = require("../Base/Discord");
 const BaseGame = require("../Base/Game");
 
 // DATA
-const { newQuest } = require("../database/schemas/quest");
 const characters = require("../pouting-rpg/data/characters");
 const emojis = require("../pouting-rpg/data/emojis");
 const items = require("../pouting-rpg/data/items")

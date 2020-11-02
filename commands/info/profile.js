@@ -1,6 +1,5 @@
 //BASE
 const Command = require("../../Base/Command");
-
 const moment = require("moment");
 
 //DATA
@@ -37,7 +36,7 @@ module.exports = class ProfileCommand extends Command {
     if (!player) return;
 
     const data = {
-      ["Adventure Rank"]: player.adventureRank.current,
+      ["Adventure Rank"]: player.level.current,
       [`*[${player.exp.current}/${player.exp.total} EXP]*`]: "",
       [`${this.Discord.emoji("points")} Points`]: player.points,
       [`${this.Discord.emoji("dallars")} Dallars`]: player.dallars,

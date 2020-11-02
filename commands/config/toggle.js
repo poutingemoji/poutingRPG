@@ -1,11 +1,6 @@
 //BASE
 const Command = require("../../Base/Command");
 
-//DATA
-
-// UTILS
-const { Game } = require("../../DiscordBot");
-
 module.exports = class ToggleCommand extends Command {
   constructor(client) {
     super(client, {
@@ -29,7 +24,7 @@ module.exports = class ToggleCommand extends Command {
       guildOnly: true,
       userPermissions: ["ADMINISTRATOR"],
     });
-    this.Game = Game;
+    this.Game = this.getGame();
   }
 
   async run(msg, { setting }) {

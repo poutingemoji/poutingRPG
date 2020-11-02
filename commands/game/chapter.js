@@ -1,5 +1,4 @@
 //BASE
-const Battle = require("../../utils/game/Battle");
 const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
@@ -7,6 +6,7 @@ const { stripIndents } = require("common-tags");
 const arcs = require("../../pouting-rpg/data/arcs");
 
 // UTILS
+const Battle = require("../../utils/game/Battle");
 
 module.exports = class ChapterCommand extends Command {
   constructor(client) {

@@ -29,7 +29,7 @@ module.exports = class FishCommand extends Command {
       return item.type == "Fish";
     };
 
-    //this.Game.Database.addExpPlayer(player, 132, msg)
+    this.Game.Database.addExpPlayer(player, 132, msg)
     //this.Game.Database.addValuePlayer(player, "points", 5)
     const fishName = this.Game.roguelike(items, 1, itemFilter);
     this.Game.Database.addItem(player, fishName);

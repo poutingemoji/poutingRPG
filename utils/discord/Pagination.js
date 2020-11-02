@@ -5,8 +5,6 @@ const { MessageEmbed } = require("discord.js");
 //DATA
 const emojis = require("../../pouting-rpg/data/emojis");
 
-// UTILS
-
 class Pagination {
   constructor(Discord) {
     this.Discord = Discord;

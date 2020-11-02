@@ -1,10 +1,6 @@
 //BASE
 const Command = require("../../Base/Command");
 
-//DATA
-
-//UTILS
-
 module.exports = class UpdateAllCommand extends Command {
   constructor(client) {
     super(client, {
@@ -20,6 +16,7 @@ module.exports = class UpdateAllCommand extends Command {
       hidden: true,
       ownerOnly: true,
     });
+    this.Game = this.getGame();
   }
 
   run(msg) {

@@ -1,4 +1,4 @@
-const newQuest = (type, goal, questId, rewards) => {
+function newQuest(type, goal, questId, rewards) {
   return {
     type: type,
     goal: goal,
@@ -6,6 +6,6 @@ const newQuest = (type, goal, questId, rewards) => {
     progress: 0,
     rewards: rewards,
   };
-};
+}
 
 module.exports = { newQuest };

@@ -11,7 +11,7 @@ const enumHelper = require("../../utils/enumHelper");
 const playerSchema = mongoose.Schema({
   discordId: String,
   faction: String,
-  adventureRank: {
+  level: {
     current: {
       type: Number,
       default: 1,
@@ -148,7 +148,11 @@ const playerSchema = mongoose.Schema({
   },
 });
 
-const newPlayerObj = (discordId, factionName, positionName = "Wave Controller") => {
+const newPlayerObj = (
+  discordId,
+  factionName,
+  positionName = "Wave Controller"
+) => {
   const character = newCharacter("Traveller", positionName);
   return {
     discordId: discordId,

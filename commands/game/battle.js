@@ -1,10 +1,12 @@
 //BASE
-const Battle = require("../../utils/game/Battle")
 const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
 const arcs = require("../../pouting-rpg/data/arcs");
+
+//UTILS
+const Battle = require("../../utils/game/Battle")
 
 module.exports = class BattleCommand extends Command {
   constructor(client) {
@@ -26,9 +28,11 @@ module.exports = class BattleCommand extends Command {
   async run(msg) {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
-    
+
+    const defeatQuest = this.Game.findQuestType(player, "Defeat")
     new Battle({
       player,
+      quest: defeatQuest,
       target: "Test Dummy",
       Discord: this.Discord,
       Game: this.Game,

@@ -42,7 +42,7 @@ module.exports = class TopCommand extends Command {
           const user = await this.client.users.fetch(player.discordId);
           switch (type) {
             case "level":
-              attributes.push(`AR: ${player.adventureRank.current}`);
+              attributes.push(`AR: ${player.level.current}`);
               break;
           }
           return `${user.tag} ${this.Discord.emoji(

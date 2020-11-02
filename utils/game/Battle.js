@@ -8,23 +8,19 @@ const enemies = require("../../pouting-rpg/data/enemies");
 
 //UTILS
 const enumHelper = require("../enumHelper");
-
-const choices = {
-  ["⚔️"]: "attack",
-  ["🛡️"]: "defend",
-  ["red cross"]: "escape",
-};
+const battleChoices = enumHelper.battleChoices;
 
 class Battle {
   constructor(params) {
-    const { player, target, msg, Discord, Game } = params;
+    const { player, quest, msg, Discord, Game } = params;
     this.msg = msg;
     this.Discord = Discord;
     this.Game = Game;
     this.player = player;
+    this.quest = quest;
 
     this.ally = this.player.selectedCharacter;
-    this.enemy = target;
+    this.enemy = this.quest.questId;
 
     this.round = 0;
     this.rewards = {};
@@ -59,7 +55,7 @@ class Battle {
 
     this.msgSent = await this.msg.say(this.header);
 
-    for (let choice of Object.keys(choices)) {
+    for (let choice of Object.keys(battleChoices)) {
       choice = choice.replace(/ /g, "_");
       await this.msgSent.react(emojis[choice] || choice);
     }
@@ -69,7 +65,7 @@ class Battle {
         type: "reaction",
         author: this.player.discordId,
         msg: this.msgSent,
-        chooseFrom: Object.keys(choices),
+        chooseFrom: Object.keys(battleChoices),
         deleteOnResponse: false,
         reactToMessage: false,
         removeAuthorReaction: true,
@@ -79,8 +75,8 @@ class Battle {
   }
 
   initiateRound(res) {
-    if(res === undefined) res = "attack"
-    console.log(!res, res)
+    if (res === undefined) res = "attack";
+    console.log(!res, res);
     if (this.header.length + (this.body.length || 0) > this.maxLength) {
       this.body = "";
     }
@@ -89,8 +85,8 @@ class Battle {
     this.attacker.turnEnded = false;
     this.target.turnEnded = false;
 
-    this.ally.choice = choices[res];
-    if (!res) this.ally.choice = choices["attack"];
+    this.ally.choice = battleChoices[res];
+    if (!res) this.ally.choice = battleChoices["attack"];
     if (Math.random() >= 0.5) {
       this.enemy.choice = "attack";
     } else {
@@ -105,6 +101,7 @@ class Battle {
       //prettier-ignore
       this.header = stripIndents(`
       ${this.msg.author}
+      Fight ${this.quest.progress}/${this.quest.goal}
       **ALLY** ${this.ally.name}: 
       ${this.Discord.healthBar(this.ally.HP.current,this.ally.HP.total)}
       **ENEMY** ${this.enemy.name}: 
@@ -153,12 +150,14 @@ class Battle {
     this.msgSent.delete();
   }
 
-  endBattle() {
-    const drops = enemies[this.enemy.name].drops
-    this.Game.addRewards(this.player, drops)
-    let dropsMsg = ""
+  async endBattle() {
+    const drops = enemies[this.enemy.name].drops;
+    this.Game.addRewards(this.player, drops);
+    let dropsMsg = "";
     for (const dropName in drops) {
-      dropsMsg += `+ **${drops[dropName]}** ${dropName} ${this.Discord.emoji(dropName)}\n`
+      dropsMsg += `+ **${drops[dropName]}** ${dropName} ${this.Discord.emoji(
+        dropName
+      )}\n`;
     }
     this.body +=
       "\n" +
@@ -172,6 +171,19 @@ class Battle {
     `);
     enumHelper.isInBattle.delete(this.player.discordId);
     this.msgSent.edit(`${this.header}\n${this.body}`);
+    /*
+    this.msgSent.reactions.removeAll().catch(console.error);
+    const res = await this.Discord.awaitResponse({
+      type: "reaction",
+      author: this.player.discordId,
+      msg: this.msgSent,
+      chooseFrom: ["➡", "red cross"],
+    });*/
+    await this.Game.Database.addQuestProgress(this.player, "Defeat", this.enemy.name, 1);
+  }
+
+  hasCrit() {
+    return Math.random() <= 0.25;
   }
 
   hasDodged() {
@@ -180,7 +192,7 @@ class Battle {
 
   // BATTLE FUNCS
   getBattleStats(name) {
-    console.log(name, this.calculateHealth(name))
+    console.log(name, this.calculateHealth(name));
     return {
       name: name,
       HP: {

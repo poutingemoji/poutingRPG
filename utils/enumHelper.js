@@ -15,6 +15,11 @@ const enumHelper = {
   maxEnergy: (level) => {
     return 50 + level * 5;
   },
+  battleChoices: {
+    ["⚔️"]: "attack",
+    ["🛡️"]: "defend",
+    ["red cross"]: "escape",
+  },
   links: {
     website: "https://poutingemoji.github.io/poutingbot/",
     commandList: "https://poutingemoji.github.io/poutingbot/commands.html",
@@ -31,8 +36,8 @@ const enumHelper = {
   },
   leaderboardFilters: {
     level: {
-      sort: { "adventureRank.current": -1, "exp.current": -1 },
-      where: "adventureRank.current",
+      sort: { "level.current": -1, "exp.current": -1 },
+      where: "level.current",
     },
     points: {
       sort: { points: -1 },

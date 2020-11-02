@@ -1,10 +1,11 @@
 //BASE
 const BaseDiscord = require("./Base/Discord");
-const { CommandoClient } = require("discord.js-commando");
-const DBL = require("dblapi.js");
-const path = require("path");
-const fs = require("fs");
 const BaseHelper = require("./base/Helper");
+
+const DBL = require("dblapi.js");
+const { CommandoClient } = require("discord.js-commando");
+const fs = require("fs");
+const path = require("path");
 
 //DATA
 const Game = require("./pouting-rpg/Game");
@@ -25,8 +26,8 @@ class DiscordBot extends BaseHelper {
       disableEveryone: true,
       shards: "auto",
     });
-    this.Game = new Game(this.client);
     this.Discord = new BaseDiscord(this.client);
+    this.Game = new Game(this.client);
     this.loadEventListeners();
     this.postStatisticsOnDBL();
     this.client.login(process.env.TOKEN);
