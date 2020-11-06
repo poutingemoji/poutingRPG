@@ -9,7 +9,7 @@ const settingSchema = mongoose.Schema({
   },
 });
 
-const newSettingObj = (guild) => {
+function newSettingObj(guild) {
   return {
     guild,
   };

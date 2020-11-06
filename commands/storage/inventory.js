@@ -30,9 +30,18 @@ module.exports = class InventoryCommand extends Command {
 
     const formatFilter = (itemName) => {
       const itemData = items[itemName];
-      return `${ player.inventory.get(itemName)} **${itemName}** ${this.Discord.emoji(
-        itemName
-      )} | ${itemData.type} | Rarity: ${itemData.level}`;
+      switch (itemData.type) {
+        case "Fish":
+          return `${player.inventory.get(
+            itemName
+          )} **${itemName}** ${this.Discord.emoji(itemName)} | ${
+            itemData.type
+          } | Rarity: ${itemData.level}`;
+        case "Weapon":
+          return `${player.inventory.get(itemName)} **${itemName}** | ${
+            itemData.type
+          } | Rarity: ${itemData.level}`;
+      }
     };
 
     this.Discord.Pagination.buildEmbeds(

@@ -21,7 +21,7 @@ module.exports = class CharacterCommand extends Command {
           key: "characterName",
           prompt: `What character would you like to get more info on?`,
           type: "string",
-          default: "Traveller",
+          default: "Irregular",
         },
       ],
       throttling: {
@@ -38,53 +38,39 @@ module.exports = class CharacterCommand extends Command {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
 
-    if (isNaN(characterName)) {
-      characterName = this.titleCase(characterName);
-    } else {
-      characterName = Array.from(player.characters.keys())[characterName - 1];
-    }
-    const character = player.characters.get(characterName);
+    //prettier-ignore
+    isNaN(characterName) 
+    ? characterName = this.titleCase(characterName) 
+    : characterName = player.characters[characterName - 1];
+
+    const character = player.characters.includes(characterName);
     if (!character) return;
-    this.Game.Database.passiveRegenCharacter(player, characterName);
+
     const {
       name,
       positionName,
       rarity,
-      level,
-      exp,
-      constellation,
       baseStats,
     } = await this.Game.Database.getCharacterProperties(player, characterName);
-    const isMC = enumHelper.isMC(characterName);
-    const HPRegenTimeFormat = this.secondsToTimeFormat(
-      ((character.HP.total - character.HP.current) / character.HP.total) *
-        enumHelper.timeUntilFull.HP
-    );
-    const data = {
-      [`*[${exp.current}/${exp.total} EXP]*`]: "",
-      [constellation]: "",
-      [`${Math.floor(character.HP.current)}**/${character.HP.total}** ❤ ${
-        HPRegenTimeFormat !== "" ? `(${HPRegenTimeFormat})` : ""
-      }`]: "",
-    };
+
+    const data = {};
     for (const baseStat in baseStats) {
       data[baseStat.replace(/_/g, " ")] = baseStats[baseStat];
     }
-    data["Talent"] = "yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes."
+    data["Talent"] =
+      "yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.yes.";
     data[`${this.Discord.progressBar(rarity / 5, 5, "⭐", "empty_star")}`] = "";
+
     const params = {
-      title: `${this.Discord.emoji(positionName)} ${name} | Level ${
-        level.current
-      }/${level.total}\n`,
+      title: `${this.Discord.emoji(positionName)} ${name}`,
       description: this.objectToString(data),
     };
 
-    if (isMC) {
-      params.image = msg.author.displayAvatarURL();
-    } else {
-      //prettier-ignore
-      params.filePath = `./images/characters/${characterName.replace(" ", "_")}.png`
-    }
+    //prettier-ignore
+    enumHelper.isMC(characterName) 
+    ? params.image = msg.author.displayAvatarURL() 
+    : params.filePath = `./images/characters/${characterName.replace(" ", "_")}.png`
+
     const messageEmbed = this.Discord.buildEmbed(params);
     msg.say(messageEmbed);
   }

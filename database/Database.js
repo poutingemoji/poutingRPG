@@ -5,9 +5,9 @@ const MongoDBProvider = require("commando-mongodb");
 const Parser = require("expr-eval").Parser;
 const BaseGame = require("../Base/Game");
 const BaseHelper = require("../Base/Helper");
-const { aggregation } = require("../Base/Util")
+const { aggregation } = require("../Base/Util");
+
 //DATA
-const { newCharacter } = require("./schemas/character");
 const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
 const arcs = require("../pouting-rpg/data/arcs");
@@ -92,7 +92,7 @@ class Database extends aggregation(BaseHelper, BaseGame) {
   }
 
   // PLAYER
-  addExpPlayer(player, expToAdd, msg) {
+  addExpToPlayer(player, expToAdd, msg) {
     const previousAR = player.level.current;
     player.exp.current += expToAdd;
 
@@ -117,7 +117,7 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     this.savePlayer(player);
   }
 
-  async addValuePlayer(player, key, value) {
+  async addValueToPlayer(player, key, value) {
     player[key] += value;
     await this.addQuestProgress(player, "Earn", key, value);
     this.savePlayer(player);
@@ -139,7 +139,7 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     );
   }
 
-  async loadPlayer(discordId) {
+  loadPlayer(discordId) {
     return new Promise((resolve, reject) =>
       Player.findOne({ discordId: discordId }, (err, res) => {
         if (err) {
@@ -163,71 +163,53 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     );
   }
 
-  //CHARACTER
-  addExpCharacter(player, characterName, expToAdd, msg) {
-    const character = player.characters.get(characterName);
-    const previousLevel = character.level.current;
-    character.exp.current += expToAdd;
-
-    while (
-      character.exp.current >= character.exp.total &&
-      character.level.current < character.level.total
-    ) {
-      character.level.current++;
-      character.exp.current -= character.exp.total;
-      character.exp.total = Parser.evaluate(
-        enumHelper.expFormulas["character"],
-        {
-          n: character.level.current + 1,
-        }
-      );
-    }
-
-    if (character.level.current !== previousLevel) {
-      msg.say(
-        `🆙 Congratulations ${msg.author.toString()}, ${characterName} has reached Level **${
-          character.level.current
-        }**!\n\n`
-      );
-    }
-    this.savePlayer(player);
-  }
-
-  async addCharacter(player, characterName) {
-    player.characters.get(characterName)
-      ? player.characters.get(characterName).constellation++
-      : player.characters.set(characterName, newCharacter(characterName));
+  addCharacter(player, characterName) {
+    if (player.characters.includes(characterName)) return;
+    player.characters.push(characterName);
     this.savePlayer(player);
   }
 
   async getCharacterProperties(player, characterName) {
-    const character = player.characters.get(characterName);
     const user = await this.client.users.fetch(player.discordId);
     const isMC = enumHelper.isMC(characterName);
     const characterData = characters[characterName];
+
     return {
-      baseStats: characterData.baseStats,
-      rarity: characterData.level,
       name: isMC ? user.username : characterName,
-      positionName: isMC ? character.position : characterData.position,
-      level: character.level,
-      exp: character.exp,
-      constellation: `${
-        character.constellation == 0 ? "No " : ""
-      }Constellation${character.constellation == 0 ? "" : " "}${this.romanize(
-        character.constellation
-      )}`,
+      rarity: characterData.level,
+      positionName: isMC ? player.position : characterData.position,
+      baseStats: characterData.baseStats,
     };
   }
 
-  passiveRegenCharacter(player, characterName) {
-    const character = player.characters.get(characterName);
-    const timePassed =
-      (this.getTimePassed(character.updatedAt) / enumHelper.timeUntilFull.HP) *
-      character.HP.total;
-    character.updatedAt = Date.now();
-    //prettier-ignore
-    character.HP.current += this.clamp((timePassed / enumHelper.timeUntilFull.HP) * character.HP.total, 0, character.HP.total-character.HP.current)
+  //TEAM
+  manageTeam(player, action, teamNumber, characterName) {
+    teamNumber -= 1;
+    if (!this.isBetween(teamNumber, 0, enumHelper.maxTeams)) return;
+    if (characterName && !player.characters.includes(characterName)) return;
+
+    switch (action) {
+      case "select":
+        player.selectedTeam = teamNumber;
+        break;
+      case "add":
+        if (player.teams[teamNumber].includes(characterName)) return;
+        player.teams[teamNumber].push(characterName);
+        break;
+      case "remove":
+        let fallbackTeam;
+        if (player.teams[teamNumber].length == 1) {
+          for (let i = 0; i < player.teams.length; i++) {
+            if (player.teams[i].length > 0 && i !== teamNumber)
+              fallbackTeam = i;
+          }
+          if (!fallbackTeam) return;
+        }
+        player.selectedTeam = fallbackTeam;
+        const index = player.teams[teamNumber].indexOf(characterName);
+        if (index !== -1) player.teams[teamNumber].splice(index, 1);
+        break;
+    }
     this.savePlayer(player);
   }
 
@@ -258,14 +240,14 @@ class Database extends aggregation(BaseHelper, BaseGame) {
   }
 
   //QUEST
-  async addQuests(player) {
+  addQuests(player) {
     this.savePlayer(player, {
       storyQuests: arcs[player.story.arc].chapters[player.story.chapter].quests,
     });
   }
 
-  async addQuestProgress(player, type, id, value = 1) {
-    const quest = this.findQuestType(player,type, id)
+  addQuestProgress(player, type, id, value = 1) {
+    const quest = this.findQuestType(player, type, id);
     console.log(quest, id);
     if (!quest || quest.progress == quest.goal) return;
     console.log(quest, id);
@@ -321,7 +303,7 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     );
   }
 
-  async loadSetting(guild) {
+  loadSetting(guild) {
     return new Promise((resolve, reject) =>
       Setting.findOne({ guild: guild }, (err, res) => {
         if (err) {

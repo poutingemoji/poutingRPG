@@ -78,56 +78,9 @@ class DiscordBot extends BaseHelper {
         });
     });*/
 
-    this.client.on("message", async (msg) => {
-      if (msg.author.bot || !msg.guild) return;
-      if (!(await this.Game.Database.isSpawnsEnabled(msg.channel))) return;
-      if (enumHelper.talkedRecently.has(msg.author.id)) return;
-      if (Math.random() < 0.5) return;
+    /*this.client.on("message", (msg) => {
 
-      enumHelper.talkedRecently.add(msg.author.id);
-
-      const characterFilter = (characterName) => {
-        return !enumHelper.isMC(characterName);
-      };
-      const characterName = this.Game.roguelike(characters, 1, characterFilter);
-
-      const msgFilter = (msg) => {
-        return msg.content.toLowerCase() == characterName.toLowerCase();
-      };
-
-      let messageEmbed = this.Discord.buildEmbed({
-        title: "A regular has appeared!",
-        description:
-          "Guess their name and type it in\nthe chat to recruit them.",
-        filePath: `./images/characters/${characterName.replace(" ", "_")}.png`,
-      });
-
-      setTimeout(() => {
-        msg.channel.send(messageEmbed).then((msgSent) => {
-          msg.channel
-            .awaitMessages(msgFilter, { max: 1, time: 60000, errors: ["time"] })
-            .then(async (collected) => {
-              msg.say(
-                `After some convincing from ${
-                  collected.first().author
-                },\n**${characterName}** decided to join them on their adventure.`
-              );
-              msgSent.delete();
-              collected.first().delete();
-              const player = await this.Game.Database.findPlayer(msg.author);
-              this.Game.Database.addCharacter(player, characterName);
-            })
-            .catch((err) => {
-              console.log(err);
-              msgSent.delete();
-            });
-        });
-        console.log("deleted");
-        setTimeout(() => {
-          enumHelper.talkedRecently.delete(msg.author.id);
-        }, 10000);
-      }, 5 * 60000);
-    });
+    });*/
   }
 
   postStatisticsOnDBL() {
@@ -136,7 +89,7 @@ class DiscordBot extends BaseHelper {
     dbl.on("posted", () => {
       console.log("Server count posted!");
     });
-
+    
     dbl.on("error", (err) => {
       console.error(err);
     });
@@ -146,6 +99,7 @@ class DiscordBot extends BaseHelper {
     this.client.registry
       .registerDefaultTypes()
       .registerGroups([
+        ["config", "Config Commands"],
         ["game", "Game Commands"],
         ["info", "Info Commands"],
         ["storage", "Storage Commands"],

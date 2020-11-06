@@ -1,35 +1,25 @@
 const enemies = {
-  ["Test Dummy"]: {
+  ["White Steel Eel"]: {
     level: 4,
     weight: 4.0,
     spread: 4,
-    position: "Wave Controller",
-    region: "Red-Light District",
+    type: "Boss",
+    floor: 1,
     baseStats: {
-      HP: 150,
-      ATK: 30,
-      DEF: 10,
-      SPEED: 10,
+      HP: 100,
+      ATK: 100,
     },
-    talents: {
-
-    },
+    talents: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
     drops: {["Sweetfish"]: 4, ["Baby Zygaena"]: 69},
   },
-  ["Test Bird"]: {
+  ["Ball"]: {
     level: 4,
     weight: 4.0,
     spread: 4,
-    position: "Wave Controller",
-    region: "Red-Light District",
+    type: "Special",
+    floor: 1,
     baseStats: {
-      HP: 150,
-      ATK: 30,
-      DEF: 10,
-      SPEED: 10,
-    },
-    talents: {
-
+      HP: 50,
     },
     drops: {["Sweetfish"]: 4, ["Baby Zygaena"]: 69},
   },

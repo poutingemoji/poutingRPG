@@ -1,5 +1,4 @@
 //BASE
-const fs = require("fs");
 const seedrandom = require("seedrandom");
 const RNG = seedrandom();
 
@@ -20,7 +19,7 @@ class Helper {
    * @param {Number} max
    * @param {Number} decimal
    * @param {Number} exclude
-   * @returns {Number}
+   * @returns {Number} randomNumber
    */
   randomBetween(min, max, decimal, exclude) {
     // Adding + 1 to max due to trunc
@@ -48,15 +47,6 @@ class Helper {
     return array[this.randomBetween(0, array.length - 1)];
   }
 
-  /**
-   * Returns sum of players strength
-   * @param {Object} player
-   * @returns Number
-   */
-  sumPlayerTotalStrength(player) {
-    return player.stats.str + player.equipment.relic.str;
-  }
-
   /*
     GENERAL HELPERS
   */
@@ -64,24 +54,43 @@ class Helper {
   /**
    * Returns a number with commas
    * @param {Number} int
-   * @returns Number
+   * @returns {Number}
    */
   numberWithCommas(int) {
     return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+  /**
+   * Returns a number within a min and max
+   * @param {Number} int
+   * @param {Number} min
+   * @param {Number} max
+   * @returns {Number} clampedNumber
+   */
   clamp(int, min, max) {
     return int <= min ? min : int >= max ? max : int;
   }
 
-  isBetween(n, a, b) {
-    return (n - a) * (n - b) <= 0;
+  /**
+   * Returns a boolean if a number is within a min and max
+   * @param {Number} int
+   * @param {Number} min
+   * @param {Number} max
+   * @returns {Number}
+   */
+  isBetween(int, min, max) {
+    return (int - min) * (int - max) <= 0;
   }
 
-  romanize(num) {
-    if (isNaN(num)) return NaN;
+  /**
+   * Returns a Roman numeral 
+   * @param {Number} int
+   * @returns {String} Roman numeral
+   */
+  romanize(int) {
+    if (isNaN(int)) return NaN;
     //prettier-ignore
-    let digits = String(+num).split(""),
+    let digits = String(+int).split(""),
         key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
                 "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
                 "","I","II","III","IV","V","VI","VII","VIII","IX"],
@@ -97,9 +106,8 @@ class Helper {
    * @param {Number} seconds
    * @param {String} conjunction
    * @param {Boolean} abbreviate
-   * @returns {String}
+   * @returns {String} timeFormat
    */
-
   secondsToTimeFormat(seconds, conjunction = " and ", abbreviate = true) {
     seconds = parseInt(seconds);
     const d = Math.floor(seconds / (3600 * 24));
@@ -122,7 +130,6 @@ class Helper {
     return Display.join(conjunction);
   }
 
-  //STRING
   /**
    * Returns a codeblock for Discord
    * @param {String} message
@@ -136,7 +143,7 @@ class Helper {
   /**
    * Capitalizes first letter of every word in a string
    * @param {String} str
-   * @returns {String}
+   * @returns {String} capitalizedString
    */
   titleCase(str) {
     str = str.toLowerCase().split(" ");
@@ -146,12 +153,11 @@ class Helper {
     return str.join(" ");
   }
 
-  //OBJECT
   /**
    * Verifies if object contains name of nameToCheck
    * @param {Object} obj
    * @param {String} nameToCheck
-   * @returns {Boolean}
+   * @returns {Boolean} containsName
    */
   objectContainsName(obj, nameToCheck) {
     if (typeof obj !== "object") {
@@ -175,6 +181,11 @@ class Helper {
     return false;
   }
 
+  /**
+   * Returns a string of the object's properties
+   * @param {Object} obj
+   * @returns {String}
+   */
   objectToString(obj) {
     let string = "";
     for (const prop in obj) {
@@ -189,9 +200,8 @@ class Helper {
    * Utilizes https://stackoverflow.com/a/38750895
    * @param {Object} raw
    * @param {Function} filter
-   * @returns {Object}
+   * @returns {Object} filteredObject
    */
-
   filterObject(raw, filter) {
     return Object.keys(raw)
       .filter(filter)
@@ -201,33 +211,6 @@ class Helper {
       }, {});
   }
 
-  //ARRAY
-  //https://stackoverflow.com/a/53672813
-  arrayShuffle(array) {
-    for (
-      let i = 0, length = array.length, swap = 0, temp = "";
-      i < length;
-      i++
-    ) {
-      swap = Math.floor(Math.random() * (i + 1));
-      temp = array[swap];
-      array[swap] = array[i];
-      array[i] = temp;
-    }
-    return array;
-  }
-
-  percentageChance(values, chances) {
-    const pool = [];
-    for (let i = 0; i < chances.length; i++) {
-      for (let i2 = 0; i2 < chances[i]; i2++) {
-        pool.push(i);
-      }
-    }
-    return values[this.arrayShuffle(pool)[0]];
-  }
-
-  //DATE
   /**
    * Returns formatted string of time passed since timeStamp
    * @param {Date} timeStamp

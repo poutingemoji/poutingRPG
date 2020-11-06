@@ -10,7 +10,7 @@ class Game {
   roguelike(items, level, itemFilter) {
     const equip = gacha.roguelike(items, itemFilter);
 
-    // Which item should we spawn on level 3?
+    // Which item should we spawn on level {n}?
     const lvl = equip[level];
     const strata = Math.random() * lvl.total;
 
@@ -34,46 +34,6 @@ class Game {
     }
     return false
   }
-
-  checkExperience(params) {
-    const { player, characterName, msg } = params;
-    let obj;
-    let level;
-    let exp;
-
-    if (characterName) {
-      const character = player.characters.get(characterName);
-      level = previousLevel = character.level;
-      exp = character.exp;
-    } else {
-      obj = player;
-      level = previousLevel = player.adventureRank;
-      exp = player.adventureRankExp;
-    }
-
-    if (!(exp.current >= exp.total)) return player;
-
-    while (exp.current >= exp.total && level.total > level.current) {
-      level.current++;
-      exp.current -= exp.total;
-      exp.total = Parser.evaluate(
-        enumHelper.expFormulas[characterName ? "player" : "character"],
-        {
-          n: level.current + 1,
-        }
-      );
-    }
-
-    if (level.current !== previousLevel.current) {
-      msg.say(
-        `🆙 Congratulations ${msg.author.toString()}, ${
-          characterName ? `${characterName} has` : "you've"
-        } reached Level **${level.current}**!\n\n`
-      );
-    }
-    conole.log(player)
-    return player;
-  }s
 }
 
 module.exports = Game;

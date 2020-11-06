@@ -2,15 +2,13 @@
 const mongoose = require("mongoose");
 const Parser = require("expr-eval").Parser;
 
-//DATA
-const { newCharacter } = require("../schemas/character");
-
 //UTILS
 const enumHelper = require("../../utils/enumHelper");
 
 const playerSchema = mongoose.Schema({
   discordId: String,
   faction: String,
+  position: String,
   level: {
     current: {
       type: Number,
@@ -53,27 +51,15 @@ const playerSchema = mongoose.Schema({
       default: 120,
     },
   },
-  selectedCharacter: String,
-  characters: {
-    type: Map,
-    of: {
-      position: String,
-      level: {
-        current: Number,
-        total: Number,
-      },
-      exp: {
-        current: Number,
-        total: Number,
-      },
-      constellation: Number,
-      HP: {
-        current: Number,
-        total: Number,
-      },
-      updatedAt: Date,
-    },
+  selectedTeam: {
+    type: Number,
+    default: 0,
   },
+  teams: {
+    type: Array,
+    of: Array,
+  },
+  characters: Array,
   inventory: {
     type: Map,
     of: Number,
@@ -148,18 +134,15 @@ const playerSchema = mongoose.Schema({
   },
 });
 
-const newPlayerObj = (
-  discordId,
-  factionName,
-  positionName = "Wave Controller"
-) => {
-  const character = newCharacter("Traveller", positionName);
+function newPlayerObj(discordId, factionName, positionName) {
   return {
     discordId: discordId,
     faction: factionName,
-    characters: { ["Traveller"]: character },
+    position: positionName,
+    characters: ["Irregular", "Rachel", "Ship Leesoo", "Serena Rinnen"],
+    teams: [["Irregular"]],
     inventory: { ["Baby Zygaena"]: 6, ["Crystal Shard"]: 4 },
   };
-};
+}
 
 module.exports = { playerSchema, newPlayerObj };

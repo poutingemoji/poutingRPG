@@ -15,7 +15,6 @@ module.exports = class ChapterCommand extends Command {
       group: "game",
       memberName: "chapter",
       description: "View your chapter progression.",
-      args: [],
       throttling: {
         usages: 1,
         duration: 2,

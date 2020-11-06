@@ -94,9 +94,7 @@ function getPositionsDescription(Discord) {
     const positionData = positions[positionName];
     description += `${Discord.emoji(
       positionName
-    )} - **${positionName}**\n${positionName}'s nemesis is ${
-      positionData.nemesis
-    }.\n`;
+    )} - **${positionName}**\n`;
   }
   return description;
 }

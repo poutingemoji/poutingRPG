@@ -4,7 +4,7 @@ const BaseGame = require("../Base/Game");
 // DATA
 const characters = require("../pouting-rpg/data/characters");
 const emojis = require("../pouting-rpg/data/emojis");
-const items = require("../pouting-rpg/data/items")
+const items = require("../pouting-rpg/data/items");
 
 // UTILS
 const Database = require("../database/Database");
@@ -21,9 +21,9 @@ class Game extends BaseGame {
   addRewards(player, obj) {
     for (const reward in obj) {
       if (items.hasOwnProperty(reward)) {
-        this.Database.addItem(player, reward, obj[reward])
+        this.Database.addItem(player, reward, obj[reward]);
       } else if (["points", "dallars", "suspendium"].includes(reward)) {
-        this.Database.addValuePlayer(player, reward, obj[reward])
+        this.Database.addValueToPlayer(player, reward, obj[reward]);
       }
     }
   }

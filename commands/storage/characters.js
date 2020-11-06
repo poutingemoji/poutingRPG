@@ -23,18 +23,13 @@ module.exports = class CharactersCommand extends Command {
 
   async run(msg) {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
-    console.log(player);
     if (!player) return;
-
-    const charactersOwned = Array.from(player.characters.keys());
 
     const formatFilter = async (characterName) => {
       //prettier-ignore
-      const { name, positionName, level, constellation } 
+      const { name, positionName } 
       = await this.Game.Database.getCharacterProperties(player, characterName);
-      return `**${name}** ${this.Discord.emoji(positionName)} | Level: ${
-        level.current
-      } | ${constellation}`;
+      return `${name} ${this.Discord.emoji(positionName)}`;
     };
 
     this.Discord.Pagination.buildEmbeds(
@@ -44,7 +39,7 @@ module.exports = class CharactersCommand extends Command {
         msg,
       },
       formatFilter,
-      charactersOwned
+      player.characters
     );
   }
 };

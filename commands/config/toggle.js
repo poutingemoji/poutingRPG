@@ -5,10 +5,9 @@ module.exports = class ToggleCommand extends Command {
   constructor(client) {
     super(client, {
       name: "toggle",
-      group: "game",
+      group: "config",
       memberName: "toggle",
       description: "Toggle a setting.",
-      examples: [`${client.commandPrefix} toggle`],
       args: [
         {
           key: "setting",

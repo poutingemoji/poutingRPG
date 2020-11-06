@@ -1,4 +1,6 @@
 const enumHelper = {
+  maxTeamMembers: 3,
+  maxTeams: 5,
   talkedRecently: new Set(),
   waitingOnResponse: new Set(),
   isInBattle: new Set(),
@@ -7,7 +9,7 @@ const enumHelper = {
     HP: 30 * 60,
   },
   isMC: (characterName) => {
-    return characterName == "Traveller";
+    return characterName == "Irregular";
   },
   maxHealth: (level) => {
     return 100 + level * 5;
