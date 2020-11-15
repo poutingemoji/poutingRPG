@@ -1,33 +1,54 @@
 //BASE
+const BaseHelper = require("../../Base/Helper");
 const { stripIndents } = require("common-tags");
 
 //DATA
+const arcs = require("../../pouting-rpg/data/arcs");
 const characters = require("../../pouting-rpg/data/characters");
 const emojis = require("../../pouting-rpg/data/emojis");
 const enemies = require("../../pouting-rpg/data/enemies");
+const floors = require("../../pouting-rpg/data/floors");
 
 //UTILS
 const enumHelper = require("../enumHelper");
 const battleChoices = enumHelper.battleChoices;
 
-class Battle {
+class Battle extends BaseHelper {
   constructor(params) {
+    super();
     const { player, quest, msg, Discord, Game } = params;
+    this.player = player;
+    this.quest = quest;
     this.msg = msg;
     this.Discord = Discord;
     this.Game = Game;
-    this.player = player;
-    this.quest = quest;
 
-    this.ally = this.player.selectedCharacter;
-    this.enemy = this.quest.questId;
+    this.chapter = arcs[player.story.arc].chapters[player.story.chapter];
+    this.floor = this.chapter.floor;
 
-    this.round = 0;
+    this.totalEnemies = [];
+    for (let wave of floors[this.player.floor.current - 1][this.chapter.area]) {
+      let enemiesInWave = [];
+      for (let enemyName in wave)
+        this.fillArray(
+          this.getBattleStats(enemyName),
+          wave[enemyName],
+          enemiesInWave
+        );
+      this.totalEnemies.push(enemiesInWave);
+    }
+    this.wave = 0;
+
+    this.team = this.player.teams[this.player.selectedTeam].map((t) =>
+      this.getBattleStats(t)
+    );
+    this.enemies = this.totalEnemies[this.wave];
     this.rewards = {};
 
     this.header = stripIndents(`
     ${msg.author}
-    **ALLY** ${this.ally} VS. **ENEMY** ${this.enemy}
+    **TEAM POWER**: ${this.team.map((t) => t.name).join(", ")}
+    **ENEMIES POWER**: ${this.enemies.map((e) => e.name).join(", ")}
     `);
     this.body = "";
     this.maxLength = 400;
@@ -36,68 +57,48 @@ class Battle {
   }
 
   async initiateBattle() {
-    if (!this.ally)
-      return this.msg.reply(
-        "You don't have a character selected to battle with."
-      );
+    if (!this.team)
+      return this.msg.reply("You don't have a team selected to battle with.");
     enumHelper.isInBattle.add(this.player.discordId);
-    this.ally = this.getBattleStats(this.ally);
-    this.enemy = this.getBattleStats(this.enemy);
-    if (this.enemy.SPEED == this.ally.SPEED) {
-      const shuffled = [this.ally, this.enemy].sort(() => Math.random() - 0.5);
-      this.attacker = shuffled[0];
-      this.target = shuffled[1];
-    } else {
-      [this.attacker, this.target] = [this.ally, this.enemy].sort(
-        (a) => a.SPEED
-      );
-    }
-
     this.msgSent = await this.msg.say(this.header);
 
-    for (let choice of Object.keys(battleChoices)) {
-      choice = choice.replace(/ /g, "_");
-      await this.msgSent.react(emojis[choice] || choice);
-    }
+    const res = await this.Discord.confirmation({
+      msg: this.msgSent,
+      author: this.player.discordId,
+    });
+    this.header = stripIndents(`
+    **Team**
+    ${this.team.map((t) => `${t.name} (${t.HP}/${t.HP_MAX} HP)`).join("\n")}
 
-    do {
-      const res = await this.Discord.awaitResponse({
-        type: "reaction",
-        author: this.player.discordId,
-        msg: this.msgSent,
-        chooseFrom: Object.keys(battleChoices),
-        deleteOnResponse: false,
-        reactToMessage: false,
-        removeAuthorReaction: true,
-      });
-      this.initiateRound(res);
-    } while (enumHelper.isInBattle.has(this.player.discordId));
+    **[Wave ${this.wave + 1}/${this.totalEnemies.length}] Enemies**
+    ${this.enemies.map((e) => `${e.name} (${e.HP}/${e.HP_MAX} HP)`).join("\n")}
+    `);
+
+    this.msgSent.edit(this.header);
+
+    for (this.wave; this.wave < this.totalEnemies.length; this.wave++) {
+      await this.startWave();
+    }
   }
 
-  initiateRound(res) {
-    if (res === undefined) res = "attack";
-    console.log(!res, res);
+  async startWave() {
     if (this.header.length + (this.body.length || 0) > this.maxLength) {
       this.body = "";
     }
-    this.round++;
-    this.body += `\n**[ROUND ${this.round}]**\n`;
-    this.attacker.turnEnded = false;
-    this.target.turnEnded = false;
 
-    this.ally.choice = battleChoices[res];
-    if (!res) this.ally.choice = battleChoices["attack"];
-    if (Math.random() >= 0.5) {
-      this.enemy.choice = "attack";
-    } else {
-      this.enemy.choice = "defend";
-    }
-    console.log(this.attacker.choice, this.target.choice);
+    this.body += "\n__Battle Log__\n";
+    this.team.map((t) => (t.turnEnded = false));
+    this.enemies.map((e) => (e.turnEnded = false));
+    const turns = [this.startPlayerTurn, this.startEnemyTurn];
+    turns.map(async (turn) => {
+      if (!enumHelper.isInBattle.has(this.player.discordId)) return;
+      turn = turn.bind(this);
+      await turn();
+    });
+    this.msgSent.edit(`${this.header}\n${this.body}`);
+    /*
 
     while (!this.attacker.turnEnded || !this.target.turnEnded) {
-      console.log(this.attacker.choice);
-      this[this.attacker.choice]();
-      if (!enumHelper.isInBattle.has(this.player.discordId)) return;
       //prettier-ignore
       this.header = stripIndents(`
       ${this.msg.author}
@@ -107,43 +108,34 @@ class Battle {
       **ENEMY** ${this.enemy.name}: 
       ${this.Discord.healthBar(this.enemy.HP.current,this.enemy.HP.total)}
       `);
-      this.body += "\n";
       if (this.target.HP.current <= 0) {
         this.endBattle();
       }
       this.attacker.turnEnded = true;
-      this.msgSent.edit(`${this.header}\n${this.body}`);
-      //prettier-ignore
-      this.target = swap(this.attacker, (this.attacker = this.target));
-      //console.log("Switched:", this.target, this.attacker);
     }
-    this.target = swap(this.attacker, (this.attacker = this.target));
+    */
   }
 
-  attack() {
-    this.body += `${this.attacker.name} attacks ⚔️, `;
-    if (this.target.choice == "defend" && this.target.turnEnded) {
-      this.target.HP.current -= this.attacker.ATK - this.target.DEF;
-      this.body += `but ${this.target.name} is defending 🛡️, he loses __${
-        this.attacker.ATK - this.target.DEF
-      }__ HP(s)!`;
-    } else if (this.hasDodged()) {
-      this.body += `but ${this.target.name} dodges 🍃!`;
-    } else {
-      this.target.HP.current -= this.attacker.ATK;
-      this.body += `he loses __${this.attacker.ATK}__ HP(s).`;
-    }
+  async startPlayerTurn() {
+    console.log(this.Discord);
+    const Battle = this;
+    const res = await this.Discord.awaitResponse({
+      type: "message",
+      filter: function (response) {
+        const args = response.content.split(" ");
+        return (
+          Object.keys(Battle.team).includes((args[0] - 1).toString()) &&
+          battleChoices.includes(args[1]) &&
+          Object.keys(Battle.enemies).includes((args[2] - 1).toString()) &&
+          response.author.id == Battle.player.discordId
+        );
+      },
+      msg: this.msgSent,
+    });
+    console.log(res);
   }
 
-  defend() {
-    if (this.target.choice == "attack" && !this.target.turnEnded) {
-      this.body += `${this.attacker.name} prepares to defend 🛡️ against ${this.target.name}!`;
-    } else if (this.target.choice == "attack" && this.target.turnEnded) {
-      this.body += `${this.attacker.name} was too late to defend?`;
-    } else if (this.target.choice == "defend") {
-      this.body += `${this.attacker.name} stares expressionlessly 😑 at ${this.target.name} defending as well...`;
-    }
-  }
+  async startEnemyTurn() {}
 
   escape() {
     enumHelper.isInBattle.delete(this.player.discordId);
@@ -178,8 +170,14 @@ class Battle {
       author: this.player.discordId,
       msg: this.msgSent,
       chooseFrom: ["➡", "red cross"],
+      deleteOnResponse: true,
     });*/
-    await this.Game.Database.addQuestProgress(this.player, "Defeat", this.enemy.name, 1);
+    await this.Game.Database.addQuestProgress(
+      this.player,
+      "Defeat",
+      this.enemy.name,
+      1
+    );
   }
 
   hasCrit() {
@@ -192,45 +190,22 @@ class Battle {
 
   // BATTLE FUNCS
   getBattleStats(name) {
-    console.log(name, this.calculateHealth(name));
+    const data = this.isEnemy(name) ? enemies[name] : characters[name];
     return {
       name: name,
-      HP: {
-        current: this.player.characters.get(name)
-          ? Math.floor(this.player.characters.get(name).HP.current)
-          : this.calculateHealth(name),
-        total: this.player.characters.get(name)
-          ? this.player.characters.get(name).HP.total
-          : this.calculateHealth(name),
-      },
-      ATK: this.calculateAttack(name),
-      DEF: this.calculateDefense(name),
-      SPEED: this.calculateSpeed(name),
+      HP: this.calculateHealth(data),
+      HP_MAX: this.calculateHealth(data),
+      ATK: this.calculateAttack(data),
     };
   }
 
-  calculateHealth(name) {
-    const data = this.isEnemy(name) ? enemies[name] : characters[name];
-
+  calculateHealth(data) {
+    //this.player.level
     return data.baseStats.HP;
   }
 
-  calculateAttack(name) {
-    const data = this.isEnemy(name) ? enemies[name] : characters[name];
-
+  calculateAttack(data) {
     return data.baseStats.ATK;
-  }
-
-  calculateDefense(name) {
-    const data = this.isEnemy(name) ? enemies[name] : characters[name];
-
-    return data.baseStats.DEF;
-  }
-
-  calculateSpeed(name) {
-    const data = this.isEnemy(name) ? enemies[name] : characters[name];
-
-    return data.baseStats.SPEED;
   }
 
   isEnemy(name) {
@@ -239,7 +214,3 @@ class Battle {
 }
 
 module.exports = Battle;
-
-const swap = function (x) {
-  return x;
-};

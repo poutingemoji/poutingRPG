@@ -8,7 +8,7 @@ module.exports = class ProfileCommand extends Command {
   constructor(client) {
     super(client, {
       name: "profile",
-      group: "info",
+      group: "user-info",
       memberName: "profile",
       description: "View someone's profile.",
       examples: [`${client.commandPrefix}profile [@user/id]`],

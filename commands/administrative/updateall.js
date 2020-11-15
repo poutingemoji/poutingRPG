@@ -5,7 +5,7 @@ module.exports = class UpdateAllCommand extends Command {
   constructor(client) {
     super(client, {
       name: "updateall",
-      group: "config",
+      group: "administrative",
       memberName: "updateall",
       description: "Update all MongoDB documents.",
       throttling: {

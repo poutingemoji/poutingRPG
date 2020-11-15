@@ -8,7 +8,8 @@ const arcs = [
       "https://cdn.discordapp.com/attachments/722720878932262952/751752544027410462/Headons_Floor.png",
     chapters: [
       {
-        location: "1st Floor",
+        floor: 1,
+        area: "Shinsu Tank",
         name: "Entering the Tower",
         emoji: "🚪",
         description:

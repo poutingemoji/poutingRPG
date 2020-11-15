@@ -9,6 +9,16 @@ const playerSchema = mongoose.Schema({
   discordId: String,
   faction: String,
   position: String,
+  floor: {
+    current: {
+      type: Number,
+      default: 1,
+    },
+    total: {
+      type: Number,
+      default: 1,
+    },
+  },
   level: {
     current: {
       type: Number,
@@ -58,57 +68,15 @@ const playerSchema = mongoose.Schema({
   teams: {
     type: Array,
     of: Array,
+    default: [["Irregular"]],
   },
-  characters: Array,
+  characters: {
+    type: Array,
+    default: ["Irregular"]
+  },
   inventory: {
     type: Map,
     of: Number,
-  },
-  gambles: {
-    type: Number,
-    default: 0,
-  },
-  kills: {
-    mob: {
-      type: Number,
-      default: 0,
-    },
-    player: {
-      type: Number,
-      default: 0,
-    },
-  },
-  battles: {
-    won: {
-      type: Number,
-      default: 0,
-    },
-    lost: {
-      type: Number,
-      default: 0,
-    },
-  },
-  fled: {
-    mob: {
-      type: Number,
-      default: 0,
-    },
-    player: {
-      type: Number,
-      default: 0,
-    },
-  },
-  deaths: {
-    mob: Number,
-    player: Number,
-    firstDeath: {
-      type: String,
-      default: "never",
-    },
-  },
-  events: {
-    type: Array,
-    default: [],
   },
   story: {
     chapter: {
@@ -132,6 +100,50 @@ const playerSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  statistics: {
+    gambles: {
+      type: Number,
+      default: 0,
+    },
+    kills: {
+      mob: {
+        type: Number,
+        default: 0,
+      },
+      player: {
+        type: Number,
+        default: 0,
+      },
+    },
+    battles: {
+      won: {
+        type: Number,
+        default: 0,
+      },
+      lost: {
+        type: Number,
+        default: 0,
+      },
+    },
+    fled: {
+      mob: {
+        type: Number,
+        default: 0,
+      },
+      player: {
+        type: Number,
+        default: 0,
+      },
+    },
+    deaths: {
+      mob: Number,
+      player: Number,
+      firstDeath: {
+        type: String,
+        default: "never",
+      },
+    },
+  }
 });
 
 function newPlayerObj(discordId, factionName, positionName) {

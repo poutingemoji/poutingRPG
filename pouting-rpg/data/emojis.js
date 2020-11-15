@@ -33,18 +33,6 @@ const emojis = {
   ["Rak"]: "729190277511905301",
 
   //ITEMS
-  ["Shrimp"]: "🦐",
-  ["Fish"]: "🐟",
-  ["Tropical_Fish"]: "🐠",
-  ["Blowfish"]: "🐡",
-  ["Squid"]: "🦑",
-  ["Octopus"]: "🐙",
-  ["Metalfish"]: "⚙️",
-  ["Silver_Fish"]: "⛓️",
-  ["Crystal_Shard"]: "💠",
-  ["Baby_Zygaena"]: "💮",
-  ["Sweetfish"]: "🦈",
-
   ["Leviathan"]: "🐍",
   ["Mago"]: "🌋",
   ["Great_Black_Hook"]: "⬛",

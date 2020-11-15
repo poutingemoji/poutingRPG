@@ -8,7 +8,7 @@ module.exports = class CharactersCommand extends Command {
     super(client, {
       name: "characters",
       aliases: ["chars"],
-      group: "storage",
+      group: "user-info",
       memberName: "characters",
       description: "View your characters.",
       throttling: {
@@ -28,7 +28,7 @@ module.exports = class CharactersCommand extends Command {
     const formatFilter = async (characterName) => {
       //prettier-ignore
       const { name, positionName } 
-      = await this.Game.Database.getCharacterProperties(player, characterName);
+      = await this.Game.Database.getCharacter(player, characterName);
       return `${name} ${this.Discord.emoji(positionName)}`;
     };
 

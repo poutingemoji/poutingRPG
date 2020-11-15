@@ -47,6 +47,20 @@ class Helper {
     return array[this.randomBetween(0, array.length - 1)];
   }
 
+  /**
+   * Returns a random value from an array
+   * @param value
+   * @param {Number} length
+   * @param {Array} array
+   * @returns Value
+   */
+  fillArray(value, len, arr = []) {
+    for (let i = 0; i < len; i++) {
+      arr.push(value);
+    }
+    return arr;
+  }
+
   /*
     GENERAL HELPERS
   */

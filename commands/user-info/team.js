@@ -9,7 +9,7 @@ module.exports = class TeamsCommand extends Command {
   constructor(client) {
     super(client, {
       name: "teams",
-      group: "storage",
+      group: "user-info",
       memberName: "teams",
       description: "Manage your teams.",
       examples: [

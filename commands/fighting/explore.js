@@ -8,12 +8,12 @@ const arcs = require("../../pouting-rpg/data/arcs");
 //UTILS
 const Battle = require("../../utils/game/Battle")
 
-module.exports = class BattleCommand extends Command {
+module.exports = class ExploreCommand extends Command {
   constructor(client) {
     super(client, {
-      name: "battle",
-      group: "game",
-      memberName: "battle",
+      name: "explore",
+      group: "fighting",
+      memberName: "explore",
       description: "Battle enemies.",
       throttling: {
         usages: 1,
@@ -32,8 +32,6 @@ module.exports = class BattleCommand extends Command {
     const defeatQuest = this.Game.findQuestType(player, "Defeat")
     new Battle({
       player,
-      quest: defeatQuest,
-      target: "Test Dummy",
       Discord: this.Discord,
       Game: this.Game,
       msg

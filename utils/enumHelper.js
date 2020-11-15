@@ -1,9 +1,17 @@
 const enumHelper = {
+  commandGroups: {
+    ["administrative"]: "Administrative Commands",
+    ["adventure"]: "Adventure Commands",
+    ["fighting"]: "Fighting Commands",
+    ["general-info"]: "General Info Commands",
+    ["user-info"]: "User Info Commands",
+  },
   maxTeamMembers: 3,
   maxTeams: 5,
   talkedRecently: new Set(),
   waitingOnResponse: new Set(),
   isInBattle: new Set(),
+  responseWaitTime: 60000,
   pageLength: 10,
   timeUntilFull: {
     HP: 30 * 60,
@@ -17,11 +25,7 @@ const enumHelper = {
   maxEnergy: (level) => {
     return 50 + level * 5;
   },
-  battleChoices: {
-    ["⚔️"]: "attack",
-    ["🛡️"]: "defend",
-    ["red cross"]: "escape",
-  },
+  battleChoices: ["atk", "def"],
   links: {
     website: "https://poutingemoji.github.io/poutingbot/",
     commandList: "https://poutingemoji.github.io/poutingbot/commands.html",

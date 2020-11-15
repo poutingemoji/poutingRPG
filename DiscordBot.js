@@ -89,7 +89,7 @@ class DiscordBot extends BaseHelper {
     dbl.on("posted", () => {
       console.log("Server count posted!");
     });
-    
+
     dbl.on("error", (err) => {
       console.error(err);
     });
@@ -98,12 +98,7 @@ class DiscordBot extends BaseHelper {
   loadCommands() {
     this.client.registry
       .registerDefaultTypes()
-      .registerGroups([
-        ["config", "Config Commands"],
-        ["game", "Game Commands"],
-        ["info", "Info Commands"],
-        ["storage", "Storage Commands"],
-      ])
+      .registerGroups(Object.entries(enumHelper.commandGroups))
       .registerDefaultGroups()
       .registerDefaultCommands({
         unknownCommand: false,
@@ -114,36 +109,29 @@ class DiscordBot extends BaseHelper {
     /*
       Updates Commands on website
     */
-    const groups = this.client.registry.groups;
-    let commands = [];
-    const jsonFiles = {
-      ["Game Commands"]: "game",
-      ["Info Commands"]: "info",
-      ["Storage Commands"]: "storage",
-    };
-    let commandsInfo = {};
+   
+    const commandsInfo = {};
     const secondsToTimeFormat = this.secondsToTimeFormat;
-    Object.keys(jsonFiles).forEach(function (key) {
-      groups
-        .filter(
-          (grp) => grp.name === key && grp.commands.some((cmd) => !cmd.hidden)
-        )
-        .map((grp) => {
-          grp.commands
-            .filter((cmd) => !cmd.hidden)
-            .map((cmd) =>
-              commands.push([
-                `${cmd.name}`,
-                `${cmd.description}${cmd.nsfw ? " (NSFW)" : ""}`,
-                `${cmd.examples ? cmd.examples.join("\n") : ""}`,
-                `${cmd.aliases ? cmd.aliases.join("\n") : ""}`,
-                secondsToTimeFormat(cmd.throttling.duration, ", ", false),
-              ])
-            );
-        });
-      commandsInfo[jsonFiles[key]] = commands;
-      commands = [];
-    });
+
+
+    this.client.registry.groups
+      .filter((grp) => grp.commands.some((cmd) => !cmd.hidden))
+      .map((grp) => {
+        let commands = [];
+        grp.commands
+          .filter((cmd) => !cmd.hidden)
+          .map((cmd) => {
+            console.log(cmd.name, cmd.description, cmd.throttling)
+            commands.push([
+              `${cmd.name}`,
+              `${cmd.description ? cmd.description : ""}${cmd.nsfw ? " (NSFW)" : ""}`,
+              `${cmd.examples ? cmd.examples.join("\n") : ""}`,
+              `${cmd.aliases ? cmd.aliases.join("\n") : ""}`,
+              secondsToTimeFormat(cmd.throttling ? cmd.throttling.duration : 0, ", ", false),
+            ])
+          });
+        commandsInfo[grp.name] = commands;
+      });
 
     fs.writeFile(
       `./docs/commandinfo.json`,

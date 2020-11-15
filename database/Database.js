@@ -169,16 +169,16 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     this.savePlayer(player);
   }
 
-  async getCharacterProperties(player, characterName) {
+  async getCharacter(player, characterName) {
     const user = await this.client.users.fetch(player.discordId);
     const isMC = enumHelper.isMC(characterName);
-    const characterData = characters[characterName];
+    const character = characters[characterName];
 
     return {
       name: isMC ? user.username : characterName,
-      rarity: characterData.level,
-      positionName: isMC ? player.position : characterData.position,
-      baseStats: characterData.baseStats,
+      rarity: character.level,
+      positionName: isMC ? player.position : character.position,
+      baseStats: character.baseStats,
     };
   }
 
@@ -214,21 +214,18 @@ class Database extends aggregation(BaseHelper, BaseGame) {
   }
 
   //INVENTORY
-  async addItem(player, item, amount = 1) {
+  addItem(player, item, amount = 1) {
     player.inventory.get(item)
       ? player.inventory.set(item, player.inventory.get(item) + amount)
       : player.inventory.set(item, amount);
-    await this.addQuestProgress(player, "Collect", item);
+    this.addQuestProgress(player, "Collect", item);
     this.savePlayer(player);
   }
 
   removeItem(player, item, amount = 1) {
+    //prettier-ignore
     player.inventory.get(item) >= 2
-      ? player.inventory.set(
-          item,
-          player.inventory.get(item) -
-            this.clamp(amount, 0, player.inventory.get(item))
-        )
+      ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
       : player.inventory.delete(item);
     this.savePlayer(player);
   }

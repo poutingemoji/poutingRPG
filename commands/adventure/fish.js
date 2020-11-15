@@ -8,7 +8,7 @@ module.exports = class FishCommand extends Command {
   constructor(client) {
     super(client, {
       name: "fish",
-      group: "game",
+      group: "adventure",
       memberName: "fish",
       description: "Do your fishing.",
       throttling: {
@@ -34,7 +34,7 @@ module.exports = class FishCommand extends Command {
     const fishName = this.Game.roguelike(items, 1, itemFilter);
     this.Game.Database.addItem(player, fishName);
     msg.reply(
-      `You fished out: **${fishName} ${this.Discord.emoji(fishName)}** !`
+      `You fished out: **${fishName} ${items[fishName].emoji}** !`
     );
   }
 };

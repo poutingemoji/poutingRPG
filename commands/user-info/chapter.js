@@ -12,7 +12,7 @@ module.exports = class ChapterCommand extends Command {
   constructor(client) {
     super(client, {
       name: "chapter",
-      group: "game",
+      group: "user-info",
       memberName: "chapter",
       description: "View your chapter progression.",
       throttling: {
@@ -31,8 +31,8 @@ module.exports = class ChapterCommand extends Command {
 
     //this.Game.Database.addQuests(player);
     console.log(player.storyQuests[3].progress);
-    const arcData = arcs[player.story.arc];
-    const chapter = arcData.chapters[player.story.chapter];
+    const arc = arcs[player.story.arc];
+    const chapter = arc.chapters[player.story.chapter];
     const { totalPercent, questsInfo } = getQuestsInfo(
       this.Discord,
       player.storyQuests
@@ -42,7 +42,7 @@ module.exports = class ChapterCommand extends Command {
     let description = stripIndents(`
     ${chapter.emoji} **${chapter.location.toUpperCase()}**
 
-    📖 **__${arcData.name} Arc__  - Chapter ${player.story.chapter + 1}/${arcData.chapters.length}** : ${chapter.name}
+    📖 **__${arc.name} Arc__  - Chapter ${player.story.chapter + 1}/${arc.chapters.length}** : ${chapter.name}
     ${this.setImportantMessage(chapter.description)}
   
     ${this.Discord.emoji("quest")} **__Quests__**: (${totalPercent}%)

@@ -20,25 +20,27 @@ const items = {
       points: 15,
     },
   },
-  
+
   //FISH
   ["Shrimp"]: {
     level: 1,
     weight: 1.0,
     spread: 1,
-    type: "Fish",
+    type: "Material",
     price: {
       points: 15,
     },
+    emoji: "🦐",
   },
   ["Fish"]: {
     level: 1,
     weight: 1.0,
     spread: 1,
-    type: "Fish",
+    type: "Material",
     price: {
       points: 20,
     },
+    emoji: "🐟",
   },
   ["Tropical Fish"]: {
     level: 2,
@@ -48,6 +50,7 @@ const items = {
     price: {
       points: 20,
     },
+    emoji: "🐠",
   },
   ["Blowfish"]: {
     level: 3,
@@ -57,6 +60,7 @@ const items = {
     price: {
       points: 25,
     },
+    emoji: "🐡",
   },
   ["Squid"]: {
     level: 3,
@@ -66,6 +70,7 @@ const items = {
     price: {
       points: 30,
     },
+    emoji: "🦑",
   },
   ["Octopus"]: {
     level: 3,
@@ -75,6 +80,7 @@ const items = {
     price: {
       points: 15,
     },
+    emoji: "🐙",
   },
   ["Metalfish"]: {
     level: 4,
@@ -84,6 +90,7 @@ const items = {
     price: {
       points: 40,
     },
+    emoji: "⚙️",
   },
   ["Silver Fish"]: {
     level: 5,
@@ -93,6 +100,7 @@ const items = {
     price: {
       points: 50,
     },
+    emoji: "⛓️",
   },
   ["Crystal Shard"]: {
     level: 6,
@@ -102,6 +110,7 @@ const items = {
     price: {
       points: 90,
     },
+    emoji: "💠",
   },
   ["Baby Zygaena"]: {
     level: 10,
@@ -111,6 +120,7 @@ const items = {
     price: {
       points: 150,
     },
+    emoji: "💮",
   },
   ["Sweetfish"]: {
     level: 12,
@@ -120,6 +130,7 @@ const items = {
     price: {
       dallars: 5,
     },
+    emoji: "🦈",
   },
 };
 

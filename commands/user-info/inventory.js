@@ -9,7 +9,7 @@ module.exports = class InventoryCommand extends Command {
     super(client, {
       name: "inventory",
       aliases: ["inv"],
-      group: "storage",
+      group: "user-info",
       memberName: "inventory",
       description: "View your inventory.",
       throttling: {
@@ -29,12 +29,13 @@ module.exports = class InventoryCommand extends Command {
     const inventoryOwned = Array.from(player.inventory.keys());
 
     const formatFilter = (itemName) => {
+      console.log(itemName)
       const itemData = items[itemName];
       switch (itemData.type) {
         case "Fish":
           return `${player.inventory.get(
             itemName
-          )} **${itemName}** ${this.Discord.emoji(itemName)} | ${
+          )} **${itemName}** ${itemData.emoji} | ${
             itemData.type
           } | Rarity: ${itemData.level}`;
         case "Weapon":

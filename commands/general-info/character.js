@@ -12,7 +12,7 @@ module.exports = class CharacterCommand extends Command {
     super(client, {
       name: "character",
       aliases: ["char"],
-      group: "info",
+      group: "general-info",
       memberName: "character",
       description: "Get info on your character.",
       examples: [],
@@ -51,7 +51,7 @@ module.exports = class CharacterCommand extends Command {
       positionName,
       rarity,
       baseStats,
-    } = await this.Game.Database.getCharacterProperties(player, characterName);
+    } = await this.Game.Database.getCharacter(player, characterName);
 
     const data = {};
     for (const baseStat in baseStats) {

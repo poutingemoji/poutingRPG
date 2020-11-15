@@ -9,7 +9,7 @@ module.exports = class StartCommand extends Command {
   constructor(client) {
     super(client, {
       name: "start",
-      group: "game",
+      group: "user-info",
       memberName: "start",
       description: "Start your adventure.",
       throttling: {
@@ -25,10 +25,10 @@ module.exports = class StartCommand extends Command {
   async run(msg) {
     const player = await this.Game.Database.findPlayer(msg.author);
     if (player) {
-      const res = await this.Discord.confirmation(
+      const res = await this.Discord.confirmation({
         msg,
-        "Are you sure you want to start over?"
-      );
+        response: "Are you sure you want to start over?"
+      });
       if (!res) return;
     }
 
@@ -48,6 +48,7 @@ module.exports = class StartCommand extends Command {
               author: msg.author.id,
               msg: msgSent,
               chooseFrom: traits[i],
+              deleteOnResponse: true,
             });
           })
       );
