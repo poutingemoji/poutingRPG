@@ -179,6 +179,7 @@ class Database extends aggregation(BaseHelper, BaseGame) {
       rarity: character.level,
       positionName: isMC ? player.position : character.position,
       baseStats: character.baseStats,
+      talent: character.talent,
     };
   }
 

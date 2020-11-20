@@ -8,7 +8,7 @@ const items = require("../pouting-rpg/data/items");
 
 // UTILS
 const Database = require("../database/Database");
-const Battle = require("../utils/game/Battle");
+const PVEBattle = require("../utils/game/PVEBattle");
 const enumHelper = require("../utils/enumHelper");
 
 class Game extends BaseGame {

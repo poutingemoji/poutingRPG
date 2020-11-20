@@ -21,7 +21,3 @@ class Command extends aggregation(BaseCommand, BaseGame, BaseHelper) {
 }
 
 module.exports = Command;
-
-function isPlayer(obj) {
-  return obj.hasOwnProperty("discordId")
-}

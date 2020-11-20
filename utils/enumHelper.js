@@ -1,3 +1,5 @@
+const characters = require("../pouting-rpg/data/characters")
+const enemies = require("../pouting-rpg/data/enemies")
 const enumHelper = {
   commandGroups: {
     ["administrative"]: "Administrative Commands",
@@ -19,11 +21,34 @@ const enumHelper = {
   isMC: (characterName) => {
     return characterName == "Irregular";
   },
+  isEnemy(name) {
+    return enemies.hasOwnProperty(name);
+  },
   maxHealth: (level) => {
     return 100 + level * 5;
   },
   maxEnergy: (level) => {
     return 50 + level * 5;
+  },
+  getBattleStats(name) {
+    const data = this.isEnemy(name) ? enemies[name] : characters[name];
+    return {
+      name: name,
+      HP: this.calculateHealth(data),
+      HP_MAX: this.calculateHealth(data),
+      ATK: this.calculateAttack(data),
+      target: { position: null, turns: 0 },
+      effects: {
+        ["Yes"]: 3,
+      }
+    };
+  },
+  calculateHealth(data) {
+    //this.player.level
+    return data.baseStats.HP;
+  },
+  calculateAttack(data) {
+    return data.baseStats.ATK;
   },
   battleChoices: ["atk", "def"],
   links: {

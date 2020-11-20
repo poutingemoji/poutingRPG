@@ -11,7 +11,6 @@ const enumHelper = require("../utils/enumHelper");
 class Discord {
   constructor(client) {
     this.client = client;
-
     this.Pagination = new Pagination(this);
   }
 
@@ -90,7 +89,7 @@ class Discord {
   }
 
   async awaitResponse(params) {
-    let {
+    const {
       type,
       filter,
       responseWaitTime = enumHelper.responseWaitTime,
@@ -111,7 +110,6 @@ class Discord {
         return msg.channel
           .awaitMessages(filter || messageFilter, { max: 1, time: responseWaitTime, errors: ["time"] })
           .then((collected) => {
-            console.log(collected.first())
             enumHelper.waitingOnResponse.clear(author)
             return collected.first().content
           })

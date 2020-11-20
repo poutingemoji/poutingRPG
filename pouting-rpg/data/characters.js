@@ -8,7 +8,11 @@ const characters = {
       HP: 150,
       ATK: 30,
     },
-    talents: positions["Fisherman"].talents[0],
+    talent: {
+      attack: "Storm",
+      defend: "Attack",
+      passive: "Healing Strike",
+    }
   },
 
   ["Rachel"]: {

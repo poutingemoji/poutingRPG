@@ -6,7 +6,7 @@ const { stripIndents } = require("common-tags");
 const arcs = require("../../pouting-rpg/data/arcs");
 
 // UTILS
-const Battle = require("../../utils/game/Battle");
+const PVEBattle = require("../../utils/game/PVEBattle");
 
 module.exports = class ChapterCommand extends Command {
   constructor(client) {
@@ -45,7 +45,7 @@ module.exports = class ChapterCommand extends Command {
     📖 **__${arc.name} Arc__  - Chapter ${player.story.chapter + 1}/${arc.chapters.length}** : ${chapter.name}
     ${this.setImportantMessage(chapter.description)}
   
-    ${this.Discord.emoji("quest")} **__Quests__**: (${totalPercent}%)
+    📜 **__Quests__**: (${totalPercent}%)
     ${questsInfo}
     `);
     msg.reply(`\n${description}`);

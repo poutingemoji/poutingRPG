@@ -1,0 +1,172 @@
+//BASE
+const BaseBattle = require("../../Base/Battle")
+const BaseHelper = require("../../Base/Helper");
+const { aggregation } = require("../../Base/Util");
+const { stripIndents } = require("common-tags");
+
+//DATA
+const arcs = require("../../pouting-rpg/data/arcs");
+const characters = require("../../pouting-rpg/data/characters");
+const emojis = require("../../pouting-rpg/data/emojis");
+const enemies = require("../../pouting-rpg/data/enemies");
+const floors = require("../../pouting-rpg/data/floors");
+const talents = require("../../pouting-rpg/data/talents");
+
+//UTILS
+const enumHelper = require("../enumHelper");
+const battleChoices = enumHelper.battleChoices;
+
+class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
+  constructor(params) {
+    super(params);
+    const { totalEnemies, quest } = params;
+    this.quest = quest;
+    this.totalEnemies = totalEnemies;
+    this.wave = 0;
+    this.enemies = this.totalEnemies[this.wave];
+
+    this.header = stripIndents(`
+    ${this.msg.author}
+    **TEAM POWER**: ${this.team.map((t) => t.name).join(", ")}
+    **ENEMIES POWER**: ${this.enemies.map((e) => e.name).join(", ")}
+    `);
+    this.initiateBattle();
+  }
+
+  async initiateBattle() {
+    if (!this.team)
+      return this.msg.reply("You don't have a team selected to battle with.");
+    this.msgSent = await this.msg.say(this.header);
+    const res = await this.Discord.confirmation({
+      msg: this.msgSent,
+      author: this.player.discordId,
+    });
+    if (!res) return;
+    enumHelper.isInBattle.add(this.player.discordId);
+
+    for (this.wave; this.wave < this.totalEnemies.length; this.wave++) {
+      await this.startWave();
+      if (!enumHelper.isInBattle.has(this.player.discordId)) break;
+    }
+  }
+
+  async startWave() {
+    do {
+      this.header = stripIndents(`
+      **Team**
+      ${this.team.map(formatProfile).join("\n")}
+  
+      **[Wave ${this.wave + 1}/${this.totalEnemies.length}] Enemies**
+      ${this.enemies.map(formatProfile).join("\n")}
+  
+      __Battle Log__
+      `);
+      this.msgSent.edit(this.header);
+
+      if (this.header.length + (this.body.length || 0) > this.maxLength) this.body = ""; 
+
+      this.msgSent.edit(`${this.header}\n${this.body}`);
+      const res = await this.startTurn();
+      if (!res) enumHelper.isInBattle.delete(this.player.discordId); 
+    } while (this.enemies.some((e) => e.HP > 0) && enumHelper.isInBattle.has(this.player.discordId));
+  }
+
+  async startTurn() {
+    //if (!enumHelper.isInBattle.has(this.player.discordId)) return;
+    const Battle = this;
+    const res = await this.Discord.awaitResponse({
+      type: "message",
+      filter: function (response) {
+        if (!response) return;
+        const args = response.content.split(" ");
+        return (
+          args.length == 3 &&
+          Object.keys(Battle.team).includes((args[0] - 1).toString()) &&
+          battleChoices.includes(args[1]) &&
+          Object.keys(Battle.enemies).includes((args[2] - 1).toString()) &&
+          response.author.id == Battle.player.discordId
+        );
+      },
+      msg: this.msgSent,
+    });
+    if (!res) return;
+    const args = res.split(" ");
+    const caster = this.team[args[0] - 1];
+    const target = args[1] == "atk" ? this.enemies[args[2] - 1] : this.team[args[2] - 1];
+    const talentTypes = {
+      ["atk"]: {
+        name: "attack",
+        emoji: "⚔",
+      },
+      ["def"]: {
+        name: "defend",
+        emoji: "🛡",
+      },
+    };
+    //prettier-ignore
+    const talentType = talentTypes[args[1]]
+    const talentName = enumHelper.isEnemy(caster.name) ? enemies[caster.name].talent[talentType.name] : characters[caster.name].talent[talentType.name]
+    const { team, enemies } = talents[talentName]({
+      caster: caster,
+      target: target,
+      team: this.team,
+      enemies: this.enemies,
+    });
+    this.team = team;
+    this.enemies = enemies;
+    this.body += `${caster.name} uses **${talentName}** ${talentType.emoji} on ${target.name}.\n`;
+    caster.turnEnded = true
+    return res;
+  }
+
+  escape() {
+    enumHelper.isInBattle.delete(this.player.discordId);
+    this.msgSent.delete();
+  }
+
+  async endBattle() {
+    const drops = enemies[this.enemy.name].drops;
+    this.Game.addRewards(this.player, drops);
+    let dropsMsg = "";
+    for (const dropName in drops) {
+      dropsMsg += `+ **${drops[dropName]}** ${dropName} ${this.Discord.emoji(
+        dropName
+      )}\n`;
+    }
+    this.body +=
+      "\n" +
+      stripIndents(`
+    **__RESULT__**
+    **${this.target.name}** was defeated! 💀
+    👑 **${this.attacker.name}** won the fight!
+
+    **__DROPS__**
+    ${dropsMsg}
+    `);
+    enumHelper.isInBattle.delete(this.player.discordId);
+    this.msgSent.edit(`${this.header}\n${this.body}`);
+    /*
+    this.msgSent.reactions.removeAll().catch(console.error);
+    const res = await this.Discord.awaitResponse({
+      type: "reaction",
+      author: this.player.discordId,
+      msg: this.msgSent,
+      chooseFrom: ["➡", "red cross"],
+      deleteOnResponse: true,
+    });*/
+    await this.Game.Database.addQuestProgress(
+      this.player,
+      "Defeat",
+      this.enemy.name,
+      1
+    );
+  }
+}
+
+module.exports = PVEBattle;
+
+function formatProfile(obj, i) {
+  //prettier-ignore
+  console.log(obj.target.position)
+  return `${i+1}) ${obj.turnEnded ? "☑ " : ""}${obj.name} (${obj.HP}/${obj.HP_MAX} HP)${obj.target.position !== null ? ` | Target: ${obj.target.position+1}` : ""}${obj.effects.length !== 0 ? ` | Effects: ${Object.keys(obj.effects).join(", ")}` : ""}`
+}

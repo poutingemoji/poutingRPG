@@ -2,6 +2,7 @@
 const BaseDiscord = require("./Base/Discord");
 const BaseHelper = require("./base/Helper");
 
+const { stripIndents } = require("common-tags");
 const DBL = require("dblapi.js");
 const { CommandoClient } = require("discord.js-commando");
 const fs = require("fs");
@@ -47,12 +48,11 @@ class DiscordBot extends BaseHelper {
 
     this.client.on("error", console.error);
     this.client.once("ready", () => {
-      console.log(
-        `Logged in as ${this.client.user.tag}! (${this.client.user.id})`
-      );
-      console.log("Guilds: " + this.client.guilds.cache.size);
-      console.log("Users: " + this.client.users.cache.size);
-
+      console.log(stripIndents(`
+        Logged in as ${this.client.user.tag}! (${this.client.user.id})
+        Guilds: ${this.client.guilds.cache.size}
+        Users: ${this.client.users.cache.size}
+      `))
       if (!this.client.user.avatarURL) {
         // avatarURL == null if not set
         this.client.user.setAvatar(
@@ -111,8 +111,7 @@ class DiscordBot extends BaseHelper {
     */
    
     const commandsInfo = {};
-    const secondsToTimeFormat = this.secondsToTimeFormat;
-
+    const secondsToTimeFormat = this.secondsToTimeFormat;    
 
     this.client.registry.groups
       .filter((grp) => grp.commands.some((cmd) => !cmd.hidden))
@@ -121,7 +120,6 @@ class DiscordBot extends BaseHelper {
         grp.commands
           .filter((cmd) => !cmd.hidden)
           .map((cmd) => {
-            console.log(cmd.name, cmd.description, cmd.throttling)
             commands.push([
               `${cmd.name}`,
               `${cmd.description ? cmd.description : ""}${cmd.nsfw ? " (NSFW)" : ""}`,

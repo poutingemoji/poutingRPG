@@ -6,8 +6,6 @@ const emojis = {
   ["empty_star"]: "762389249772617729",
   ["loading"]: "730597505938620437",
 
-  ["quest"]: "📜",
-
   //CURRENCY
   ["points"]: "▫",
   ["dallars"]: "765338222322122752",
