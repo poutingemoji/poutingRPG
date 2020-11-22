@@ -8,6 +8,7 @@ const BaseHelper = require("../Base/Helper");
 const { aggregation } = require("../Base/Util");
 
 //DATA
+const { newCharacterObj } = require("./schemas/character");
 const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
 const arcs = require("../pouting-rpg/data/arcs");
@@ -76,6 +77,19 @@ class Database extends aggregation(BaseHelper, BaseGame) {
       .catch(console.error);
   }
 
+  savePlayer(player, update) {
+    if (update && !update.hasOwnProperty("$unset"))
+      update = Object.assign(player, update);
+    Player.updateOne(
+      { discordId: player.discordId },
+      update || player,
+      { upsert: true },
+      (err, res) => {
+        //console.log(res);
+      }
+    );
+  }
+
   async findPlayer(user, msg) {
     const res = await this.loadPlayer(user.id);
     if (!res) {
@@ -91,36 +105,15 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     return res;
   }
 
-  // PLAYER
-  addExpToPlayer(player, expToAdd, msg) {
-    const previousAR = player.level.current;
-    player.exp.current += expToAdd;
-
-    while (
-      player.exp.current >= player.exp.total &&
-      player.level.current < player.level.total
-    ) {
-      player.level.current++;
-      player.exp.current -= player.exp.total;
-      player.exp.total = Parser.evaluate(enumHelper.expFormulas["player"], {
-        n: player.level.current + 1,
-      });
-    }
-
-    if (player.level.current !== previousAR) {
-      msg.say(
-        `🆙 Congratulations ${msg.author.toString()}, you've reached Adventure Rank **${
-          player.level.current
-        }**!\n\n`
-      );
-    }
-    this.savePlayer(player);
-  }
-
-  async addValueToPlayer(player, key, value) {
-    player[key] += value;
-    await this.addQuestProgress(player, "Earn", key, value);
-    this.savePlayer(player);
+  loadPlayer(discordId) {
+    return new Promise((resolve, reject) =>
+      Player.findOne({ discordId: discordId }, (err, res) => {
+        if (err) {
+          return reject(res);
+        }
+        return resolve(res);
+      })
+    );
   }
 
   createNewPlayer(discordId, { factionName, positionName }) {
@@ -139,48 +132,112 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     );
   }
 
-  loadPlayer(discordId) {
-    return new Promise((resolve, reject) =>
-      Player.findOne({ discordId: discordId }, (err, res) => {
-        if (err) {
-          return reject(res);
-        }
-        return resolve(res);
-      })
-    );
-  }
-
-  savePlayer(player, update) {
-    if (update && !update.hasOwnProperty("$unset"))
-      update = Object.assign(player, update);
-    Player.updateOne(
-      { discordId: player.discordId },
-      update || player,
-      { upsert: true },
-      (err, res) => {
-        //console.log(res);
-      }
-    );
-  }
-
-  addCharacter(player, characterName) {
-    if (player.characters.includes(characterName)) return;
-    player.characters.push(characterName);
+  //PLAYER
+  addExpToPlayer(player, expToAdd) {
+    player.exp.current += expToAdd;
+    while (
+      player.exp.current >= player.exp.total &&
+      player.adventureRank.current < player.adventureRank.total
+    ) {
+      player.adventureRank.current++;
+      player.exp.current -= player.exp.total;
+      player.exp.total = Parser.evaluate(enumHelper.expFormulas["player"], {
+        n: player.adventureRank.current + 1,
+      });
+    }
     this.savePlayer(player);
   }
 
+  async addValueToPlayer(player, key, value) {
+    player[key] += value;
+    await this.updateQuestProgress(player, "Earn", key, value);
+    this.savePlayer(player);
+  }
+
+  //CHARACTER
   async getCharacter(player, characterName) {
     const user = await this.client.users.fetch(player.discordId);
     const isMC = enumHelper.isMC(characterName);
-    const character = characters[characterName];
-
+    const character = Object.assign(
+      {},
+      player.characters.get(characterName),
+      characters[characterName]
+    );
+    console.log(character);
     return {
       name: isMC ? user.username : characterName,
-      rarity: character.level,
+      level: character.level,
+      exp: character.exp,
       positionName: isMC ? player.position : character.position,
       baseStats: character.baseStats,
       talent: character.talent,
     };
+  }
+
+  addExpToCharacter(player, expToAdd, characterName) {
+    const character = player.characters.get(characterName);
+    character.exp.current += expToAdd;
+    while (
+      character.exp.current >= character.exp.total &&
+      character.level.current < character.level.total
+    ) {
+      character.level.current++;
+      character.exp.current -= character.exp.total;
+      character.exp.total = Parser.evaluate(enumHelper.expFormulas["player"], {
+        n: character.level.current + 1,
+      });
+    }
+    this.savePlayer(player);
+  }
+
+  addCharacter(player, characterName) {
+    if (Object.keys(Array.from(player.characters)).includes(characterName))
+      return;
+    player.characters.set(characterName, newCharacterObj());
+    this.savePlayer(player);
+  }
+
+  //INVENTORY
+  addItem(player, item, amount = 1) {
+    player.inventory.get(item)
+      ? player.inventory.set(item, player.inventory.get(item) + amount)
+      : player.inventory.set(item, amount);
+    this.updateQuestProgress(player, "Collect", item);
+    this.savePlayer(player);
+  }
+
+  removeItem(player, item, amount = 1) {
+    //prettier-ignore
+    player.inventory.get(item) >= 2
+      ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
+      : player.inventory.delete(item);
+    this.savePlayer(player);
+  }
+
+  //LEADERBOARD
+  loadLeaderboard(type) {
+    const { where, gte = 0, sort } = enumHelper.leaderboardFilters[type];
+    return Player.find().where(where).gte(gte).sort(sort).exec();
+  }
+
+  //QUEST
+  updateQuestProgress(player, type, id, value = 1) {
+    const quest = this.findQuestType(player, type, id);
+    console.log(quest, id);
+    if (!quest || quest.progress == quest.goal) return;
+    console.log(quest, id);
+    if (isNaN(value)) {
+      quest.progress = value;
+    } else {
+      quest.progress += Math.min(value, quest.goal - quest.progress);
+      console.log(quest.progress);
+    }
+  }
+
+  addQuests(player) {
+    this.savePlayer(player, {
+      storyQuests: arcs[player.story.arc].chapters[player.story.chapter].quests,
+    });
   }
 
   //TEAM
@@ -214,77 +271,7 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     this.savePlayer(player);
   }
 
-  //INVENTORY
-  addItem(player, item, amount = 1) {
-    player.inventory.get(item)
-      ? player.inventory.set(item, player.inventory.get(item) + amount)
-      : player.inventory.set(item, amount);
-    this.addQuestProgress(player, "Collect", item);
-    this.savePlayer(player);
-  }
-
-  removeItem(player, item, amount = 1) {
-    //prettier-ignore
-    player.inventory.get(item) >= 2
-      ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
-      : player.inventory.delete(item);
-    this.savePlayer(player);
-  }
-
-  //LEADERBOARD
-  loadLeaderboard(type) {
-    const { where, gte = 0, sort } = enumHelper.leaderboardFilters[type];
-    return Player.find().where(where).gte(gte).sort(sort).exec();
-  }
-
-  //QUEST
-  addQuests(player) {
-    this.savePlayer(player, {
-      storyQuests: arcs[player.story.arc].chapters[player.story.chapter].quests,
-    });
-  }
-
-  addQuestProgress(player, type, id, value = 1) {
-    const quest = this.findQuestType(player, type, id);
-    console.log(quest, id);
-    if (!quest || quest.progress == quest.goal) return;
-    console.log(quest, id);
-    if (isNaN(value)) {
-      quest.progress = value;
-    } else {
-      quest.progress += Math.min(value, quest.goal - quest.progress);
-      console.log(quest.progress);
-    }
-  }
-
-  //SETTING
-  async isSpawnsEnabled(channel) {
-    const setting = await this.loadSetting(channel.guild.id);
-    if (!setting) return;
-    return setting.settings.spawnsEnabled.includes(channel.id);
-  }
-
-  async setSpawnsEnabled(channel) {
-    let setting = await this.loadSetting(channel.guild.id);
-    if (!setting) {
-      await this.createNewSetting(channel.guild.id);
-      setting = await this.loadSetting(channel.guild.id);
-    }
-    let response;
-    if (setting.settings.spawnsEnabled.includes(channel.id)) {
-      const index = setting.settings.spawnsEnabled.indexOf(channel.id);
-      if (index > -1) {
-        setting.settings.spawnsEnabled.splice(index, 1);
-      }
-      response = `${channel} will no longer be used for spawning regulars!`;
-    } else {
-      setting.settings.spawnsEnabled.push(channel.id);
-      response = `${channel} will now be used for spawning regulars!`;
-    }
-    this.saveSetting(setting);
-    return response;
-  }
-
+  //SETTINGS
   createNewSetting(guild) {
     return new Promise((resolve, reject) =>
       Setting.replaceOne(

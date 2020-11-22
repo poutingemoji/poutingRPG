@@ -13,7 +13,6 @@ class Pagination {
   async buildEmbeds(params, formatFilter, data, pageLength = 10) {
     //prettier-ignore
     const { msg, footer } = params;
-
     const embeds = [];
     let { maxPage } = this.paginate(data, 1, pageLength);
 

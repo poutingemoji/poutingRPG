@@ -8,7 +8,7 @@ const enemies = {
       HP: 100,
       ATK: 100,
     },
-    talents: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
+    talent: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
     drops: {["Sweetfish"]: 4, ["Baby Zygaena"]: 69},
   },
   ["Ball"]: {
@@ -19,7 +19,7 @@ const enemies = {
     baseStats: {
       HP: 50,
     },
-    talents: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
+    talent: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
     drops: {["Sweetfish"]: 4, ["Baby Zygaena"]: 69},
   },
 };

@@ -11,7 +11,6 @@ const emojis = {
   ["dallars"]: "765338222322122752",
   ["suspendium"]: "765338211362406422",
 
-
   //FACTIONS
   ["Zahard_Empire"]: "765415066580287500",
   ["FUG"]: "765415092589690881",
@@ -29,22 +28,6 @@ const emojis = {
   ["Khel_Hellam"]: "766038373847924746",
   ["Urek_Mazino"]: "766037035822612520",
   ["Rak"]: "729190277511905301",
-
-  //ITEMS
-  ["Leviathan"]: "🐍",
-  ["Mago"]: "🌋",
-  ["Great_Black_Hook"]: "⬛",
-  ["Eyes_Of_God"]: "👀",
-  ["Shinsu_Codex"]: "📔",
-
-  //QUALITIES
-  ["Wind"]: "🌬️",
-  ["Earth"]: "⛰️",
-  ["Lightning"]: "⚡",
-  ["Nature"]: "🌿",
-  ["Water"]: "💧",
-  ["Fire"]: "🔥",
-  ["Frost"]: "❄️",
 };
 
 module.exports = emojis;

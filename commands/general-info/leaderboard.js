@@ -3,7 +3,9 @@ const Command = require("../../Base/Command");
 
 //DATA
 
-module.exports = class TopCommand extends Command {
+module.exports = class TopCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "top",
@@ -42,7 +44,7 @@ module.exports = class TopCommand extends Command {
           const user = await this.client.users.fetch(player.discordId);
           switch (type) {
             case "level":
-              attributes.push(`AR: ${player.level.current}`);
+              attributes.push(`AR: ${player.adventureRank.current}`);
               break;
           }
           return `${user.tag} ${this.Discord.emoji(

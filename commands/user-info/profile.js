@@ -4,7 +4,9 @@ const moment = require("moment");
 
 //DATA
 
-module.exports = class ProfileCommand extends Command {
+module.exports = class ProfileCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "profile",
@@ -36,7 +38,7 @@ module.exports = class ProfileCommand extends Command {
     if (!player) return;
 
     const data = {
-      ["Adventure Rank"]: player.level.current,
+      ["Adventure Rank"]: player.adventureRank.current,
       [`*[${player.exp.current}/${player.exp.total} EXP]*`]: "",
       [`${this.Discord.emoji("points")} Points`]: player.points,
       [`${this.Discord.emoji("dallars")} Dallars`]: player.dallars,

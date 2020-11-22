@@ -4,7 +4,9 @@ const Command = require("../../Base/Command");
 //DATA
 const items = require("../../pouting-rpg/data/items");
 
-module.exports = class FishCommand extends Command {
+module.exports = class FishCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "fish",
@@ -33,8 +35,6 @@ module.exports = class FishCommand extends Command {
     //this.Game.Database.addValueToPlayer(player, "points", 5)
     const fishName = this.Game.roguelike(items, 1, itemFilter);
     this.Game.Database.addItem(player, fishName);
-    msg.reply(
-      `You fished out: **${fishName} ${items[fishName].emoji}** !`
-    );
+    msg.reply(`You fished out: **${fishName} ${items[fishName].emoji}** !`);
   }
 };

@@ -1,5 +1,5 @@
-const characters = require("../pouting-rpg/data/characters")
-const enemies = require("../pouting-rpg/data/enemies")
+const characters = require("../pouting-rpg/data/characters");
+const enemies = require("../pouting-rpg/data/enemies");
 const enumHelper = {
   commandGroups: {
     ["administrative"]: "Administrative Commands",
@@ -8,27 +8,35 @@ const enumHelper = {
     ["general-info"]: "General Info Commands",
     ["user-info"]: "User Info Commands",
   },
-  maxTeamMembers: 3,
-  maxTeams: 5,
+  battleChoices: {
+    atk: "attack",
+    def: "defend",
+  },
+  talentTypes: {
+    attack: {
+      emoji: "🗡️",
+    },
+    defend: {
+      emoji: "🛡️",
+    },
+    passive: {
+      emoji: "🕊️",
+    }
+  },
+  responseWaitTime: 60000,
+  pageLength: 10,
+  //Sets
   talkedRecently: new Set(),
   waitingOnResponse: new Set(),
   isInBattle: new Set(),
-  responseWaitTime: 60000,
-  pageLength: 10,
-  timeUntilFull: {
-    HP: 30 * 60,
-  },
+  //Team
+  maxTeamMembers: 3,
+  maxTeams: 5,
   isMC: (characterName) => {
     return characterName == "Irregular";
   },
   isEnemy(name) {
     return enemies.hasOwnProperty(name);
-  },
-  maxHealth: (level) => {
-    return 100 + level * 5;
-  },
-  maxEnergy: (level) => {
-    return 50 + level * 5;
   },
   getBattleStats(name) {
     const data = this.isEnemy(name) ? enemies[name] : characters[name];
@@ -40,17 +48,16 @@ const enumHelper = {
       target: { position: null, turns: 0 },
       effects: {
         ["Yes"]: 3,
-      }
+      },
     };
   },
   calculateHealth(data) {
-    //this.player.level
+    //this.player.adventureRank
     return data.baseStats.HP;
   },
   calculateAttack(data) {
     return data.baseStats.ATK;
   },
-  battleChoices: ["atk", "def"],
   links: {
     website: "https://poutingemoji.github.io/poutingbot/",
     commandList: "https://poutingemoji.github.io/poutingbot/commands.html",

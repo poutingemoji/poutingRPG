@@ -6,7 +6,7 @@ const talents = {
 
   //ATTACK
   ["Attack"]: function (params) {
-    const { caster, target, team, enemies, getDescription, getType } = params;
+    const { caster, target, attackingTeam, defendingTeam, getDescription, getType } = params;
     this.baseDMG = 30;
     const n = caster ? calculateAttackDMG(this.baseDMG, caster.ATK) : this.baseDMG;
     this.type = "Attack";
@@ -19,37 +19,37 @@ const talents = {
 
     target.HP -= n;
     //prettier-ignore
-    target.target.position = enumHelper.isEnemy(caster.name) ? enemies.indexOf(caster) : team.indexOf(caster)
+    target.target.position = enumHelper.isEnemy(caster.name) ? defendingTeam.indexOf(caster) : attackingTeam.indexOf(caster)
     target.target.turns = 3
     return {
-      team,
-      enemies,
+      attackingTeam,
+      defendingTeam,
     };
   },
   ["Storm"]: function (params) {
-    const { caster, target, team, enemies, getDescription, getType } = params;
+    const { caster, target, attackingTeam, defendingTeam, getDescription, getType } = params;
     this.baseDMG = 10;
     const n = caster ? calculateAttackDMG(this.baseDMG, caster.ATK) : this.baseDMG;
     this.type = "Attack";
-    this.description = `Deals __${n}__ damage to all enemies.`
+    this.description = `Deals __${n}__ damage to all defendingTeam.`
 
     const data = {};
     if (getDescription) data.description = this.description
     if (getType) data.type = this.type
     if (getDescription || getType) return data;
 
-    enemies.map(e => e.HP -= n)
+    defendingTeam.map(e => e.HP -= n)
     return {
-      team,
-      enemies,
+      attackingTeam,
+      defendingTeam,
     };
   },
   ["Healing Strike"]: function (params) {
-    const { caster, target, team, enemies, getDescription, getType } = params;
+    const { caster, target, attackingTeam, defendingTeam, getDescription, getType } = params;
     this.baseDMG = 20;
     const n = caster ? calculateAttackDMG(this.baseDMG, caster.ATK) : this.baseDMG;
     this.type = "Attack";
-    this.description = `Deals __${n}__ damage; Heals team by 20% of dealt damage.`
+    this.description = `Deals __${n}__ damage; Heals attackingTeam by 20% of dealt damage.`
 
     const data = {};
     if (getDescription) data.description = this.description
@@ -57,14 +57,14 @@ const talents = {
     if (getDescription || getType) return data;
 
     target.HP -= n;
-    team.map((t) => t.HP + (0.2 * n) / team.length);
+    attackingTeam.map((t) => t.HP + (0.2 * n) / attackingTeam.length);
     return {
-      team,
-      enemies,
+      attackingTeam,
+      defendingTeam,
     };
   },
   ["Pummel"]: function (params) {
-    const { caster, target, team, enemies, getDescription, getType } = params;
+    const { caster, target, attackingTeam, defendingTeam, getDescription, getType } = params;
     this.baseDMG = 35;
     const n = caster ? calculateAttackDMG(this.baseDMG, caster.ATK) : this.baseDMG;
     this.type = "Attack";
@@ -77,8 +77,8 @@ const talents = {
 
     target.HP -= n;
     return {
-      team,
-      enemies,
+      attackingTeam,
+      defendingTeam,
     };
   },
   ["Itching Powder"]: function () {
