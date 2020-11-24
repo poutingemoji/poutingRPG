@@ -17,8 +17,6 @@ module.exports = class MineCommand extends Command {
         duration: 86400,
       },
     });
-    this.Discord = this.getDiscord();
-    this.Game = this.getGame();
   }
 
   async run(msg) {

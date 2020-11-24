@@ -29,8 +29,6 @@ module.exports = class InventoryCommand extends (
         duration: 2,
       },
     });
-    this.Discord = this.getDiscord();
-    this.Game = this.getGame();
   }
 
   async run(msg, { category }) {

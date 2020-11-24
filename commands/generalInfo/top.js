@@ -28,8 +28,6 @@ module.exports = class LeaderboardCommand extends (
         duration: 5,
       },
     });
-    this.Discord = this.getDiscord();
-    this.Game = this.getGame();
   }
 
   async run(msg, { type }) {

@@ -22,8 +22,6 @@ module.exports = class ChapterCommand extends (
         duration: 2,
       },
     });
-    this.Discord = this.getDiscord();
-    this.Game = this.getGame();
   }
 
   async run(msg) {

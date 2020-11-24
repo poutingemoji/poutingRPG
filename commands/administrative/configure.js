@@ -26,7 +26,6 @@ module.exports = class ConfigureCommand extends Command {
       ownerOnly: true,
       userPermissions: ["ADMINISTRATOR"],
     });
-    this.Game = this.getGame();
   }
 
   async run(msg, { setting }) {

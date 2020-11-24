@@ -11,12 +11,10 @@ const enumHelper = require("../utils/enumHelper");
 const { Discord, Game } = require("../DiscordBot");
 
 class Command extends aggregation(BaseCommand, BaseGame, BaseHelper) {
-  getDiscord() {
-    return Discord;
-  }
-
-  getGame() {
-    return Game;
+  constructor(client, commandInfo) {
+    super(client, commandInfo);
+    this.Discord = Discord;
+    this.Game = Game;
   }
 }
 

@@ -5,9 +5,8 @@ const Command = require("../../Base/Command");
 const factions = require("../../poutingRPG/data/factions");
 const positions = require("../../poutingRPG/data/positions");
 
-module.exports = class StartCommand extends (
-  Command
-) {
+//prettier-ignore
+module.exports = class StartCommand extends Command {
   constructor(client) {
     super(client, {
       name: "start",
@@ -19,8 +18,6 @@ module.exports = class StartCommand extends (
         duration: 60,
       },
     });
-    this.Discord = this.getDiscord();
-    this.Game = this.getGame();
   }
 
   async run(msg) {

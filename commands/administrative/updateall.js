@@ -15,7 +15,6 @@ module.exports = class UpdateAllCommand extends Command {
       hidden: true,
       ownerOnly: true,
     });
-    this.Game = this.getGame();
   }
 
   run(msg) {
