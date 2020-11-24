@@ -6,8 +6,8 @@ const items = {
     weight: 1.0,
     spread: 1,
     name: "Hook",
-    type: "Weapon",
     emoji: "",
+    type: "Weapon",
   },
 
   //OFFHAND
@@ -16,8 +16,8 @@ const items = {
     weight: 1.0,
     spread: 1,
     name: "Armor Inventory",
-    type: "Offhand",
     emoji: "",
+    type: "Offhand",
   },
 
   //FOOD
@@ -26,42 +26,42 @@ const items = {
     weight: 1.0,
     spread: 1,
     name: "Apple",
-    type: "Food",
     emoji: "🍎",
+    type: "Food",
   },
   orange: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Orange",
-    type: "Food",
     emoji: "🍊",
+    type: "Food",
   },
 
   //ORES
-  copper: {
+  copperChunk: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Copper Chunk",
+    emoji: "🌰",
     type: "Chunk",
-    emoji: "",
   },
-  iron: {
+  ironChunk: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Iron Chunk",
+    emoji: "🧊",
     type: "Chunk",
-    emoji: "",
   },
-  suspendium: {
+  suspendiumChunk: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Suspendium Chunk",
-    type: "Chunk",
     emoji: emojis["suspendium"],
+    type: "Chunk",
   },
 
   //MATERIALS
@@ -70,48 +70,48 @@ const items = {
     weight: 1.0,
     spread: 1,
     name: "Butterfly Wings",
-    type: "Material",
     emoji: "🦋",
+    type: "Material",
   },
   frog: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Frog",
-    type: "Material",
     emoji: "🐸",
+    type: "Material",
   },
   beeStinger: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Bee Stinger",
-    type: "Material",
     emoji: "🐝",
+    type: "Material",
   },
   lizardTail: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Lizard Tail",
-    type: "Material",
     emoji: "🦎",
+    type: "Material",
   },
   spiderLegs: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Spider Legs",
-    type: "Material",
     emoji: "🕷️",
+    type: "Material",
   },
   antAntennae: {
     level: 1,
     weight: 1.0,
     spread: 1,
     name: "Ant Antennae",
-    type: "Material",
     emoji: "🐜",
+    type: "Material",
   },
 
   //LOCAL SPECIALTIES

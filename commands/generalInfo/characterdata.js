@@ -9,48 +9,46 @@ const talents = require("../../poutingRPG/data/talents");
 // UTILS
 const enumHelper = require("../../utils/enumHelper");
 
-module.exports = class CharDataCommand extends (
+module.exports = class CharacterDataCommand extends (
   Command
 ) {
   constructor(client) {
     super(client, {
-      name: "chardata",
+      name: "characterdata",
+      aliases: ["chardata"],
       group: "general_info",
-      memberName: "chardata",
-      description: "Shows all the information about a character.",
+      memberName: "characterdata",
+      description: "Shows information on a character.",
       examples: [],
       args: [
         {
-          key: "characterName",
+          key: "characterId",
           prompt: `What character would you like to get information on?`,
           type: "string",
-          default: "Irregular",
+          default: "irregular",
         },
       ],
       throttling: {
         usages: 1,
         duration: 2,
       },
-      guildOnly: true,
     });
     this.Discord = this.getDiscord();
     this.Game = this.getGame();
   }
 
-  async run(msg, { characterName }) {
+  async run(msg, { characterId }) {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
 
-    return msg.say(this.Discord.emoji("four_leaf_clover"))
-    //prettier-ignore
-    characterName = isNaN(characterName) ? this.titleCase(characterName) : player.characters[characterName - 1];
-    let character = player.characters.get(characterName);
+    if (!isNaN(characterId)) player.characters[characterId - 1];
+    let character = player.characters.get(characterId);
     if (!character) return;
-    //prettier-ignore
-    character = await this.Game.Database.getCharacter(player, characterName);
+    character = await this.Game.Database.getCharacter(player, characterId);
 
+    //prettier-ignore
     const params = {
-      title: `${this.Discord.emoji(character.positionName)} ${character.name}`,
+      title: `${this.Discord.emoji(character.position.emoji)} ${character.name}`,
       description: stripIndents(`
         HP: ${character.baseStats.HP}
         ATK: ${character.baseStats.ATK}
@@ -59,9 +57,9 @@ module.exports = class CharDataCommand extends (
     };
 
     //prettier-ignore
-    enumHelper.isMC(characterName) 
+    enumHelper.isMC(characterId) 
     ? params.image = msg.author.displayAvatarURL() 
-    : params.filePath = `./images/characters/${characterName.replace(" ", "_")}.png`
+    : params.filePath = `./images/characters/${characterId.replace(" ", "_")}.png`
 
     const messageEmbed = this.Discord.buildEmbed(params);
     msg.say(messageEmbed);

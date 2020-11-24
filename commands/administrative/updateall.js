@@ -12,7 +12,6 @@ module.exports = class UpdateAllCommand extends Command {
         usages: 1,
         duration: 2000000000,
       },
-      guildOnly: true,
       hidden: true,
       ownerOnly: true,
     });
@@ -20,7 +19,7 @@ module.exports = class UpdateAllCommand extends Command {
   }
 
   run(msg) {
-    updateAllPlayers();
+    this.Game.Database.updateAllPlayers();
     return msg.say("Updated all MongoDB documents, master.");
   }
 };

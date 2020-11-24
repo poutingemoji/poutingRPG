@@ -1,13 +1,14 @@
 //BASE
 const Command = require("../../Base/Command");
 
-module.exports = class ToggleCommand extends Command {
+module.exports = class ConfigureCommand extends Command {
   constructor(client) {
     super(client, {
-      name: "toggle",
+      name: "configure",
+      aliases: ["config"],
       group: "administrative",
-      memberName: "toggle",
-      description: "Toggle a setting.",
+      memberName: "configure",
+      description: "Configure the settings.",
       args: [
         {
           key: "setting",
@@ -21,12 +22,15 @@ module.exports = class ToggleCommand extends Command {
         duration: 2,
       },
       guildOnly: true,
+      hidden: true,
+      ownerOnly: true,
       userPermissions: ["ADMINISTRATOR"],
     });
     this.Game = this.getGame();
   }
 
   async run(msg, { setting }) {
+    /*
     const channel = msg.channel;
     let response;
     switch (setting) {
@@ -34,6 +38,6 @@ module.exports = class ToggleCommand extends Command {
         response = await this.Game.Database.setSpawnsEnabled(channel);
         break;
     }
-    msg.say(response);
+    msg.say(response);*/
   }
 };

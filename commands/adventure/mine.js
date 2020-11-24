@@ -16,7 +16,6 @@ module.exports = class MineCommand extends Command {
         usages: 10,
         duration: 86400,
       },
-      guildOnly: true,
     });
     this.Discord = this.getDiscord();
     this.Game = this.getGame();

@@ -54,7 +54,7 @@ function newPlayerObj(discordId, factionId, positionId) {
     discordId,
     factionId,
     positionId,
-    characters: ["irregular", "rachel", "shipLeesoo", "serenaRinnen"],
+    characters: ["irregular", "twentyFifthBaam", "khunAgueroAgnis", "rakWraithraiser", "shipLeesoo"],
     teams: [["irregular"]],
     inventory: { butterflyWings: 3, frog: 5, hook: 1 },
   };

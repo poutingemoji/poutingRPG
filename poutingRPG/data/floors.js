@@ -1,15 +1,26 @@
+const items = require("./items")
 const floors = [
+  //Floor 1
   {
-    ["Shinsu Tank"]: [
+    hunt: [],
+    harvest: [],
+    fish: [],
+    mine: [items["copperChunk"], items["ironChunk"], items["suspendiumChunk"]],
+    areas: [
       {
-        ["White Steel Eel"]: 1,
-        ["Ball"]: 1,
+        name: "Shinsu Tank",
+        waves: [
+          {
+            ["White Steel Eel"]: 1,
+            ["Ball"]: 1,
+          },
+          {
+            ["White Steel Eel"]: 1,
+            ["Ball"]: 1,
+          },
+        ]
       },
-      {
-        ["White Steel Eel"]: 1,
-        ["Ball"]: 1,
-      },
-    ],
+    ]
   },
 ];
 

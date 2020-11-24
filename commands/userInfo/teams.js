@@ -17,7 +17,7 @@ module.exports = class TeamsCommand extends (
       examples: [
         `${client.commandPrefix}teams`,
         `${client.commandPrefix}teams select [teamNumber]`,
-        `${client.commandPrefix}teams add/remove [teamNumber] [characterName]`,
+        `${client.commandPrefix}teams add/remove [teamNumber] [characterId]`,
       ],
       args: [
         {
@@ -34,8 +34,8 @@ module.exports = class TeamsCommand extends (
           default: false,
         },
         {
-          key: "characterName",
-          prompt: "What's the name of the character you want to add/remove?",
+          key: "characterId",
+          prompt: "What's the id of the character you want to add/remove?",
           type: "string",
           default: false,
         },
@@ -44,13 +44,12 @@ module.exports = class TeamsCommand extends (
         usages: 1,
         duration: 2,
       },
-      guildOnly: true,
     });
     this.Discord = this.getDiscord();
     this.Game = this.getGame();
   }
 
-  async run(msg, { teamNumber, action, characterName }) {
+  async run(msg, { teamNumber, action, characterId }) {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
 
@@ -62,21 +61,21 @@ module.exports = class TeamsCommand extends (
         return `**Team ${i + 1} ${
           player.selectedTeam == i ? "(Selected)" : ""
         }**${team.length == 0 ? "" : "\n"}${team
-          .map((characterName) => `• ${characterName}`)
+          .map((characterId) => `• ${characterId}`)
           .join("\n")}`;
       };
 
       this.Discord.Pagination.buildEmbeds(
         {
-          title: "Teams",
-          author: msg.author,
           msg,
+          author: msg.author,
+          title: "Teams",
         },
         formatFilter,
         player.teams
       );
     } else {
-      this.Game.Database.manageTeam(player, action, teamNumber, characterName);
+      this.Game.Database.manageTeam(player, action, teamNumber, characterId);
     }
   }
 };

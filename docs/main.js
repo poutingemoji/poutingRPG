@@ -89,7 +89,7 @@ function loadCommands(id) {
   );
   console.log($("#commands"));
   const request = new XMLHttpRequest();
-  request.open("get", `./commandinfo.json`);
+  request.open("get", `./commandInfos.json`);
   request.onload = () => {
     try {
       const json = JSON.parse(request.responseText);

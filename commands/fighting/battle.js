@@ -22,7 +22,6 @@ module.exports = class BattleCommand extends (
         usages: 1,
         duration: 2,
       },
-      guildOnly: true,
     });
     this.Discord = this.getDiscord();
     this.Game = this.getGame();
@@ -36,10 +35,10 @@ module.exports = class BattleCommand extends (
     const chapter = arcs[player.story.arc].chapters[player.story.chapter];
     floors[player.floor.current - 1][chapter.area].map((wave) => {
       let enemiesInWave = [];
-      for (let enemyName in wave)
+      for (const enemyId in wave)
         this.fillArray(
-          enumHelper.getBattleStats(enemyName),
-          wave[enemyName],
+          enumHelper.getBattleStats(enemyId),
+          wave[enemyId],
           enemiesInWave
         );
       totalEnemies.push(enemiesInWave);

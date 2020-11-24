@@ -1,0 +1,60 @@
+//BASE
+const Command = require("../../Base/Command");
+
+//DATA
+const factions = require("../../poutingRPG/data/factions");
+const enumHelper = require("../../utils/enumHelper");
+module.exports = class LeaderboardCommand extends (
+  Command
+) {
+  constructor(client) {
+    super(client, {
+      name: "leaderboard",
+      aliases: ["top"],
+      group: "general_info",
+      memberName: "leaderboard",
+      description: "View the top players.",
+      args: [
+        {
+          key: "type",
+          prompt: "What would you like to sort the leaderboard by?",
+          type: "string",
+          oneOf: Object.keys(enumHelper.leaderboardFilters),
+          default: "adventureRank",
+        },
+      ],
+      throttling: {
+        usages: 1,
+        duration: 5,
+      },
+    });
+    this.Discord = this.getDiscord();
+    this.Game = this.getGame();
+  }
+
+  async run(msg, { type }) {
+    const formatFilter = async (player) => {
+      const user = await this.client.users.fetch(player.discordId);
+      console.log(user)
+      let userMsg = `${user} ${this.Discord.emoji(factions[player.factionId].emoji)} `
+      switch (type) {
+        case "adventureRank":
+          userMsg += `| AR: ${player.adventureRank.current}`; break;
+      }
+      return userMsg
+    };
+
+    this.Game.Database.loadLeaderboard(type).then(async (leaderboard) => {
+      console.log(leaderboard)
+      this.Discord.Pagination.buildEmbeds(
+        {
+          msg,
+          title: "Leaderboard",
+        },
+        formatFilter,
+        leaderboard
+      );
+    });
+  }
+};
+

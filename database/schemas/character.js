@@ -13,8 +13,8 @@ function newCharacterObj() {
       total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["mediumSlow"], { n: 2 }) },
     },
     /*
-    weapon: characters[characterName].weapon,
-    offHand: characters[characterName].offHand,*/
+    weapon: characters[characterId].weapon,
+    offHand: characters[characterId].offHand,*/
   };
 }
 

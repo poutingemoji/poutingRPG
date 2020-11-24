@@ -8,8 +8,8 @@ const emojis = require("./emojis")
 const factions = {
   zahardEmpire: {
     name: "Zahard Empire",
-    leader: characters["kingZahard"],
     emoji: emojis["zahard_empire"],
+    leader: characters["kingZahard"],
     description: stripIndents(`
       The Empire has the most military power and influence in the Tower and administers the floor tests.
       **Relies On:** strength in battle
@@ -18,8 +18,8 @@ const factions = {
   },
   FUG: {
     name: "FUG",
-    leader: characters["khelHellam"],
     emoji: emojis["FUG"],
+    leader: characters["khelHellam"],
     description: stripIndents(`
       They are the most dangerous and secretive criminal syndicate in the Tower and conduct their business in the shadows. 
       **Relies On:** analyzing every situation
@@ -28,8 +28,8 @@ const factions = {
   },
   wolhaiksong: {
     name: "Wolhaiksong",
-    leader: characters["urekMazino"],
     emoji: emojis["wolhaiksong"],
+    leader: characters["urekMazino"],
     description: stripIndents(`
       They are an organization in the Tower whose liberal movements clash against the Empire's conservative practices.
       **Relies On:** instincts

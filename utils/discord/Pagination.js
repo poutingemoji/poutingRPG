@@ -16,7 +16,8 @@ class Pagination {
     if (data instanceof Array) data = { "": data };
 
     const categories = Object.keys(data);
-    const { msg, author, title } = params;
+    console.log(categories)
+    let { msg, author, title } = params;
     const embeds = [];
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
@@ -32,8 +33,9 @@ class Pagination {
         embeds.push(
           new MessageEmbed()
             //prettier-ignore
-            .setTitle(`${author ? `${author.username}'s ` : ""}${title}${categories.length > 1 ? ` | ${categories[i]}` : ""}`)
+            .setTitle(`${author ? `${author.username}'s ` : ""}${title}${categories[i] !== "" ? ` | ${categories[i]}` : ""}`)
             .setDescription(description)
+            .setFooter(`Page ${page} of ${maxPage}`)
         );
       }
     }

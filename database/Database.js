@@ -15,6 +15,7 @@ const arcs = require("../poutingRPG/data/arcs");
 const characters = require("../poutingRPG/data/characters");
 const enemies = require("../poutingRPG/data/enemies");
 const items = require("../poutingRPG/data/items");
+const positions = require("../poutingRPG/data/positions");
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");
@@ -158,23 +159,20 @@ class Database extends aggregation(BaseHelper, BaseGame) {
   async getCharacter(player, characterId) {
     const user = await this.client.users.fetch(player.discordId);
     const isMC = enumHelper.isMC(characterId);
-    const character = Object.assign(
-      {},
-      player.characters.get(characterId),
-      characters[characterId]
-    );
+    //prettier-ignore
+    const character = Object.assign({}, player.characters.get(characterId), characters[characterId]);
     return {
       name: isMC ? user.username : characterId,
       level: character.level,
       exp: character.exp,
-      positionId: isMC ? player.position : character.position,
+      position: isMC ? positions[player.positionId] : character.position,
       baseStats: character.baseStats,
       talent: character.talent,
     };
   }
 
-  addExpToCharacter(player, expToAdd, characterName) {
-    const character = player.characters.get(characterName);
+  addExpToCharacter(player, expToAdd, characterId) {
+    const character = player.characters.get(characterId);
     character.exp.current += expToAdd;
     while (
       character.exp.current >= character.exp.total &&
@@ -240,18 +238,18 @@ class Database extends aggregation(BaseHelper, BaseGame) {
   }
 
   //TEAM
-  manageTeam(player, action, teamNumber, characterName) {
+  manageTeam(player, action, teamNumber, characterId) {
     teamNumber -= 1;
     if (!this.isBetween(teamNumber, 0, enumHelper.maxTeams)) return;
-    if (characterName && !player.characters.includes(characterName)) return;
+    if (characterId && !player.characters.includes(characterId)) return;
 
     switch (action) {
       case "select":
         player.selectedTeam = teamNumber;
         break;
       case "add":
-        if (player.teams[teamNumber].includes(characterName)) return;
-        player.teams[teamNumber].push(characterName);
+        if (player.teams[teamNumber].includes(characterId)) return;
+        player.teams[teamNumber].push(characterId);
         break;
       case "remove":
         let fallbackTeam;
@@ -263,7 +261,7 @@ class Database extends aggregation(BaseHelper, BaseGame) {
           if (!fallbackTeam) return;
         }
         player.selectedTeam = fallbackTeam;
-        const index = player.teams[teamNumber].indexOf(characterName);
+        const index = player.teams[teamNumber].indexOf(characterId);
         if (index !== -1) player.teams[teamNumber].splice(index, 1);
         break;
     }

@@ -17,7 +17,6 @@ module.exports = class CharactersCommand extends (
         usages: 1,
         duration: 2,
       },
-      guildOnly: true,
     });
     this.Discord = this.getDiscord();
     this.Game = this.getGame();
@@ -30,17 +29,16 @@ module.exports = class CharactersCommand extends (
     const formatFilter = async (characterId) => {
       console.log(characterId)
       //prettier-ignore
-      const character
-      = await this.Game.Database.getCharacter(player, characterId);
+      const character = await this.Game.Database.getCharacter(player, characterId);
       console.log(character)
-      return `${character.name} ${this.Discord.emoji(character.positionId)}`;
+      return `${character.name} ${this.Discord.emoji(character.position.emoji)}`;
     };
 
     this.Discord.Pagination.buildEmbeds(
       {
-        title: "Characters",
-        author: msg.author,
         msg,
+        author: msg.author,
+        title: "Characters",
       },
       formatFilter,
       player.characters

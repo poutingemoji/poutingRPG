@@ -10,7 +10,7 @@ const enemies = {
       ATK: 100,
     },
     talent: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
-    drops: {["Sweetfish"]: 4, ["Baby Zygaena"]: 69},
+    drops: {copperChunk: 4, ironChunk: 69},
   },
   ball: {
     level: 4,
@@ -22,7 +22,7 @@ const enemies = {
       HP: 50,
     },
     talent: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
-    drops: {["Sweetfish"]: 4, ["Baby Zygaena"]: 69},
+    drops: {copperChunk: 4, ironChunk: 69},
   },
 };
 

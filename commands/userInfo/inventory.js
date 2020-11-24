@@ -28,7 +28,6 @@ module.exports = class InventoryCommand extends (
         usages: 1,
         duration: 2,
       },
-      guildOnly: true,
     });
     this.Discord = this.getDiscord();
     this.Game = this.getGame();
@@ -56,20 +55,19 @@ module.exports = class InventoryCommand extends (
       );
     });
     for (let category in inventory) if (inventory[category].length == 0) delete inventory[category]
-
+    console.log(inventory)
     const formatFilter = (itemId) => {
       console.log(itemId);
       const item = items[itemId];
-      return `${player.inventory.get(itemId)} **${
-        item.name
-      }** ${this.Discord.emoji(item.emoji)} | ${item.type}`;
+      //prettier-ignore
+      return `${player.inventory.get(itemId)} **${item.name}** ${this.Discord.emoji(item.emoji)} | ${item.type}`;
     };
 
     this.Discord.Pagination.buildEmbeds(
       {
-        title: "Inventory",
-        author: msg.author,
         msg,
+        author: msg.author,
+        title: "Inventory",
       },
       formatFilter,
       inventory

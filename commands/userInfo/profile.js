@@ -27,7 +27,6 @@ module.exports = class ProfileCommand extends (
         usages: 1,
         duration: 2,
       },
-      guildOnly: true,
     });
     this.Discord = this.getDiscord();
     this.Game = this.getGame();

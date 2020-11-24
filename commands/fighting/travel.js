@@ -16,12 +16,11 @@ module.exports = class TravelCommand extends (
       name: "travel",
       group: "fighting",
       memberName: "travel",
-      description: "travel enemies.",
+      description: "Travel to a floor of the Tower.",
       throttling: {
         usages: 1,
         duration: 2,
       },
-      guildOnly: true,
     });
     this.Discord = this.getDiscord();
     this.Game = this.getGame();
@@ -37,8 +36,8 @@ module.exports = class TravelCommand extends (
 
     this.Discord.Pagination.buildEmbeds(
       {
-        title: "Floors",
         msg,
+        title: "Floors",
       },
       formatFilter,
       floors

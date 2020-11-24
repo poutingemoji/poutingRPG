@@ -37,8 +37,8 @@ const enumHelper = {
   //Team
   maxTeamMembers: 3,
   maxTeams: 5,
-  isMC: (characterName) => {
-    return characterName == "Irregular";
+  isMC: (characterId) => {
+    return characterId == "irregular";
   },
   isEnemy(name) {
     return enemies.hasOwnProperty(name);
@@ -78,9 +78,9 @@ const enumHelper = {
     slow: "floor(((5*n)^3)/4)",
   },
   leaderboardFilters: {
-    level: {
-      sort: { "level.current": -1, "exp.current": -1 },
-      where: "level.current",
+    adventureRank: {
+      sort: { "adventureRank.current": -1, "exp.current": -1 },
+      where: "adventureRank.current",
     },
     points: {
       sort: { points: -1 },
