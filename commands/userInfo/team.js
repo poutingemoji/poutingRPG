@@ -1,15 +1,17 @@
 //BASE
 const Command = require("../../Base/Command");
-const characters = require("../../pouting-rpg/data/characters");
+const characters = require("../../poutingRPG/data/characters");
 
 //UTILS
-const enumHelper = require("../../utils/enumHelper")
+const enumHelper = require("../../utils/enumHelper");
 
-module.exports = class TeamsCommand extends Command {
+module.exports = class TeamsCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "teams",
-      group: "user-info",
+      group: "user_info",
       memberName: "teams",
       description: "Manage your teams.",
       examples: [
@@ -52,7 +54,8 @@ module.exports = class TeamsCommand extends Command {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
 
-    for (let i = 0; i < enumHelper.maxTeams; i++) if (!player.teams[i]) player.teams[i] = [];
+    for (let i = 0; i < enumHelper.maxTeams; i++)
+      if (!player.teams[i]) player.teams[i] = [];
 
     if (!teamNumber) {
       const formatFilter = (team, i) => {
@@ -73,12 +76,7 @@ module.exports = class TeamsCommand extends Command {
         player.teams
       );
     } else {
-      this.Game.Database.manageTeam(
-        player,
-        action,
-        teamNumber,
-        characterName
-      );
+      this.Game.Database.manageTeam(player, action, teamNumber, characterName);
     }
   }
 };

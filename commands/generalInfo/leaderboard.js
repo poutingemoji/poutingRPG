@@ -10,7 +10,7 @@ module.exports = class TopCommand extends (
     super(client, {
       name: "top",
       aliases: ["leaderboard"],
-      group: "general-info",
+      group: "general_info",
       memberName: "top",
       description: "View the top players.",
       examples: [

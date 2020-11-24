@@ -1,5 +1,6 @@
 //BASE
 const Command = require("../../Base/Command");
+const { stripIndents } = require("common-tags");
 const moment = require("moment");
 
 //DATA
@@ -10,7 +11,7 @@ module.exports = class ProfileCommand extends (
   constructor(client) {
     super(client, {
       name: "profile",
-      group: "user-info",
+      group: "user_info",
       memberName: "profile",
       description: "View someone's profile.",
       examples: [`${client.commandPrefix}profile [@user/id]`],
@@ -37,19 +38,16 @@ module.exports = class ProfileCommand extends (
     const player = await this.Game.Database.findPlayer(user, msg);
     if (!player) return;
 
-    const data = {
-      ["Adventure Rank"]: player.adventureRank.current,
-      [`*[${player.exp.current}/${player.exp.total} EXP]*`]: "",
-      [`${this.Discord.emoji("points")} Points`]: player.points,
-      [`${this.Discord.emoji("dallars")} Dallars`]: player.dallars,
-      [`${this.Discord.emoji("suspendium")} Suspendium`]: player.suspendium,
-    };
-
     const messageEmbed = this.Discord.buildEmbed({
       thumbnail: user.displayAvatarURL(),
-      title: `Profile ${this.Discord.emoji(player.faction)}`,
+      title: `Profile ${this.Discord.emoji(player.factionId)}`,
       author: user,
-      description: this.objectToString(data),
+      description: stripIndents(`
+        **Adventure Rank**: ${player.adventureRank.current}
+        *[${player.exp.current}/${player.exp.total} EXP]*
+        ${this.Discord.emoji("point")} **Points**: ${player.points}
+        ${this.Discord.emoji("poutingem")} **Poutingems**: ${player.poutingems}
+      `),
       footer: `Born: ${moment(player._id.getTimestamp()).format(
         "dddd, MMMM Do YYYY, h:mm:ss A"
       )}`,

@@ -5,17 +5,15 @@ const { aggregation } = require("../../Base/Util");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const arcs = require("../../pouting-rpg/data/arcs");
-const characters = require("../../pouting-rpg/data/characters");
-const emojis = require("../../pouting-rpg/data/emojis");
-const enemies = require("../../pouting-rpg/data/enemies");
-const floors = require("../../pouting-rpg/data/floors");
-const talents = require("../../pouting-rpg/data/talents");
+const characters = require("../../poutingRPG/data/characters");
+const emojis = require("../../poutingRPG/data/emojis");
+const enemies = require("../../poutingRPG/data/enemies");
+const talents = require("../../poutingRPG/data/talents");
 
 //UTILS
 const enumHelper = require("../enumHelper");
 const { isEnemy, battleChoices, talentTypes } = require("../enumHelper");
-console.log(battleChoices)
+
 class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
   constructor(params) {
     super(params);
@@ -51,10 +49,10 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
 
   async startWave() {
     this.enemies = this.totalEnemies[this.wave];
-    this.team.map(t => t.turnEnded = false)
-    this.enemies.map(e => e.turnEnded = false)
+    this.team.map((t) => (t.turnEnded = false));
+    this.enemies.map((e) => (e.turnEnded = false));
     do {
-      this.updateBattleMsg()
+      this.updateBattleMsg();
       await this.startTurn();
     } while (
       this.enemies.some((e) => e.HP > 0) &&
@@ -87,12 +85,13 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       //Player Turn
       this.castTalent(args[1], {
         caster: this.team[args[0] - 1],
-        target: args[1] == "atk" ? this.enemies[args[2] - 1] : this.team[args[2] - 1],
+        target:
+          args[1] == "atk" ? this.enemies[args[2] - 1] : this.team[args[2] - 1],
         attackingTeam: this.team,
         defendingTeam: this.enemies,
       });
     } while (this.team.some((t) => t.turnEnded == false));
-    
+
     //Enemy Turn
     /*
     this.enemies.map((e) => {
@@ -111,9 +110,9 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       );
       console.log(e);
     });*/
-    this.team.map(t => t.turnEnded = false)
-    this.enemies.map(e => e.turnEnded = false)
-    this.updateBattleMsg()
+    this.team.map((t) => (t.turnEnded = false));
+    this.enemies.map((e) => (e.turnEnded = false));
+    this.updateBattleMsg();
   }
 
   escape() {
@@ -146,7 +145,7 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     this.msgSent.reactions.removeAll().catch(console.error);
     const res = await this.Discord.awaitResponse({
       type: "reaction",
-      author: this.player.discordId,
+      author: {id: this.player.discordId},
       msg: this.msgSent,
       chooseFrom: ["➡", "red cross"],
       deleteOnResponse: true,
@@ -167,7 +166,7 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       ? enemies[caster.name].talent[battleChoice]
       : characters[caster.name].talent[battleChoice];
 
-    const { attackingTeam, defendingTeam } = talents[talentName](params);
+    const { attackingTeam, defendingTeam } = talents[talentName].cast(params);
     if (attackingTeam.every((te) => isEnemy(te))) {
       this.team = defendingTeam;
       this.enemies = attackingTeam;
@@ -175,9 +174,10 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       this.team = attackingTeam;
       this.enemies = defendingTeam;
     }
-    if (this.header.length + (this.body.length || 0) > this.maxLength) this.body = "";
+    if (this.header.length + (this.body.length || 0) > this.maxLength)
+      this.body = "";
     this.body += `${caster.name} uses **${talentName}** ${talentType.emoji} on ${target.name}.\n`;
-    this.updateBattleMsg()
+    this.updateBattleMsg();
     caster.turnEnded = true;
   }
 

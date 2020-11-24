@@ -11,10 +11,10 @@ const { aggregation } = require("../Base/Util");
 const { newCharacterObj } = require("./schemas/character");
 const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
-const arcs = require("../pouting-rpg/data/arcs");
-const characters = require("../pouting-rpg/data/characters");
-const enemies = require("../pouting-rpg/data/enemies");
-const items = require("../pouting-rpg/data/items");
+const arcs = require("../poutingRPG/data/arcs");
+const characters = require("../poutingRPG/data/characters");
+const enemies = require("../poutingRPG/data/enemies");
+const items = require("../poutingRPG/data/items");
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");
@@ -116,11 +116,11 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     );
   }
 
-  createNewPlayer(discordId, { factionName, positionName }) {
+  createNewPlayer(discordId, { factionId, positionId }) {
     return new Promise((resolve, reject) =>
       Player.replaceOne(
         { discordId: discordId },
-        newPlayerObj(discordId, factionName, positionName),
+        newPlayerObj(discordId, factionId, positionId),
         { upsert: true },
         (err, res) => {
           if (err) {
@@ -155,20 +155,19 @@ class Database extends aggregation(BaseHelper, BaseGame) {
   }
 
   //CHARACTER
-  async getCharacter(player, characterName) {
+  async getCharacter(player, characterId) {
     const user = await this.client.users.fetch(player.discordId);
-    const isMC = enumHelper.isMC(characterName);
+    const isMC = enumHelper.isMC(characterId);
     const character = Object.assign(
       {},
-      player.characters.get(characterName),
-      characters[characterName]
+      player.characters.get(characterId),
+      characters[characterId]
     );
-    console.log(character);
     return {
-      name: isMC ? user.username : characterName,
+      name: isMC ? user.username : characterId,
       level: character.level,
       exp: character.exp,
-      positionName: isMC ? player.position : character.position,
+      positionId: isMC ? player.position : character.position,
       baseStats: character.baseStats,
       talent: character.talent,
     };
@@ -190,10 +189,10 @@ class Database extends aggregation(BaseHelper, BaseGame) {
     this.savePlayer(player);
   }
 
-  addCharacter(player, characterName) {
-    if (Object.keys(Array.from(player.characters)).includes(characterName))
+  addCharacter(player, characterId) {
+    if (Object.keys(Array.from(player.characters)).includes(characterId))
       return;
-    player.characters.set(characterName, newCharacterObj());
+    player.characters.set(characterId, newCharacterObj());
     this.savePlayer(player);
   }
 

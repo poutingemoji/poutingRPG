@@ -3,12 +3,14 @@ const Command = require("../../Base/Command");
 
 //DATA
 
-module.exports = class CharactersCommand extends Command {
+module.exports = class CharactersCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "characters",
       aliases: ["chars"],
-      group: "user-info",
+      group: "user_info",
       memberName: "characters",
       description: "View your characters.",
       throttling: {
@@ -25,11 +27,13 @@ module.exports = class CharactersCommand extends Command {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
 
-    const formatFilter = async (characterName) => {
+    const formatFilter = async (characterId) => {
+      console.log(characterId)
       //prettier-ignore
-      const { name, positionName } 
-      = await this.Game.Database.getCharacter(player, characterName);
-      return `${name} ${this.Discord.emoji(positionName)}`;
+      const character
+      = await this.Game.Database.getCharacter(player, characterId);
+      console.log(character)
+      return `${character.name} ${this.Discord.emoji(character.positionId)}`;
     };
 
     this.Discord.Pagination.buildEmbeds(

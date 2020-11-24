@@ -2,9 +2,9 @@
 const BaseGame = require("../Base/Game");
 
 // DATA
-const characters = require("../pouting-rpg/data/characters");
-const emojis = require("../pouting-rpg/data/emojis");
-const items = require("../pouting-rpg/data/items");
+const characters = require("./data/characters");
+const emojis = require("./data/emojis");
+const items = require("./data/items");
 
 // UTILS
 const Database = require("../database/Database");

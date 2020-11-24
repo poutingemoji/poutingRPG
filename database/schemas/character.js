@@ -1,6 +1,6 @@
 const Parser = require("expr-eval").Parser;
 const enumHelper = require("../../utils/enumHelper");
-
+const characters = require("../../poutingRPG/data/characters");
 function newCharacterObj() {
   return {
     level: {
@@ -10,8 +10,11 @@ function newCharacterObj() {
     //prettier-ignore
     exp: {
       current: { type: Number, default: 0 },
-      total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["medium_slow"], { n: 2 }) },
+      total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["mediumSlow"], { n: 2 }) },
     },
+    /*
+    weapon: characters[characterName].weapon,
+    offHand: characters[characterName].offHand,*/
   };
 }
 

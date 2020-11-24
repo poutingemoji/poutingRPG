@@ -1,12 +1,17 @@
-const characters = require("../pouting-rpg/data/characters");
-const enemies = require("../pouting-rpg/data/enemies");
+const characters = require("../poutingRPG/data/characters");
+const enemies = require("../poutingRPG/data/enemies");
 const enumHelper = {
+  inventoryCategories: {
+    equipment: ["Weapon", "Offhand"],
+    food: ["Food"],
+    materials: ["Chunk", "Material"],
+  },
   commandGroups: {
-    ["administrative"]: "Administrative Commands",
-    ["adventure"]: "Adventure Commands",
-    ["fighting"]: "Fighting Commands",
-    ["general-info"]: "General Info Commands",
-    ["user-info"]: "User Info Commands",
+    administrative: "Administrative Commands",
+    adventure: "Adventure Commands",
+    fighting: "Fighting Commands",
+    general_info: "General Info Commands",
+    user_info: "User Info Commands",
   },
   battleChoices: {
     atk: "attack",
@@ -21,7 +26,7 @@ const enumHelper = {
     },
     passive: {
       emoji: "🕊️",
-    }
+    },
   },
   responseWaitTime: 60000,
   pageLength: 10,
@@ -68,8 +73,8 @@ const enumHelper = {
     character: "floor(n^3)",
 
     fast: "floor(((4*n)^3)/5)",
-    medium_fast: "floor(n^3)",
-    medium_slow: "floor((6/5*n^3)-(15*n^2)+(100*n)-140)",
+    mediumFast: "floor(n^3)",
+    mediumSlow: "floor((6/5*n^3)-(15*n^2)+(100*n)-140)",
     slow: "floor(((5*n)^3)/4)",
   },
   leaderboardFilters: {

@@ -3,12 +3,14 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const arcs = require("../../pouting-rpg/data/arcs");
-const floors = require("../../pouting-rpg/data/floors");
+const arcs = require("../../poutingRPG/data/arcs");
+const floors = require("../../poutingRPG/data/floors");
 
 //UTILS
 
-module.exports = class TravelCommand extends Command {
+module.exports = class TravelCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "travel",
@@ -30,7 +32,7 @@ module.exports = class TravelCommand extends Command {
     if (!player) return;
 
     const formatFilter = (floor, i) => {
-      return `Floor ${i+1}\n`;
+      return `Floor ${i + 1}\n`;
     };
 
     this.Discord.Pagination.buildEmbeds(

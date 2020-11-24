@@ -1,5 +1,8 @@
+const emojis = require("./emojis")
 const positions = {
-  ["Fisherman"]: {
+  fisherman: {
+    name: "Fisherman",
+    emoji: emojis["fisherman"],
     ultimate: function() {
       //Deals 500 damage to enemy with most health.
     },
@@ -12,7 +15,9 @@ const positions = {
       {attack: "Feral Assault", defend: "Ancestral Protection"},
     ]
   },
-  ["Wave Controller"]: {
+  waveController: {
+    name: "Wave Controller",
+    emoji: emojis["wave_controller"],
     ultimate: function() {
       //Immediately launch 5 attacks from random birds.
     },
@@ -25,7 +30,9 @@ const positions = {
       {attack: "Dancing Spark", defend: "Mirror Image"},
     ]
   },
-  ["Light Bearer"]: {
+  lightBearer: {
+    name: "Light Bearer",
+    emoji: emojis["light_bearer"],
     ultimate: function() {
       //All birds are healed by 35% and all harmful effects are removed.
     },
@@ -38,7 +45,9 @@ const positions = {
       {attack: "Sinister Smite", defend: "Giant Growth"},
     ]
   },
-  ["Spear Bearer"]: {
+  spearBearer: {
+    name: "Spear Bearer",
+    emoji: emojis["spear_bearer"],
     ultimate: function() {
       //Deals 150 damage to all enemies.
     },
@@ -50,7 +59,9 @@ const positions = {
       {attack: "Hulk Smash", defend: "Gang Up"},
     ]
   },
-  ["Scout"]: {
+  scout: {
+    name: "Scout",
+    emoji: emojis["scout"],
     ultimate: function() {
       //Deal 200 damage to one pig, stun a pig for 1 turn, remove all helpful effects from a pig.
     },

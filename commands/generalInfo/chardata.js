@@ -3,17 +3,19 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const positions = require("../../pouting-rpg/data/positions");
-const talents = require("../../pouting-rpg/data/talents");
+const positions = require("../../poutingRPG/data/positions");
+const talents = require("../../poutingRPG/data/talents");
 
 // UTILS
 const enumHelper = require("../../utils/enumHelper");
 
-module.exports = class CharDataCommand extends Command {
+module.exports = class CharDataCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "chardata",
-      group: "general-info",
+      group: "general_info",
       memberName: "chardata",
       description: "Shows all the information about a character.",
       examples: [],
@@ -39,27 +41,19 @@ module.exports = class CharDataCommand extends Command {
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
 
+    return msg.say(this.Discord.emoji("four_leaf_clover"))
     //prettier-ignore
     characterName = isNaN(characterName) ? this.titleCase(characterName) : player.characters[characterName - 1];
-    let character = player.characters.includes(characterName);
+    let character = player.characters.get(characterName);
     if (!character) return;
     //prettier-ignore
     character = await this.Game.Database.getCharacter(player, characterName);
-    
+
     const params = {
       title: `${this.Discord.emoji(character.positionName)} ${character.name}`,
       description: stripIndents(`
         HP: ${character.baseStats.HP}
         ATK: ${character.baseStats.ATK}
-
-        Talent
-        ${Object.values(character.talent).map(
-          (talentName) => 
-            `**${talentName}**: ${talents[talentName]({
-              caster: enumHelper.getBattleStats(characterName),
-              getDescription: true,
-            }).description}`
-        ).join("\n")}
         ${this.Discord.progressBar(character.rarity / 5, 5, "⭐", "empty_star")}
       `),
     };

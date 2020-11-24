@@ -32,7 +32,7 @@ class Game {
         }
       }
     }
-    return false
+    return false;
   }
 }
 

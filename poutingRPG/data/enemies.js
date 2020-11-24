@@ -1,8 +1,9 @@
 const enemies = {
-  ["White Steel Eel"]: {
+  whiteSteelEel: {
     level: 4,
     weight: 4.0,
     spread: 4,
+    name: "White Steel Eel",
     type: "Boss",
     baseStats: {
       HP: 100,
@@ -11,10 +12,11 @@ const enemies = {
     talent: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
     drops: {["Sweetfish"]: 4, ["Baby Zygaena"]: 69},
   },
-  ["Ball"]: {
+  ball: {
     level: 4,
     weight: 4.0,
     spread: 4,
+    name: "Ball",
     type: "Special",
     baseStats: {
       HP: 50,

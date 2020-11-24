@@ -10,8 +10,8 @@ const enumHelper = require("../../utils/enumHelper");
 
 const playerSchema = mongoose.Schema({
   discordId: String,
-  faction: String,
-  position: String,
+  factionId: String,
+  positionId: String,
   //prettier-ignore
   floor: {
     current: { type: Number, default: 1 },
@@ -24,18 +24,22 @@ const playerSchema = mongoose.Schema({
   //prettier-ignore
   exp: {
     current: { type: Number, default: 0 },
-    total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["medium_slow"], { n: 2 }) },
+    total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["mediumSlow"], { n: 2 }) },
   },
   points: { type: Number, default: 0 },
-  suspendium: { type: Number, default: 0 },
+  poutingems: { type: Number, default: 0 },
   energy: {
     current: { type: Number, default: 120 },
     total: { type: Number, default: 120 },
   },
   selectedTeam: { type: Number, default: 0 },
-  teams: { type: Array, of: Array, default: [["Irregular"]] },
-  characters: { type: Map, of: Object, default: {["Irregular"]: newCharacterObj()} },
-  inventory: { type: Map, of: Number },
+  teams: { type: Array, of: Array, default: [["irregular"]] },
+  characters: {
+    type: Map,
+    of: Object,
+    default: { ["irregular"]: newCharacterObj() },
+  },
+  inventory: { type: Map, of: Number, default: {} },
   story: {
     chapter: { type: Number, default: 0 },
     arc: { type: Number, default: 0 },
@@ -45,14 +49,14 @@ const playerSchema = mongoose.Schema({
   updatedAt: { type: Date, default: Date.now() },
 });
 
-function newPlayerObj(discordId, factionName, positionName) {
+function newPlayerObj(discordId, factionId, positionId) {
   return {
-    discordId: discordId,
-    faction: factionName,
-    position: positionName,
-    characters: ["Irregular", "Rachel", "Ship Leesoo", "Serena Rinnen"],
-    teams: [["Irregular"]],
-    inventory: { ["Baby Zygaena"]: 6, ["Crystal Shard"]: 4 },
+    discordId,
+    factionId,
+    positionId,
+    characters: ["irregular", "rachel", "shipLeesoo", "serenaRinnen"],
+    teams: [["irregular"]],
+    inventory: { butterflyWings: 3, frog: 5, hook: 1 },
   };
 }
 

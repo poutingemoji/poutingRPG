@@ -97,7 +97,7 @@ class Helper {
   }
 
   /**
-   * Returns a Roman numeral 
+   * Returns a Roman numeral
    * @param {Number} int
    * @returns {String} Roman numeral
    */
@@ -140,7 +140,7 @@ class Helper {
     if (abbreviate) {
       Display.length = Math.min(Display.length, 2);
     }
-    
+
     return Display.join(conjunction);
   }
 
@@ -166,6 +166,31 @@ class Helper {
     }
     return str.join(" ");
   }
+
+  /**
+   * Converts snake_case to camelCase
+   * Utilizes https://hisk.io/javascript-snake-to-camel/
+   * @param {String} str
+   * @returns {String} camelCase
+   */
+  snakeToCamelCase(str) {
+    return str.replace(
+      /([-_][a-z])/g,
+      (group) => group.toUpperCase()
+        .replace('-', '')
+        .replace('_', '')
+    );
+  }
+
+  /**
+   * Converts camelCase to snake_case
+   * Utilizes https://stackoverflow.com/a/54246501
+   * @param {String} str
+   * @returns {String} snakeCase
+   */
+  camelToSnakeCase(str) {
+    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+  } 
 
   /**
    * Verifies if object contains name of nameToCheck
@@ -233,6 +258,6 @@ class Helper {
   getTimePassed(timeStamp) {
     return (new Date().getTime() - timeStamp) / 1000;
   }
-};
+}
 
 module.exports = Helper;

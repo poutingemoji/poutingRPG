@@ -1,26 +1,24 @@
 //BASE
+const BaseHelper = require("./Helper")
 const { MessageAttachment, MessageEmbed } = require("discord.js");
 
 //DATA
-const emojis = require("../pouting-rpg/data/emojis");
+const emojis = require("../poutingRPG/data/emojis");
 
 //UTILS
 const Pagination = require("../utils/discord/Pagination");
 const enumHelper = require("../utils/enumHelper");
 
-class Discord {
+class Discord extends BaseHelper {
   constructor(client) {
+    super()
     this.client = client;
     this.Pagination = new Pagination(this);
   }
 
   healthBar(currentHP, totalHP) {
-    return `${this.progressBar(
-      currentHP / totalHP,
-      13,
-      "█",
-      "░"
-    )} \`[${currentHP}/${totalHP}]\` ❤`;
+    //prettier-ignore
+    return `${this.progressBar(currentHP / totalHP, 13, "█", "░")} \`[${currentHP}/${totalHP}]\` ❤`;
   }
 
   progressBar(progress, maxLength, progressEmoji, emptyEmoji) {
@@ -31,17 +29,17 @@ class Discord {
   }
 
   async confirmation(params) {
-    const { msg, response, author } = params;
+    const { author, msg, response } = params;
     if (response) {
       return msg.reply(response).then(async (msgSent) => {
         const res = await this.awaitResponse({
           type: "reaction",
-          author: msg.author.id,
+          author: msg.author,
           msg: msgSent,
           chooseFrom: ["green_check", "red_cross"],
           deleteOnResponse: true,
         });
-        return res == "green check";
+        return res == "green_check";
       });
     } else {
       const res = await this.awaitResponse({
@@ -49,29 +47,35 @@ class Discord {
         msg,
         author,
         chooseFrom: ["green_check", "red_cross"],
-        removeReactions: "All",
+        removeReactions: "all",
       });
-      return res == "green check";
+      return res == "green_check";
     }
   }
 
   emoji(emoji) {
-    emoji = emoji.replace(/ /g, "_");
-    return isNaN(emojis[emoji])
-      ? emojis[emoji] || emoji
-      : this.client.emojis.cache.get(emojis[emoji]).toString();
+    emoji = this.camelToSnakeCase(emoji);
+    emoji = emojis[emoji] || emoji;
+    return this.client.emojis.cache.get(emoji)
+      ? this.client.emojis.cache.get(emoji).toString()
+      : emoji;
   }
 
   buildEmbed(params) {
-    //prettier-ignore
-    const { Embed,
-      color, thumbnail, 
-      title, author, description, 
-      filePath, fileName = "nicetry", 
-      image, footer 
+    const {
+      author,
+      color,
+      description,
+      embed,
+      fileName = "default",
+      filePath,
+      footer,
+      image,
+      thumbnail,
+      title,
     } = params;
 
-    const messageEmbed = Embed || new MessageEmbed();
+    const messageEmbed = embed || new MessageEmbed();
     if (color) messageEmbed.setColor(color);
     if (thumbnail) messageEmbed.setThumbnail(thumbnail);
 
@@ -84,12 +88,12 @@ class Discord {
       messageEmbed.setImage(`attachment://${fileName}.png`);
     }
     if (image) messageEmbed.setImage(image);
-    if (footer && !Embed) messageEmbed.setFooter(footer);
+    if (footer) messageEmbed.setFooter(footer);
     return messageEmbed;
   }
 
   async awaitResponse(params) {
-    const {
+    let {
       type,
       filter,
       responseWaitTime = enumHelper.responseWaitTime,
@@ -100,45 +104,39 @@ class Discord {
       reactToMessage = true,
       removeReactions = false,
     } = params;
-    enumHelper.waitingOnResponse.add(author);
- 
+    enumHelper.waitingOnResponse.add(author.id);
+
     switch (type) {
       case "message":
         const messageFilter = (response) => {
-          return response.author.id === author;
+          return response.author.id === author.id;
         };
         return msg.channel
-          .awaitMessages(filter || messageFilter, { max: 1, time: responseWaitTime, errors: ["time"] })
-          .then((collected) => {
-            enumHelper.waitingOnResponse.clear(author)
-            return collected.first().content
+          .awaitMessages(filter || messageFilter, {
+            max: 1,
+            time: responseWaitTime,
+            errors: ["time"],
           })
-          .catch(error => {
+          .then((collected) => {
+            enumHelper.waitingOnResponse.clear(author.id);
+            return collected.first().content;
+          })
+          .catch((error) => {
             console.error(error);
-            enumHelper.waitingOnResponse.clear(author);
+            enumHelper.waitingOnResponse.clear(author.id);
           });
       case "reaction":
         if (!Array.isArray(chooseFrom)) {
           if (typeof chooseFrom == "object") {
             chooseFrom = Object.keys(chooseFrom);
-          } else {
-            return;
-          }
+          } else return;
         }
-
-        if (reactToMessage) {
-          for (let choice of chooseFrom) {
-            choice = choice.replace(/ /g, "_");
+        if (reactToMessage)
+          for (let choice of chooseFrom)
             await msg.react(emojis[choice] || choice);
-          }
-        }
 
         const reactionFilter = (reaction, user) => {
-          return (
-            (chooseFrom.includes(reaction.emoji.name.replace(/_/g, " ")) ||
-              chooseFrom.includes(reaction.emoji.name.replace(/ /g, "_"))) &&
-            user.id === author
-          );
+          return (chooseFrom.includes(reaction.emoji.id) || chooseFrom.includes(reaction.emoji.name)) && user.id == author.id;
         };
 
         return msg
@@ -149,28 +147,27 @@ class Discord {
           })
           .then((collected) => {
             if (deleteOnResponse) msg.delete();
-
             switch (removeReactions) {
-              case "All":
+              case "all":
                 msg.reactions.removeAll().catch(console.error);
                 break;
-              case "Author":
+              case "author":
                 msg.reactions
                   .resolve(
                     collected.first().emoji.id
                       ? collected.first().emoji.id
                       : collected.first().emoji.name
                   )
-                  .users.remove(author);
+                  .users.remove(author.id);
                 break;
             }
-            enumHelper.waitingOnResponse.clear(author);
-            return collected.first().emoji.name.replace(/_/g, " ");
+            enumHelper.waitingOnResponse.clear(author.id);
+            return collected.first().emoji.name;
           })
           .catch((error) => {
             console.error(error);
             if (deleteOnResponse) msg.delete();
-            enumHelper.waitingOnResponse.clear(author);
+            enumHelper.waitingOnResponse.clear(author.id);
           });
     }
   }

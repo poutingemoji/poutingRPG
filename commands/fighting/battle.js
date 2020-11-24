@@ -3,13 +3,15 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const arcs = require("../../pouting-rpg/data/arcs");
-const floors = require("../../pouting-rpg/data/floors")
+const arcs = require("../../poutingRPG/data/arcs");
+const floors = require("../../poutingRPG/data/floors");
 //UTILS
 const PVEBattle = require("../../utils/game/PVEBattle");
-const enumHelper = require("../../utils/enumHelper")
+const enumHelper = require("../../utils/enumHelper");
 
-module.exports = class BattleCommand extends Command {
+module.exports = class BattleCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "battle",
@@ -32,7 +34,7 @@ module.exports = class BattleCommand extends Command {
 
     let totalEnemies = [];
     const chapter = arcs[player.story.arc].chapters[player.story.chapter];
-    floors[player.floor.current - 1][chapter.area].map(wave => {
+    floors[player.floor.current - 1][chapter.area].map((wave) => {
       let enemiesInWave = [];
       for (let enemyName in wave)
         this.fillArray(
@@ -41,18 +43,17 @@ module.exports = class BattleCommand extends Command {
           enemiesInWave
         );
       totalEnemies.push(enemiesInWave);
-    })
+    });
 
     new PVEBattle({
       player,
       Discord: this.Discord,
       Game: this.Game,
       msg,
-      totalEnemies: totalEnemies
+      totalEnemies: totalEnemies,
     });
     return;
 
     const defeatQuest = this.Game.findQuestType(player, "Defeat");
-
   }
 };

@@ -3,16 +3,18 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const arcs = require("../../pouting-rpg/data/arcs");
+const arcs = require("../../poutingRPG/data/arcs");
 
 // UTILS
 const PVEBattle = require("../../utils/game/PVEBattle");
 
-module.exports = class ChapterCommand extends Command {
+module.exports = class ChapterCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "chapter",
-      group: "user-info",
+      group: "user_info",
       memberName: "chapter",
       description: "View your chapter progression.",
       throttling: {

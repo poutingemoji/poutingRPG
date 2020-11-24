@@ -9,8 +9,8 @@ const fs = require("fs");
 const path = require("path");
 
 //DATA
-const Game = require("./pouting-rpg/Game");
-const characters = require("./pouting-rpg/data/characters");
+const Game = require("./poutingRPG/Game");
+const characters = require("./poutingRPG/data/characters");
 
 //UTILS
 const enumHelper = require("./utils/enumHelper");
@@ -48,11 +48,13 @@ class DiscordBot extends BaseHelper {
 
     this.client.on("error", console.error);
     this.client.once("ready", () => {
-      console.log(stripIndents(`
+      console.log(
+        stripIndents(`
         Logged in as ${this.client.user.tag}! (${this.client.user.id})
         Guilds: ${this.client.guilds.cache.size}
         Users: ${this.client.users.cache.size}
-      `))
+      `)
+      );
       if (!this.client.user.avatarURL) {
         // avatarURL == null if not set
         this.client.user.setAvatar(
@@ -109,33 +111,39 @@ class DiscordBot extends BaseHelper {
     /*
       Updates Commands on website
     */
-   
-    const commandsInfo = {};
-    const secondsToTimeFormat = this.secondsToTimeFormat;    
+
+    const commandInfos = {};
+    const secondsToTimeFormat = this.secondsToTimeFormat;
 
     this.client.registry.groups
       .filter((grp) => grp.commands.some((cmd) => !cmd.hidden))
       .map((grp) => {
-        let commands = [];
+        const groupCommandInfos = [];
         grp.commands
           .filter((cmd) => !cmd.hidden)
           .map((cmd) => {
-            commands.push([
+            groupCommandInfos.push([
               `${cmd.name}`,
-              `${cmd.description ? cmd.description : ""}${cmd.nsfw ? " (NSFW)" : ""}`,
+              `${cmd.description ? cmd.description : ""}${
+                cmd.nsfw ? " (NSFW)" : ""
+              }`,
               `${cmd.examples ? cmd.examples.join("\n") : ""}`,
               `${cmd.aliases ? cmd.aliases.join("\n") : ""}`,
-              secondsToTimeFormat(cmd.throttling ? cmd.throttling.duration : 0, ", ", false),
-            ])
+              secondsToTimeFormat(
+                cmd.throttling ? cmd.throttling.duration : 0,
+                ", ",
+                false
+              ),
+            ]);
           });
-        commandsInfo[grp.name] = commands;
+        commandInfos[grp.name] = groupCommandInfos;
       });
 
     fs.writeFile(
-      `./docs/commandinfo.json`,
-      JSON.stringify(commandsInfo),
+      `./docs/commandInfos.json`,
+      JSON.stringify(commandInfos),
       function () {
-        console.log("commandinfo.json Refreshed.");
+        console.log("commandInfos.json Refreshed.");
       }
     );
   }

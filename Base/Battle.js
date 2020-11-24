@@ -1,6 +1,6 @@
 //DATA
-const characters = require("../pouting-rpg/data/characters")
-const enemies = require("../pouting-rpg/data/enemies")
+const characters = require("../poutingRPG/data/characters");
+const enemies = require("../poutingRPG/data/enemies");
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");
