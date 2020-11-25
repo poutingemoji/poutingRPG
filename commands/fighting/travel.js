@@ -8,9 +8,7 @@ const floors = require("../../data/floors");
 
 //UTILS
 
-module.exports = class TravelCommand extends (
-  Command
-) {
+module.exports = class TravelCommand extends Command {
   constructor(client) {
     super(client, {
       name: "travel",
@@ -25,7 +23,7 @@ module.exports = class TravelCommand extends (
   }
 
   async run(msg) {
-    const player = await this.Game.Database.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
     const formatFilter = (floor, i) => {

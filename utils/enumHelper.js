@@ -42,28 +42,8 @@ const enumHelper = {
   isProtagonist(characterId) {
     return characterId == this.protagonist.id;
   },
-  isEnemy(name) {
-    return enemies.hasOwnProperty(name);
-  },
-  getBattleStats(name) {
-    const data = this.isEnemy(name) ? enemies[name] : characters[name];
-    return {
-      name: name,
-      HP: this.calculateHP(data),
-      MaxHP: this.calculateHP(data),
-      ATK: this.calculateATK(data),
-      target: { position: null, turns: 0 },
-      effects: {
-        ["Yes"]: 3,
-      },
-    };
-  },
-  calculateHP(data) {
-    //this.player.adventureRank
-    return data.baseStats.HP;
-  },
-  calculateATK(data) {
-    return data.baseStats.ATK;
+  isEnemy(enemyId) {
+    return enemies.hasOwnProperty(enemyId);
   },
   links: {
     website: "https://poutingemoji.github.io/poutingbot/",

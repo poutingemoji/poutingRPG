@@ -25,10 +25,10 @@ module.exports = class ChapterCommand extends (
   }
 
   async run(msg) {
-    const player = await this.Game.Database.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
-    this.Game.Database.addQuests(player);
+    this.Game.addQuests(player);
     console.log(player.quests.story[3].progress);
     const arc = arcs[player.progression.story.arc];
     const chapter = arc.chapters[player.progression.story.chapter];

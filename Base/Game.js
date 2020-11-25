@@ -4,6 +4,7 @@ const gacha = require("gacha");
 
 //DATA
 const characters = require("../data/characters");
+const enemies = require("../data/enemies");
 const emojis = require("../data/emojis");
 const items = require("../data/items");
 
@@ -14,8 +15,140 @@ const enumHelper = require("../utils/enumHelper");
 
 class Game {
   constructor(client) {
-    this.Database = new Database(client);
+    this.Database = new Database(client, this);
   }
+
+    //TEAM
+    manageTeam(player, action, teamNumber, characterId) {
+      teamNumber -= 1;
+      if (!this.isBetween(teamNumber, 0, enumHelper.maxTeams)) return;
+      if (characterId && !player.characters.includes(characterId)) return;
+  
+      switch (action) {
+        case "select":
+          player.teamId = teamNumber;
+          break;
+        case "add":
+          if (player.teams[teamNumber].includes(characterId)) return;
+          player.teams[teamNumber].push(characterId);
+          break;
+        case "remove":
+          let fallbackTeam;
+          if (player.teams[teamNumber].length == 1) {
+            for (let i = 0; i < player.teams.length; i++) {
+              if (player.teams[i].length > 0 && i !== teamNumber)
+                fallbackTeam = i;
+            }
+            if (!fallbackTeam) return;
+          }
+          player.teamId = fallbackTeam;
+          const index = player.teams[teamNumber].indexOf(characterId);
+          if (index !== -1) player.teams[teamNumber].splice(index, 1);
+          break;
+      }
+      this.savePlayer(player);
+    }
+
+  //PLAYER
+  async findPlayer(user, msg) {
+    const player = await this.Database.loadPlayer(user.id);
+    if (!player) {
+      if (msg) {
+        msg.reply(
+          msg.author.id == user.id
+            ? `Please type \`${msg.guild.commandPrefix}start\` to begin.`
+            : `${user.username} hasn't started climbing the Tower.`
+        );
+      }
+      return false;
+    }
+    player.username = user.username
+    return player;
+  }
+
+  addExpToPlayer(player, expToAdd) {
+    player.exp.current += expToAdd;
+    while (
+      player.exp.current >= player.exp.total &&
+      player.adventureRank.current < player.adventureRank.total
+    ) {
+      player.adventureRank.current++;
+      player.exp.current -= player.exp.total;
+      player.exp.total = Parser.evaluate(enumHelper.expFormulas["player"], {
+        n: player.adventureRank.current + 1,
+      });
+    }
+    this.Database.savePlayer(player);
+  }
+
+  async addValueToPlayer(player, key, value) {
+    player[key] += value;
+    await this.updateQuestProgress(player, "Earn", key, value);
+    this.Database.savePlayer(player);
+  }
+
+  //CHARACTER
+  getCharacter(player, characterId) {
+    const isProtagonist = enumHelper.isProtagonist(characterId);
+    //prettier-ignore
+    const character = Object.assign({}, player.characters.get(characterId), characters[characterId]);
+    return {
+      name: isProtagonist ? player.username : characterId,
+      level: character.level,
+      exp: character.exp,
+      position: isProtagonist
+        ? positions[player.positionId]
+        : character.position,
+      baseStats: character.baseStats,
+      talent: character.talent,
+    };
+  }
+
+  addExpToCharacter(player, expToAdd, characterId) {
+    const character = player.characters.get(characterId);
+    character.exp.current += expToAdd;
+    while (
+      character.exp.current >= character.exp.total &&
+      character.level.current < character.level.total
+    ) {
+      character.level.current++;
+      character.exp.current -= character.exp.total;
+      character.exp.total = Parser.evaluate(
+        enumHelper.expFormulas["character"],
+        {
+          n: character.level.current + 1,
+        }
+      );
+    }
+    this.Database.savePlayer(player);
+  }
+
+  addCharacter(player, characterId) {
+    if (Object.keys(Array.from(player.characters)).includes(characterId))
+      return;
+    player.characters.set(characterId, newCharacterObj());
+    this.Database.savePlayer(player);
+  }
+
+    //INVENTORY
+    addItem(player, item, amount = 1) {
+      player.inventory.get(item)
+        ? player.inventory.set(item, player.inventory.get(item) + amount)
+        : player.inventory.set(item, amount);
+      this.updateQuestProgress(player, "Collect", item);
+      this.Database.savePlayer(player);
+    }
+  
+    removeItem(player, item, amount = 1) {
+      //prettier-ignore
+      player.inventory.get(item) >= 2
+        ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
+        : player.inventory.delete(item);
+      this.Database.savePlayer(player);
+    }
+
+  
+  //ITEMS
 
   roguelike(items, level, itemFilter) {
     const equip = gacha.roguelike(items, itemFilter);
@@ -32,6 +165,7 @@ class Game {
     }
   }
 
+  //QUESTS
   findQuestType(player, type, id) {
     for (let i = 0; i < player.quests.story.length; i++) {
       if (player.quests.story[i].type == type) {
@@ -45,15 +179,72 @@ class Game {
     return false;
   }
 
+  async updateQuestProgress(player, type, id, value = 1) {
+    const quest = this.findQuestType(player, type, id);
+    console.log(quest, id);
+    if (!quest || quest.progress == quest.goal) return;
+    console.log(quest, id);
+    if (isNaN(value)) {
+      quest.progress = value;
+    } else {
+      quest.progress += Math.min(value, quest.goal - quest.progress);
+      console.log(quest.progress);
+    }
+  }
+
+  addQuests(player) {
+    this.Database.savePlayer(player, {
+      "quests.story":
+        arcs[player.progression.story.arc].chapters[
+          player.progression.story.chapter
+        ].quests,
+    });
+  }
+  
+  //BATTLE
+  getBattleTeam(player) {
+    return player.teams[player.teamId].map((t) => {
+      return Object.assign(
+        this.getBattleStats(t),
+        this.getCharacter(player, t)
+      );
+    });
+  }
+
+  getBattleStats(id) {
+    const data = enumHelper.isEnemy(id) ? enemies[id] : characters[id];
+    return {
+      id,
+      name: data.name,
+      HP: this.calculateHP(data),
+      HPMax: this.calculateHP(data),
+      ATK: this.calculateATK(data),
+      target: { position: null, turns: 0 },
+      effects: {
+        ["Yes"]: 3,
+      },
+    };
+  }
+
+  calculateHP(data) {
+    //this.player.adventureRank
+    return data.baseStats.HP;
+  }
+
+  calculateATK(data) {
+    return data.baseStats.ATK;
+  }
+
   addRewards(player, obj) {
     for (const reward in obj) {
       if (items.hasOwnProperty(reward)) {
-        this.Database.addItem(player, reward, obj[reward]);
+        this.addItem(player, reward, obj[reward]);
       } else if (["points", "dallars", "suspendium"].includes(reward)) {
-        this.Database.addValueToPlayer(player, reward, obj[reward]);
+        this.addValueToPlayer(player, reward, obj[reward]);
       }
     }
   }
+
 }
 
 module.exports = Game;

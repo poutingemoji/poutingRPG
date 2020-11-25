@@ -172,6 +172,7 @@ class Helper {
    * @returns {String} camelCase
    */
   snakeToCamelCase(str) {
+    if (typeof str !== "string") return;
     return str.replace(
       /([-_][a-z])/g,
       (group) => group.toUpperCase()
@@ -187,6 +188,7 @@ class Helper {
    * @returns {String} snakeCase
    */
   camelToSnakeCase(str) {
+    if (typeof str !== "string") return;
     return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
   } 
 

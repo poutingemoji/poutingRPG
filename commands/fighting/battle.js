@@ -26,27 +26,27 @@ module.exports = class BattleCommand extends (
   }
 
   async run(msg) {
-    const player = await this.Game.Database.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
     let totalEnemies = [];
-    const chapter =
-      arcs[player.progression.story.arc].chapters[
-        player.progression.story.chapter
-      ];
-    floors[player.floor.current].areas[chapter.area].waves.map((wave) => {
+    floors[player.progression.tower.floor].areas[
+      player.progression.tower.area
+    ].waves.map((wave) => {
       let enemiesInWave = [];
-      for (const enemyId in wave)
+      for (const enemyId in wave) {
         this.fillArray(
-          enumHelper.getBattleStats(enemyId),
+          this.Game.getBattleStats(enemyId),
           wave[enemyId],
           enemiesInWave
         );
+      }
       totalEnemies.push(enemiesInWave);
     });
-
+    const team = this.Game.getBattleTeam(player);
     new PVEBattle({
       player,
+      team,
       Discord: this.Discord,
       Game: this.Game,
       msg,

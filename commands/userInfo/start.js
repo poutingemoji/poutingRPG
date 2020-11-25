@@ -21,7 +21,7 @@ module.exports = class StartCommand extends Command {
   }
 
   async run(msg) {
-    const player = await this.Game.Database.findPlayer(msg.author);
+    const player = await this.Game.findPlayer(msg.author);
     if (player) {
       const res = await this.Discord.confirmation({
         msg,
@@ -30,7 +30,7 @@ module.exports = class StartCommand extends Command {
       if (!res) return;
     }
 
-    let description = "Choose between the factions below:\n";
+    let description = "__Choose between the factions below:__\n";
     for (const factionId of Object.keys(factions)) {
       const faction = factions[factionId];
       description += `${this.Discord.emoji(faction.emoji)} - **${faction.name}**\n${faction.description}\n\n`;
@@ -47,14 +47,15 @@ module.exports = class StartCommand extends Command {
         });
       }))
     if (!factionId) return;
+    
     this.Game.Database.createNewPlayer(msg.author.id, {
       factionId,
     });
 
     const msgs = {
-      ["zahardEmpire"]: `I'll give you the privilege of joining my empire.`,
-      ["FUG"]: `We're not nice people, I hope you can handle the difficult training in FUG.`,
-      ["wolhaiksong"]: `Glad you made the right choice baby, welcome to Wolhaiksong!`,
+      zahardEmpire: "I'll give you the privilege of joining my empire.",
+      FUG: "We're not nice people, I hope you can handle the difficult training in FUG.",
+      wolhaiksong: "Glad you made the right choice baby, welcome to Wolhaiksong!",
     };
     //prettier-ignore
     const faction = factions[factionId];

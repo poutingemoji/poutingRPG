@@ -9,7 +9,7 @@ const enemies = {
       HP: 100,
       ATK: 100,
     },
-    talent: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
+    talents: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
     drops: {copperChunk: 4, ironChunk: 69},
   },
   ball: {
@@ -21,7 +21,7 @@ const enemies = {
     baseStats: {
       HP: 50,
     },
-    talent: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
+    talents: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
     drops: {copperChunk: 4, ironChunk: 69},
   },
 };

@@ -32,7 +32,7 @@ module.exports = class InventoryCommand extends (
   }
 
   async run(msg, { category }) {
-    const player = await this.Game.Database.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
     if (
       category &&

@@ -16,13 +16,13 @@ const { isEnemy, battleChoices, talentTypes } = require("../enumHelper");
 
 class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
   constructor(params) {
-    console.log(params);
     super(params);
     const { totalEnemies, quest } = params;
     this.quest = quest;
     this.totalEnemies = totalEnemies;
     this.wave = 0;
 
+    console.log("TEAM", this.team);
     this.header = stripIndents(`
     ${this.msg.author}
     **TEAM POWER**: ${this.team.map((t) => t.name).join(", ")}
@@ -37,8 +37,9 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     this.msgSent = await this.msg.say(this.header);
     const res = await this.Discord.confirmation({
       msg: this.msgSent,
-      author: this.player.discordId,
+      author: { id: this.player.discordId },
     });
+    console.log(res);
     if (!res) return;
     enumHelper.isInBattle.add(this.player.discordId);
 
@@ -80,6 +81,7 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
           );
         },
         msg: this.msgSent,
+        author: {id: this.player.discordId}
       });
       if (!res) return enumHelper.isInBattle.delete(this.player.discordId);
       const args = res.split(" ");
@@ -122,7 +124,7 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
   }
 
   async endBattle() {
-    const drops = enemies[this.enemy.name].drops;
+    const drops = enemies[this.enemy.id].drops;
     this.Game.addRewards(this.player, drops);
     let dropsMsg = "";
     for (const dropName in drops) {
@@ -151,10 +153,10 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       chooseFrom: ["➡", "red cross"],
       deleteOnResponse: true,
     });*/
-    await this.Game.Database.addQuestProgress(
+    await this.Game.addQuestProgress(
       this.player,
       "Defeat",
-      this.enemy.name,
+      this.enemy.id,
       1
     );
   }
@@ -163,9 +165,9 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     battleChoice = battleChoices[battleChoice];
     const { caster, target } = params;
     const talentType = talentTypes[battleChoice];
-    const talentName = enumHelper.isEnemy(caster.name)
-      ? enemies[caster.name].talent[battleChoice]
-      : characters[caster.name].talent[battleChoice];
+    const talentName = enumHelper.isEnemy(caster.id)
+      ? enemies[caster.id].talents[battleChoice]
+      : characters[caster.id].talents[battleChoice];
 
     const { attackingTeam, defendingTeam } = talents[talentName].cast(params);
     if (attackingTeam.every((te) => isEnemy(te))) {
@@ -201,5 +203,5 @@ module.exports = PVEBattle;
 
 function formatBattleStats(obj, i) {
   //prettier-ignore
-  return `${i + 1}) ${obj.turnEnded ? "☑ " : ""}${obj.name} (${obj.HP}/${obj.HP_MAX} HP)${obj.target.position !== null ? ` | Target: ${obj.target.position + 1}` : ""}${obj.effects.length !== 0 ? ` | Effects: ${Object.keys(obj.effects).join(", ")}` : ""}`;
+  return `${i + 1}) ${obj.turnEnded ? "☑ " : ""}${obj.name} (${obj.HP}/${obj.HPMax} HP)${obj.target.position !== null ? ` | Target: ${obj.target.position + 1}` : ""}${obj.effects.length !== 0 ? ` | Effects: ${Object.keys(obj.effects).join(", ")}` : ""}`;
 }

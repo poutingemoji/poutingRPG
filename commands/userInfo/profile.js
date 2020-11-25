@@ -32,7 +32,7 @@ module.exports = class ProfileCommand extends (
 
   async run(msg, { user }) {
     user = user || msg.author;
-    const player = await this.Game.Database.findPlayer(user, msg);
+    const player = await this.Game.findPlayer(user, msg);
     if (!player) return;
 
     const messageEmbed = this.Discord.buildEmbed({

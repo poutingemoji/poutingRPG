@@ -11,12 +11,12 @@ const floors = [
         name: "Shinsu Tank",
         waves: [
           {
-            ["White Steel Eel"]: 1,
-            ["Ball"]: 1,
+            whiteSteelEel: 1,
+            ball: 1,
           },
           {
-            ["White Steel Eel"]: 1,
-            ["Ball"]: 1,
+            whiteSteelEel: 1,
+            ball: 1,
           },
         ]
       },

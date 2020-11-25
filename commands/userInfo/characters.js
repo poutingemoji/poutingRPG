@@ -21,15 +21,17 @@ module.exports = class CharactersCommand extends (
   }
 
   async run(msg) {
-    const player = await this.Game.Database.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
     const formatFilter = async (characterId) => {
-      console.log(characterId)
+      console.log(characterId);
       //prettier-ignore
-      const character = await this.Game.Database.getCharacter(player, characterId);
-      console.log(character)
-      return `${character.name} ${this.Discord.emoji(character.position.emoji)}`;
+      const character = this.Game.getCharacter(player, characterId);
+      console.log(character);
+      return `${character.name} ${this.Discord.emoji(
+        character.position.emoji
+      )}`;
     };
 
     this.Discord.Pagination.buildEmbeds(

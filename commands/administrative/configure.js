@@ -1,7 +1,9 @@
 //BASE
 const Command = require("../../Base/Command");
 
-module.exports = class ConfigureCommand extends Command {
+module.exports = class ConfigureCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "configure",

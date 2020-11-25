@@ -36,13 +36,13 @@ module.exports = class CharacterDataCommand extends (
   }
 
   async run(msg, { characterId }) {
-    const player = await this.Game.Database.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
     if (!isNaN(characterId)) player.characters[characterId - 1];
     let character = player.characters.get(characterId);
     if (!character) return;
-    character = await this.Game.Database.getCharacter(player, characterId);
+    character = this.Game.getCharacter(player, characterId);
 
     //prettier-ignore
     const params = {

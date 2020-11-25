@@ -48,7 +48,7 @@ module.exports = class TeamsCommand extends (
   }
 
   async run(msg, { teamNumber, action, characterId }) {
-    const player = await this.Game.Database.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
     for (let i = 0; i < enumHelper.maxTeams; i++)
@@ -71,7 +71,7 @@ module.exports = class TeamsCommand extends (
         player.teams
       );
     } else {
-      this.Game.Database.manageTeam(player, action, teamNumber, characterId);
+      this.Game.manageTeam(player, action, teamNumber, characterId);
     }
   }
 };

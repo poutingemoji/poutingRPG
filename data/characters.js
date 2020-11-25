@@ -13,7 +13,7 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talent: {
+    talents: {
       attack: "Storm",
       defend: "Attack",
       passive: "Healing Strike",
@@ -32,7 +32,7 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talent: {},
+    talents: {},
   },
   khunAgueroAgnis: {
     level: 4,
@@ -45,7 +45,7 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talent: {},
+    talents: {},
   },
   rakWraithraiser: {
     level: 4,
@@ -58,7 +58,7 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talent: {},
+    talents: {},
   },
   shipLeesoo: {
     level: 4,
@@ -71,7 +71,7 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talent: {},
+    talents: {},
   },
   kingZahard: {
     name: "King Zahard",

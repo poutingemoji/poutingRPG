@@ -20,7 +20,7 @@ module.exports = class MineCommand extends Command {
   }
 
   async run(msg) {
-    const player = await this.Game.Database.findPlayer(msg.author, msg);
+    const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
     const itemFilter = (item) => {
@@ -28,7 +28,7 @@ module.exports = class MineCommand extends Command {
     };
     const chunkId = this.Game.roguelike(items, 1, itemFilter);
     const chunk = items[chunkId]
-    this.Game.Database.addItem(player, chunkId);
+    this.Game.addItem(player, chunkId);
     msg.reply(`You mined: **${chunk.name} ${this.Discord.emoji(chunk.emoji)}** !`);
   }
 };

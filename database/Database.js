@@ -57,8 +57,9 @@ mongoose.connection.on("error", (err) => {
 });
 
 class Database {
-  constructor(client) {
+  constructor(client, Game) {
     this.client = client;
+    this.Game = Game;
     this.setProvider();
     connect();
   }
@@ -74,6 +75,10 @@ class Database {
       .catch(console.error);
   }
 
+  updateAllPlayers() {
+    //write code noob
+  }
+
   savePlayer(player, update) {
     if (update && !update.hasOwnProperty("$unset"))
       update = Object.assign(player, update);
@@ -85,21 +90,6 @@ class Database {
         //console.log(res);
       }
     );
-  }
-
-  async findPlayer(user, msg) {
-    const res = await this.loadPlayer(user.id);
-    if (!res) {
-      if (msg) {
-        msg.reply(
-          msg.author.id == user.id
-            ? `Please type \`${msg.guild.commandPrefix}start\` to begin.`
-            : `${user.username} hasn't started climbing the Tower.`
-        );
-      }
-      return false;
-    }
-    return res;
   }
 
   loadPlayer(discordId) {
@@ -129,150 +119,10 @@ class Database {
     );
   }
 
-  //PLAYER
-  addExpToPlayer(player, expToAdd) {
-    player.exp.current += expToAdd;
-    while (
-      player.exp.current >= player.exp.total &&
-      player.adventureRank.current < player.adventureRank.total
-    ) {
-      player.adventureRank.current++;
-      player.exp.current -= player.exp.total;
-      player.exp.total = Parser.evaluate(enumHelper.expFormulas["player"], {
-        n: player.adventureRank.current + 1,
-      });
-    }
-    this.savePlayer(player);
-  }
-
-  async addValueToPlayer(player, key, value) {
-    player[key] += value;
-    await this.updateQuestProgress(player, "Earn", key, value);
-    this.savePlayer(player);
-  }
-
-  //CHARACTER
-  async getCharacter(player, characterId) {
-    const user = await this.client.users.fetch(player.discordId);
-    const isProtagonist = enumHelper.isProtagonist(characterId);
-    //prettier-ignore
-    const character = Object.assign({}, player.characters.get(characterId), characters[characterId]);
-    return {
-      name: isProtagonist ? user.username : characterId,
-      level: character.level,
-      exp: character.exp,
-      position: isProtagonist
-        ? positions[player.positionId]
-        : character.position,
-      baseStats: character.baseStats,
-      talent: character.talent,
-    };
-  }
-
-  addExpToCharacter(player, expToAdd, characterId) {
-    const character = player.characters.get(characterId);
-    character.exp.current += expToAdd;
-    while (
-      character.exp.current >= character.exp.total &&
-      character.level.current < character.level.total
-    ) {
-      character.level.current++;
-      character.exp.current -= character.exp.total;
-      character.exp.total = Parser.evaluate(
-        enumHelper.expFormulas["character"],
-        {
-          n: character.level.current + 1,
-        }
-      );
-    }
-    this.savePlayer(player);
-  }
-
-  addCharacter(player, characterId) {
-    if (Object.keys(Array.from(player.characters)).includes(characterId))
-      return;
-    player.characters.set(characterId, newCharacterObj());
-    this.savePlayer(player);
-  }
-
-  //INVENTORY
-  addItem(player, item, amount = 1) {
-    player.inventory.get(item)
-      ? player.inventory.set(item, player.inventory.get(item) + amount)
-      : player.inventory.set(item, amount);
-    this.updateQuestProgress(player, "Collect", item);
-    this.savePlayer(player);
-  }
-
-  removeItem(player, item, amount = 1) {
-    //prettier-ignore
-    player.inventory.get(item) >= 2
-      ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
-      : player.inventory.delete(item);
-    this.savePlayer(player);
-  }
-
   //LEADERBOARD
   loadLeaderboard(type) {
     const { where, gte = 0, sort } = enumHelper.leaderboardFilters[type];
     return Player.find().where(where).gte(gte).sort(sort).exec();
-  }
-
-  //QUEST
-  async updateQuestProgress(player, type, id, value = 1) {
-    const quest = this.findQuestType(player, type, id);
-    console.log(quest, id);
-    if (!quest || quest.progress == quest.goal) return;
-    console.log(quest, id);
-    if (isNaN(value)) {
-      quest.progress = value;
-    } else {
-      quest.progress += Math.min(value, quest.goal - quest.progress);
-      console.log(quest.progress);
-    }
-  }
-
-  addQuests(player) {
-    this.savePlayer(
-      player,
-      Object.assign(player.quests, {
-        story:
-          arcs[player.progression.story.arc].chapters[
-            player.progression.story.chapter
-          ].quests,
-      })
-    );
-  }
-
-  //TEAM
-  manageTeam(player, action, teamNumber, characterId) {
-    teamNumber -= 1;
-    if (!this.isBetween(teamNumber, 0, enumHelper.maxTeams)) return;
-    if (characterId && !player.characters.includes(characterId)) return;
-
-    switch (action) {
-      case "select":
-        player.teamId = teamNumber;
-        break;
-      case "add":
-        if (player.teams[teamNumber].includes(characterId)) return;
-        player.teams[teamNumber].push(characterId);
-        break;
-      case "remove":
-        let fallbackTeam;
-        if (player.teams[teamNumber].length == 1) {
-          for (let i = 0; i < player.teams.length; i++) {
-            if (player.teams[i].length > 0 && i !== teamNumber)
-              fallbackTeam = i;
-          }
-          if (!fallbackTeam) return;
-        }
-        player.teamId = fallbackTeam;
-        const index = player.teams[teamNumber].indexOf(characterId);
-        if (index !== -1) player.teams[teamNumber].splice(index, 1);
-        break;
-    }
-    this.savePlayer(player);
   }
 
   //SETTINGS

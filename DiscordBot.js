@@ -11,7 +11,6 @@ const path = require("path");
 
 //UTILS
 const enumHelper = require("./utils/enumHelper");
-
 require("dotenv").config();
 
 class DiscordBot extends BaseHelper {

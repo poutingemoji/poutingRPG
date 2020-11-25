@@ -12,8 +12,8 @@ const factions = {
     leader: characters["kingZahard"],
     description: stripIndents(`
       The Empire has the most military power and influence in the Tower and administers the floor tests.
-      **Relies On:** strength in battle
-      **Goal:** maintaining control over the Tower
+      **Relies On:** Strength in battle
+      **Goal:** Maintaining control over the Tower
     `),
   },
   FUG: {
@@ -22,8 +22,8 @@ const factions = {
     leader: characters["khelHellam"],
     description: stripIndents(`
       They are the most dangerous and secretive criminal syndicate in the Tower and conduct their business in the shadows. 
-      **Relies On:** analyzing every situation
-      **Goal:** killing Zahard to overthrow his rule 
+      **Relies On:** Analyzing every situation
+      **Goal:** Killing Zahard to overthrow his rule 
     `),
   },
   wolhaiksong: {
@@ -32,8 +32,8 @@ const factions = {
     leader: characters["urekMazino"],
     description: stripIndents(`
       They are an organization in the Tower whose liberal movements clash against the Empire's conservative practices.
-      **Relies On:** instincts
-      **Goal:** finding a way out of the Tower
+      **Relies On:** Instincts
+      **Goal:** Finding a way out of the Tower
     `),
   },
 };

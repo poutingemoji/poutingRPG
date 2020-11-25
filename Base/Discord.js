@@ -106,11 +106,10 @@ class Discord extends BaseHelper {
       removeReactions = false,
     } = params;
     enumHelper.waitingOnResponse.add(author.id);
-
     switch (type) {
       case "message":
         const messageFilter = (response) => {
-          return response.author.id === author.id;
+          return response.author.id == author.id;
         };
         return msg.channel
           .awaitMessages(filter || messageFilter, {
@@ -137,6 +136,8 @@ class Discord extends BaseHelper {
             await msg.react(emojis[choice] || choice);
 
         const reactionFilter = (reaction, user) => {
+          console.log(  
+        user.id, author.id)
           return (
             (chooseFrom.includes(reaction.emoji.id) ||
               chooseFrom.includes(reaction.emoji.name)) &&
