@@ -2,8 +2,6 @@
 const seedrandom = require("seedrandom");
 const RNG = seedrandom();
 
-//DATA
-
 //UTILS
 const enumHelper = require("../utils/enumHelper");
 

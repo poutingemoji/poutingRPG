@@ -1,16 +1,13 @@
 //BASE
 const BaseDiscord = require("./Base/Discord");
-const BaseHelper = require("./base/Helper");
+const BaseGame = require("./Base/Game");
+const BaseHelper = require("./Base/Helper");
 
 const { stripIndents } = require("common-tags");
 const DBL = require("dblapi.js");
 const { CommandoClient } = require("discord.js-commando");
 const fs = require("fs");
 const path = require("path");
-
-//DATA
-const Game = require("./poutingRPG/Game");
-const characters = require("./poutingRPG/data/characters");
 
 //UTILS
 const enumHelper = require("./utils/enumHelper");
@@ -28,7 +25,7 @@ class DiscordBot extends BaseHelper {
       shards: "auto",
     });
     this.Discord = new BaseDiscord(this.client);
-    this.Game = new Game(this.client);
+    this.Game = new BaseGame(this.client);
     this.loadEventListeners();
     this.postStatisticsOnDBL();
     this.client.login(process.env.TOKEN);

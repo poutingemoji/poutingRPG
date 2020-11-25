@@ -1,9 +1,9 @@
 //BASE
-const BaseHelper = require("./Helper")
+const BaseHelper = require("./Helper");
 const { MessageAttachment, MessageEmbed } = require("discord.js");
 
 //DATA
-const emojis = require("../poutingRPG/data/emojis");
+const emojis = require("../data/emojis");
 
 //UTILS
 const Pagination = require("../utils/discord/Pagination");
@@ -11,7 +11,8 @@ const enumHelper = require("../utils/enumHelper");
 
 class Discord extends BaseHelper {
   constructor(client) {
-    super()
+    console.log("Discord Created");
+    super();
     this.client = client;
     this.Pagination = new Pagination(this);
   }
@@ -136,7 +137,11 @@ class Discord extends BaseHelper {
             await msg.react(emojis[choice] || choice);
 
         const reactionFilter = (reaction, user) => {
-          return (chooseFrom.includes(reaction.emoji.id) || chooseFrom.includes(reaction.emoji.name)) && user.id == author.id;
+          return (
+            (chooseFrom.includes(reaction.emoji.id) ||
+              chooseFrom.includes(reaction.emoji.name)) &&
+            user.id == author.id
+          );
         };
 
         return msg

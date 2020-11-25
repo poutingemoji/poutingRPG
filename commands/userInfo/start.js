@@ -2,8 +2,8 @@
 const Command = require("../../Base/Command");
 
 //DATA
-const factions = require("../../poutingRPG/data/factions");
-const positions = require("../../poutingRPG/data/positions");
+const factions = require("../../data/factions");
+const positions = require("../../data/positions");
 
 //prettier-ignore
 module.exports = class StartCommand extends Command {
@@ -30,64 +30,34 @@ module.exports = class StartCommand extends Command {
       if (!res) return;
     }
 
-    const Discord = this.Discord;
-    const getDescriptions = [getPositionsDescription, getFactionsDescription];
-    const traits = [positions, factions];
-    const traitsChosen = [];
-
-    for (let i = 0; i < getDescriptions.length; i++) {
-      traitsChosen.push(
-        this.snakeToCamelCase(
-          await msg.reply(getDescriptions[i](Discord)).then((msgSent) => {
-            return this.Discord.awaitResponse({
-              type: "reaction",
-              author: msg.author,
-              msg: msgSent,
-              chooseFrom: Object.keys(traits[i]).map((t) => traits[i][t].emoji),
-              deleteOnResponse: true,
-            });
-          })
-        )
-      );
-      console.log("Trait: ", traitsChosen[i]);
-      if (!traitsChosen[i]) return;
+    let description = "Choose between the factions below:\n";
+    for (const factionId of Object.keys(factions)) {
+      const faction = factions[factionId];
+      description += `${this.Discord.emoji(faction.emoji)} - **${faction.name}**\n${faction.description}\n\n`;
     }
+
+    const factionId = this.snakeToCamelCase(
+      await msg.say(`${msg.author}\n${description}`).then((msgSent) => {
+        return this.Discord.awaitResponse({
+          type: "reaction",
+          author: msg.author,
+          msg: msgSent,
+          chooseFrom: Object.keys(factions).map((f) => factions[f].emoji),
+          deleteOnResponse: true,
+        });
+      }))
+    if (!factionId) return;
     this.Game.Database.createNewPlayer(msg.author.id, {
-      factionId: traitsChosen[1],
-      positionId: traitsChosen[0],
+      factionId,
     });
-    msg.say(generateStartedMsg(Discord, msg, traitsChosen));
+
+    const msgs = {
+      ["zahardEmpire"]: `I'll give you the privilege of joining my empire.`,
+      ["FUG"]: `We're not nice people, I hope you can handle the difficult training in FUG.`,
+      ["wolhaiksong"]: `Glad you made the right choice baby, welcome to Wolhaiksong!`,
+    };
+    //prettier-ignore
+    const faction = factions[factionId];
+    return msg.say(`${this.Discord.emoji(faction.leader.emoji)} **${faction.leader.name}**: ${msg.author}, ${msgs[factionId]}`);
   }
 };
-
-function generateStartedMsg(Discord, msg, traitsChosen) {
-  const position = positions[traitsChosen[0]];
-  const faction = factions[traitsChosen[1]];
-  const msgs = {
-    ["zahardEmpire"]: `I'll give you the privilege of joining my empire. I needed a ${position.name} anyways.`,
-    ["FUG"]: `We're not nice people, I hope you can handle the difficult training in FUG. You are lucky we needed a ${position.name}...`,
-    ["wolhaiksong"]: `Glad you made the right choice baby, we could really use another ${position.name}. Welcome to Wolhaiksong!`,
-  };
-  //prettier-ignore
-  return `${Discord.emoji(faction.leader.emoji)} **${faction.leader.name}**: ${msg.author}, ${msgs[traitsChosen[1]]}`;
-}
-
-function getFactionsDescription(Discord) {
-  let description = "Choose between the factions below:\n";
-  for (const factionId of Object.keys(factions)) {
-    const faction = factions[factionId];
-    description += `${Discord.emoji(faction.emoji)} - **${faction.name}**\n${
-      faction.description
-    }\n`;
-  }
-  return description;
-}
-
-function getPositionsDescription(Discord) {
-  let description = "Choose between the positions below:\n";
-  for (const positionId of Object.keys(positions)) {
-    const position = positions[positionId];
-    description += `${Discord.emoji(position.emoji)} - **${position.name}**\n`;
-  }
-  return description;
-}

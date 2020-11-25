@@ -1,2 +1,2 @@
-const DiscordBot = require("./DiscordBot");
+const DiscordBot = require("./DiscordBot")
 DiscordBot.loadCommands();

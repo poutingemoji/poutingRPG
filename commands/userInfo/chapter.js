@@ -3,7 +3,7 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const arcs = require("../../poutingRPG/data/arcs");
+const arcs = require("../../data/arcs");
 
 // UTILS
 const PVEBattle = require("../../utils/game/PVEBattle");
@@ -28,20 +28,18 @@ module.exports = class ChapterCommand extends (
     const player = await this.Game.Database.findPlayer(msg.author, msg);
     if (!player) return;
 
-    //this.Game.Database.addQuests(player);
-    console.log(player.storyQuests[3].progress);
-    const arc = arcs[player.story.arc];
-    const chapter = arc.chapters[player.story.chapter];
+    this.Game.Database.addQuests(player);
+    console.log(player.quests.story[3].progress);
+    const arc = arcs[player.progression.story.arc];
+    const chapter = arc.chapters[player.progression.story.chapter];
     const { totalPercent, questsInfo } = getQuestsInfo(
       this.Discord,
-      player.storyQuests
+      player.quests
     );
 
     //prettier-ignore
     let description = stripIndents(`
-    ${chapter.emoji} **${chapter.location.toUpperCase()}**
-
-    📖 **__${arc.name} Arc__  - Chapter ${player.story.chapter + 1}/${arc.chapters.length}** : ${chapter.name}
+    📖 **__${arc.name} Arc__  - Chapter ${player.progression.story.chapter + 1}/${arc.chapters.length}** : ${chapter.name}
     ${this.setImportantMessage(chapter.description)}
   
     📜 **__Quests__**: (${totalPercent}%)
@@ -51,22 +49,22 @@ module.exports = class ChapterCommand extends (
   }
 };
 
-function getQuestsInfo(Discord, storyQuests) {
+function getQuestsInfo(Discord, quests) {
   let content = "";
   let totalPercent = 0;
-  for (const quest of storyQuests) {
+  for (const quest of quests.story) {
     content += `- ${quest.type} **${quest.goal}** `;
     switch (quest.type) {
-      case "Defeat":
+      case "defeat":
         content += `${quest.questId}`;
         break;
-      case "Earn":
+      case "earn":
         content += `${quest.questId}${Discord.emoji(quest.questId)}`;
         break;
-      case "Collect":
+      case "collect":
         content += `${quest.questId} ${Discord.emoji(quest.questId)} `;
         break;
-      case "Use":
+      case "use":
         content += `${quest.questId}`;
         break;
     }
@@ -76,6 +74,6 @@ function getQuestsInfo(Discord, storyQuests) {
   }
   return {
     questsInfo: content,
-    totalPercent: Math.floor(totalPercent / storyQuests.length),
+    totalPercent: Math.floor(totalPercent / quests.story.length),
   };
 }

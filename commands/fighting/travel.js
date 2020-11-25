@@ -3,8 +3,8 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const arcs = require("../../poutingRPG/data/arcs");
-const floors = require("../../poutingRPG/data/floors");
+const arcs = require("../../data/arcs");
+const floors = require("../../data/floors");
 
 //UTILS
 

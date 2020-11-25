@@ -1,12 +1,22 @@
 //BASE
+const BaseGame = require("../Base/Game");
 const gacha = require("gacha");
 
 //DATA
+const characters = require("../data/characters");
+const emojis = require("../data/emojis");
+const items = require("../data/items");
 
-//UTILS
+// UTILS
+const Database = require("../database/Database");
+const PVEBattle = require("../utils/game/PVEBattle");
 const enumHelper = require("../utils/enumHelper");
 
 class Game {
+  constructor(client) {
+    this.Database = new Database(client);
+  }
+
   roguelike(items, level, itemFilter) {
     const equip = gacha.roguelike(items, itemFilter);
 
@@ -23,16 +33,26 @@ class Game {
   }
 
   findQuestType(player, type, id) {
-    for (let i = 0; i < player.storyQuests.length; i++) {
-      if (player.storyQuests[i].type == type) {
-        if (id && player.storyQuests[i].questId == id) {
-          return player.storyQuests[i];
+    for (let i = 0; i < player.quests.story.length; i++) {
+      if (player.quests.story[i].type == type) {
+        if (id && player.quests.story[i].questId == id) {
+          return player.quests.story[i];
         } else if (!id) {
-          return player.storyQuests[i];
+          return player.quests.story[i];
         }
       }
     }
     return false;
+  }
+
+  addRewards(player, obj) {
+    for (const reward in obj) {
+      if (items.hasOwnProperty(reward)) {
+        this.Database.addItem(player, reward, obj[reward]);
+      } else if (["points", "dallars", "suspendium"].includes(reward)) {
+        this.Database.addValueToPlayer(player, reward, obj[reward]);
+      }
+    }
   }
 }
 

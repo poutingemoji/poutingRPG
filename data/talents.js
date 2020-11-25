@@ -1,4 +1,4 @@
-const enumHelper = require("../../utils/enumHelper");
+const enumHelper = require("../utils/enumHelper");
 const talents = {
   /*
     COMBAT TALENTS

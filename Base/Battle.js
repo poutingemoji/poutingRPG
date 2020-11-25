@@ -1,6 +1,6 @@
 //DATA
-const characters = require("../poutingRPG/data/characters");
-const enemies = require("../poutingRPG/data/enemies");
+const characters = require("../data/characters");
+const enemies = require("../data/enemies");
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");
@@ -12,9 +12,9 @@ class Battle {
     this.msg = msg;
     this.Discord = Discord;
     this.Game = Game;
-
-    this.team = this.player.teams[this.player.selectedTeam].map((t) =>
-      enumHelper.getBattleStats(t)
+    console.log(this.player.teams[this.player.teamId]);
+    this.team = this.player.teams[this.player.teamId].map(
+      enumHelper.getBattleStats
     );
     this.rewards = {};
 

@@ -1,5 +1,6 @@
-const characters = require("../poutingRPG/data/characters");
-const enemies = require("../poutingRPG/data/enemies");
+const characters = require("../data/characters");
+const enemies = require("../data/enemies");
+
 const enumHelper = {
   inventoryCategories: {
     equipment: ["Weapon", "Offhand"],
@@ -37,8 +38,9 @@ const enumHelper = {
   //Team
   maxTeamMembers: 3,
   maxTeams: 5,
-  isMC: (characterId) => {
-    return characterId == "irregular";
+  protagonist: { id: Object.keys(characters)[0] },
+  isProtagonist(characterId) {
+    return characterId == this.protagonist.id;
   },
   isEnemy(name) {
     return enemies.hasOwnProperty(name);
@@ -47,20 +49,20 @@ const enumHelper = {
     const data = this.isEnemy(name) ? enemies[name] : characters[name];
     return {
       name: name,
-      HP: this.calculateHealth(data),
-      HP_MAX: this.calculateHealth(data),
-      ATK: this.calculateAttack(data),
+      HP: this.calculateHP(data),
+      MaxHP: this.calculateHP(data),
+      ATK: this.calculateATK(data),
       target: { position: null, turns: 0 },
       effects: {
         ["Yes"]: 3,
       },
     };
   },
-  calculateHealth(data) {
+  calculateHP(data) {
     //this.player.adventureRank
     return data.baseStats.HP;
   },
-  calculateAttack(data) {
+  calculateATK(data) {
     return data.baseStats.ATK;
   },
   links: {
@@ -86,19 +88,16 @@ const enumHelper = {
       sort: { points: -1 },
       where: "points",
     },
-    dallars: {
-      sort: { dallars: -1 },
-      where: "dallars",
+    poutingems: {
+      sort: { poutingems: -1 },
+      where: "poutingems",
     },
+    /*
     fish: {
       sort: { "fishes.\nTotal Amount": -1 },
       where: "fishes.\nTotal Amount",
       gte: 1,
-    },
-    reputation: {
-      sort: { reputation: -1 },
-      where: "reputation",
-    },
+    },*/
   },
 };
 

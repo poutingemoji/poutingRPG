@@ -1,6 +1,6 @@
 const Parser = require("expr-eval").Parser;
 const enumHelper = require("../../utils/enumHelper");
-const characters = require("../../poutingRPG/data/characters");
+const characters = require("../../data/characters");
 function newCharacterObj() {
   return {
     level: {

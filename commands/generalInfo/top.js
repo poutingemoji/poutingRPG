@@ -2,7 +2,7 @@
 const Command = require("../../Base/Command");
 
 //DATA
-const factions = require("../../poutingRPG/data/factions");
+const factions = require("../../data/factions");
 const enumHelper = require("../../utils/enumHelper");
 module.exports = class LeaderboardCommand extends (
   Command
@@ -33,17 +33,20 @@ module.exports = class LeaderboardCommand extends (
   async run(msg, { type }) {
     const formatFilter = async (player) => {
       const user = await this.client.users.fetch(player.discordId);
-      console.log(user)
-      let userMsg = `${user} ${this.Discord.emoji(factions[player.factionId].emoji)} `
+      console.log(user);
+      let userMsg = `${user} ${this.Discord.emoji(
+        factions[player.factionId].emoji
+      )} `;
       switch (type) {
         case "adventureRank":
-          userMsg += `| AR: ${player.adventureRank.current}`; break;
+          userMsg += `| AR: ${player.adventureRank.current}`;
+          break;
       }
-      return userMsg
+      return userMsg;
     };
 
     this.Game.Database.loadLeaderboard(type).then(async (leaderboard) => {
-      console.log(leaderboard)
+      console.log(leaderboard);
       this.Discord.Pagination.buildEmbeds(
         {
           msg,
@@ -55,4 +58,3 @@ module.exports = class LeaderboardCommand extends (
     });
   }
 };
-

@@ -2,7 +2,7 @@
 const Command = require("../../Base/Command");
 
 //DATA
-const items = require("../../poutingRPG/data/items");
+const items = require("../../data/items");
 
 //UTILS
 const enumHelper = require("../../utils/enumHelper");
@@ -52,8 +52,9 @@ module.exports = class InventoryCommand extends (
         enumHelper.inventoryCategories[category].includes(items[itemId].type)
       );
     });
-    for (let category in inventory) if (inventory[category].length == 0) delete inventory[category]
-    console.log(inventory)
+    for (let category in inventory)
+      if (inventory[category].length == 0) delete inventory[category];
+    console.log(inventory);
     const formatFilter = (itemId) => {
       console.log(itemId);
       const item = items[itemId];

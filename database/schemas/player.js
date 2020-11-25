@@ -4,19 +4,14 @@ const Parser = require("expr-eval").Parser;
 
 //DATA
 const { newCharacterObj } = require("./character");
-
+const positions = require("../../data/positions");
 //UTILS
 const enumHelper = require("../../utils/enumHelper");
-
+console.log(enumHelper.protagonist.id);
 const playerSchema = mongoose.Schema({
   discordId: String,
   factionId: String,
-  positionId: String,
-  //prettier-ignore
-  floor: {
-    current: { type: Number, default: 1 },
-    total: { type: Number, default: 1 },
-  },
+  positionId: { type: String, default: Object.keys(positions)[0] },
   adventureRank: {
     current: { type: Number, default: 1 },
     total: { type: Number, default: 25 },
@@ -29,33 +24,46 @@ const playerSchema = mongoose.Schema({
   points: { type: Number, default: 0 },
   poutingems: { type: Number, default: 0 },
   energy: {
-    current: { type: Number, default: 120 },
-    total: { type: Number, default: 120 },
+    current: { type: Number, default: 160 },
+    total: { type: Number, default: 160 },
   },
-  selectedTeam: { type: Number, default: 0 },
-  teams: { type: Array, of: Array, default: [["irregular"]] },
+  teamId: { type: Number, default: 0 },
+  teams: { type: Array, of: Array, default: [[enumHelper.protagonist.id]] },
   characters: {
     type: Map,
     of: Object,
-    default: { ["irregular"]: newCharacterObj() },
+    default: { [enumHelper.protagonist.id]: newCharacterObj() },
   },
   inventory: { type: Map, of: Number, default: {} },
-  story: {
-    chapter: { type: Number, default: 0 },
-    arc: { type: Number, default: 0 },
+  progression: {
+    story: {
+      arc: { type: Number, default: 0 },
+      chapter: { type: Number, default: 0 },
+    },
+    tower: {
+      floor: { type: Number, default: 0 },
+      area: { type: Number, default: 0 },
+    },
   },
-  storyQuests: { type: Array, default: [] },
-  dailyQuests: { type: Array, default: [] },
+  quests: {
+    story: { type: Array, default: [] },
+    daily: { type: Array, default: [] },
+  },
   updatedAt: { type: Date, default: Date.now() },
 });
 
-function newPlayerObj(discordId, factionId, positionId) {
+function newPlayerObj(discordId, factionId) {
   return {
     discordId,
     factionId,
-    positionId,
-    characters: ["irregular", "twentyFifthBaam", "khunAgueroAgnis", "rakWraithraiser", "shipLeesoo"],
-    teams: [["irregular"]],
+    characters: [
+      enumHelper.protagonist.id,
+      "twentyFifthBaam",
+      "khunAgueroAgnis",
+      "rakWraithraiser",
+      "shipLeesoo",
+    ],
+    teams: [[enumHelper.protagonist.id]],
     inventory: { butterflyWings: 3, frog: 5, hook: 1 },
   };
 }

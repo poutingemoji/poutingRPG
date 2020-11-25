@@ -2,7 +2,7 @@
 const Command = require("../../Base/Command");
 
 //DATA
-const items = require("../../poutingRPG/data/items");
+const items = require("../../data/items");
 
 //prettier-ignore
 module.exports = class MineCommand extends Command {

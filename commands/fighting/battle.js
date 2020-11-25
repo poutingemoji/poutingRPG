@@ -3,8 +3,8 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const arcs = require("../../poutingRPG/data/arcs");
-const floors = require("../../poutingRPG/data/floors");
+const arcs = require("../../data/arcs");
+const floors = require("../../data/floors");
 //UTILS
 const PVEBattle = require("../../utils/game/PVEBattle");
 const enumHelper = require("../../utils/enumHelper");
@@ -30,8 +30,11 @@ module.exports = class BattleCommand extends (
     if (!player) return;
 
     let totalEnemies = [];
-    const chapter = arcs[player.story.arc].chapters[player.story.chapter];
-    floors[player.floor.current - 1][chapter.area].map((wave) => {
+    const chapter =
+      arcs[player.progression.story.arc].chapters[
+        player.progression.story.chapter
+      ];
+    floors[player.floor.current].areas[chapter.area].waves.map((wave) => {
       let enemiesInWave = [];
       for (const enemyId in wave)
         this.fillArray(

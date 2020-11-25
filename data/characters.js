@@ -1,3 +1,4 @@
+//DATA
 const emojis = require("./emojis")
 const positions = require("./positions");
 const talents = require("./talents");
@@ -7,8 +8,6 @@ const characters = {
     level: 5,
     weight: 5.0,
     spread: 5,
-    name: "Irregular",
-    emoji: "",
     position: positions["fisherman"],
     baseStats: {
       HP: 100,

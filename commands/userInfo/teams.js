@@ -1,6 +1,6 @@
 //BASE
 const Command = require("../../Base/Command");
-const characters = require("../../poutingRPG/data/characters");
+const characters = require("../../data/characters");
 
 //UTILS
 const enumHelper = require("../../utils/enumHelper");
@@ -56,11 +56,9 @@ module.exports = class TeamsCommand extends (
 
     if (!teamNumber) {
       const formatFilter = (team, i) => {
-        return `**Team ${i + 1} ${
-          player.selectedTeam == i ? "(Selected)" : ""
-        }**${team.length == 0 ? "" : "\n"}${team
-          .map((characterId) => `• ${characterId}`)
-          .join("\n")}`;
+        return `**Team ${i + 1} ${player.teamId == i ? "(Selected)" : ""}**${
+          team.length == 0 ? "" : "\n"
+        }${team.map((characterId) => `• ${characterId}`).join("\n")}`;
       };
 
       this.Discord.Pagination.buildEmbeds(

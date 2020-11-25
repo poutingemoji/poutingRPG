@@ -1,10 +1,10 @@
 function newQuest(type, goal, questId, rewards) {
   return {
-    type: type,
-    goal: goal,
-    questId: questId,
+    type,
+    goal,
+    questId,
     progress: 0,
-    rewards: rewards,
+    rewards,
   };
 }
 

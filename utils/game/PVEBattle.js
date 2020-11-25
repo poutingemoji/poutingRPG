@@ -5,10 +5,10 @@ const { aggregation } = require("../../Base/Util");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const characters = require("../../poutingRPG/data/characters");
-const emojis = require("../../poutingRPG/data/emojis");
-const enemies = require("../../poutingRPG/data/enemies");
-const talents = require("../../poutingRPG/data/talents");
+const characters = require("../../data/characters");
+const emojis = require("../../data/emojis");
+const enemies = require("../../data/enemies");
+const talents = require("../../data/talents");
 
 //UTILS
 const enumHelper = require("../enumHelper");
@@ -16,6 +16,7 @@ const { isEnemy, battleChoices, talentTypes } = require("../enumHelper");
 
 class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
   constructor(params) {
+    console.log(params);
     super(params);
     const { totalEnemies, quest } = params;
     this.quest = quest;

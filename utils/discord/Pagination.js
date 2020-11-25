@@ -3,7 +3,7 @@ const PaginationEmbed = require("discord-paginationembed");
 const { MessageEmbed } = require("discord.js");
 
 //DATA
-const emojis = require("../../poutingRPG/data/emojis");
+const emojis = require("../../data/emojis");
 
 class Pagination {
   constructor(Discord) {
@@ -11,12 +11,12 @@ class Pagination {
   }
 
   async buildEmbeds(params, formatFilter, data, pageLength = 10) {
-    if (!(typeof data === "object")) return
+    if (!(typeof data === "object")) return;
     if (data instanceof Map) data = Array.from(data.keys());
     if (data instanceof Array) data = { "": data };
 
     const categories = Object.keys(data);
-    console.log(categories)
+    console.log(categories);
     let { msg, author, title } = params;
     const embeds = [];
     for (let i = 0; i < categories.length; i++) {
@@ -33,7 +33,11 @@ class Pagination {
         embeds.push(
           new MessageEmbed()
             //prettier-ignore
-            .setTitle(`${author ? `${author.username}'s ` : ""}${title}${categories[i] !== "" ? ` | ${categories[i]}` : ""}`)
+            .setTitle(
+              `${author ? `${author.username}'s ` : ""}${title}${
+                categories[i] !== "" ? ` | ${categories[i]}` : ""
+              }`
+            )
             .setDescription(description)
             .setFooter(`Page ${page} of ${maxPage}`)
         );
@@ -55,7 +59,7 @@ class Pagination {
         jump: "🔢",
       })
       .setDisabledNavigationEmojis(["delete"])
-      .setPageIndicator("footer")
+      .setPageIndicator("footer");
     params.embed = Embeds;
     Embeds = this.Discord.buildEmbed(params);
     await Embeds.build();

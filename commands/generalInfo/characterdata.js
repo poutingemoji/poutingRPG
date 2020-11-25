@@ -3,8 +3,8 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
 //DATA
-const positions = require("../../poutingRPG/data/positions");
-const talents = require("../../poutingRPG/data/talents");
+const positions = require("../../data/positions");
+const talents = require("../../data/talents");
 
 // UTILS
 const enumHelper = require("../../utils/enumHelper");
@@ -25,7 +25,7 @@ module.exports = class CharacterDataCommand extends (
           key: "characterId",
           prompt: `What character would you like to get information on?`,
           type: "string",
-          default: "irregular",
+          default: enumHelper.protagonist.id,
         },
       ],
       throttling: {
@@ -55,7 +55,7 @@ module.exports = class CharacterDataCommand extends (
     };
 
     //prettier-ignore
-    enumHelper.isMC(characterId) 
+    enumHelper.isProtagonist(characterId) 
     ? params.image = msg.author.displayAvatarURL() 
     : params.filePath = `./images/characters/${characterId.replace(" ", "_")}.png`
 
