@@ -7,7 +7,10 @@ const items = {
     spread: 1,
     name: "Hook",
     emoji: "",
-    type: "Weapon",
+    type: "weapon",
+    baseStats: {
+      ATK: 10,
+    },
   },
 
   //OFFHAND
@@ -17,7 +20,10 @@ const items = {
     spread: 1,
     name: "Armor Inventory",
     emoji: "",
-    type: "Offhand",
+    type: "offhand",
+    baseStats: {
+      HP: 10,
+    },
   },
 
   //FOOD
@@ -27,7 +33,7 @@ const items = {
     spread: 1,
     name: "Apple",
     emoji: "🍎",
-    type: "Food",
+    type: "food",
   },
   orange: {
     level: 1,
@@ -35,7 +41,7 @@ const items = {
     spread: 1,
     name: "Orange",
     emoji: "🍊",
-    type: "Food",
+    type: "food",
   },
 
   //ORES
@@ -45,7 +51,7 @@ const items = {
     spread: 1,
     name: "Copper Chunk",
     emoji: "🌰",
-    type: "Chunk",
+    type: "chunk",
   },
   ironChunk: {
     level: 1,
@@ -53,7 +59,7 @@ const items = {
     spread: 1,
     name: "Iron Chunk",
     emoji: "🧊",
-    type: "Chunk",
+    type: "chunk",
   },
   suspendiumChunk: {
     level: 1,
@@ -61,7 +67,7 @@ const items = {
     spread: 1,
     name: "Suspendium Chunk",
     emoji: emojis["suspendium"],
-    type: "Chunk",
+    type: "chunk",
   },
 
   //MATERIALS
@@ -71,7 +77,7 @@ const items = {
     spread: 1,
     name: "Butterfly Wings",
     emoji: "🦋",
-    type: "Material",
+    type: "material",
   },
   frog: {
     level: 1,
@@ -79,7 +85,7 @@ const items = {
     spread: 1,
     name: "Frog",
     emoji: "🐸",
-    type: "Material",
+    type: "material",
   },
   beeStinger: {
     level: 1,
@@ -87,7 +93,7 @@ const items = {
     spread: 1,
     name: "Bee Stinger",
     emoji: "🐝",
-    type: "Material",
+    type: "material",
   },
   lizardTail: {
     level: 1,
@@ -95,7 +101,7 @@ const items = {
     spread: 1,
     name: "Lizard Tail",
     emoji: "🦎",
-    type: "Material",
+    type: "material",
   },
   spiderLegs: {
     level: 1,
@@ -103,7 +109,7 @@ const items = {
     spread: 1,
     name: "Spider Legs",
     emoji: "🕷️",
-    type: "Material",
+    type: "material",
   },
   antAntennae: {
     level: 1,
@@ -111,7 +117,7 @@ const items = {
     spread: 1,
     name: "Ant Antennae",
     emoji: "🐜",
-    type: "Material",
+    type: "material",
   },
 
   //LOCAL SPECIALTIES

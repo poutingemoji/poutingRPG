@@ -1,3 +1,5 @@
+const talents = require("./talents")
+const positions = require("./positions")
 const enemies = {
   whiteSteelEel: {
     level: 4,
@@ -9,8 +11,12 @@ const enemies = {
       HP: 100,
       ATK: 100,
     },
-    talents: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
-    drops: {copperChunk: 4, ironChunk: 69},
+    talents: {
+      attack: positions["fisherman"].talents[0].attack,
+      support: positions["fisherman"].talents[0].support,
+      passive: positions["fisherman"].talents[0].passive,
+    },
+    drops: { copperChunk: 4, ironChunk: 69 },
   },
   ball: {
     level: 4,
@@ -21,8 +27,12 @@ const enemies = {
     baseStats: {
       HP: 50,
     },
-    talents: {attack: "Vicious Backstab", defend: "Tit for Tat", passive: "Dodge"},
-    drops: {copperChunk: 4, ironChunk: 69},
+    talents: {
+      attack: positions["fisherman"].talents[0].attack,
+      support: positions["fisherman"].talents[0].support,
+      passive: positions["fisherman"].talents[0].passive,
+    },
+    drops: { copperChunk: 4, ironChunk: 69 },
   },
 };
 

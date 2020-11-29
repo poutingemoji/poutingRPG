@@ -24,10 +24,11 @@ module.exports = class MineCommand extends Command {
     if (!player) return;
 
     const itemFilter = (item) => {
-      return item.type == "Chunk";
+      return item.type == "chunk";
     };
     const chunkId = this.Game.roguelike(items, 1, itemFilter);
     const chunk = items[chunkId]
+    return console.log(chunk)
     this.Game.addItem(player, chunkId);
     msg.reply(`You mined: **${chunk.name} ${this.Discord.emoji(chunk.emoji)}** !`);
   }

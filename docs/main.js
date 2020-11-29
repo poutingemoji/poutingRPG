@@ -27,7 +27,7 @@ $("a").each(function () {
   } else {
     $(this).addClass("external");
     $(this).attr({
-      target: "_blank",
+      targeted: "_blank",
       rel: "nofollow",
     });
   }

@@ -7,7 +7,7 @@ const { newCharacterObj } = require("./character");
 const positions = require("../../data/positions");
 //UTILS
 const enumHelper = require("../../utils/enumHelper");
-console.log(enumHelper.protagonist.id);
+
 const playerSchema = mongoose.Schema({
   discordId: String,
   factionId: String,
@@ -32,7 +32,7 @@ const playerSchema = mongoose.Schema({
   characters: {
     type: Map,
     of: Object,
-    default: { [enumHelper.protagonist.id]: newCharacterObj() },
+    default: { [enumHelper.protagonist.id]: newCharacterObj(enumHelper.protagonist.id) },
   },
   inventory: { type: Map, of: Number, default: {} },
   progression: {
@@ -63,7 +63,7 @@ function newPlayerObj(discordId, factionId) {
       "rakWraithraiser",
       "shipLeesoo",
     ],
-    teams: [[enumHelper.protagonist.id]],
+    teams: [[enumHelper.protagonist.id, "twentyFifthBaam"]],
     inventory: { butterflyWings: 3, frog: 5, hook: 1 },
   };
 }

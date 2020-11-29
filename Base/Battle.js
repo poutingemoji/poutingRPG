@@ -17,7 +17,7 @@ class Battle {
     this.rewards = {};
 
     this.body = "";
-    this.maxLength = 400;
+    this.maxLength = 2000;
   }
 }
 

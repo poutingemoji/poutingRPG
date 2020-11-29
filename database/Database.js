@@ -2,17 +2,10 @@
 const mongoose = require("mongoose");
 const MongoClient = require("mongodb").MongoClient;
 const MongoDBProvider = require("commando-mongodb");
-const Parser = require("expr-eval").Parser;
 
 //DATA
-const { newCharacterObj } = require("./schemas/character");
 const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
-const arcs = require("../data/arcs");
-const characters = require("../data/characters");
-const enemies = require("../data/enemies");
-const items = require("../data/items");
-const positions = require("../data/positions");
 
 //UTILS
 const enumHelper = require("../utils/enumHelper");

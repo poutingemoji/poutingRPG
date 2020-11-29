@@ -11,7 +11,6 @@ const enumHelper = require("../utils/enumHelper");
 
 class Discord extends BaseHelper {
   constructor(client) {
-    console.log("Discord Created");
     super();
     this.client = client;
     this.Pagination = new Pagination(this);

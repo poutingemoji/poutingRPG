@@ -45,12 +45,12 @@ module.exports = class BattleCommand extends (
     });
     const team = this.Game.getBattleTeam(player);
     new PVEBattle({
+      msg,
       player,
       team,
+      totalEnemies: totalEnemies,
       Discord: this.Discord,
       Game: this.Game,
-      msg,
-      totalEnemies: totalEnemies,
     });
     return;
 

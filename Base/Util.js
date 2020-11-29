@@ -13,7 +13,7 @@ class Util {
     }
 
     // this function copies all properties and symbols, filtering out some special ones
-    let copyProps = (target, source) => {
+    let copyProps = (targeted, source) => {
       Object.getOwnPropertyNames(source)
         .concat(Object.getOwnPropertySymbols(source))
         .forEach((prop) => {
@@ -23,7 +23,7 @@ class Util {
             )
           )
             Object.defineProperty(
-              target,
+              targeted,
               prop,
               Object.getOwnPropertyDescriptor(source, prop)
             );

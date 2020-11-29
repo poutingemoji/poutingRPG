@@ -1,30 +1,24 @@
 //DATA
-const emojis = require("./emojis")
+const emojis = require("./emojis");
+const items = require("./items");
 const positions = require("./positions");
 const talents = require("./talents");
 
 const characters = {
   irregular: {
-    level: 5,
-    weight: 5.0,
-    spread: 5,
     position: positions["fisherman"],
     baseStats: {
       HP: 100,
       ATK: 100,
     },
     talents: {
-      attack: "Storm",
-      defend: "Attack",
-      passive: "Healing Strike",
+      attack: positions["fisherman"].talents[0].attack,
+      support: positions["fisherman"].talents[0].support,
     },
-    weapon: "Basic Hook",
-    offHand: "Armor Inventory",
+    weapon: items["hook"],
+    offhand: items["armorInventory"],
   },
   twentyFifthBaam: {
-    level: 4,
-    weight: 4.0,
-    spread: 4,
     name: "Twenty-Fifth Baam",
     emoji: "",
     position: positions["waveController"],
@@ -32,12 +26,14 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talents: {},
+    talents: {
+      attack: positions["fisherman"].talents[0].attack,
+      support: positions["fisherman"].talents[0].support,
+    },
+    weapon: items["hook"],
+    offhand: items["armorInventory"],
   },
   khunAgueroAgnis: {
-    level: 4,
-    weight: 4.0,
-    spread: 4,
     name: "Khun Aguero Agnis",
     emoji: "",
     position: positions["lightBearer"],
@@ -45,12 +41,14 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talents: {},
+    talents: {
+      attack: talents.attack["attack"],
+      support: talents.attack["storm"],
+    },
+    weapon: items["hook"],
+    offhand: items["armorInventory"],
   },
   rakWraithraiser: {
-    level: 4,
-    weight: 4.0,
-    spread: 4,
     name: "Rak Wraithraiser",
     emoji: "",
     position: positions["spearBearer"],
@@ -58,12 +56,14 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talents: {},
+    talents: {
+      attack: talents.attack["attack"],
+      support: talents.attack["storm"],
+    },
+    weapon: items["hook"],
+    offhand: items["armorInventory"],
   },
   shipLeesoo: {
-    level: 4,
-    weight: 4.0,
-    spread: 4,
     name: "Ship Leesoo",
     emoji: "",
     position: positions["scout"],

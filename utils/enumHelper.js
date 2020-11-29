@@ -16,14 +16,14 @@ const enumHelper = {
   },
   battleChoices: {
     atk: "attack",
-    def: "defend",
+    sup: "support",
   },
   talentTypes: {
     attack: {
       emoji: "🗡️",
     },
-    defend: {
-      emoji: "🛡️",
+    support: {
+      emoji: "🤝",
     },
     passive: {
       emoji: "🕊️",

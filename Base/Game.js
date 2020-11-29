@@ -1,12 +1,16 @@
 //BASE
 const BaseGame = require("../Base/Game");
+const Parser = require("expr-eval").Parser;
 const gacha = require("gacha");
 
 //DATA
+const { newCharacterObj } = require("../database/schemas/character");
+const arcs = require("../data/arcs");
 const characters = require("../data/characters");
 const enemies = require("../data/enemies");
 const emojis = require("../data/emojis");
 const items = require("../data/items");
+const positions = require("../data/positions");
 
 // UTILS
 const Database = require("../database/Database");
@@ -18,36 +22,36 @@ class Game {
     this.Database = new Database(client, this);
   }
 
-    //TEAM
-    manageTeam(player, action, teamNumber, characterId) {
-      teamNumber -= 1;
-      if (!this.isBetween(teamNumber, 0, enumHelper.maxTeams)) return;
-      if (characterId && !player.characters.includes(characterId)) return;
-  
-      switch (action) {
-        case "select":
-          player.teamId = teamNumber;
-          break;
-        case "add":
-          if (player.teams[teamNumber].includes(characterId)) return;
-          player.teams[teamNumber].push(characterId);
-          break;
-        case "remove":
-          let fallbackTeam;
-          if (player.teams[teamNumber].length == 1) {
-            for (let i = 0; i < player.teams.length; i++) {
-              if (player.teams[i].length > 0 && i !== teamNumber)
-                fallbackTeam = i;
-            }
-            if (!fallbackTeam) return;
+  //TEAM
+  manageTeam(player, action, teamNumber, characterId) {
+    teamNumber -= 1;
+    if (!this.isBetween(teamNumber, 0, enumHelper.maxTeams)) return;
+    if (characterId && !player.characters.includes(characterId)) return;
+
+    switch (action) {
+      case "select":
+        player.teamId = teamNumber;
+        break;
+      case "add":
+        if (player.teams[teamNumber].includes(characterId)) return;
+        player.teams[teamNumber].push(characterId);
+        break;
+      case "remove":
+        let fallbackTeam;
+        if (player.teams[teamNumber].length == 1) {
+          for (let i = 0; i < player.teams.length; i++) {
+            if (player.teams[i].length > 0 && i !== teamNumber)
+              fallbackTeam = i;
           }
-          player.teamId = fallbackTeam;
-          const index = player.teams[teamNumber].indexOf(characterId);
-          if (index !== -1) player.teams[teamNumber].splice(index, 1);
-          break;
-      }
-      this.savePlayer(player);
+          if (!fallbackTeam) return;
+        }
+        player.teamId = fallbackTeam;
+        const index = player.teams[teamNumber].indexOf(characterId);
+        if (index !== -1) player.teams[teamNumber].splice(index, 1);
+        break;
     }
+    this.savePlayer(player);
+  }
 
   //PLAYER
   async findPlayer(user, msg) {
@@ -62,7 +66,7 @@ class Game {
       }
       return false;
     }
-    player.username = user.username
+    player.username = user.username;
     return player;
   }
 
@@ -126,28 +130,27 @@ class Game {
   addCharacter(player, characterId) {
     if (Object.keys(Array.from(player.characters)).includes(characterId))
       return;
-    player.characters.set(characterId, newCharacterObj());
+    player.characters.set(characterId, newCharacterObj(characterId));
     this.Database.savePlayer(player);
   }
 
-    //INVENTORY
-    addItem(player, item, amount = 1) {
-      player.inventory.get(item)
-        ? player.inventory.set(item, player.inventory.get(item) + amount)
-        : player.inventory.set(item, amount);
-      this.updateQuestProgress(player, "Collect", item);
-      this.Database.savePlayer(player);
-    }
-  
-    removeItem(player, item, amount = 1) {
-      //prettier-ignore
-      player.inventory.get(item) >= 2
+  //INVENTORY
+  addItem(player, item, amount = 1) {
+    player.inventory.get(item)
+      ? player.inventory.set(item, player.inventory.get(item) + amount)
+      : player.inventory.set(item, amount);
+    this.updateQuestProgress(player, "Collect", item);
+    this.Database.savePlayer(player);
+  }
+
+  removeItem(player, item, amount = 1) {
+    //prettier-ignore
+    player.inventory.get(item) >= 2
         ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
         : player.inventory.delete(item);
-      this.Database.savePlayer(player);
-    }
+    this.Database.savePlayer(player);
+  }
 
-  
   //ITEMS
 
   roguelike(items, level, itemFilter) {
@@ -155,6 +158,7 @@ class Game {
 
     // Which item should we spawn on level {n}?
     const lvl = equip[level];
+    console.log(lvl)
     const strata = Math.random() * lvl.total;
 
     for (let i = 0; i < lvl.strata.length; i++) {
@@ -200,7 +204,7 @@ class Game {
         ].quests,
     });
   }
-  
+
   //BATTLE
   getBattleTeam(player) {
     return player.teams[player.teamId].map((t) => {
@@ -216,8 +220,9 @@ class Game {
     return {
       id,
       name: data.name,
+      talents: data.talents,
       HP: this.calculateHP(data),
-      HPMax: this.calculateHP(data),
+      MaxHP: this.calculateHP(data),
       ATK: this.calculateATK(data),
       target: { position: null, turns: 0 },
       effects: {
@@ -244,7 +249,6 @@ class Game {
       }
     }
   }
-
 }
 
 module.exports = Game;
