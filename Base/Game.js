@@ -193,7 +193,6 @@ class Game {
   getCharacter(player, characterId) {
     //prettier-ignore
     const character = Object.assign({}, player.characters.get(characterId), characters[characterId]);
-    console.log("CHARACTER", character)
     //calculate battlestats
     return {
       name: enumHelper.isProtagonist(characterId)
@@ -211,7 +210,6 @@ class Game {
 
   getEnemy(player, enemyId) {
     const enemy = enemies[enemyId];
-    console.log("ENEMY", enemy)
     //calculate battlestats
     return {
       name: enemy.name,
@@ -221,7 +219,7 @@ class Game {
     };
   }
 
-  getBattleStats(player, id) {
+  getBattleData(player, id) {
     const data = enumHelper.isEnemy(id)
       ? Object.assign({}, characters[id], this.getEnemy(player, id))
       : Object.assign({}, enemies[id], this.getCharacter(player, id));
@@ -236,6 +234,9 @@ class Game {
       target: { position: null, turns: 0 },
       effects: {
         ["Yes"]: 3,
+      },
+      takeDamage: function(amount) {
+        this.HP = Math.max(this.HP-amount, 0)
       },
     };
   }

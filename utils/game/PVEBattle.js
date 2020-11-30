@@ -68,6 +68,7 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     const Battle = this;
     this.round++;
     this.body += `*Round ${this.round}*\n`;
+    //Player Turn
     do {
       const res = await this.Discord.awaitResponse({
         type: "message",
@@ -88,7 +89,6 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       });
       if (!res) return this.escape();
       const args = res.split(" ");
-      //Player Turn
       this.castTalent(args[1], {
         caster: this.team[args[0] - 1],
         targeted:
@@ -97,7 +97,8 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
         defendingTeam: this.enemies,
       });
     } while (this.team.some((t) => t.turnEnded == false));
-    console.log("//////ENEMY TURN//////");
+    this.enemies.map(decreaseEffectTurn);
+
     //Enemy Turn
     this.enemies.map((e) => {
       const battleChoices = Object.keys(enumHelper.battleChoices);
@@ -115,7 +116,8 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       });
     });
     this.team.map(decreaseEffectTurn);
-    this.enemies.map(decreaseEffectTurn);
+
+    this.team.concat(this.enemies).map((obj) => (obj.turnEnded = false));
     this.updateBattleMsg();
     console.log("----round ended----");
   }
@@ -155,27 +157,22 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       chooseFrom: ["➡", "red cross"],
       deleteOnResponse: true,
     });*/
-    await this.Game.addQuestProgress(this.player, "Defeat", this.enemy.id, 1);
+    await this.Game.addQuestProgress(this.player, "defeat", this.enemy.id, 1);
   }
 
   castTalent(battleChoiceId, params) {
     console.log("talent casted");
     const battleChoice = enumHelper.battleChoices[battleChoiceId];
     const { caster, targeted } = params;
-    console.log("CASTER",caster)
-    const { attackingTeam, defendingTeam } = caster.talents[battleChoice].cast(
-      params
-    );
-    this.team = enumHelper.isEnemy(caster.id) ? defendingTeam : attackingTeam;
-    this.enemies = enumHelper.isEnemy(caster.id)
-      ? attackingTeam
-      : defendingTeam;
+    caster.talents[battleChoice].cast(params);
 
     //prettier-ignore
     if (this.header.length + (this.body.length || 0) > this.maxLength) this.body = "";
     //prettier-ignore
     this.body += `${enumHelper.isEnemy(caster.id) ? "🟥" : "🟦"} ${caster.name} uses **${caster.talents[battleChoice].name}** ${enumHelper.talentTypes[battleChoice].emoji} on ${targeted.name}.\n`;
     caster.turnEnded = true;
+    this.team.map(removeKnockedOutObjs, this);
+    this.enemies.map(removeKnockedOutObjs, this);
     this.updateBattleMsg();
   }
 
@@ -183,10 +180,10 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     this.header = stripIndents(`
     ${this.msg.author}
     **Your Team**
-    ${this.team.map(formatBattleStats, this).join("\n")}
+    ${this.team.map(formatBattleData, this).join("\n")}
 
     **[Wave ${this.wave + 1}/${this.totalEnemies.length}] Enemies**
-    ${this.enemies.map(formatBattleStats, this).join("\n")}
+    ${this.enemies.map(formatBattleData, this).join("\n")}
 
     __Battle Log__
     `);
@@ -196,21 +193,20 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
 }
 module.exports = PVEBattle;
 
-function formatBattleStats(obj, i) {
-  return `${i + 1}) ${obj.turnEnded ? "☑ " : ""}${obj.name} (${obj.HP}/${
-    obj.MaxHP
-  } HP)${
+function formatBattleData(obj, i) {
+  //prettier-ignore
+  return `${i + 1}) ${obj.turnEnded ? "☑️ " : ""}${obj.name} [${obj.HP}/${obj.MaxHP} HP]${
     obj.target.position !== null
-      ? ` | 🎯: ${
+      ? ` | 🎯 ${
           enumHelper.isEnemy(obj.id)
             ? this.team[obj.target.position].name
             : this.enemies[obj.target.position].name
         }`
       : ""
   }${
-    obj.effects.length > 0
+    Object.keys(obj.effects).length > 0
       ? ` | ${Object.keys(obj.effects)
-          .map((eff) => `${eff} (${obj.effects[eff]} Turns)`)
+          .map((eff) => `${eff} (${obj.effects[eff]})`)
           .join(", ")}`
       : ""
   }`;
@@ -225,9 +221,15 @@ function sleep(milliseconds) {
 }
 
 function decreaseEffectTurn(obj) {
-  obj.turnEnded = false;
   Object.keys(obj.effects).map((eff) => {
     obj.effects[eff] -= 1;
     if (obj.effects[eff] <= 0) delete obj.effects[eff];
   });
+}
+
+function removeKnockedOutObjs(obj, i, arr) {
+  if (obj.HP > 0) return;
+  arr.splice(i, 1);
+  this.body += `🪦 ${obj.name} died.\n`;
+  if (!obj.drops) return;
 }

@@ -9,29 +9,21 @@ const talents = {
         const n = caster
           ? calculateAttackDMG(this.baseDMG, caster.ATK)
           : this.baseDMG;
-        targeted.HP -= n;
+        targeted.takeDamage(n);
         //prettier-ignore
         targeted.target.position = attackingTeam.indexOf(caster)
         targeted.target.turns = 3;
-        return {
-          attackingTeam,
-          defendingTeam,
-        };
       },
     },
-    shinsuExplosion: {
-      name: "Shinsu Explosion",
-      description: "Deals low damage to all enemies.",
+    shinsuBlast: {
+      name: "Shinsu Blast",
+      description: "Deals damage to all enemies.",
       baseDMG: 10,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
         const n = caster
           ? calculateAttackDMG(this.baseDMG, caster.ATK)
           : this.baseDMG;
-        defendingTeam.map((e) => (e.HP -= n));
-        return {
-          attackingTeam,
-          defendingTeam,
-        };
+        defendingTeam.map((e) => (e.takeDamage(n)));
       },
     },
     /*
@@ -45,10 +37,6 @@ const talents = {
           : this.baseDMG;
         targeted.HP -= n;
         attackingTeam.map((t) => t.HP + (0.2 * n) / attackingTeam.length);
-        return {
-          attackingTeam,
-          defendingTeam,
-        };
       },
     },
     pummel: {
@@ -60,10 +48,6 @@ const talents = {
           ? calculateAttackDMG(this.baseDMG, caster.ATK)
           : this.baseDMG;
         targeted.HP -= n;
-        return {
-          attackingTeam,
-          defendingTeam,
-        };
       },
     },
     ["Itching Powder"]: function () {
@@ -77,10 +61,6 @@ const talents = {
       turns: 2,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
         targeted.effects[this.name] = this.turns;
-        return {
-          attackingTeam,
-          defendingTeam,
-        };
       },
     },
     shinsuAura: {
@@ -90,10 +70,6 @@ const talents = {
       turns: 3,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
         targeted.effects[this.name] = this.turns;
-        return {
-          attackingTeam,
-          defendingTeam,
-        };
       },
     },
     /*

@@ -23,11 +23,9 @@ const positions = {
     ultimate: function () {
       //Immediately launch 5 attacks from random birds.
     },
+    //prettier-ignore
     talents: [
-      {
-        attack: talents.attack["shinsuBlast"],
-        support: talents.support["shinsuExplosion"],
-      },
+      { attack: talents.attack["shinsuBlast"], support: talents.support["shinsuAura"] },
       { attack: "Energy Drain", support: "Lightning Fast" },
       { attack: "Acid Rain", support: "Healing Rain" },
       { attack: "Chain Lightning", support: "Energize" },
