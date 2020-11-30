@@ -54,8 +54,7 @@ class Discord extends BaseHelper {
   }
 
   emoji(emoji) {
-    emoji = this.camelToSnakeCase(emoji);
-    emoji = emojis[emoji] || emoji;
+    emoji = emojis.hasOwnProperty(emoji) ? emojis[emoji] : this.camelToSnakeCase(emoji);
     return this.client.emojis.cache.get(emoji)
       ? this.client.emojis.cache.get(emoji).toString()
       : emoji;

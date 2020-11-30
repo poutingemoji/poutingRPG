@@ -3,7 +3,7 @@ const talents = {
     slash: {
       name: "Slash",
       description:
-        "Deals moderate damage to target enemy; Forces target to attack you for 3 turns.",
+        "Deals damage to target enemy; Forces target to attack you for 3 turns.",
       baseDMG: 30,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
         const n = caster

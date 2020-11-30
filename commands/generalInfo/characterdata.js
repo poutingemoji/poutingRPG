@@ -2,10 +2,6 @@
 const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
-//DATA
-const positions = require("../../data/positions");
-const talents = require("../../data/talents");
-
 // UTILS
 const enumHelper = require("../../utils/enumHelper");
 
@@ -43,15 +39,17 @@ module.exports = class CharacterDataCommand extends (
     let character = player.characters.get(characterId);
     if (!character) return;
     character = this.Game.getCharacter(player, characterId);
-
+    // ${this.Discord.progressBar(character.rarity / 5, 5, "⭐", "empty_star")}
+    //prettier-ignore
+    console.log(character)
     //prettier-ignore
     const params = {
       title: `${this.Discord.emoji(character.position.emoji)} ${character.name}`,
       description: stripIndents(`
-        HP: ${character.baseStats.HP}
-        ATK: ${character.baseStats.ATK}
-        ${this.Discord.progressBar(character.rarity / 5, 5, "⭐", "empty_star")}
-      `),
+      ${Object.keys(character.baseStats).map(baseStatId => `**${baseStatId}**: ${character.baseStats[baseStatId]}`).join("\n")}
+      ${Object.keys(character.talents).map(
+        (talentType) =>  `${this.Discord.emoji(enumHelper.talentTypes[talentType].emoji)} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`
+        ).join("\n")}`),
     };
 
     //prettier-ignore

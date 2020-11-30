@@ -92,22 +92,6 @@ class Game {
   }
 
   //CHARACTER
-  getCharacter(player, characterId) {
-    const isProtagonist = enumHelper.isProtagonist(characterId);
-    //prettier-ignore
-    const character = Object.assign({}, player.characters.get(characterId), characters[characterId]);
-    return {
-      name: isProtagonist ? player.username : characterId,
-      level: character.level,
-      exp: character.exp,
-      position: isProtagonist
-        ? positions[player.positionId]
-        : character.position,
-      baseStats: character.baseStats,
-      talent: character.talent,
-    };
-  }
-
   addExpToCharacter(player, expToAdd, characterId) {
     const character = player.characters.get(characterId);
     character.exp.current += expToAdd;
@@ -158,7 +142,7 @@ class Game {
 
     // Which item should we spawn on level {n}?
     const lvl = equip[level];
-    console.log(lvl)
+    console.log(lvl);
     const strata = Math.random() * lvl.total;
 
     for (let i = 0; i < lvl.strata.length; i++) {
@@ -206,17 +190,42 @@ class Game {
   }
 
   //BATTLE
-  getBattleTeam(player) {
-    return player.teams[player.teamId].map((t) => {
-      return Object.assign(
-        this.getBattleStats(t),
-        this.getCharacter(player, t)
-      );
-    });
+  getCharacter(player, characterId) {
+    //prettier-ignore
+    const character = Object.assign({}, player.characters.get(characterId), characters[characterId]);
+    console.log("CHARACTER", character)
+    //calculate battlestats
+    return {
+      name: enumHelper.isProtagonist(characterId)
+        ? player.username
+        : character.name,
+      level: character.level,
+      exp: character.exp,
+      position: enumHelper.isProtagonist(characterId)
+        ? positions[player.positionId]
+        : character.position,
+      baseStats: character.baseStats,
+      talents: character.talents,
+    };
   }
 
-  getBattleStats(id) {
-    const data = enumHelper.isEnemy(id) ? enemies[id] : characters[id];
+  getEnemy(player, enemyId) {
+    const enemy = enemies[enemyId];
+    console.log("ENEMY", enemy)
+    //calculate battlestats
+    return {
+      name: enemy.name,
+      level: enemy.level,
+      baseStats: enemy.baseStats,
+      talents: enemy.talents,
+    };
+  }
+
+  getBattleStats(player, id) {
+    const data = enumHelper.isEnemy(id)
+      ? Object.assign({}, characters[id], this.getEnemy(player, id))
+      : Object.assign({}, enemies[id], this.getCharacter(player, id));
+    console.log(data)
     return {
       id,
       name: data.name,

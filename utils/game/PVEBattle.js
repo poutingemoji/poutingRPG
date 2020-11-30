@@ -61,13 +61,13 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       enumHelper.isInBattle.has(this.player.discordId)
     );
     console.log("======wave ended=====");
-    this.body = ""
+    this.body = "";
   }
 
   async startRound() {
     const Battle = this;
-    this.round++
-    this.body += `*Round ${this.round}*\n`
+    this.round++;
+    this.body += `*Round ${this.round}*\n`;
     do {
       const res = await this.Discord.awaitResponse({
         type: "message",
@@ -113,7 +113,6 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
         attackingTeam: this.enemies,
         defendingTeam: this.team,
       });
-
     });
     this.team.map(decreaseEffectTurn);
     this.enemies.map(decreaseEffectTurn);
@@ -163,11 +162,14 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     console.log("talent casted");
     const battleChoice = enumHelper.battleChoices[battleChoiceId];
     const { caster, targeted } = params;
+    console.log("CASTER",caster)
     const { attackingTeam, defendingTeam } = caster.talents[battleChoice].cast(
       params
     );
     this.team = enumHelper.isEnemy(caster.id) ? defendingTeam : attackingTeam;
-    this.enemies = enumHelper.isEnemy(caster.id) ? attackingTeam : defendingTeam;
+    this.enemies = enumHelper.isEnemy(caster.id)
+      ? attackingTeam
+      : defendingTeam;
 
     //prettier-ignore
     if (this.header.length + (this.body.length || 0) > this.maxLength) this.body = "";
@@ -181,35 +183,45 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     this.header = stripIndents(`
     ${this.msg.author}
     **Your Team**
-    ${this.team.map(formatBattleStats).join("\n")}
+    ${this.team.map(formatBattleStats, this).join("\n")}
 
     **[Wave ${this.wave + 1}/${this.totalEnemies.length}] Enemies**
-    ${this.enemies.map(formatBattleStats).join("\n")}
+    ${this.enemies.map(formatBattleStats, this).join("\n")}
 
     __Battle Log__
     `);
-    this.msgSent
-      .edit(`${this.header}\n${this.body}`)
-      .then(() => sleep(1500));
+    this.msgSent.edit(`${this.header}\n${this.body}`).then(() => sleep(1500));
     console.log("updated Battle Msg");
   }
 }
-
 module.exports = PVEBattle;
 
 function formatBattleStats(obj, i) {
-  //prettier-ignore
-  return `${i + 1}) ${obj.turnEnded ? "☑ " : ""}${obj.name} (${obj.HP}/${obj.MaxHP} HP)${obj.target.position !== null ? ` | Target: ${obj.target.position + 1}` : ""}${obj.effects.length !== 0 ? ` | Effects: ${Object.keys(obj.effects).map((eff)=> `${eff} (${obj.effects[eff]} Turns)`).join(", ")}` : ""}`;
+  return `${i + 1}) ${obj.turnEnded ? "☑ " : ""}${obj.name} (${obj.HP}/${
+    obj.MaxHP
+  } HP)${
+    obj.target.position !== null
+      ? ` | 🎯: ${
+          enumHelper.isEnemy(obj.id)
+            ? this.team[obj.target.position].name
+            : this.enemies[obj.target.position].name
+        }`
+      : ""
+  }${
+    obj.effects.length > 0
+      ? ` | ${Object.keys(obj.effects)
+          .map((eff) => `${eff} (${obj.effects[eff]} Turns)`)
+          .join(", ")}`
+      : ""
+  }`;
 }
 
 function sleep(milliseconds) {
-  console.log("started sleep");
   const date = Date.now();
   let currentDate = null;
   do {
     currentDate = Date.now();
   } while (currentDate - date < milliseconds);
-  console.log("ended sleep");
 }
 
 function decreaseEffectTurn(obj) {

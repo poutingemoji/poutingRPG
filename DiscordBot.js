@@ -54,7 +54,7 @@ class DiscordBot extends BaseHelper {
       if (!this.client.user.avatarURL) {
         // avatarURL == null if not set
         this.client.user.setAvatar(
-          fs.readFileSync("./images/poutingbot_Square.png")
+          fs.readFileSync("./images/poutingbot.png")
         );
       }
       this.client.user.setActivity(`${this.client.commandPrefix}help`, {

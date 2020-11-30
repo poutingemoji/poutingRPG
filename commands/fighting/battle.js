@@ -36,14 +36,14 @@ module.exports = class BattleCommand extends (
       let enemiesInWave = [];
       for (const enemyId in wave) {
         this.fillArray(
-          this.Game.getBattleStats(enemyId),
+          this.Game.getBattleStats(player, enemyId),
           wave[enemyId],
           enemiesInWave
         );
       }
       totalEnemies.push(enemiesInWave);
     });
-    const team = this.Game.getBattleTeam(player);
+    const team = player.teams[player.teamId].map((t) => this.Game.getBattleStats(player, t));
     new PVEBattle({
       msg,
       player,

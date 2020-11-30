@@ -42,8 +42,8 @@ const characters = {
       ATK: 100,
     },
     talents: {
-      attack: talents.attack["attack"],
-      support: talents.attack["storm"],
+      attack: positions["fisherman"].talents[0].attack,
+      support: positions["fisherman"].talents[0].support,
     },
     weapon: items["hook"],
     offhand: items["armorInventory"],
@@ -57,8 +57,8 @@ const characters = {
       ATK: 100,
     },
     talents: {
-      attack: talents.attack["attack"],
-      support: talents.attack["storm"],
+      attack: positions["fisherman"].talents[0].attack,
+      support: positions["fisherman"].talents[0].support,
     },
     weapon: items["hook"],
     offhand: items["armorInventory"],
@@ -71,7 +71,10 @@ const characters = {
       HP: 100,
       ATK: 100,
     },
-    talents: {},
+    talents: {
+      attack: positions["fisherman"].talents[0].attack,
+      support: positions["fisherman"].talents[0].support,
+    },
   },
   kingZahard: {
     name: "King Zahard",

@@ -56,13 +56,13 @@ function newPlayerObj(discordId, factionId) {
   return {
     discordId,
     factionId,
-    characters: [
-      enumHelper.protagonist.id,
-      "twentyFifthBaam",
-      "khunAgueroAgnis",
-      "rakWraithraiser",
-      "shipLeesoo",
-    ],
+    characters: {
+      [enumHelper.protagonist.id]: newCharacterObj(enumHelper.protagonist.id),
+      ["twentyFifthBaam"]: newCharacterObj("twentyFifthBaam"),
+      ["khunAgueroAgnis"]: newCharacterObj("khunAgueroAgnis"),
+      ["rakWraithraiser"]: newCharacterObj("rakWraithraiser"),
+      ["shipLeesoo"]: newCharacterObj("shipLeesoo"), 
+    },
     teams: [[enumHelper.protagonist.id, "twentyFifthBaam"]],
     inventory: { butterflyWings: 3, frog: 5, hook: 1 },
   };
