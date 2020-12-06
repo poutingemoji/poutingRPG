@@ -2,21 +2,6 @@ const emojis = require("./emojis");
 const talents = require("./talents");
 
 const positions = {
-  fisherman: {
-    name: "Fisherman",
-    emoji: emojis["fisherman"],
-    ultimate: function () {
-      //Deals 500 damage to enemy with most health.
-    },
-    talents: [
-      { attack: talents.attack["slash"], support: talents.support["protect"] },
-      { attack: "Overpower", support: "Aura of Fortitude" },
-      { attack: "Dragon Strike", support: "Defensive Formation" },
-      { attack: "Holy Strike", support: "Devotion" },
-      { attack: "Revenge", support: "I Dare You!" },
-      { attack: "Feral Assault", support: "Ancestral Protection" },
-    ],
-  },
   waveController: {
     name: "Wave Controller",
     emoji: emojis["wave_controller"],
@@ -60,6 +45,21 @@ const positions = {
       { attack: "Enrage", support: "Frenzy" },
       { attack: "Raid", support: "Whip Up!" },
       { attack: "Hulk Smash", support: "Gang Up" },
+    ],
+  },
+  fisherman: {
+    name: "Fisherman",
+    emoji: emojis["fisherman"],
+    ultimate: function () {
+      //Deals 500 damage to enemy with most health.
+    },
+    talents: [
+      { attack: talents.attack["slash"], support: talents.support["protect"] },
+      { attack: "Overpower", support: "Aura of Fortitude" },
+      { attack: "Dragon Strike", support: "Defensive Formation" },
+      { attack: "Holy Strike", support: "Devotion" },
+      { attack: "Revenge", support: "I Dare You!" },
+      { attack: "Feral Assault", support: "Ancestral Protection" },
     ],
   },
   scout: {

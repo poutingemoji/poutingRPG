@@ -11,7 +11,6 @@ const enumHelper = require("../../utils/enumHelper");
 const playerSchema = mongoose.Schema({
   discordId: String,
   factionId: String,
-  positionId: { type: String, default: Object.keys(positions)[0] },
   adventureRank: {
     current: { type: Number, default: 1 },
     total: { type: Number, default: 25 },
@@ -19,7 +18,7 @@ const playerSchema = mongoose.Schema({
   //prettier-ignore
   exp: {
     current: { type: Number, default: 0 },
-    total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["mediumSlow"], { n: 2 }) },
+    total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["player"], { n: 2 }) },
   },
   points: { type: Number, default: 0 },
   poutingems: { type: Number, default: 0 },
@@ -28,12 +27,25 @@ const playerSchema = mongoose.Schema({
     total: { type: Number, default: 160 },
   },
   teamId: { type: Number, default: 0 },
-  teams: { type: Array, of: Array, default: [[enumHelper.protagonist.id]] },
+  teams: {
+    type: Array,
+    of: {
+      waveController: { type: String, default: "none" },
+      lightBearer: { type: String, default: "none" },
+      spearBearer: { type: String, default: "none" },
+      fisherman: { type: String, default: "none" },
+      scout: { type: String, default: "none" },
+    },
+    default: [{ waveController: "twentyFifthBaam" }],
+  },
   characters: {
     type: Map,
     of: Object,
-    default: { [enumHelper.protagonist.id]: newCharacterObj(enumHelper.protagonist.id) },
+    default: {
+      ["twentyFifthBaam"]: newCharacterObj("twentyFifthBaam"),
+    },
   },
+  equipment: { type: Array, default: [] },
   inventory: { type: Map, of: Number, default: {} },
   progression: {
     story: {
@@ -57,14 +69,20 @@ function newPlayerObj(discordId, factionId) {
     discordId,
     factionId,
     characters: {
-      [enumHelper.protagonist.id]: newCharacterObj(enumHelper.protagonist.id),
       ["twentyFifthBaam"]: newCharacterObj("twentyFifthBaam"),
       ["khunAgueroAgnis"]: newCharacterObj("khunAgueroAgnis"),
       ["rakWraithraiser"]: newCharacterObj("rakWraithraiser"),
-      ["shipLeesoo"]: newCharacterObj("shipLeesoo"), 
+      ["androssiZahard"]: newCharacterObj("androssiZahard"),
+      ["shipLeesoo"]: newCharacterObj("shipLeesoo"),
     },
-    teams: [[enumHelper.protagonist.id, "twentyFifthBaam"]],
-    inventory: { butterflyWings: 3, frog: 5, hook: 1 },
+    teams: [
+      {
+        waveController: "twentyFifthBaam",
+        lightBearer: "khunAgueroAgnis",
+        spearBearer: "rakWraithraiser",
+      },
+    ],
+    inventory: { butterflyWings: 3, frog: 5 },
   };
 }
 

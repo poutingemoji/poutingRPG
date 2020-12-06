@@ -2,10 +2,29 @@ const characters = require("../data/characters");
 const enemies = require("../data/enemies");
 
 const enumHelper = {
+  adventureRankRanges: {
+    1: {
+      towerLevel: 0,
+      maxLevel: 20,
+    },
+    15: {
+      towerLevel: 0,
+      maxLevel: 40,
+    },
+    20: {
+      towerLevel: 1,
+      maxLevel: 40,
+    },
+    25: {
+      towerLevel: 2,
+      maxLevel: 50,
+      ascensionQuest: true,
+    },
+  },
   inventoryCategories: {
-    equipment: ["Weapon", "Offhand"],
-    food: ["Food"],
-    materials: ["Chunk", "Material"],
+    equipment: ["weapon", "offhand"],
+    food: ["food"],
+    materials: ["chunk", "material"],
   },
   commandGroups: {
     administrative: "Administrative Commands",
@@ -20,7 +39,7 @@ const enumHelper = {
   },
   talentTypes: {
     attack: {
-      emoji: "🗡️",
+      emoji: "💥",
     },
     support: {
       emoji: "🤝",
@@ -38,10 +57,6 @@ const enumHelper = {
   //Team
   maxTeamMembers: 3,
   maxTeams: 5,
-  protagonist: { id: Object.keys(characters)[0] },
-  isProtagonist(characterId) {
-    return characterId == this.protagonist.id;
-  },
   isEnemy(enemyId) {
     return enemies.hasOwnProperty(enemyId);
   },
@@ -51,7 +66,7 @@ const enumHelper = {
     supportServer: "https://discord.gg/nGVe96h",
   },
   expFormulas: {
-    player: "floor(n^3)",
+    player: "floor((n-1)*125)",
     character: "floor(n^3)",
 
     fast: "floor(((4*n)^3)/5)",

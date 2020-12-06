@@ -1,7 +1,3 @@
-//BASE
-const seedrandom = require("seedrandom");
-const RNG = seedrandom();
-
 //UTILS
 const enumHelper = require("../utils/enumHelper");
 
@@ -12,28 +8,15 @@ class Helper {
 
   /**
    * Returns a random number between a min and max
-   * Utilizing https://stackoverflow.com/questions/15594332/unbiased-random-range-generator-in-javascript
+   * Utilizing https://www.geeksforgeeks.org/how-to-generate-random-number-in-given-range-using-javascript/
    * @param {Number} min
    * @param {Number} max
-   * @param {Number} decimal
-   * @param {Number} exclude
    * @returns {Number} randomNumber
    */
-  randomBetween(min, max, decimal, exclude) {
-    // Adding + 1 to max due to trunc
-    max += 1;
-    if (arguments.length < 2) return RNG() >= 0.5;
-
-    let factor = 1;
-    let result;
-    if (typeof decimal === "number") {
-      factor = decimal ** 10;
-    }
-    do {
-      result = RNG() * (max - min) + min;
-      result = Math.trunc(result * factor) / factor;
-    } while (result === exclude);
-    return result;
+  randomBetween(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   /**
@@ -62,6 +45,19 @@ class Helper {
   /*
     GENERAL HELPERS
   */
+
+  /**
+   * Put program to sleep for x milliseconds
+   * Utilizes https://www.sitepoint.com/delay-sleep-pause-wait/
+   * @param {Number} milliseconds
+   */
+  sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
 
   /**
    * Returns a number with commas
@@ -143,6 +139,19 @@ class Helper {
   }
 
   /**
+   * Removes emojis from a string
+   * @param {String} text
+   * Utilizes https://stackoverflow.com/a/61783246
+   * @returns {String} String without emojis
+   */
+  containsOnlyEmojis(text) {
+    const onlyEmojis = text.replace(new RegExp("[\u0000-\u1eeff]", "g"), "");
+    //const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '')
+    return onlyEmojis;
+    //return onlyEmojis.length === visibleChars.length
+  }
+
+  /**
    * Returns a codeblock for Discord
    * @param {String} message
    * @param {String} syntax
@@ -173,11 +182,8 @@ class Helper {
    */
   snakeToCamelCase(str) {
     if (typeof str !== "string") return;
-    return str.replace(
-      /([-_][a-z])/g,
-      (group) => group.toUpperCase()
-        .replace('-', '')
-        .replace('_', '')
+    return str.replace(/([-_][a-z])/g, (group) =>
+      group.toUpperCase().replace("-", "").replace("_", "")
     );
   }
 
@@ -189,8 +195,24 @@ class Helper {
    */
   camelToSnakeCase(str) {
     if (typeof str !== "string") return;
-    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-  } 
+    return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+  }
+
+  /**
+   * Groups elements of an array into categories and returns as an object
+   * @param {Array} array
+   * @param {Function} fn
+   * @returns {Object} groupedArray
+   */
+  groupBy(array, fn) {
+    return array.reduce((result, item) => {
+      const key = fn(item);
+      if (!result[key]) result[key] = [];
+      result[key].push(item);
+      console.log(result)
+      return result;
+    }, {});
+  }
 
   /**
    * Verifies if object contains name of nameToCheck

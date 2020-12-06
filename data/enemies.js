@@ -1,5 +1,5 @@
-const talents = require("./talents")
-const positions = require("./positions")
+const talents = require("./talents");
+const positions = require("./positions");
 const enemies = {
   whiteSteelEel: {
     level: 4,
@@ -26,6 +26,7 @@ const enemies = {
     type: "Special",
     baseStats: {
       HP: 50,
+      ATK: 0,
     },
     talents: {
       attack: positions["fisherman"].talents[0].attack,

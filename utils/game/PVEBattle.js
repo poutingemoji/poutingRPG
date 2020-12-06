@@ -8,32 +8,34 @@ const { stripIndents } = require("common-tags");
 const characters = require("../../data/characters");
 const emojis = require("../../data/emojis");
 const enemies = require("../../data/enemies");
+const items = require("../../data/items");
 const talents = require("../../data/talents");
 
 //UTILS
 const enumHelper = require("../enumHelper");
-
+const calculateTotalPower = (acc, cur) => acc + cur.HP + cur.ATK;
 class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
   constructor(params) {
     super(params);
-    const { totalEnemies, quest } = params;
-    this.quest = quest;
+    const { totalEnemies } = params;
     this.totalEnemies = totalEnemies;
     this.wave = 0;
-
+    this.drops = {};
     this.header = stripIndents(`
-    ${this.msg.author}
-    **TEAM POWER**: ${this.team.map((t) => t.name).join(", ")}
-    **ENEMY POWER**: ${this.totalEnemies
-      .map((wave) => wave.map((e) => e.name).join(", "))
-      .join(", ")}
+      ${this.msg.author}
+      🦸‍♂️ **TEAM POWER**: ${this.team.reduce(calculateTotalPower, 0)}
+      🦹‍♂️ **ENEMY POWER**: ${
+        this.totalEnemies.reduce(function (acc, cur) {
+          return acc + cur.reduce(calculateTotalPower, 0);
+        }, 0) / this.totalEnemies.length
+      }
     `);
     this.initiateBattle();
   }
 
   async initiateBattle() {
-    if (!this.team)
-      return this.msg.reply("You don't have a team selected to battle with.");
+    if (!this.team.length > 0)
+      return this.msg.reply("Your team needs to have at least one character.");
     this.msgSent = await this.msg.say(this.header);
     const res = await this.Discord.confirmation({
       msg: this.msgSent,
@@ -44,6 +46,11 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
 
     for (this.wave; this.wave < this.totalEnemies.length; this.wave++) {
       await this.startWave();
+      if (
+        this.team.length == 0 ||
+        this.totalEnemies[this.totalEnemies.length - 1].length == 0
+      )
+        this.endBattle();
       if (!enumHelper.isInBattle.has(this.player.discordId)) break;
     }
   }
@@ -57,8 +64,9 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       this.updateBattleMsg();
       await this.startRound();
     } while (
+      enumHelper.isInBattle.has(this.player.discordId) &&
       this.enemies.some((e) => e.HP > 0) &&
-      enumHelper.isInBattle.has(this.player.discordId)
+      this.team.some((t) => t.HP > 0)
     );
     console.log("======wave ended=====");
     this.body = "";
@@ -75,19 +83,25 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
         filter: function (response) {
           if (!response) return;
           const args = response.content.split(" ");
-          return (
-            args.length == 3 &&
-            Battle.team[args[0] - 1].turnEnded == false &&
+          console.log(
+            Object.keys(enumHelper.battleChoices).includes(args[1]),
+            args[1]
+          );
+          return args.length == 3 &&
+            response.author.id == Battle.player.discordId &&
             Object.keys(Battle.team).includes((args[0] - 1).toString()) &&
             Object.keys(enumHelper.battleChoices).includes(args[1]) &&
-            Object.keys(Battle.enemies).includes((args[2] - 1).toString()) &&
-            response.author.id == Battle.player.discordId
-          );
+            enumHelper.battleChoices[args[1]] == "atk"
+            ? Object.keys(Battle.enemies).includes((args[2] - 1).toString())
+            : Object.keys(Battle.team).includes((args[2] - 1).toString()) &&
+                Battle.team[args[0] - 1].turnEnded == false;
         },
         msg: this.msgSent,
         author: { id: this.player.discordId },
+        removeResponses: true,
       });
       if (!res) return this.escape();
+      console.log(res);
       const args = res.split(" ");
       this.castTalent(args[1], {
         caster: this.team[args[0] - 1],
@@ -96,7 +110,11 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
         attackingTeam: this.team,
         defendingTeam: this.enemies,
       });
-    } while (this.team.some((t) => t.turnEnded == false));
+    } while (
+      this.team.some((t) => t.turnEnded == false) &&
+      this.enemies.some((e) => e.HP > 0) &&
+      this.team.some((t) => t.HP > 0)
+    );
     this.enemies.map(decreaseEffectTurn);
 
     //Enemy Turn
@@ -116,7 +134,6 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       });
     });
     this.team.map(decreaseEffectTurn);
-
     this.team.concat(this.enemies).map((obj) => (obj.turnEnded = false));
     this.updateBattleMsg();
     console.log("----round ended----");
@@ -128,36 +145,26 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
   }
 
   async endBattle() {
-    const drops = enemies[this.enemy.id].drops;
-    this.Game.addRewards(this.player, drops);
-    let dropsMsg = "";
-    for (const dropName in drops) {
-      dropsMsg += `+ **${drops[dropName]}** ${dropName} ${this.Discord.emoji(
-        dropName
-      )}\n`;
+    //prettier-ignore
+    this.result = `${this.msg.author} ${this.team.length > 0 ? "wins 👑" : "loses 💀"} the battle.\n`
+    if (this.drops) {
+      this.result += "__Drops__\n";
+      Object.keys(this.drops).map((dropId) => {
+        dropId == "points"
+          ? this.Game.addValueToPlayer(this.player, dropId, this.drops[dropId])
+          : this.Game.addItem(this.player, dropId, this.drops[dropId]);
+      });
+      this.result += Object.keys(this.drops)
+        .map((dropId) => {
+          const drop = items[dropId];
+          //prettier-ignore
+          return `+${this.drops[dropId]} ${drop.name} ${this.Discord.emoji(drop.emoji)}`;
+        })
+        .join("\n");
     }
-    this.body +=
-      "\n" +
-      stripIndents(`
-    **__RESULT__**
-    **${this.targeted.name}** was defeated! 💀
-    👑 **${this.caster.name}** won the fight!
-
-    **__DROPS__**
-    ${dropsMsg}
-    `);
+    this.msgSent.edit(this.result);
     enumHelper.isInBattle.delete(this.player.discordId);
-    this.msgSent.edit(`${this.header}\n${this.body}`);
-    /*
-    this.msgSent.reactions.removeAll().catch(console.error);
-    const res = await this.Discord.awaitResponse({
-      type: "reaction",
-      author: {id: this.player.discordId},
-      msg: this.msgSent,
-      chooseFrom: ["➡", "red cross"],
-      deleteOnResponse: true,
-    });*/
-    await this.Game.addQuestProgress(this.player, "defeat", this.enemy.id, 1);
+    //await this.Game.addQuestProgress(this.player, "defeat", this.enemy.id, 1);
   }
 
   castTalent(battleChoiceId, params) {
@@ -169,7 +176,7 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     //prettier-ignore
     if (this.header.length + (this.body.length || 0) > this.maxLength) this.body = "";
     //prettier-ignore
-    this.body += `${enumHelper.isEnemy(caster.id) ? "🟥" : "🟦"} ${caster.name} uses **${caster.talents[battleChoice].name}** ${enumHelper.talentTypes[battleChoice].emoji} on ${targeted.name}.\n`;
+    this.body += `${enumHelper.isEnemy(caster.id) ? "🟥" : "🟩"} ${caster.name} uses **${caster.talents[battleChoice].name}** ${enumHelper.talentTypes[battleChoice].emoji} on ${targeted.name}.\n`;
     caster.turnEnded = true;
     this.team.map(removeKnockedOutObjs, this);
     this.enemies.map(removeKnockedOutObjs, this);
@@ -187,7 +194,9 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
 
     __Battle Log__
     `);
-    this.msgSent.edit(`${this.header}\n${this.body}`).then(() => sleep(1500));
+    this.msgSent
+      .edit(`${this.header}\n${this.body}`)
+      .then(() => this.sleep(1500));
     console.log("updated Battle Msg");
   }
 }
@@ -195,7 +204,7 @@ module.exports = PVEBattle;
 
 function formatBattleData(obj, i) {
   //prettier-ignore
-  return `${i + 1}) ${obj.turnEnded ? "☑️ " : ""}${obj.name} [${obj.HP}/${obj.MaxHP} HP]${
+  return `${i + 1}) ${obj.turnEnded ? "✅ " : `${this.Discord.emoji("red_cross")} `}${obj.name} [${obj.HP}/${obj.maxHP} ❤️] ${
     obj.target.position !== null
       ? ` | 🎯 ${
           enumHelper.isEnemy(obj.id)
@@ -212,14 +221,6 @@ function formatBattleData(obj, i) {
   }`;
 }
 
-function sleep(milliseconds) {
-  const date = Date.now();
-  let currentDate = null;
-  do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
-}
-
 function decreaseEffectTurn(obj) {
   Object.keys(obj.effects).map((eff) => {
     obj.effects[eff] -= 1;
@@ -229,7 +230,12 @@ function decreaseEffectTurn(obj) {
 
 function removeKnockedOutObjs(obj, i, arr) {
   if (obj.HP > 0) return;
+  this.body += `🪦 ${obj.name} was knocked out.\n`;
   arr.splice(i, 1);
-  this.body += `🪦 ${obj.name} died.\n`;
-  if (!obj.drops) return;
+
+  if (!obj.hasOwnProperty("drops")) return;
+  for (let dropId in obj.drops) {
+    if (!this.drops.hasOwnProperty(dropId)) this.drops[dropId] = 0;
+    this.drops[dropId] += obj.drops[dropId];
+  }
 }

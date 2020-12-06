@@ -6,9 +6,7 @@ const talents = {
         "Deals damage to target enemy; Forces target to attack you for 3 turns.",
       baseDMG: 30,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        const n = caster
-          ? calculateAttackDMG(this.baseDMG, caster.ATK)
-          : this.baseDMG;
+        const n = calculateAttackDMG(this.baseDMG, caster.ATK)
         targeted.takeDamage(n);
         //prettier-ignore
         targeted.target.position = attackingTeam.indexOf(caster)
@@ -20,9 +18,7 @@ const talents = {
       description: "Deals damage to all enemies.",
       baseDMG: 10,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        const n = caster
-          ? calculateAttackDMG(this.baseDMG, caster.ATK)
-          : this.baseDMG;
+        const n = calculateAttackDMG(this.baseDMG, caster.ATK)
         defendingTeam.map((e) => (e.takeDamage(n)));
       },
     },
@@ -32,9 +28,7 @@ const talents = {
       description: "Deals [n] damage; Heals team by 20% of dealt damage.",
       baseDMG: 20,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        const n = caster
-          ? calculateAttackDMG(this.baseDMG, caster.ATK)
-          : this.baseDMG;
+        const n = calculateAttackDMG(this.baseDMG, caster.ATK)
         targeted.HP -= n;
         attackingTeam.map((t) => t.HP + (0.2 * n) / attackingTeam.length);
       },
@@ -44,9 +38,7 @@ const talents = {
       description: "Deals [n] damage.",
       baseDMG: 35,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        const n = caster
-          ? calculateAttackDMG(this.baseDMG, caster.ATK)
-          : this.baseDMG;
+        const n = calculateAttackDMG(this.baseDMG, caster.ATK)
         targeted.HP -= n;
       },
     },

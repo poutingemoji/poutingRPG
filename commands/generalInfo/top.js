@@ -33,7 +33,6 @@ module.exports = class LeaderboardCommand extends (
   async run(msg, { type }) {
     const formatFilter = async (player) => {
       const user = await this.client.users.fetch(player.discordId);
-      console.log(user);
       let userMsg = `${user} ${this.Discord.emoji(
         factions[player.factionId].emoji
       )} `;
@@ -45,16 +44,14 @@ module.exports = class LeaderboardCommand extends (
       return userMsg;
     };
 
-    this.Game.Database.loadLeaderboard(type).then(async (leaderboard) => {
-      console.log(leaderboard);
-      this.Discord.Pagination.buildEmbeds(
-        {
-          msg,
-          title: "Leaderboard",
-        },
-        formatFilter,
-        leaderboard
-      );
-    });
+    const leaderboard = await this.Game.Database.loadLeaderboard(type);
+    this.Discord.Pagination.buildEmbeds(
+      {
+        msg,
+        title: "Leaderboard",
+      },
+      formatFilter,
+      leaderboard
+    );
   }
 };

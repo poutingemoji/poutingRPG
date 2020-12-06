@@ -16,16 +16,19 @@ class Discord extends BaseHelper {
     this.Pagination = new Pagination(this);
   }
 
-  healthBar(currentHP, totalHP) {
+  getObjInfo(obj) {
     //prettier-ignore
-    return `${this.progressBar(currentHP / totalHP, 13, "█", "░")} \`[${currentHP}/${totalHP}]\` ❤`;
-  }
-
-  progressBar(progress, maxLength, progressEmoji, emptyEmoji) {
-    const length = Math.max(0, Math.round(progress * maxLength));
-    return `${this.emoji(progressEmoji).repeat(length)}${this.emoji(
-      emptyEmoji
-    ).repeat(maxLength - length)}`;
+    return this.buildEmbed({
+      title: `${obj.hasOwnProperty("position") ? `${this.emoji(obj.position.emoji)} ` : ""}${obj.name}`,
+      description: `
+      ❤️ **HP**: ${obj.HP}
+      🗡️ **ATK**: ${obj.ATK}
+      
+      __Talents__
+      ${Object.keys(obj.talents).map(
+        (talentType) =>  `${this.emoji(enumHelper.talentTypes[talentType].emoji)} **${obj.talents[talentType].name}**: ${obj.talents[talentType].description}`
+        ).join("\n")}`
+    })
   }
 
   async confirmation(params) {
@@ -47,17 +50,23 @@ class Discord extends BaseHelper {
         msg,
         author,
         chooseFrom: ["green_check", "red_cross"],
-        removeReactions: "all",
+        removeResponses: "all",
       });
       return res == "green_check";
     }
   }
 
-  emoji(emoji) {
-    emoji = emojis.hasOwnProperty(emoji) ? emojis[emoji] : this.camelToSnakeCase(emoji);
-    return this.client.emojis.cache.get(emoji)
-      ? this.client.emojis.cache.get(emoji).toString()
-      : emoji;
+  emoji(str) {
+    let emojiId;
+    emojiId = this.client.emojis.cache.get(str)
+      ? str //already emojiId
+      : emojis[emojis.hasOwnProperty(str) ? str : this.camelToSnakeCase(str)]; //was an emoji name or try to make it an emoji name
+    if (!this.client.emojis.cache.get(emojiId)) {
+      return emojis.hasOwnProperty(str)
+        ? emojiId
+        : this.containsOnlyEmojis(str); //return the unicode emoji or a blank string
+    }
+    return this.client.emojis.cache.get(emojiId).toString(); //return the custom emoji
   }
 
   buildEmbed(params) {
@@ -101,7 +110,7 @@ class Discord extends BaseHelper {
       chooseFrom,
       deleteOnResponse = false,
       reactToMessage = true,
-      removeReactions = false,
+      removeResponses = false,
     } = params;
     enumHelper.waitingOnResponse.add(author.id);
     switch (type) {
@@ -116,11 +125,14 @@ class Discord extends BaseHelper {
             errors: ["time"],
           })
           .then((collected) => {
+            if (removeResponses) collected.first().delete()
+            if (deleteOnResponse) msg.delete();
             enumHelper.waitingOnResponse.clear(author.id);
             return collected.first().content;
           })
           .catch((error) => {
             console.error(error);
+            if (deleteOnResponse) msg.delete();
             enumHelper.waitingOnResponse.clear(author.id);
           });
       case "reaction":
@@ -134,8 +146,7 @@ class Discord extends BaseHelper {
             await msg.react(emojis[choice] || choice);
 
         const reactionFilter = (reaction, user) => {
-          console.log(  
-        user.id, author.id)
+          console.log(user.id, author.id);
           return (
             (chooseFrom.includes(reaction.emoji.id) ||
               chooseFrom.includes(reaction.emoji.name)) &&
@@ -151,7 +162,7 @@ class Discord extends BaseHelper {
           })
           .then((collected) => {
             if (deleteOnResponse) msg.delete();
-            switch (removeReactions) {
+            switch (removeResponses) {
               case "all":
                 msg.reactions.removeAll().catch(console.error);
                 break;

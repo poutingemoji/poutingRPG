@@ -5,16 +5,16 @@ const characters = require("../../data/characters");
 function newCharacterObj(characterId) {
   return {
     level: {
-      current: { type: Number, default: 1 },
-      total: { type: Number, default: 25 },
+      current: 1,
+      total: 20,
     },
     //prettier-ignore
     exp: {
-      current: { type: Number, default: 0 },
-      total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["mediumSlow"], { n: 2 }) },
+      current: 0,
+      total: Parser.evaluate(enumHelper.expFormulas["mediumSlow"], { n: 2 }),
     },
-    weapon: characters[characterId].weapon,
-    offHand: characters[characterId].offhand,
+    weapon: { id: characters[characterId].weapon, level: 1 },
+    offhand: { id: characters[characterId].offhand, level: 1 },
   };
 }
 

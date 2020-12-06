@@ -4,35 +4,35 @@ const { MessageEmbed } = require("discord.js");
 
 //DATA
 const emojis = require("../../data/emojis");
+const enemies = require("../../data/enemies");
 
+const enumHelper = require("../enumHelper");
 class Pagination {
   constructor(Discord) {
     this.Discord = Discord;
   }
 
-  async buildEmbeds(params, formatFilter, data, pageLength = 10) {
+  async buildEmbeds(params, formatFilter, data) {
     if (!(typeof data === "object")) return;
     if (data instanceof Map) data = Array.from(data.keys());
     if (data instanceof Array) data = { "": data };
 
     const categories = Object.keys(data);
-    console.log(categories);
     let { msg, author, title } = params;
     const embeds = [];
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
-      const { maxPage } = this.paginate(categoryData, 1, pageLength);
-      if (maxPage == 0) return msg.say(`Your ${title} has nothing inside.`);
+      const { maxPage } = this.paginate(categoryData, 1);
+      if (maxPage == 0) return msg.say(`Your ${title} is empty. :(`);
 
       for (let page = 0; page < maxPage; page++) {
-        const { items } = this.paginate(categoryData, page + 1, pageLength);
+        const { items } = this.paginate(categoryData, page + 1);
         let description = "";
         for (let i = 0; i < items.length; i++) {
           description += `${await formatFilter(items[i], i)}\n`;
         }
         embeds.push(
           new MessageEmbed()
-            //prettier-ignore
             .setTitle(
               `${author ? `${author.username}'s ` : ""}${title}${
                 categories[i] !== "" ? ` | ${categories[i]}` : ""
@@ -65,7 +65,7 @@ class Pagination {
     await Embeds.build();
   }
 
-  paginate(items, page = 1, pageLength = 10) {
+  paginate(items, page = 1, pageLength = enumHelper.pageLength) {
     const maxPage = Math.ceil(items.length / pageLength);
     if (page < 1) page = 1;
     if (page > maxPage) page = maxPage;

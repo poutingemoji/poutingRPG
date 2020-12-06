@@ -1,7 +1,8 @@
 //BASE
-const BaseGame = require("../Base/Game");
+const BaseHelper = require("../Base/Helper");
 const Parser = require("expr-eval").Parser;
 const gacha = require("gacha");
+const { stripIndents } = require("common-tags");
 
 //DATA
 const { newCharacterObj } = require("../database/schemas/character");
@@ -16,41 +17,38 @@ const positions = require("../data/positions");
 const Database = require("../database/Database");
 const PVEBattle = require("../utils/game/PVEBattle");
 const enumHelper = require("../utils/enumHelper");
+const character = require("../database/schemas/character");
 
-class Game {
+class Game extends BaseHelper {
   constructor(client) {
+    super();
     this.Database = new Database(client, this);
   }
 
+  changeSelectedTeam(player, teamNumber) {
+    teamNumber--
+    player.teamId = teamNumber;
+    this.Database.savePlayer(player);
+  }
+
   //TEAM
-  manageTeam(player, action, teamNumber, characterId) {
-    teamNumber -= 1;
-    if (!this.isBetween(teamNumber, 0, enumHelper.maxTeams)) return;
-    if (characterId && !player.characters.includes(characterId)) return;
+  changeTeamMembers(player, action, characterId) {
+    const character = this.getCharacter(player, characterId);
+    if (!character) return;
+    const positionId = Object.keys(positions).find(
+      (positionId) => positions[positionId].name == character.position.name
+    );
 
     switch (action) {
-      case "select":
-        player.teamId = teamNumber;
-        break;
       case "add":
-        if (player.teams[teamNumber].includes(characterId)) return;
-        player.teams[teamNumber].push(characterId);
+        if (player.teams[player.teamId][positionId] == characterId) return;
+        player.teams[player.teamId][positionId] = characterId;
         break;
       case "remove":
-        let fallbackTeam;
-        if (player.teams[teamNumber].length == 1) {
-          for (let i = 0; i < player.teams.length; i++) {
-            if (player.teams[i].length > 0 && i !== teamNumber)
-              fallbackTeam = i;
-          }
-          if (!fallbackTeam) return;
-        }
-        player.teamId = fallbackTeam;
-        const index = player.teams[teamNumber].indexOf(characterId);
-        if (index !== -1) player.teams[teamNumber].splice(index, 1);
+        delete player.teams[player.teamId][positionId];
         break;
     }
-    this.savePlayer(player);
+    this.Database.savePlayer(player);
   }
 
   //PLAYER
@@ -189,21 +187,50 @@ class Game {
     });
   }
 
+  getAdventureRankRange(player) {
+    let previousAR = 1;
+    for (let AR in enumHelper.adventureRankRanges) {
+      console.log(AR);
+      if (this.isBetween(player.adventureRank.current, previousAR, AR))
+        return enumHelper.adventureRankRanges[AR];
+      previousAR = AR + 1;
+    }
+  }
+
+  getEquipment(character) {
+    enumHelper.inventoryCategories.equipment.map((equipmentType) => {
+      const equipment = character[equipmentType];
+      const data = Object.assign({}, items[equipment.id], equipment);
+      switch (data.type) {
+        case "weapon":
+          data.ATK = (data.level - 1) * 25 + data.baseStats.ATK;
+          character[equipmentType] = data;
+          break;
+        case "offhand":
+          data.HP = (data.level - 1) * 25 + data.baseStats.HP;
+          character[equipmentType] = data;
+          break;
+      }
+    });
+    return character;
+  }
+
   //BATTLE
   getCharacter(player, characterId) {
+    if (!player.characters.get(characterId)) return;
     //prettier-ignore
-    const character = Object.assign({}, player.characters.get(characterId), characters[characterId]);
+    const character = Object.assign({}, characters[characterId], player.characters.get(characterId));
     //calculate battlestats
     return {
-      name: enumHelper.isProtagonist(characterId)
-        ? player.username
-        : character.name,
+      name: character.name,
       level: character.level,
       exp: character.exp,
-      position: enumHelper.isProtagonist(characterId)
-        ? positions[player.positionId]
-        : character.position,
+      position: character.position,
       baseStats: character.baseStats,
+      HP: (character.level.current - 1) * 10 + character.baseStats.HP,
+      ATK: (character.level.current - 1) * 10 + character.baseStats.ATK,
+      weapon: character.weapon,
+      offhand: character.offhand,
       talents: character.talents,
     };
   }
@@ -214,50 +241,40 @@ class Game {
     return {
       name: enemy.name,
       level: enemy.level,
-      baseStats: enemy.baseStats,
+      HP: enemy.baseStats.HP,
+      ATK: enemy.baseStats.ATK,
       talents: enemy.talents,
+      drops: enemy.drops,
     };
   }
 
   getBattleData(player, id) {
     const data = enumHelper.isEnemy(id)
-      ? Object.assign({}, characters[id], this.getEnemy(player, id))
-      : Object.assign({}, enemies[id], this.getCharacter(player, id));
-    console.log(data)
-    return {
+      ? this.getEnemy(player, id)
+      : this.getCharacter(player, id);
+
+    const battleData = {
       id,
       name: data.name,
       talents: data.talents,
-      HP: this.calculateHP(data),
-      MaxHP: this.calculateHP(data),
-      ATK: this.calculateATK(data),
+      HP: data.HP,
+      ATK: data.ATK,
       target: { position: null, turns: 0 },
       effects: {
         ["Yes"]: 3,
       },
-      takeDamage: function(amount) {
-        this.HP = Math.max(this.HP-amount, 0)
+      takeDamage: function (amount) {
+        this.HP = Math.max(this.HP - amount, 0);
       },
     };
-  }
-
-  calculateHP(data) {
-    //this.player.adventureRank
-    return data.baseStats.HP;
-  }
-
-  calculateATK(data) {
-    return data.baseStats.ATK;
-  }
-
-  addRewards(player, obj) {
-    for (const reward in obj) {
-      if (items.hasOwnProperty(reward)) {
-        this.addItem(player, reward, obj[reward]);
-      } else if (["points", "dallars", "suspendium"].includes(reward)) {
-        this.addValueToPlayer(player, reward, obj[reward]);
-      }
+    if (!enumHelper.isEnemy(id)) {
+      const { weapon, offhand } = this.getEquipment(data);
+      battleData.HP += offhand.HP;
+      battleData.ATK += weapon.ATK;
     }
+    battleData.maxHP = battleData.HP;
+    if (data.hasOwnProperty("drops")) battleData.drops = data.drops;
+    return battleData;
   }
 }
 

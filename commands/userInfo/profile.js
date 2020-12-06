@@ -34,7 +34,7 @@ module.exports = class ProfileCommand extends (
     user = user || msg.author;
     const player = await this.Game.findPlayer(user, msg);
     if (!player) return;
-
+    console.log(this.Game.getAdventureRankRange(player))
     const messageEmbed = this.Discord.buildEmbed({
       thumbnail: user.displayAvatarURL(),
       title: `Profile ${this.Discord.emoji(player.factionId)}`,
@@ -42,8 +42,8 @@ module.exports = class ProfileCommand extends (
       description: stripIndents(`
         **Adventure Rank**: ${player.adventureRank.current}
         *[${player.exp.current}/${player.exp.total} EXP]*
-        ${this.Discord.emoji("point")} **Points**: ${player.points}
-        ${this.Discord.emoji("poutingem")} **Poutingems**: ${player.poutingems}
+        ${this.Discord.emoji("points")} **Points**: ${player.points}
+        ${this.Discord.emoji("poutingems")} **Poutingems**: ${player.poutingems}
       `),
       footer: `Born: ${moment(player._id.getTimestamp()).format(
         "dddd, MMMM Do YYYY, h:mm:ss A"

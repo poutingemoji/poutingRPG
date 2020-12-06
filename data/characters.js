@@ -5,23 +5,11 @@ const positions = require("./positions");
 const talents = require("./talents");
 
 const characters = {
-  irregular: {
-    position: positions["fisherman"],
-    baseStats: {
-      HP: 100,
-      ATK: 100,
-    },
-    talents: {
-      attack: positions["fisherman"].talents[0].attack,
-      support: positions["fisherman"].talents[0].support,
-    },
-    weapon: items["hook"],
-    offhand: items["armorInventory"],
-  },
   twentyFifthBaam: {
     name: "Twenty-Fifth Baam",
     emoji: "",
     position: positions["waveController"],
+    volume: 1,
     baseStats: {
       HP: 100,
       ATK: 100,
@@ -30,13 +18,14 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
-    weapon: items["hook"],
-    offhand: items["armorInventory"],
+    weapon: "redNeedle",
+    offhand: "armorInventory",
   },
   khunAgueroAgnis: {
     name: "Khun Aguero Agnis",
     emoji: "",
     position: positions["lightBearer"],
+    volume: 1,
     baseStats: {
       HP: 100,
       ATK: 100,
@@ -45,13 +34,14 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
-    weapon: items["hook"],
-    offhand: items["armorInventory"],
+    weapon: "redNeedle",
+    offhand: "armorInventory",
   },
   rakWraithraiser: {
     name: "Rak Wraithraiser",
     emoji: "",
     position: positions["spearBearer"],
+    volume: 1,
     baseStats: {
       HP: 100,
       ATK: 100,
@@ -60,13 +50,30 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
-    weapon: items["hook"],
-    offhand: items["armorInventory"],
+    weapon: "redNeedle",
+    offhand: "armorInventory",
+  },
+  androssiZahard: {
+    name: "Androssi Zahard",
+    emoji: "",
+    position: positions["fisherman"],
+    volume: 1,
+    baseStats: {
+      HP: 100,
+      ATK: 100,
+    },
+    talents: {
+      attack: positions["fisherman"].talents[0].attack,
+      support: positions["fisherman"].talents[0].support,
+    },
+    weapon: "redNeedle",
+    offhand: "armorInventory",
   },
   shipLeesoo: {
     name: "Ship Leesoo",
     emoji: "",
     position: positions["scout"],
+    volume: 1,
     baseStats: {
       HP: 100,
       ATK: 100,
@@ -75,6 +82,8 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
+    weapon: "redNeedle",
+    offhand: "armorInventory",
   },
   kingZahard: {
     name: "King Zahard",

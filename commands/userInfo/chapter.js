@@ -5,9 +5,6 @@ const { stripIndents } = require("common-tags");
 //DATA
 const arcs = require("../../data/arcs");
 
-// UTILS
-const PVEBattle = require("../../utils/game/PVEBattle");
-
 module.exports = class ChapterCommand extends (
   Command
 ) {

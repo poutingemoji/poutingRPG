@@ -34,27 +34,9 @@ module.exports = class InventoryCommand extends (
   async run(msg, { category }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
-    if (
-      category &&
-      !Object.keys(enumHelper.inventoryCategories).includes(category)
-    )
-      return;
+    //prettier-ignore
+    if (category && !Object.keys(enumHelper.inventoryCategories).includes(category)) return;
 
-    const inventory = {};
-    const inventoryFiltered = category
-      ? Array.from(player.inventory.keys()).filter((itemId) =>
-          enumHelper.inventoryCategories[category].includes(items[itemId].type)
-        )
-      : Array.from(player.inventory.keys());
-
-    Object.keys(enumHelper.inventoryCategories).map((category) => {
-      inventory[category] = inventoryFiltered.filter((itemId) =>
-        enumHelper.inventoryCategories[category].includes(items[itemId].type)
-      );
-    });
-    for (let category in inventory)
-      if (inventory[category].length == 0) delete inventory[category];
-    console.log(inventory);
     const formatFilter = (itemId) => {
       console.log(itemId);
       const item = items[itemId];
@@ -62,6 +44,13 @@ module.exports = class InventoryCommand extends (
       return `${player.inventory.get(itemId)} **${item.name}** ${this.Discord.emoji(item.emoji)} | ${item.type}`;
     };
 
+    function findInventoryCategory(itemId) {
+      return Object.keys(enumHelper.inventoryCategories).find((category) =>
+        category.includes(items[itemId].type)
+      );
+    }
+
+    const itemIds = Array.from(player.inventory.keys());
     this.Discord.Pagination.buildEmbeds(
       {
         msg,
@@ -69,7 +58,15 @@ module.exports = class InventoryCommand extends (
         title: "Inventory",
       },
       formatFilter,
-      inventory
+      category
+        ? {
+            [category]: itemIds.filter((itemId) =>
+              enumHelper.inventoryCategories[category].includes(
+                items[itemId].type
+              )
+            ),
+          }
+        : this.groupBy(itemIds, findInventoryCategory)
     );
   }
 };

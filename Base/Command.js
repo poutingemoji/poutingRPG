@@ -4,7 +4,6 @@ const BaseHelper = require("./Helper");
 const { aggregation } = require("./Util");
 
 //UTILS
-const enumHelper = require("../utils/enumHelper");
 const { Discord, Game } = require("../DiscordBot");
 
 class Command extends aggregation(BaseCommand, BaseHelper) {

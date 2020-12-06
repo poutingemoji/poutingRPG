@@ -1,12 +1,12 @@
-const emojis = require("./emojis")
+const emojis = require("./emojis");
 const items = {
   //WEAPON
-  hook: {
+  redNeedle: {
     level: 1,
     weight: 1.0,
     spread: 1,
-    name: "Hook",
-    emoji: "",
+    name: "Red Needle",
+    emoji: "🪡",
     type: "weapon",
     baseStats: {
       ATK: 10,
@@ -19,7 +19,7 @@ const items = {
     weight: 1.0,
     spread: 1,
     name: "Armor Inventory",
-    emoji: "",
+    emoji: "🛡️",
     type: "offhand",
     baseStats: {
       HP: 10,

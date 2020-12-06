@@ -43,7 +43,7 @@ module.exports = class BattleCommand extends (
       }
       totalEnemies.push(enemiesInWave);
     });
-    const team = player.teams[player.teamId].map((t) =>
+    const team = Object.values(player.teams[player.teamId]).map((t) =>
       this.Game.getBattleData(player, t)
     );
     new PVEBattle({
@@ -55,7 +55,5 @@ module.exports = class BattleCommand extends (
       Game: this.Game,
     });
     return;
-
-    const defeatQuest = this.Game.findQuestType(player, "Defeat");
   }
 };
