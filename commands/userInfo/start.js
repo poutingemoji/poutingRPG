@@ -4,6 +4,7 @@ const Command = require("../../Base/Command");
 //DATA
 const factions = require("../../data/factions");
 const positions = require("../../data/positions");
+const enumHelper = require("../../utils/enumHelper");
 
 //prettier-ignore
 module.exports = class StartCommand extends Command {
@@ -39,11 +40,12 @@ module.exports = class StartCommand extends Command {
     const factionId = this.snakeToCamelCase(
       await msg.say(`${msg.author}\n${description}`).then((msgSent) => {
         return this.Discord.awaitResponse({
-          type: "reaction",
           author: msg.author,
           msg: msgSent,
-          chooseFrom: Object.keys(factions).map((f) => factions[f].emoji),
+          type: "reaction",
           deleteOnResponse: true,
+          chooseFrom: Object.keys(factions).map((f) => factions[f].emoji),
+          responseWaitTime: enumHelper.responseWaitTime,
         });
       }))
     if (!factionId) return;

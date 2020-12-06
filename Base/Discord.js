@@ -33,27 +33,16 @@ class Discord extends BaseHelper {
 
   async confirmation(params) {
     const { author, msg, response } = params;
-    if (response) {
-      return msg.reply(response).then(async (msgSent) => {
-        const res = await this.awaitResponse({
-          type: "reaction",
-          author: msg.author,
-          msg: msgSent,
-          chooseFrom: ["green_check", "red_cross"],
-          deleteOnResponse: true,
-        });
-        return res == "green_check";
-      });
-    } else {
-      const res = await this.awaitResponse({
-        type: "reaction",
-        msg,
-        author,
-        chooseFrom: ["green_check", "red_cross"],
-        removeResponses: "all",
-      });
-      return res == "green_check";
+    const awaitParams = {
+      author: response ? msg.author : author,
+      msg: response ? await msg.reply(response) : msg,
+      type: "reaction",
+      chooseFrom: ["green_check", "red_cross"],
+      responseWaitTime: enumHelper.responseWaitTime,
     }
+    response ? awaitParams.deleteOnResponse = true : awaitParams.removeAllReactions = true;
+    const res = await this.awaitResponse(awaitParams);
+    return res == "green_check";
   }
 
   emoji(str) {
@@ -101,39 +90,46 @@ class Discord extends BaseHelper {
   }
 
   async awaitResponse(params) {
-    let {
-      type,
-      filter,
-      responseWaitTime = enumHelper.responseWaitTime,
+    const {
       author,
       msg,
-      chooseFrom,
-      deleteOnResponse = false,
+      type,
       reactToMessage = true,
+      removeAllReactions = false,
       removeResponses = false,
+      deleteOnResponse = false,
+      filter,
     } = params;
+    if (!["message", "reaction"].includes(type)) return;
     enumHelper.waitingOnResponse.add(author.id);
+
+    let { chooseFrom, responseWaitTime } = params;
+    const awaitParams = { max: 1 };
+    if (responseWaitTime) {
+      awaitParams.time = responseWaitTime;
+      awaitParams.errors = ["time"];
+    }
+
+    const messageFilter = (response) => response.author.id == author.id;
+    const reactionFilter = (reaction, user) =>
+      (chooseFrom.includes(reaction.emoji.id) ||
+        chooseFrom.includes(reaction.emoji.name)) &&
+      user.id == author.id;
+
     switch (type) {
       case "message":
-        const messageFilter = (response) => {
-          return response.author.id == author.id;
-        };
         return msg.channel
-          .awaitMessages(filter || messageFilter, {
-            max: 1,
-            time: responseWaitTime,
-            errors: ["time"],
-          })
+          .awaitMessages(filter || messageFilter, awaitParams)
           .then((collected) => {
-            if (removeResponses) collected.first().delete()
             if (deleteOnResponse) msg.delete();
+            if (removeResponses) collected.first().delete();
             enumHelper.waitingOnResponse.clear(author.id);
             return collected.first().content;
           })
           .catch((error) => {
-            console.error(error);
             if (deleteOnResponse) msg.delete();
             enumHelper.waitingOnResponse.clear(author.id);
+            console.error(error);
           });
       case "reaction":
         if (!Array.isArray(chooseFrom)) {
@@ -145,44 +141,28 @@ class Discord extends BaseHelper {
           for (let choice of chooseFrom)
             await msg.react(emojis[choice] || choice);
 
-        const reactionFilter = (reaction, user) => {
-          console.log(user.id, author.id);
-          return (
-            (chooseFrom.includes(reaction.emoji.id) ||
-              chooseFrom.includes(reaction.emoji.name)) &&
-            user.id == author.id
-          );
-        };
-
         return msg
-          .awaitReactions(filter || reactionFilter, {
-            max: 1,
-            time: responseWaitTime,
-            errors: ["time"],
-          })
+          .awaitReactions(filter || reactionFilter, awaitParams)
           .then((collected) => {
             if (deleteOnResponse) msg.delete();
-            switch (removeResponses) {
-              case "all":
-                msg.reactions.removeAll().catch(console.error);
-                break;
-              case "author":
-                msg.reactions
-                  .resolve(
-                    collected.first().emoji.id
-                      ? collected.first().emoji.id
-                      : collected.first().emoji.name
-                  )
-                  .users.remove(author.id);
-                break;
+            if (removeAllReactions) {
+              msg.reactions.removeAll().catch(console.error);
+            } else if (removeResponses) {
+              msg.reactions
+                .resolve(
+                  collected.first().emoji.id
+                    ? collected.first().emoji.id
+                    : collected.first().emoji.name
+                )
+                .users.remove(author.id);
             }
             enumHelper.waitingOnResponse.clear(author.id);
             return collected.first().emoji.name;
           })
           .catch((error) => {
-            console.error(error);
             if (deleteOnResponse) msg.delete();
             enumHelper.waitingOnResponse.clear(author.id);
+            console.error(error);
           });
     }
   }

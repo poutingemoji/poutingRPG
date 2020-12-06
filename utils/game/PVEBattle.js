@@ -23,8 +23,8 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     this.drops = {};
     this.header = stripIndents(`
       ${this.msg.author}
-      🦸‍♂️ **TEAM POWER**: ${this.team.reduce(calculateTotalPower, 0)}
-      🦹‍♂️ **ENEMY POWER**: ${
+      🟩 **TEAM POWER**: ${this.team.reduce(calculateTotalPower, 0)}
+      🟥 **ENEMY POWER**: ${
         this.totalEnemies.reduce(function (acc, cur) {
           return acc + cur.reduce(calculateTotalPower, 0);
         }, 0) / this.totalEnemies.length
@@ -79,7 +79,11 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     //Player Turn
     do {
       const res = await this.Discord.awaitResponse({
+        author: { id: this.player.discordId },
+        msg: this.msgSent,
         type: "message",
+        removeResponses: true,
+        responseWaitTime: enumHelper.responseWaitTime,
         filter: function (response) {
           if (!response) return;
           const args = response.content.split(" ");
@@ -96,9 +100,6 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
             : Object.keys(Battle.team).includes((args[2] - 1).toString()) &&
                 Battle.team[args[0] - 1].turnEnded == false;
         },
-        msg: this.msgSent,
-        author: { id: this.player.discordId },
-        removeResponses: true,
       });
       if (!res) return this.escape();
       console.log(res);
@@ -204,7 +205,7 @@ module.exports = PVEBattle;
 
 function formatBattleData(obj, i) {
   //prettier-ignore
-  return `${i + 1}) ${obj.turnEnded ? "✅ " : `${this.Discord.emoji("red_cross")} `}${obj.name} [${obj.HP}/${obj.maxHP} ❤️] ${
+  return `${i + 1}) ${this.Discord.emoji(obj.turnEnded ? "✅" : "red_cross")} ${obj.name} (${obj.HP}/${obj.maxHP} ❤️) ${
     obj.target.position !== null
       ? ` | 🎯 ${
           enumHelper.isEnemy(obj.id)
