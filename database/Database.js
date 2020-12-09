@@ -8,7 +8,7 @@ const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
 
 //UTILS
-const enumHelper = require("../utils/enumHelper");
+const { leaderboardFilters } = require("../utils/enumHelper");
 require("dotenv").config();
 
 const Player = mongoose.model("Player", playerSchema);
@@ -74,10 +74,10 @@ class Database {
 
   savePlayer(player, update) {
     if (update && !update.hasOwnProperty("$unset"))
-      update = Object.assign(player, update);
+      player = Object.assign(player, update);
     Player.updateOne(
       { discordId: player.discordId },
-      update || player,
+      player,
       { upsert: true },
       (err, res) => {
         //console.log(res);
@@ -114,7 +114,7 @@ class Database {
 
   //LEADERBOARD
   loadLeaderboard(type) {
-    const { where, gte = 0, sort } = enumHelper.leaderboardFilters[type];
+    const { where, gte = 0, sort } = leaderboardFilters[type];
     return Player.find().where(where).gte(gte).sort(sort).exec();
   }
 

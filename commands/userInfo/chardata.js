@@ -8,7 +8,7 @@ const fs = require("fs");
 const items = require("../../data/items");
 
 // UTILS
-const enumHelper = require("../../utils/enumHelper");
+const { talentTypes } = require("../../utils/enumHelper");
 
 module.exports = class CharDataCommand extends (
   Command
@@ -55,7 +55,7 @@ module.exports = class CharDataCommand extends (
       
       __Talents__
       ${Object.keys(character.talents).map(
-        (talentType) =>  `${this.Discord.emoji(enumHelper.talentTypes[talentType].emoji)} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`
+        (talentType) =>  `${this.Discord.emoji(talentTypes[talentType].emoji)} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`
         ).join("\n")}`),
     };
 

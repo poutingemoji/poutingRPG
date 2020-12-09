@@ -52,6 +52,7 @@ const talents = {
       description: "Target receives 55% less damage; Lasts 2 turns.",
       turns: 2,
       cast({ caster, targeted, attackingTeam, defendingTeam }) {
+        console.log(this)
         targeted.effects[this.name] = this.turns;
       },
     },

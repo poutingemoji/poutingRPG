@@ -10,7 +10,7 @@ const fs = require("fs");
 const path = require("path");
 
 //UTILS
-const enumHelper = require("./utils/enumHelper");
+const { commandGroups, links, waitingOnResponse } = require("./utils/enumHelper");
 require("dotenv").config();
 
 class DiscordBot extends BaseHelper {
@@ -19,7 +19,7 @@ class DiscordBot extends BaseHelper {
     this.client = new CommandoClient({
       commandPrefix: process.env.PREFIX,
       owner: "257641125135908866",
-      invite: enumHelper.links.supportServer,
+      invite: links.supportServer,
       disableEveryone: true,
       shards: "auto",
     });
@@ -32,7 +32,7 @@ class DiscordBot extends BaseHelper {
 
   loadEventListeners() {
     this.client.dispatcher.addInhibitor((msg) => {
-      if (enumHelper.waitingOnResponse.has(msg.author.id)) {
+      if (waitingOnResponse.has(msg.author.id)) {
         return {
           reason: "Already has message listening.",
           response: msg.reply(
@@ -96,7 +96,7 @@ class DiscordBot extends BaseHelper {
   loadCommands() {
     this.client.registry
       .registerDefaultTypes()
-      .registerGroups(Object.entries(enumHelper.commandGroups))
+      .registerGroups(Object.entries(commandGroups))
       .registerDefaultGroups()
       .registerDefaultCommands({
         unknownCommand: false,

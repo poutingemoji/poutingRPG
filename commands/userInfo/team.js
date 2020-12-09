@@ -1,10 +1,10 @@
 //BASE
 const { stripIndents } = require("common-tags");
 const Command = require("../../Base/Command");
-const positions = require("../../data/positions")
+const positions = require("../../data/positions");
 
 //UTILS
-const enumHelper = require("../../utils/enumHelper");
+const { maxTeams } = require("../../utils/enumHelper");
 
 module.exports = class TeamCommand extends (
   Command
@@ -46,33 +46,36 @@ module.exports = class TeamCommand extends (
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
-    for (let i = 0; i < enumHelper.maxTeams; i++)
-      if (!player.teams[i]) player.teams[i] = [];
-
     if (!id) {
-      const formatFilter = (team, i) => {
-        return stripIndents(
-          `**Team ${i + 1} ${player.teamId == i ? "(Selected)" : ""}**
-          ${team.length == 0 ? "" : Object.keys(positions)
-            .map((positionId) => {
-              //prettier-ignore
-              const character = this.Game.getCharacter(player, team[positionId])
-              return `${this.Discord.emoji(positionId)} ${character ?
-                character.name : "None"
-              }`;
-            })
-            .join("\n")}`
-      )};
-      this.Discord.Pagination.buildEmbeds(
-        {
-          msg,
-          author: msg.author,
-          title: "Teams",
-        },
-        formatFilter,
-        player.teams
-      );
-    } else if (action == "select"){
+      const messageEmbed = this.Discord.buildEmbed({
+        msg,
+        author: msg.author,
+        title: "Teams",
+      });
+
+      for (let i = 0; i < maxTeams; i++) {
+        messageEmbed.addField(
+          `**Team ${i + 1} ${player.teamId == i ? "(Selected)" : ""}**`,
+          stripIndents(
+            `${
+              player.teams[i]
+                ? Object.keys(positions)
+                    .map((positionId) => {
+                      //prettier-ignore
+                      const character = this.Game.getCharacter(player, player.teams[i][positionId])
+                      return `${this.Discord.emoji(positionId)} ${
+                        character ? character.name : ""
+                      }`;
+                    })
+                    .join("\n")
+                : ""
+            }`
+          ),
+          true
+        );
+      }
+      msg.say(messageEmbed);
+    } else if (action == "select") {
       this.Game.changeSelectedTeam(player, id);
     } else {
       this.Game.changeTeamMembers(player, action, id);

@@ -55,8 +55,7 @@ const enumHelper = {
   waitingOnResponse: new Set(),
   isInBattle: new Set(),
   //Team
-  maxTeamMembers: 3,
-  maxTeams: 5,
+  maxTeams: 3,
   isEnemy(enemyId) {
     return enemies.hasOwnProperty(enemyId);
   },

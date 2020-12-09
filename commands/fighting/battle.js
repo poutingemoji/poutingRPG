@@ -29,7 +29,7 @@ module.exports = class BattleCommand extends (
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
-    let totalEnemies = [];
+    let totalWaves = [];
     floors[player.progression.tower.floor].areas[
       player.progression.tower.area
     ].waves.map((wave) => {
@@ -41,7 +41,7 @@ module.exports = class BattleCommand extends (
           enemiesInWave
         );
       }
-      totalEnemies.push(enemiesInWave);
+      totalWaves.push(enemiesInWave);
     });
     const team = Object.values(player.teams[player.teamId]).map((t) =>
       this.Game.getBattleData(player, t)
@@ -50,7 +50,7 @@ module.exports = class BattleCommand extends (
       msg,
       player,
       team,
-      totalEnemies: totalEnemies,
+      totalWaves: totalWaves,
       Discord: this.Discord,
       Game: this.Game,
     });

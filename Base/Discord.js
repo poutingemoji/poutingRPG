@@ -1,13 +1,14 @@
 //BASE
 const BaseHelper = require("./Helper");
 const { MessageAttachment, MessageEmbed } = require("discord.js");
+const { snakeCase } = require("change-case")
 
 //DATA
 const emojis = require("../data/emojis");
 
 //UTILS
 const Pagination = require("../utils/discord/Pagination");
-const enumHelper = require("../utils/enumHelper");
+const { responseWaitTime, talentTypes, waitingOnResponse } = require("../utils/enumHelper");
 
 class Discord extends BaseHelper {
   constructor(client) {
@@ -26,30 +27,15 @@ class Discord extends BaseHelper {
       
       __Talents__
       ${Object.keys(obj.talents).map(
-        (talentType) =>  `${this.emoji(enumHelper.talentTypes[talentType].emoji)} **${obj.talents[talentType].name}**: ${obj.talents[talentType].description}`
+        (talentType) =>  `${this.emoji(talentTypes[talentType].emoji)} **${obj.talents[talentType].name}**: ${obj.talents[talentType].description}`
         ).join("\n")}`
     })
   }
 
-  async confirmation(params) {
-    const { author, msg, response } = params;
-    const awaitParams = {
-      author: response ? msg.author : author,
-      msg: response ? await msg.reply(response) : msg,
-      type: "reaction",
-      chooseFrom: ["green_check", "red_cross"],
-      responseWaitTime: enumHelper.responseWaitTime,
-    }
-    response ? awaitParams.deleteOnResponse = true : awaitParams.removeAllReactions = true;
-    const res = await this.awaitResponse(awaitParams);
-    return res == "green_check";
-  }
-
   emoji(str) {
-    let emojiId;
-    emojiId = this.client.emojis.cache.get(str)
+    const emojiId = this.client.emojis.cache.get(str)
       ? str //already emojiId
-      : emojis[emojis.hasOwnProperty(str) ? str : this.camelToSnakeCase(str)]; //was an emoji name or try to make it an emoji name
+      : emojis[emojis.hasOwnProperty(str) ? str : snakeCase(str)]; //was an emoji name or try to make it an emoji name
     if (!this.client.emojis.cache.get(emojiId)) {
       return emojis.hasOwnProperty(str)
         ? emojiId
@@ -89,6 +75,22 @@ class Discord extends BaseHelper {
     return messageEmbed;
   }
 
+  async confirmation(params) {
+    const { author, msg, response } = params;
+    const awaitParams = {
+      author: response ? msg.author : author,
+      msg: response ? await msg.reply(response) : msg,
+      type: "reaction",
+      chooseFrom: ["green_check", "red_cross"],
+      responseWaitTime: responseWaitTime,
+    };
+    response
+      ? (awaitParams.deleteOnResponse = true)
+      : (awaitParams.removeAllReactions = true);
+    const res = await this.awaitResponse(awaitParams);
+    return res == "green_check";
+  }
+
   async awaitResponse(params) {
     const {
       author,
@@ -101,7 +103,7 @@ class Discord extends BaseHelper {
       filter,
     } = params;
     if (!["message", "reaction"].includes(type)) return;
-    enumHelper.waitingOnResponse.add(author.id);
+    waitingOnResponse.add(author.id);
 
     let { chooseFrom, responseWaitTime } = params;
     const awaitParams = { max: 1 };
@@ -110,61 +112,49 @@ class Discord extends BaseHelper {
       awaitParams.errors = ["time"];
     }
 
+    if (type == "reaction") {
+      if (!typeof chooseFrom == "object") return;
+      if (!Array.isArray(chooseFrom)) chooseFrom = Object.keys(chooseFrom);
+      if (reactToMessage)
+        for (let choice of chooseFrom)
+          await msg.react(emojis[choice] || choice);
+    }
+
     const messageFilter = (response) => response.author.id == author.id;
     const reactionFilter = (reaction, user) =>
       (chooseFrom.includes(reaction.emoji.id) ||
         chooseFrom.includes(reaction.emoji.name)) &&
       user.id == author.id;
+    //Wait for a response and then clear from 'waitingOnResponse', return if there isn't a response.
+    const collected =
+      type == "message"
+        ? await msg.channel
+            .awaitMessages(filter || messageFilter, awaitParams)
+            .catch(console.error)
+        : await msg
+            .awaitReactions(filter || reactionFilter, awaitParams)
+            .catch(console.error);
+    waitingOnResponse.delete(author.id);
+    console.log(waitingOnResponse)
+    if (collected == null) return;
 
-    switch (type) {
-      case "message":
-        return msg.channel
-          .awaitMessages(filter || messageFilter, awaitParams)
-          .then((collected) => {
-            if (deleteOnResponse) msg.delete();
-            if (removeResponses) collected.first().delete();
-            enumHelper.waitingOnResponse.clear(author.id);
-            return collected.first().content;
-          })
-          .catch((error) => {
-            if (deleteOnResponse) msg.delete();
-            enumHelper.waitingOnResponse.clear(author.id);
-            console.error(error);
-          });
-      case "reaction":
-        if (!Array.isArray(chooseFrom)) {
-          if (typeof chooseFrom == "object") {
-            chooseFrom = Object.keys(chooseFrom);
-          } else return;
-        }
-        if (reactToMessage)
-          for (let choice of chooseFrom)
-            await msg.react(emojis[choice] || choice);
-
-        return msg
-          .awaitReactions(filter || reactionFilter, awaitParams)
-          .then((collected) => {
-            if (deleteOnResponse) msg.delete();
-            if (removeAllReactions) {
-              msg.reactions.removeAll().catch(console.error);
-            } else if (removeResponses) {
-              msg.reactions
-                .resolve(
-                  collected.first().emoji.id
-                    ? collected.first().emoji.id
-                    : collected.first().emoji.name
-                )
-                .users.remove(author.id);
-            }
-            enumHelper.waitingOnResponse.clear(author.id);
-            return collected.first().emoji.name;
-          })
-          .catch((error) => {
-            if (deleteOnResponse) msg.delete();
-            enumHelper.waitingOnResponse.clear(author.id);
-            console.error(error);
-          });
+    //Check other parameters and return response
+    if (deleteOnResponse) msg.delete();
+    if (removeAllReactions) msg.reactions.removeAll().catch(console.error);
+    if (removeResponses) {
+      type == "message"
+        ? collected.first().delete()
+        : msg.reactions
+            .resolve(
+              collected.first().emoji.id
+                ? collected.first().emoji.id
+                : collected.first().emoji.name
+            )
+            .users.remove(author.id);
     }
+    return type == "message"
+      ? collected.first().content
+      : collected.first().emoji.name;
   }
 }
 

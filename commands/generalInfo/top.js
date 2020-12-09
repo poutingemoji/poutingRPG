@@ -3,7 +3,7 @@ const Command = require("../../Base/Command");
 
 //DATA
 const factions = require("../../data/factions");
-const enumHelper = require("../../utils/enumHelper");
+const { leaderboardFilters } = require("../../utils/enumHelper");
 module.exports = class LeaderboardCommand extends (
   Command
 ) {
@@ -19,7 +19,7 @@ module.exports = class LeaderboardCommand extends (
           key: "type",
           prompt: "What would you like to sort the leaderboard by?",
           type: "string",
-          oneOf: Object.keys(enumHelper.leaderboardFilters),
+          oneOf: Object.keys(leaderboardFilters),
           default: "adventureRank",
         },
       ],

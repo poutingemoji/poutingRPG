@@ -175,30 +175,6 @@ class Helper {
   }
 
   /**
-   * Converts snake_case to camelCase
-   * Utilizes https://hisk.io/javascript-snake-to-camel/
-   * @param {String} str
-   * @returns {String} camelCase
-   */
-  snakeToCamelCase(str) {
-    if (typeof str !== "string") return;
-    return str.replace(/([-_][a-z])/g, (group) =>
-      group.toUpperCase().replace("-", "").replace("_", "")
-    );
-  }
-
-  /**
-   * Converts camelCase to snake_case
-   * Utilizes https://stackoverflow.com/a/54246501
-   * @param {String} str
-   * @returns {String} snakeCase
-   */
-  camelToSnakeCase(str) {
-    if (typeof str !== "string") return;
-    return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
-  }
-
-  /**
    * Groups elements of an array into categories and returns as an object
    * @param {Array} array
    * @param {Function} fn

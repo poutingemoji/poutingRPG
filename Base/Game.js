@@ -3,6 +3,7 @@ const BaseHelper = require("../Base/Helper");
 const Parser = require("expr-eval").Parser;
 const gacha = require("gacha");
 const { stripIndents } = require("common-tags");
+const { capitalCase } = require("change-case")
 
 //DATA
 const { newCharacterObj } = require("../database/schemas/character");
@@ -12,11 +13,12 @@ const enemies = require("../data/enemies");
 const emojis = require("../data/emojis");
 const items = require("../data/items");
 const positions = require("../data/positions");
+const talents = require("../data/talents")
 
 // UTILS
 const Database = require("../database/Database");
 const PVEBattle = require("../utils/game/PVEBattle");
-const enumHelper = require("../utils/enumHelper");
+const { adventureRankRanges, expFormulas, inventoryCategories, isEnemy  } = require("../utils/enumHelper");
 const character = require("../database/schemas/character");
 
 class Game extends BaseHelper {
@@ -38,7 +40,8 @@ class Game extends BaseHelper {
     const positionId = Object.keys(positions).find(
       (positionId) => positions[positionId].name == character.position.name
     );
-
+    
+    console.log(characterId)
     switch (action) {
       case "add":
         if (player.teams[player.teamId][positionId] == characterId) return;
@@ -76,7 +79,7 @@ class Game extends BaseHelper {
     ) {
       player.adventureRank.current++;
       player.exp.current -= player.exp.total;
-      player.exp.total = Parser.evaluate(enumHelper.expFormulas["player"], {
+      player.exp.total = Parser.evaluate(expFormulas["player"], {
         n: player.adventureRank.current + 1,
       });
     }
@@ -100,7 +103,7 @@ class Game extends BaseHelper {
       character.level.current++;
       character.exp.current -= character.exp.total;
       character.exp.total = Parser.evaluate(
-        enumHelper.expFormulas["character"],
+        expFormulas["character"],
         {
           n: character.level.current + 1,
         }
@@ -189,16 +192,16 @@ class Game extends BaseHelper {
 
   getAdventureRankRange(player) {
     let previousAR = 1;
-    for (let AR in enumHelper.adventureRankRanges) {
+    for (let AR in adventureRankRanges) {
       console.log(AR);
       if (this.isBetween(player.adventureRank.current, previousAR, AR))
-        return enumHelper.adventureRankRanges[AR];
+        return adventureRankRanges[AR];
       previousAR = AR + 1;
     }
   }
 
   getEquipment(character) {
-    enumHelper.inventoryCategories.equipment.map((equipmentType) => {
+    inventoryCategories.equipment.map((equipmentType) => {
       const equipment = character[equipmentType];
       const data = Object.assign({}, items[equipment.id], equipment);
       switch (data.type) {
@@ -249,7 +252,7 @@ class Game extends BaseHelper {
   }
 
   getBattleData(player, id) {
-    const data = enumHelper.isEnemy(id)
+    const data = isEnemy(id)
       ? this.getEnemy(player, id)
       : this.getCharacter(player, id);
 
@@ -267,7 +270,7 @@ class Game extends BaseHelper {
         this.HP = Math.max(this.HP - amount, 0);
       },
     };
-    if (!enumHelper.isEnemy(id)) {
+    if (!isEnemy(id)) {
       const { weapon, offhand } = this.getEquipment(data);
       battleData.HP += offhand.HP;
       battleData.ATK += weapon.ATK;
@@ -275,6 +278,11 @@ class Game extends BaseHelper {
     battleData.maxHP = battleData.HP;
     if (data.hasOwnProperty("drops")) battleData.drops = data.drops;
     return battleData;
+  }
+
+  castTalent(talentId) {
+    const talent = talents[talentId]
+    
   }
 }
 

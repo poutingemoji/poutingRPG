@@ -11,17 +11,17 @@ const factions = {
     emoji: emojis["zahard_empire"],
     leader: characters["kingZahard"],
     description: stripIndents(`
-      The Empire has the most military power and influence in the Tower and administers the floor tests.
+      We have the most influence in the Tower and administer the floor tests.
       **Relies On:** Strength in battle
       **Goal:** Maintaining control over the Tower
     `),
   },
-  FUG: {
+  fug: {
     name: "FUG",
-    emoji: emojis["FUG"],
+    emoji: emojis["fug"],
     leader: characters["khelHellam"],
     description: stripIndents(`
-      They are the most dangerous and secretive criminal syndicate in the Tower and conduct their business in the shadows. 
+      We are the most dangerous and secretive criminal syndicate in the Tower and conduct our business in the shadows. 
       **Relies On:** Analyzing every situation
       **Goal:** Killing Zahard to overthrow his rule 
     `),
@@ -31,7 +31,7 @@ const factions = {
     emoji: emojis["wolhaiksong"],
     leader: characters["urekMazino"],
     description: stripIndents(`
-      They are an organization in the Tower whose liberal movements clash against the Empire's conservative practices.
+      We are an organization on the 77th Floor pushing for change in the Tower.
       **Relies On:** Instincts
       **Goal:** Finding a way out of the Tower
     `),

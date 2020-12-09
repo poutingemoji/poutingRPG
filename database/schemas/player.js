@@ -5,8 +5,9 @@ const Parser = require("expr-eval").Parser;
 //DATA
 const { newCharacterObj } = require("./character");
 const positions = require("../../data/positions");
+
 //UTILS
-const enumHelper = require("../../utils/enumHelper");
+const { expFormulas } = require("../../utils/enumHelper");
 
 const playerSchema = mongoose.Schema({
   discordId: String,
@@ -18,7 +19,7 @@ const playerSchema = mongoose.Schema({
   //prettier-ignore
   exp: {
     current: { type: Number, default: 0 },
-    total: { type: Number, default: Parser.evaluate(enumHelper.expFormulas["player"], { n: 2 }) },
+    total: { type: Number, default: Parser.evaluate(expFormulas["player"], { n: 2 }) },
   },
   points: { type: Number, default: 0 },
   poutingems: { type: Number, default: 0 },

@@ -11,7 +11,7 @@ const emojis = {
 
   //FACTIONS
   zahard_empire: "765415066580287500",
-  FUG: "765415092589690881",
+  fug: "765415092589690881",
   wolhaiksong: "765415121337581648",
 
   //POSITIONS

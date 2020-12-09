@@ -1,11 +1,11 @@
 //BASE
 const Command = require("../../Base/Command");
+const { camelCase, snakeCase } = require("change-case")
 
 //DATA
 const factions = require("../../data/factions");
 const positions = require("../../data/positions");
-const enumHelper = require("../../utils/enumHelper");
-
+const { responseWaitTime } = require("../../utils/enumHelper");
 //prettier-ignore
 module.exports = class StartCommand extends Command {
   constructor(client) {
@@ -34,10 +34,10 @@ module.exports = class StartCommand extends Command {
     let description = "__Choose between the factions below:__\n";
     for (const factionId of Object.keys(factions)) {
       const faction = factions[factionId];
-      description += `${this.Discord.emoji(faction.emoji)} - **${faction.name}**\n${faction.description}\n\n`;
+      description += `${this.Discord.emoji(faction.emoji)} **${faction.name}**\n${faction.description}\n\n`;
     }
 
-    const factionId = this.snakeToCamelCase(
+    const factionId = camelCase(
       await msg.say(`${msg.author}\n${description}`).then((msgSent) => {
         return this.Discord.awaitResponse({
           author: msg.author,
@@ -45,7 +45,7 @@ module.exports = class StartCommand extends Command {
           type: "reaction",
           deleteOnResponse: true,
           chooseFrom: Object.keys(factions).map((f) => factions[f].emoji),
-          responseWaitTime: enumHelper.responseWaitTime,
+          responseWaitTime: responseWaitTime,
         });
       }))
     if (!factionId) return;
@@ -56,7 +56,7 @@ module.exports = class StartCommand extends Command {
 
     const msgs = {
       zahardEmpire: "I'll give you the privilege of joining my empire.",
-      FUG: "We're not nice people, I hope you can handle the difficult training in FUG.",
+      fug: "We're not nice people, I hope you can handle the difficult training in FUG.",
       wolhaiksong: "Glad you made the right choice baby, welcome to Wolhaiksong!",
     };
     //prettier-ignore
