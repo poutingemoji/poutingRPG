@@ -19,6 +19,8 @@ const {
   responseWaitTime,
   waitingOnResponse,
 } = require("../enumHelper");
+const enumHelper = require("../enumHelper");
+const { sleep } = require("../../DiscordBot");
 
 const getTotalEnemies = (acc, cur) => acc.concat(cur);
 const calculateTotalPower = (acc, cur) => acc + cur.HP + cur.ATK;
@@ -97,27 +99,27 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
           if (!response) return;
           const args = response.content.split(" ");
           if (!args.length == 3) return;
-          if (typeof battleChoices[args[1]] == null) return;
+          if (!battleChoices.find(battleChoiceId => battleChoiceId.includes(args[1]))) return;
           const caster = Battle.team[args[0] - 1];
           const targeted =
-            battleChoices[args[1]] == "atk"
+            battleChoices[0].includes(args[1])
               ? Battle.wave[args[2] - 1]
               : Battle.team[args[2] - 1];
           return (
             response.author.id == Battle.player.discordId &&
-            typeof caster !== null &&
+            typeof caster !== "undefined" &&
             caster.turnEnded == false &&
-            typeof targeted !== null
+            typeof targeted !== "undefined"
           );
         },
       });
       if (!res) return this.escape();
       console.log(res);
       const args = res.split(" ");
-      this.castTalent(args[1], {
+      this.castTalent(battleChoices.find(battleChoiceId => battleChoiceId.includes(args[1])), {
         caster: this.team[args[0] - 1],
         targeted:
-          args[1] == "atk" ? this.wave[args[2] - 1] : this.team[args[2] - 1],
+        battleChoices[0].includes(args[1]) ? this.wave[args[2] - 1] : this.team[args[2] - 1],
         attackingTeam: this.team,
         defendingTeam: this.wave,
       });
@@ -126,25 +128,26 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       this.wave.some((e) => e.HP > 0) &&
       this.team.some((t) => t.HP > 0)
     );
-    this.wave.map(decreaseEffectTurn);
-
+    this.wave.map(this.decreaseEffectTurn);
+    console.log("Enemy Turn")
     //Enemy Turn
-    this.wave.map((e) => {
-      const battleChoices = Object.keys(battleChoices);
-      //prettier-ignore
+    for (let i = 0; i < this.wave.length; i++) {
+      const e = this.wave[i] 
       const battleChoiceId = battleChoices[Math.floor(Math.random() * battleChoices.length)];
       this.castTalent(battleChoiceId, {
         caster: e,
         targeted:
-          battleChoiceId == "atk"
+        battleChoices[0].includes(battleChoiceId)
             ? this.team[e.target.position] ||
               this.team[Math.floor(Math.random() * this.team.length)]
             : this.wave[Math.floor(Math.random() * this.wave.length)],
         attackingTeam: this.wave,
         defendingTeam: this.team,
       });
-    });
-    this.team.map(decreaseEffectTurn);
+      await sleep(2000)
+      console.log("cast enemey turn")
+    }
+    this.team.map(this.decreaseEffectTurn);
     this.team.concat(this.wave).map((obj) => (obj.turnEnded = false));
     this.updateBattleMsg();
     console.log("----round ended----");
@@ -155,36 +158,18 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
     this.msgSent.delete();
   }
 
-  castTalent(battleChoiceId, params) {
-    console.log("talent casted");
-    const battleChoice = battleChoices[battleChoiceId];
-    const { caster, targeted } = params;
-    caster.talents[battleChoice].cast(params);
-
-    //prettier-ignore
-    if (this.header.length + (this.body.length || 0) > this.maxLength) this.body = "";
-    //prettier-ignore
-    this.body += `${isEnemy(caster.id) ? "🟥" : "🟩"} ${caster.name} uses **${caster.talents[battleChoice].name}** ${talentTypes[battleChoice].emoji} on ${targeted.name}.\n`;
-    caster.turnEnded = true;
-    this.team.map(removeKnockedOutObjs, this);
-    this.wave.map(removeKnockedOutObjs, this);
-    this.updateBattleMsg();
-  }
-
-  updateBattleMsg() {
+  async updateBattleMsg() {
     this.header = stripIndents(`
-    ${this.msg.author}
-    **Your Team**
-    ${this.team.map(formatBattleData, this).join("\n")}
+      ${this.msg.author}
+      **Your Team**
+      ${this.team.map(formatBattleData, this).join("\n")}
 
-    **[Wave ${this.waveId + 1}/${this.totalWaves.length}] Enemies**
-    ${this.wave.map(formatBattleData, this).join("\n")}
+      **[Wave ${this.waveId + 1}/${this.totalWaves.length}] Enemies**
+      ${this.wave.map(formatBattleData, this).join("\n")}
 
-    __Battle Log__
+      __Battle Log__
     `);
-    this.msgSent
-      .edit(`${this.header}\n${this.body}`)
-      .then(() => this.sleep(1500));
+    this.msgSent.edit(`${this.header}\n${this.body}`)
     console.log("updated Battle Msg", waitingOnResponse);
   }
 
@@ -224,29 +209,10 @@ function formatBattleData(obj, i) {
         }`
       : ""
   }${
-    Object.keys(obj.effects).length > 0
-      ? ` | ${Object.keys(obj.effects)
-          .map((eff) => `${eff} (${obj.effects[eff]})`)
+    Object.values(obj.effects).length > 0
+      ? ` | ${Object.values(obj.effects)
+          .map((eff) => `${eff.name} (${eff.turns})`)
           .join(", ")}`
       : ""
   }`;
-}
-
-function decreaseEffectTurn(obj) {
-  Object.keys(obj.effects).map((eff) => {
-    obj.effects[eff] -= 1;
-    if (obj.effects[eff] <= 0) delete obj.effects[eff];
-  });
-}
-
-function removeKnockedOutObjs(obj, i, arr) {
-  if (obj.HP > 0) return;
-  this.body += `🪦 ${obj.name} was knocked out.\n`;
-  arr.splice(i, 1);
-
-  if (!obj.hasOwnProperty("drops")) return;
-  for (let dropId in obj.drops) {
-    if (!this.drops.hasOwnProperty(dropId)) this.drops[dropId] = 0;
-    this.drops[dropId] += obj.drops[dropId];
-  }
 }

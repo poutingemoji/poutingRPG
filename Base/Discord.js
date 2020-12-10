@@ -135,7 +135,6 @@ class Discord extends BaseHelper {
             .awaitReactions(filter || reactionFilter, awaitParams)
             .catch(console.error);
     waitingOnResponse.delete(author.id);
-    console.log(waitingOnResponse)
     if (collected == null) return;
 
     //Check other parameters and return response

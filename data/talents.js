@@ -5,10 +5,8 @@ const talents = {
       description:
         "Deals damage to target enemy; Forces target to attack you for 3 turns.",
       baseDMG: 30,
-      cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        const n = calculateAttackDMG(this.baseDMG, caster.ATK)
-        targeted.takeDamage(n);
-        //prettier-ignore
+      cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
+        targeted.takeDamage(damage);
         targeted.target.position = attackingTeam.indexOf(caster)
         targeted.target.turns = 3;
       },
@@ -17,9 +15,8 @@ const talents = {
       name: "Shinsu Blast",
       description: "Deals damage to all enemies.",
       baseDMG: 10,
-      cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        const n = calculateAttackDMG(this.baseDMG, caster.ATK)
-        defendingTeam.map((e) => (e.takeDamage(n)));
+      cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
+        defendingTeam.map((e) => e.takeDamage(damage));
       },
     },
     /*
@@ -27,19 +24,17 @@ const talents = {
       name: "Healing Strike",
       description: "Deals [n] damage; Heals team by 20% of dealt damage.",
       baseDMG: 20,
-      cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        const n = calculateAttackDMG(this.baseDMG, caster.ATK)
-        targeted.HP -= n;
-        attackingTeam.map((t) => t.HP + (0.2 * n) / attackingTeam.length);
+      cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
+        targeted.HP -= damage;
+        attackingTeam.map((t) => t.HP + (0.2 * damage) / attackingTeam.length);
       },
     },
     pummel: {
       name: "Pummel",
       description: "Deals [n] damage.",
       baseDMG: 35,
-      cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        const n = calculateAttackDMG(this.baseDMG, caster.ATK)
-        targeted.HP -= n;
+      cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
+        targeted.HP -= damage;
       },
     },
     ["Itching Powder"]: function () {
@@ -51,9 +46,12 @@ const talents = {
       name: "Protect",
       description: "Target receives 55% less damage; Lasts 2 turns.",
       turns: 2,
-      cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        console.log(this)
-        targeted.effects[this.name] = this.turns;
+      cast({ targeted }) {
+        targeted.effects[this.name] = Object.assign({}, this);
+      },
+      onDefend({ damage }) {
+        damage = damage * 0.55
+        console.log(damage)
       },
     },
     shinsuAura: {
@@ -61,8 +59,8 @@ const talents = {
       description:
         "Enemies attacking the target take moderate damage; Lasts 3 turns.",
       turns: 3,
-      cast({ caster, targeted, attackingTeam, defendingTeam }) {
-        targeted.effects[this.name] = this.turns;
+      cast({ targeted }) {
+        targeted.effects[this.name] = Object.assign({}, this);
       },
     },
     /*
@@ -111,6 +109,3 @@ const talents = {
 
 module.exports = talents;
 
-function calculateAttackDMG(baseDMG, ATK) {
-  return baseDMG + ATK;
-}

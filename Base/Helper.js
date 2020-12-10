@@ -51,7 +51,7 @@ class Helper {
    * Utilizes https://www.sitepoint.com/delay-sleep-pause-wait/
    * @param {Number} milliseconds
    */
-  sleep(milliseconds) {
+  async sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
     do {

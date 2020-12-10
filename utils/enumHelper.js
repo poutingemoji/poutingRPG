@@ -33,10 +33,6 @@ const enumHelper = {
     general_info: "General Info Commands",
     user_info: "User Info Commands",
   },
-  battleChoices: {
-    atk: "attack",
-    sup: "support",
-  },
   talentTypes: {
     attack: {
       emoji: "💥",
@@ -48,6 +44,7 @@ const enumHelper = {
       emoji: "🕊️",
     },
   },
+  battleChoices: ["attack", "support"],
   responseWaitTime: 60000,
   pageLength: 10,
   //Sets

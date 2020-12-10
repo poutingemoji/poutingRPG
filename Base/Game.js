@@ -3,7 +3,7 @@ const BaseHelper = require("../Base/Helper");
 const Parser = require("expr-eval").Parser;
 const gacha = require("gacha");
 const { stripIndents } = require("common-tags");
-const { capitalCase } = require("change-case")
+const { capitalCase, camelCase } = require("change-case");
 
 //DATA
 const { newCharacterObj } = require("../database/schemas/character");
@@ -13,13 +13,17 @@ const enemies = require("../data/enemies");
 const emojis = require("../data/emojis");
 const items = require("../data/items");
 const positions = require("../data/positions");
-const talents = require("../data/talents")
+const talents = require("../data/talents");
 
 // UTILS
 const Database = require("../database/Database");
-const PVEBattle = require("../utils/game/PVEBattle");
-const { adventureRankRanges, expFormulas, inventoryCategories, isEnemy  } = require("../utils/enumHelper");
-const character = require("../database/schemas/character");
+
+const {
+  adventureRankRanges,
+  expFormulas,
+  inventoryCategories,
+  isEnemy,
+} = require("../utils/enumHelper");
 
 class Game extends BaseHelper {
   constructor(client) {
@@ -28,7 +32,7 @@ class Game extends BaseHelper {
   }
 
   changeSelectedTeam(player, teamNumber) {
-    teamNumber--
+    teamNumber--;
     player.teamId = teamNumber;
     this.Database.savePlayer(player);
   }
@@ -40,8 +44,8 @@ class Game extends BaseHelper {
     const positionId = Object.keys(positions).find(
       (positionId) => positions[positionId].name == character.position.name
     );
-    
-    console.log(characterId)
+
+    console.log(characterId);
     switch (action) {
       case "add":
         if (player.teams[player.teamId][positionId] == characterId) return;
@@ -102,12 +106,9 @@ class Game extends BaseHelper {
     ) {
       character.level.current++;
       character.exp.current -= character.exp.total;
-      character.exp.total = Parser.evaluate(
-        expFormulas["character"],
-        {
-          n: character.level.current + 1,
-        }
-      );
+      character.exp.total = Parser.evaluate(expFormulas["character"], {
+        n: character.level.current + 1,
+      });
     }
     this.Database.savePlayer(player);
   }
@@ -263,9 +264,7 @@ class Game extends BaseHelper {
       HP: data.HP,
       ATK: data.ATK,
       target: { position: null, turns: 0 },
-      effects: {
-        ["Yes"]: 3,
-      },
+      effects: {},
       takeDamage: function (amount) {
         this.HP = Math.max(this.HP - amount, 0);
       },
@@ -278,11 +277,6 @@ class Game extends BaseHelper {
     battleData.maxHP = battleData.HP;
     if (data.hasOwnProperty("drops")) battleData.drops = data.drops;
     return battleData;
-  }
-
-  castTalent(talentId) {
-    const talent = talents[talentId]
-    
   }
 }
 
