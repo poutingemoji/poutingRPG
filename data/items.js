@@ -1,16 +1,20 @@
 const emojis = require("./emojis");
+const talents = require("./talents")
 const items = {
   //WEAPON
-  redNeedle: {
+  needle: {
     level: 1,
     weight: 1.0,
     spread: 1,
-    name: "Red Needle",
+    name: "Needle",
     emoji: "🪡",
     type: "weapon",
     baseStats: {
       ATK: 10,
     },
+    talents: {
+      passive: talents.passive["criticalStrike"],
+    }
   },
 
   //OFFHAND
@@ -24,6 +28,9 @@ const items = {
     baseStats: {
       HP: 10,
     },
+    talents: {
+      passive: talents.passive["vigor"],
+    }
   },
 
   //FOOD
@@ -45,14 +52,6 @@ const items = {
   },
 
   //ORES
-  copperChunk: {
-    level: 1,
-    weight: 1.0,
-    spread: 1,
-    name: "Copper Chunk",
-    emoji: "🌰",
-    type: "chunk",
-  },
   ironChunk: {
     level: 1,
     weight: 1.0,
@@ -85,38 +84,6 @@ const items = {
     spread: 1,
     name: "Frog",
     emoji: "🐸",
-    type: "material",
-  },
-  beeStinger: {
-    level: 1,
-    weight: 1.0,
-    spread: 1,
-    name: "Bee Stinger",
-    emoji: "🐝",
-    type: "material",
-  },
-  lizardTail: {
-    level: 1,
-    weight: 1.0,
-    spread: 1,
-    name: "Lizard Tail",
-    emoji: "🦎",
-    type: "material",
-  },
-  spiderLegs: {
-    level: 1,
-    weight: 1.0,
-    spread: 1,
-    name: "Spider Legs",
-    emoji: "🕷️",
-    type: "material",
-  },
-  antAntennae: {
-    level: 1,
-    weight: 1.0,
-    spread: 1,
-    name: "Ant Antennae",
-    emoji: "🐜",
     type: "material",
   },
 

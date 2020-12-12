@@ -36,7 +36,8 @@ module.exports = class CharactersCommand extends (
 
     const formatFilter = async (characterId) => {
       const character = this.Game.getCharacter(player, characterId);
-      const { weapon, offhand } = this.Game.getEquipment(character);
+      const weapon = this.Game.getEquipment(character.weapon);
+      const offhand = this.Game.getEquipment(character.offhand);
       return `${this.Discord.emoji(character.position.emoji)} ${
         character.name
       } (Lv.${character.level.current}) | ${weapon.name} +${weapon.ATK} 🗡️ | ${

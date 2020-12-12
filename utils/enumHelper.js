@@ -53,6 +53,7 @@ const enumHelper = {
   isInBattle: new Set(),
   //Team
   maxTeams: 3,
+  maxTeamMembers: 3,
   isEnemy(enemyId) {
     return enemies.hasOwnProperty(enemyId);
   },

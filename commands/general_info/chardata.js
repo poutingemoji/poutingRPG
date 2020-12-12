@@ -16,7 +16,7 @@ module.exports = class CharDataCommand extends (
   constructor(client) {
     super(client, {
       name: "chardata",
-      group: "user_info",
+      group: "general_info",
       memberName: "chardata",
       description: "Shows information on a character.",
       examples: [],
@@ -42,14 +42,14 @@ module.exports = class CharDataCommand extends (
     if (!isNaN(characterId)) characterId = Array.from(player.characters.keys())[characterId - 1];
     const character = this.Game.getCharacter(player, characterId);
     if (!character) return;
-    const { weapon, offhand } = this.Game.getEquipment(character);
-
+    const weapon = this.Game.getEquipment(character.weapon);
+    const offhand = this.Game.getEquipment(character.offhand);
     //prettier-ignore
     const params = {
       title: `${this.Discord.emoji(character.position.emoji)} ${character.name}`,
       description: stripIndents(`
-      ❤️ **HP**: ${character.baseStats.HP} + ${offhand.HP}
-      🗡️ **ATK**: ${character.baseStats.ATK} + ${weapon.ATK}
+      ❤️ **HP**: ${character.baseStats.HP} + ${offhand.baseStats.HP}
+      🗡️ **ATK**: ${character.baseStats.ATK} + ${weapon.baseStats.ATK}
       **Weapon**: ${weapon.name} ${this.Discord.emoji(weapon.emoji)}
       **Offhand**: ${offhand.name} ${this.Discord.emoji(offhand.emoji)}
       
@@ -59,12 +59,14 @@ module.exports = class CharDataCommand extends (
         ).join("\n")}`),
     };
 
-    const characterImage = await loadImage(`./images/characters/${characterId}.png`);
+    const characterImage = await loadImage(
+      `./images/characters/${characterId}.png`
+    );
     const canvas = createCanvas(500, 500);
     const ctx = canvas.getContext("2d");
     scaleToFit(canvas, ctx, characterImage);
     params.filePath = canvas.toBuffer();
-    
+
     const messageEmbed = this.Discord.buildEmbed(params);
     msg.say(messageEmbed);
   }

@@ -1,10 +1,11 @@
 //BASE
+const { jpegVersion } = require("canvas");
 const { stripIndents } = require("common-tags");
 const Command = require("../../Base/Command");
 const positions = require("../../data/positions");
 
 //UTILS
-const { maxTeams } = require("../../utils/enumHelper");
+const { maxTeams, maxTeamMembers } = require("../../utils/enumHelper");
 
 module.exports = class TeamCommand extends (
   Command
@@ -23,14 +24,20 @@ module.exports = class TeamCommand extends (
       args: [
         {
           key: "action",
-          prompt: "What action would you like to perform on your teams?",
+          prompt: "What action would you like to perform?",
           type: "string",
           oneOf: ["select", "add", "remove"],
           default: false,
         },
         {
           key: "id",
-          prompt: "What's the id of the character/team?",
+          prompt: "What's the id of the team/character?",
+          type: "string",
+          default: false,
+        },
+        {
+          key: "index",
+          prompt: "What index do you want your team member in?",
           type: "string",
           default: false,
         },
@@ -42,7 +49,7 @@ module.exports = class TeamCommand extends (
     });
   }
 
-  async run(msg, { action, id }) {
+  async run(msg, { action, id, index }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
@@ -54,31 +61,35 @@ module.exports = class TeamCommand extends (
       });
 
       for (let i = 0; i < maxTeams; i++) {
+        if (!player.teams[i]) player.teams[i] = []
+        let teamMembers = []
+        for (let j = 0; j < maxTeamMembers; j++) {
+          if (!player.teams[i][j]) {
+            teamMembers[j] = "_"
+          } else {
+            const character = this.Game.getCharacter(player, player.teams[i][j])
+            teamMembers[j] = `${this.Discord.emoji(character.position.emoji)} ${character.name}`
+          }
+        }
         messageEmbed.addField(
           `**Team ${i + 1} ${player.teamId == i ? "(Selected)" : ""}**`,
-          stripIndents(
-            `${
-              player.teams[i]
-                ? Object.keys(positions)
-                    .map((positionId) => {
-                      //prettier-ignore
-                      const character = this.Game.getCharacter(player, player.teams[i][positionId])
-                      return `${this.Discord.emoji(positionId)} ${
-                        character ? character.name : ""
-                      }`;
-                    })
-                    .join("\n")
-                : ""
-            }`
-          ),
+            `${teamMembers.join("\n")}`,
           true
         );
       }
       msg.say(messageEmbed);
-    } else if (action == "select") {
-      this.Game.changeSelectedTeam(player, id);
     } else {
-      this.Game.changeTeamMembers(player, action, id);
+      switch (action) {
+        case "select":
+          this.Game.changeSelectedTeam(player, id);
+          break;
+        case "add":
+          this.Game.addTeamMember(player, id, index);
+          break;
+        case "remove":
+          this.Game.removeTeamMember(player, id, index);
+          break;
+      }
     }
   }
 };

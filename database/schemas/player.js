@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const Parser = require("expr-eval").Parser;
 
 //DATA
+const { newEquipmentObj } = require("./equipment");
 const { newCharacterObj } = require("./character");
-const positions = require("../../data/positions");
 
 //UTILS
 const { expFormulas } = require("../../utils/enumHelper");
@@ -12,7 +12,7 @@ const { expFormulas } = require("../../utils/enumHelper");
 const playerSchema = mongoose.Schema({
   discordId: String,
   factionId: String,
-  adventureRank: {
+  level: {
     current: { type: Number, default: 1 },
     total: { type: Number, default: 25 },
   },
@@ -30,14 +30,8 @@ const playerSchema = mongoose.Schema({
   teamId: { type: Number, default: 0 },
   teams: {
     type: Array,
-    of: {
-      waveController: { type: String, default: "none" },
-      lightBearer: { type: String, default: "none" },
-      spearBearer: { type: String, default: "none" },
-      fisherman: { type: String, default: "none" },
-      scout: { type: String, default: "none" },
-    },
-    default: [{ waveController: "twentyFifthBaam" }],
+    of: Array,
+    default: [["twentyFifthBaam"]],
   },
   characters: {
     type: Map,
@@ -46,7 +40,10 @@ const playerSchema = mongoose.Schema({
       ["twentyFifthBaam"]: newCharacterObj("twentyFifthBaam"),
     },
   },
-  equipment: { type: Array, default: [] },
+  equipment: {
+    type: Array,
+    default: [newEquipmentObj("needle"), newEquipmentObj("armorInventory")],
+  },
   inventory: { type: Map, of: Number, default: {} },
   progression: {
     story: {
@@ -76,13 +73,7 @@ function newPlayerObj(discordId, factionId) {
       ["androssiZahard"]: newCharacterObj("androssiZahard"),
       ["shipLeesoo"]: newCharacterObj("shipLeesoo"),
     },
-    teams: [
-      {
-        waveController: "twentyFifthBaam",
-        lightBearer: "khunAgueroAgnis",
-        spearBearer: "rakWraithraiser",
-      },
-    ],
+    teams: [["twentyFifthBaam", "khunAgueroAgnis", "rakWraithraiser"]],
     inventory: { butterflyWings: 3, frog: 5 },
   };
 }

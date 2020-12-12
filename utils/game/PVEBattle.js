@@ -1,13 +1,15 @@
 //BASE
-const BaseBattle = require("../../Base/Battle");
+const Battle = require("./Battle");
 const BaseHelper = require("../../Base/Helper");
 const { aggregation } = require("../../Base/Util");
 const { stripIndents } = require("common-tags");
 
 //DATA
+const arcs = require("../../data/arcs");
 const characters = require("../../data/characters");
 const emojis = require("../../data/emojis");
 const enemies = require("../../data/enemies");
+const floors = require("../../data/floors");
 const items = require("../../data/items");
 const talents = require("../../data/talents");
 
@@ -20,17 +22,37 @@ const {
   waitingOnResponse,
 } = require("../enumHelper");
 const enumHelper = require("../enumHelper");
-const { sleep } = require("../../DiscordBot");
 
 const getTotalEnemies = (acc, cur) => acc.concat(cur);
 const calculateTotalPower = (acc, cur) => acc + cur.HP + cur.ATK;
-class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
+class PVEBattle extends aggregation(Battle, BaseHelper) {
   constructor(params) {
     super(params);
-    const { totalWaves } = params;
-    this.totalWaves = totalWaves;
+
+    this.totalWaves = [];
+    const towerProgression = this.player.progression.tower;
+    floors[towerProgression.floor].areas[towerProgression.area].waves.map(
+      (wave) => {
+        const enemiesInWave = [];
+        for (const enemyId in wave) {
+          console.log("BATTLE",this.getBattleStats(this.Game.getEnemy(this.player, enemyId)))
+          this.fillArray(
+            this.getBattleStats(this.Game.getEnemy(this.player, enemyId)),
+            wave[enemyId],
+            enemiesInWave
+          );
+          console.log("HERE")
+        }
+        this.totalWaves.push(enemiesInWave);
+      }
+    );
+    this.team = Object.values(this.player.teams[this.player.teamId]).map((t) =>
+      this.getBattleStats(this.Game.getCharacter(this.player, t))
+    );
+
     this.waveId = 0;
     this.drops = {};
+    console.log(this.totalWaves)
     this.header = stripIndents(`
       ${this.msg.author}
       🟩 **TEAM POWER**: ${this.team.reduce(calculateTotalPower, 0)}
@@ -99,12 +121,16 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
           if (!response) return;
           const args = response.content.split(" ");
           if (!args.length == 3) return;
-          if (!battleChoices.find(battleChoiceId => battleChoiceId.includes(args[1]))) return;
+          if (
+            !battleChoices.find((battleChoiceId) =>
+              battleChoiceId.includes(args[1])
+            )
+          )
+            return;
           const caster = Battle.team[args[0] - 1];
-          const targeted =
-            battleChoices[0].includes(args[1])
-              ? Battle.wave[args[2] - 1]
-              : Battle.team[args[2] - 1];
+          const targeted = battleChoices[0].includes(args[1])
+            ? Battle.wave[args[2] - 1]
+            : Battle.team[args[2] - 1];
           return (
             response.author.id == Battle.player.discordId &&
             typeof caster !== "undefined" &&
@@ -116,37 +142,46 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
       if (!res) return this.escape();
       console.log(res);
       const args = res.split(" ");
-      this.castTalent(battleChoices.find(battleChoiceId => battleChoiceId.includes(args[1])), {
-        caster: this.team[args[0] - 1],
-        targeted:
-        battleChoices[0].includes(args[1]) ? this.wave[args[2] - 1] : this.team[args[2] - 1],
-        attackingTeam: this.team,
-        defendingTeam: this.wave,
-      });
+      this.castTalent(
+        battleChoices.find((battleChoiceId) =>
+          battleChoiceId.includes(args[1])
+        ),
+        {
+          caster: this.team[args[0] - 1],
+          targeted: battleChoices[0].includes(args[1])
+            ? this.wave[args[2] - 1]
+            : this.team[args[2] - 1],
+          attackingTeam: this.team,
+          defendingTeam: this.wave,
+        }
+      );
     } while (
       this.team.some((t) => t.turnEnded == false) &&
       this.wave.some((e) => e.HP > 0) &&
       this.team.some((t) => t.HP > 0)
     );
+    if (!(this.wave.some((e) => e.HP > 0) && this.team.some((t) => t.HP > 0)))
+      return;
     this.wave.map(this.decreaseEffectTurn);
-    console.log("Enemy Turn")
+    console.log("Enemy Turn");
     //Enemy Turn
-    for (let i = 0; i < this.wave.length; i++) {
-      const e = this.wave[i] 
-      const battleChoiceId = battleChoices[Math.floor(Math.random() * battleChoices.length)];
+
+    this.wave.map(async (e) => {
+      const battleChoiceId =
+        battleChoices[Math.floor(Math.random() * battleChoices.length)];
       this.castTalent(battleChoiceId, {
         caster: e,
-        targeted:
-        battleChoices[0].includes(battleChoiceId)
-            ? this.team[e.target.position] ||
-              this.team[Math.floor(Math.random() * this.team.length)]
-            : this.wave[Math.floor(Math.random() * this.wave.length)],
+        targeted: battleChoices[0].includes(battleChoiceId)
+          ? this.team[e.target.position] ||
+            this.team[Math.floor(Math.random() * this.team.length)]
+          : this.wave[Math.floor(Math.random() * this.wave.length)],
         attackingTeam: this.wave,
         defendingTeam: this.team,
       });
-      await sleep(2000)
-      console.log("cast enemey turn")
-    }
+      await this.sleep(2000);
+      console.log("cast enemey turn");
+    });
+
     this.team.map(this.decreaseEffectTurn);
     this.team.concat(this.wave).map((obj) => (obj.turnEnded = false));
     this.updateBattleMsg();
@@ -169,7 +204,7 @@ class PVEBattle extends aggregation(BaseBattle, BaseHelper) {
 
       __Battle Log__
     `);
-    this.msgSent.edit(`${this.header}\n${this.body}`)
+    this.msgSent.edit(`${this.header}\n${this.body}`);
     console.log("updated Battle Msg", waitingOnResponse);
   }
 

@@ -6,7 +6,6 @@ const enemies = {
     weight: 4.0,
     spread: 4,
     name: "White Steel Eel",
-    type: "Boss",
     baseStats: {
       HP: 100,
       ATK: 100,
@@ -23,7 +22,6 @@ const enemies = {
     weight: 4.0,
     spread: 4,
     name: "Ball",
-    type: "Special",
     baseStats: {
       HP: 50,
       ATK: 0,

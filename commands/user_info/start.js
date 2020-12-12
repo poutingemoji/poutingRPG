@@ -59,7 +59,6 @@ module.exports = class StartCommand extends Command {
       fug: "We're not nice people, I hope you can handle the difficult training in FUG.",
       wolhaiksong: "Glad you made the right choice baby, welcome to Wolhaiksong!",
     };
-    //prettier-ignore
     const faction = factions[factionId];
     return msg.say(`${this.Discord.emoji(faction.leader.emoji)} **${faction.leader.name}**: ${msg.author}, ${msgs[factionId]}`);
   }

@@ -40,7 +40,7 @@ module.exports = class ProfileCommand extends (
       title: `Profile ${this.Discord.emoji(player.factionId)}`,
       author: user,
       description: stripIndents(`
-        **Adventure Rank**: ${player.adventureRank.current}
+        **Adventure Rank**: ${player.level.current}
         *[${player.exp.current}/${player.exp.total} EXP]*
         ${this.Discord.emoji("points")} **Points**: ${player.points}
         ${this.Discord.emoji("poutingems")} **Poutingems**: ${player.poutingems}

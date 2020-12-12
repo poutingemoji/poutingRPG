@@ -5,9 +5,9 @@ const talents = {
       description:
         "Deals damage to target enemy; Forces target to attack you for 3 turns.",
       baseDMG: 30,
-      cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
-        targeted.takeDamage(damage);
-        targeted.target.position = attackingTeam.indexOf(caster)
+      cast({ talent, caster, targeted, attackingTeam }) {
+        targeted.takeDamage(talent.DMG);
+        targeted.target.position = attackingTeam.indexOf(caster);
         targeted.target.turns = 3;
       },
     },
@@ -15,8 +15,8 @@ const talents = {
       name: "Shinsu Blast",
       description: "Deals damage to all enemies.",
       baseDMG: 10,
-      cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
-        defendingTeam.map((e) => e.takeDamage(damage));
+      cast({ talent, defendingTeam }) {
+        defendingTeam.map((e) => e.takeDamage(talent.DMG));
       },
     },
     /*
@@ -49,9 +49,8 @@ const talents = {
       cast({ targeted }) {
         targeted.effects[this.name] = Object.assign({}, this);
       },
-      onDefend({ damage }) {
-        damage = damage * 0.55
-        console.log(damage)
+      onDefend({ talent }) {
+        talent.bonusDMG -= 0.55;
       },
     },
     shinsuAura: {
@@ -78,8 +77,14 @@ const talents = {
     //EQUIPMENT TALENTS
 
     //WEAPON
-    ["Critical Strike"]: function () {
-      //15% chance to deal 50% bonus damage
+    criticalStrike: {
+      name: "Critical Strike",
+      description: "15% chance to deal 50% bonus damage.",
+      onAttack({ talent }) {
+        if (!Math.random() <= 0.15) return;
+        talent.bonusDMG += 0.50;
+      },
+      //
     },
     ["Chain Attack"]: function () {
       //30% chance to attack an additional random targeted with 20% attack power
@@ -95,8 +100,13 @@ const talents = {
     },
 
     //Off-Hand
-    ["Vigor"]: function () {
-      //Take 5% less damage
+    vigor: {
+      name: "Vigor",
+      description: "Take 5% less damage.",
+      onDefend({ talent }) {
+        talent.bonusDMG += 0.50;
+      },
+      //
     },
     ["Might"]: function () {
       //Increase attack power by 5%
@@ -108,4 +118,3 @@ const talents = {
 };
 
 module.exports = talents;
-

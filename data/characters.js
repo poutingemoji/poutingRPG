@@ -18,7 +18,7 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
-    weapon: items["redNeedle"],
+    weapon: items["needle"],
     offhand: items["armorInventory"],
   },
   khunAgueroAgnis: {
@@ -34,7 +34,7 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
-    weapon: items["redNeedle"],
+    weapon: items["needle"],
     offhand: items["armorInventory"],
   },
   rakWraithraiser: {
@@ -50,7 +50,7 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
-    weapon: items["redNeedle"],
+    weapon: items["needle"],
     offhand: items["armorInventory"],
   },
   androssiZahard: {
@@ -66,7 +66,7 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
-    weapon: items["redNeedle"],
+    weapon: items["needle"],
     offhand: items["armorInventory"],
   },
   shipLeesoo: {
@@ -82,7 +82,7 @@ const characters = {
       attack: positions["fisherman"].talents[0].attack,
       support: positions["fisherman"].talents[0].support,
     },
-    weapon: items["redNeedle"],
+    weapon: items["needle"],
     offhand: items["armorInventory"],
   },
   kingZahard: {

@@ -4,8 +4,10 @@ const Parser = require("expr-eval").Parser;
 const gacha = require("gacha");
 const { stripIndents } = require("common-tags");
 const { capitalCase, camelCase } = require("change-case");
+const { aggregation } = require("./Util");
 
 //DATA
+const { newEquipmentObj } = require("../database/schemas/equipment");
 const { newCharacterObj } = require("../database/schemas/character");
 const arcs = require("../data/arcs");
 const characters = require("../data/characters");
@@ -16,45 +18,42 @@ const positions = require("../data/positions");
 const talents = require("../data/talents");
 
 // UTILS
+const Team = require("../utils/game/Team");
 const Database = require("../database/Database");
 
 const {
+  maxTeamMembers,
   adventureRankRanges,
   expFormulas,
   inventoryCategories,
   isEnemy,
+  maxTeams,
 } = require("../utils/enumHelper");
 
-class Game extends BaseHelper {
+class Game extends aggregation(Team, BaseHelper) {
   constructor(client) {
     super();
     this.Database = new Database(client, this);
   }
 
-  changeSelectedTeam(player, teamNumber) {
-    teamNumber--;
-    player.teamId = teamNumber;
+  //EQUIPMENT
+  addEquipment(player, equipmentId) {
+    player.equipments.push(newEquipmentObj(equipmentId, player.level.current));
     this.Database.savePlayer(player);
   }
 
-  //TEAM
-  changeTeamMembers(player, action, characterId) {
-    const character = this.getCharacter(player, characterId);
-    if (!character) return;
-    const positionId = Object.keys(positions).find(
-      (positionId) => positions[positionId].name == character.position.name
-    );
+  equip() {}
 
-    console.log(characterId);
-    switch (action) {
-      case "add":
-        if (player.teams[player.teamId][positionId] == characterId) return;
-        player.teams[player.teamId][positionId] = characterId;
-        break;
-      case "remove":
-        delete player.teams[player.teamId][positionId];
-        break;
-    }
+  //EXPERIENCE
+  addExpToPlayer(player, expToAdd) {
+    addExp(player, expToAdd, expFormulas["player"]);
+    this.Database.savePlayer(player);
+  }
+
+  addExpToCharacter(player, expToAdd, characterId) {
+    const character = player.characters.get(characterId);
+    if (!character) return;
+    addExp(character, expToAdd, expFormulas["character"]);
     this.Database.savePlayer(player);
   }
 
@@ -75,21 +74,6 @@ class Game extends BaseHelper {
     return player;
   }
 
-  addExpToPlayer(player, expToAdd) {
-    player.exp.current += expToAdd;
-    while (
-      player.exp.current >= player.exp.total &&
-      player.adventureRank.current < player.adventureRank.total
-    ) {
-      player.adventureRank.current++;
-      player.exp.current -= player.exp.total;
-      player.exp.total = Parser.evaluate(expFormulas["player"], {
-        n: player.adventureRank.current + 1,
-      });
-    }
-    this.Database.savePlayer(player);
-  }
-
   async addValueToPlayer(player, key, value) {
     player[key] += value;
     await this.updateQuestProgress(player, "Earn", key, value);
@@ -97,25 +81,8 @@ class Game extends BaseHelper {
   }
 
   //CHARACTER
-  addExpToCharacter(player, expToAdd, characterId) {
-    const character = player.characters.get(characterId);
-    character.exp.current += expToAdd;
-    while (
-      character.exp.current >= character.exp.total &&
-      character.level.current < character.level.total
-    ) {
-      character.level.current++;
-      character.exp.current -= character.exp.total;
-      character.exp.total = Parser.evaluate(expFormulas["character"], {
-        n: character.level.current + 1,
-      });
-    }
-    this.Database.savePlayer(player);
-  }
-
   addCharacter(player, characterId) {
-    if (Object.keys(Array.from(player.characters)).includes(characterId))
-      return;
+    if (player.characters.get(characterId)) return;
     player.characters.set(characterId, newCharacterObj(characterId));
     this.Database.savePlayer(player);
   }
@@ -138,15 +105,10 @@ class Game extends BaseHelper {
   }
 
   //ITEMS
-
   roguelike(items, level, itemFilter) {
-    const equip = gacha.roguelike(items, itemFilter);
-
     // Which item should we spawn on level {n}?
-    const lvl = equip[level];
-    console.log(lvl);
+    const lvl = gacha.roguelike(items, itemFilter)[level];
     const strata = Math.random() * lvl.total;
-
     for (let i = 0; i < lvl.strata.length; i++) {
       if (strata <= lvl.strata[i]) {
         const id = lvl.lookup[i];
@@ -191,6 +153,7 @@ class Game extends BaseHelper {
     });
   }
 
+  //GETTERS
   getAdventureRankRange(player) {
     let previousAR = 1;
     for (let AR in adventureRankRanges) {
@@ -201,83 +164,61 @@ class Game extends BaseHelper {
     }
   }
 
-  getEquipment(character) {
-    inventoryCategories.equipment.map((equipmentType) => {
-      const equipment = character[equipmentType];
-      const data = Object.assign({}, items[equipment.id], equipment);
-      switch (data.type) {
-        case "weapon":
-          data.ATK = (data.level - 1) * 25 + data.baseStats.ATK;
-          character[equipmentType] = data;
-          break;
-        case "offhand":
-          data.HP = (data.level - 1) * 25 + data.baseStats.HP;
-          character[equipmentType] = data;
-          break;
-      }
-    });
-    return character;
-  }
-
-  //BATTLE
   getCharacter(player, characterId) {
     if (!player.characters.get(characterId)) return;
-    //prettier-ignore
-    const character = Object.assign({}, characters[characterId], player.characters.get(characterId));
+    console.log(characterId);
+    const character = Object.assign(
+      {},
+      characters[characterId],
+      player.characters.get(characterId)
+    );
     //calculate battlestats
-    return {
-      name: character.name,
-      level: character.level,
-      exp: character.exp,
-      position: character.position,
-      baseStats: character.baseStats,
+    character.id = characterId;
+    character.baseStats = {
       HP: (character.level.current - 1) * 10 + character.baseStats.HP,
       ATK: (character.level.current - 1) * 10 + character.baseStats.ATK,
-      weapon: character.weapon,
-      offhand: character.offhand,
-      talents: character.talents,
     };
+    character.weapon = this.getEquipment(character.weapon);
+    character.offhand = this.getEquipment(character.offhand)
+    return character;
   }
 
   getEnemy(player, enemyId) {
     const enemy = enemies[enemyId];
+    enemy.id = enemyId;
     //calculate battlestats
-    return {
-      name: enemy.name,
-      level: enemy.level,
-      HP: enemy.baseStats.HP,
-      ATK: enemy.baseStats.ATK,
-      talents: enemy.talents,
-      drops: enemy.drops,
-    };
+    /*
+    enemy.baseStats = {
+      HP: (player.level.current - 1) * 10 + enemy.baseStats.HP,
+      ATK: (player.level.current - 1) * 10 + enemy.baseStats.ATK,
+    }*/
+    return enemy;
   }
 
-  getBattleData(player, id) {
-    const data = isEnemy(id)
-      ? this.getEnemy(player, id)
-      : this.getCharacter(player, id);
-
-    const battleData = {
-      id,
-      name: data.name,
-      talents: data.talents,
-      HP: data.HP,
-      ATK: data.ATK,
-      target: { position: null, turns: 0 },
-      effects: {},
-      takeDamage: function (amount) {
-        this.HP = Math.max(this.HP - amount, 0);
-      },
-    };
-    if (!isEnemy(id)) {
-      const { weapon, offhand } = this.getEquipment(data);
-      battleData.HP += offhand.HP;
-      battleData.ATK += weapon.ATK;
-    }
-    battleData.maxHP = battleData.HP;
-    if (data.hasOwnProperty("drops")) battleData.drops = data.drops;
-    return battleData;
+  getEquipment(equipment) {
+    console.log(equipment);
+    if (!inventoryCategories.equipment.includes(items[equipment.id].type))
+      return;
+    const data = Object.assign({}, items[equipment.id], equipment);
+    data.baseStats.hasOwnProperty("ATK")
+      ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)
+      : (data.baseStats.HP = (data.level - 1) * 25 + data.baseStats.HP);
+    return data;
   }
 }
 
 module.exports = Game;
+
+function addExp(obj, expToAdd, expFormula) {
+  obj.exp.current += expToAdd;
+  while (
+    obj.exp.current >= obj.exp.total &&
+    obj.level.current < obj.level.total
+  ) {
+    obj.level.current++;
+    obj.exp.current -= obj.exp.total;
+    obj.exp.total = Parser.evaluate(expFormula, {
+      n: obj.level.current + 1,
+    });
+  }
+}

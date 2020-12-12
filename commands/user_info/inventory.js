@@ -34,21 +34,15 @@ module.exports = class InventoryCommand extends (
   async run(msg, { category }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
-    //prettier-ignore
-    if (category && !Object.keys(inventoryCategories).includes(category)) return;
+    if (category && !Object.keys(inventoryCategories).includes(category))
+      return;
 
     const formatFilter = (itemId) => {
-      console.log(itemId);
       const item = items[itemId];
-      //prettier-ignore
-      return `${player.inventory.get(itemId)} **${item.name}** ${this.Discord.emoji(item.emoji)} | ${item.type}`;
+      return `${player.inventory.get(itemId)} **${
+        item.name
+      }** ${this.Discord.emoji(item.emoji)} | ${item.type}`;
     };
-
-    function findInventoryCategory(itemId) {
-      return Object.keys(inventoryCategories).find((category) =>
-        category.includes(items[itemId].type)
-      );
-    }
 
     const itemIds = Array.from(player.inventory.keys());
     this.Discord.Pagination.buildEmbeds(
@@ -61,12 +55,14 @@ module.exports = class InventoryCommand extends (
       category
         ? {
             [category]: itemIds.filter((itemId) =>
-              inventoryCategories[category].includes(
-                items[itemId].type
-              )
+              inventoryCategories[category].includes(items[itemId].type)
             ),
           }
-        : this.groupBy(itemIds, findInventoryCategory)
+        : this.groupBy(itemIds, (itemId) =>
+            Object.keys(inventoryCategories).find((category) =>
+              category.includes(items[itemId].type)
+            )
+          )
     );
   }
 };

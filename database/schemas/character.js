@@ -1,7 +1,8 @@
 const Parser = require("expr-eval").Parser;
 const { expFormulas } = require("../../utils/enumHelper");
 const characters = require("../../data/characters");
-
+const { newEquipmentObj } = require("./equipment")
+const { camelCase } = require("change-case")
 function newCharacterObj(characterId) {
   return {
     level: {
@@ -13,8 +14,8 @@ function newCharacterObj(characterId) {
       current: 0,
       total: Parser.evaluate(expFormulas["mediumSlow"], { n: 2 }),
     },
-    weapon: { id: characters[characterId].weapon, level: 1 },
-    offhand: { id: characters[characterId].offhand, level: 1 },
+    weapon: newEquipmentObj(camelCase(characters[characterId].weapon.name)),
+    offhand: newEquipmentObj(camelCase(characters[characterId].offhand.name)),
   };
 }
 

@@ -22,8 +22,8 @@ class Discord extends BaseHelper {
     return this.buildEmbed({
       title: `${obj.hasOwnProperty("position") ? `${this.emoji(obj.position.emoji)} ` : ""}${obj.name}`,
       description: `
-      ❤️ **HP**: ${obj.HP}
-      🗡️ **ATK**: ${obj.ATK}
+      ❤️ **HP**: ${obj.baseStats.HP}
+      🗡️ **ATK**: ${obj.baseStats.ATK}
       
       __Talents__
       ${Object.keys(obj.talents).map(
