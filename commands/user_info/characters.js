@@ -40,9 +40,9 @@ module.exports = class CharactersCommand extends (
       const offhand = this.Game.getEquipment(character.offhand);
       return `${this.Discord.emoji(character.position.emoji)} ${
         character.name
-      } (Lv.${character.level.current}) | ${weapon.name} +${weapon.ATK} 🗡️ | ${
+      } (Lv.${character.level.current}) | ${weapon.name} +${weapon.baseStats.ATK} 🗡️ | ${
         offhand.name
-      } +${offhand.HP} ❤️`;
+      } +${offhand.baseStats.HP} ❤️`;
     };
 
     this.Discord.Pagination.buildEmbeds(

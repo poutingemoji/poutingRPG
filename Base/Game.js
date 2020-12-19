@@ -25,8 +25,7 @@ const {
   maxTeamMembers,
   adventureRankRanges,
   expFormulas,
-  inventoryCategories,
-  isEnemy,
+  itemCategories,
   maxTeams,
 } = require("../utils/enumHelper");
 
@@ -179,7 +178,7 @@ class Game extends aggregation(Team, BaseHelper) {
       ATK: (character.level.current - 1) * 10 + character.baseStats.ATK,
     };
     character.weapon = this.getEquipment(character.weapon);
-    character.offhand = this.getEquipment(character.offhand)
+    character.offhand = this.getEquipment(character.offhand);
     return character;
   }
 
@@ -197,8 +196,7 @@ class Game extends aggregation(Team, BaseHelper) {
 
   getEquipment(equipment) {
     console.log(equipment);
-    if (!inventoryCategories.equipment.includes(items[equipment.id].type))
-      return;
+    if (!itemCategories.equipment.includes(items[equipment.id].type)) return;
     const data = Object.assign({}, items[equipment.id], equipment);
     data.baseStats.hasOwnProperty("ATK")
       ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)

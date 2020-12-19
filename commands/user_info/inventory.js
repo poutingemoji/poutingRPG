@@ -5,7 +5,7 @@ const Command = require("../../Base/Command");
 const items = require("../../data/items");
 
 //UTILS
-const { inventoryCategories } = require("../../utils/enumHelper");
+const { itemCategories } = require("../../utils/enumHelper");
 module.exports = class InventoryCommand extends (
   Command
 ) {
@@ -34,8 +34,7 @@ module.exports = class InventoryCommand extends (
   async run(msg, { category }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
-    if (category && !Object.keys(inventoryCategories).includes(category))
-      return;
+    if (category && !Object.keys(itemCategories).includes(category)) return;
 
     const formatFilter = (itemId) => {
       const item = items[itemId];
@@ -55,11 +54,11 @@ module.exports = class InventoryCommand extends (
       category
         ? {
             [category]: itemIds.filter((itemId) =>
-              inventoryCategories[category].includes(items[itemId].type)
+              itemCategories[category].includes(items[itemId].type)
             ),
           }
         : this.groupBy(itemIds, (itemId) =>
-            Object.keys(inventoryCategories).find((category) =>
+            Object.keys(itemCategories).find((category) =>
               category.includes(items[itemId].type)
             )
           )

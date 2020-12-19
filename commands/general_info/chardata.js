@@ -4,11 +4,10 @@ const { stripIndents } = require("common-tags");
 const { createCanvas, loadImage } = require("canvas");
 
 const fs = require("fs");
+
 //DATA
 const items = require("../../data/items");
-
-// UTILS
-const { talentTypes } = require("../../utils/enumHelper");
+const talents = require("../../data/talents");
 
 module.exports = class CharDataCommand extends (
   Command
@@ -53,9 +52,8 @@ module.exports = class CharDataCommand extends (
       **Weapon**: ${weapon.name} ${this.Discord.emoji(weapon.emoji)}
       **Offhand**: ${offhand.name} ${this.Discord.emoji(offhand.emoji)}
       
-      __Talents__
       ${Object.keys(character.talents).map(
-        (talentType) =>  `${this.Discord.emoji(talentTypes[talentType].emoji)} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`
+        (talentType) =>  `${this.Discord.emoji(talents[talentType].emoji)} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`
         ).join("\n")}`),
     };
 

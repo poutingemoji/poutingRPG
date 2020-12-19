@@ -1,35 +1,23 @@
 //BASE
 const BaseHelper = require("./Helper");
 const { MessageAttachment, MessageEmbed } = require("discord.js");
-const { snakeCase } = require("change-case")
+const { snakeCase } = require("change-case");
 
 //DATA
 const emojis = require("../data/emojis");
 
 //UTILS
 const Pagination = require("../utils/discord/Pagination");
-const { responseWaitTime, talentTypes, waitingOnResponse } = require("../utils/enumHelper");
+const {
+  responseWaitTime,
+  waitingOnResponse,
+} = require("../utils/enumHelper");
 
 class Discord extends BaseHelper {
   constructor(client) {
     super();
     this.client = client;
     this.Pagination = new Pagination(this);
-  }
-
-  getObjInfo(obj) {
-    //prettier-ignore
-    return this.buildEmbed({
-      title: `${obj.hasOwnProperty("position") ? `${this.emoji(obj.position.emoji)} ` : ""}${obj.name}`,
-      description: `
-      ❤️ **HP**: ${obj.baseStats.HP}
-      🗡️ **ATK**: ${obj.baseStats.ATK}
-      
-      __Talents__
-      ${Object.keys(obj.talents).map(
-        (talentType) =>  `${this.emoji(talentTypes[talentType].emoji)} **${obj.talents[talentType].name}**: ${obj.talents[talentType].description}`
-        ).join("\n")}`
-    })
   }
 
   emoji(str) {
@@ -89,6 +77,57 @@ class Discord extends BaseHelper {
       : (awaitParams.removeAllReactions = true);
     const res = await this.awaitResponse(awaitParams);
     return res == "green_check";
+  }
+
+  async createResponseCollector(params) {
+    const {
+      author,
+      msg,
+      type,
+      reactToMessage = true,
+      removeAllReactions = false,
+      removeResponses = false,
+      deleteOnResponse = false,
+      filter,
+      onCollect,
+      onEnd,
+    } = params;
+    if (!["message", "reaction"].includes(type)) return;
+
+    if (type == "reaction") {
+      if (!typeof chooseFrom == "object") return;
+      if (!Array.isArray(chooseFrom)) chooseFrom = Object.keys(chooseFrom);
+      if (reactToMessage)
+        for (let choice of chooseFrom)
+          await msg.react(emojis[choice] || choice);
+    }
+
+    const messageFilter = (response) => response.author.id == author.id;
+    const reactionFilter = (reaction, user) =>
+      (chooseFrom.includes(reaction.emoji.id) ||
+        chooseFrom.includes(reaction.emoji.name)) &&
+      user.id == author.id;
+
+      console.log(msg)
+    let collector;
+    if (type == "message") {
+      collector = msg.channel.createMessageCollector(filter || messageFilter)
+      collector.on("collect", (message) => {
+        //if (removeResponses) message.delete()
+        console.log(`Collected ${message.content}`);
+        onCollect(message.content);
+      })
+    } else {
+      collector = msg.createReactionCollector(filter || reactionFilter);
+      collector.on("collect", (reaction, user) => {
+        console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+        onCollect(reaction, user);
+      });
+    }
+    collector.on("end", (collected) => {
+      console.log(`Collected ${collected.size} items`);
+      onEnd(collected);
+    });
   }
 
   async awaitResponse(params) {
