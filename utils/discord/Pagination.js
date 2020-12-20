@@ -13,18 +13,17 @@ class Pagination {
   }
 
   async buildEmbeds(params, formatFilter, data) {
+    const { msg, author, title } = params;
     if (!(typeof data === "object")) return;
+    if (Object.keys(data).length == 0) return msg.reply(`your ${title.toLowerCase()} is empty :(`);
     if (data instanceof Map) data = Array.from(data.keys());
     if (data instanceof Array) data = { "": data };
 
     const categories = Object.keys(data);
-    let { msg, author, title } = params;
     const embeds = [];
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
       const { maxPage } = this.paginate(categoryData, 1);
-      if (maxPage == 0) return msg.say(`Your ${title} is empty. :(`);
-
       for (let page = 0; page < maxPage; page++) {
         const { items } = this.paginate(categoryData, page + 1);
         let description = "";

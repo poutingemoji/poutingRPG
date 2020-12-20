@@ -5,10 +5,11 @@ const emojis = {
   empty_star: "762389249772617729",
   loading: "730597505938620437",
 
-  //CURRENCY
+  //GAME
   points: "▫",
   poutingems: "780749730635579394",
-
+  rarities: ["⬜", "🟩", "🟦", "🟪", "🟨"],
+  
   //FACTIONS
   zahard_empire: "765415066580287500",
   fug: "765415092589690881",

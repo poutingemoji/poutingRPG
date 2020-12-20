@@ -3,7 +3,7 @@ const enemies = require("../data/enemies");
 
 const enumHelper = {
   leaderboardFilters: {
-    adventureRank: {
+    level: {
       sort: { "level.current": -1, "exp.current": -1 },
       where: "level.current",
     },
@@ -53,7 +53,7 @@ const enumHelper = {
   itemCategories: {
     equipment: ["weapon", "offhand"],
     food: ["food"],
-    materials: ["chunk", "material"],
+    materials: ["anvil", "cauldron"],
   },
   expFormulas: {
     player: "floor((n-1)*125)",

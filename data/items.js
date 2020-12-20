@@ -1,5 +1,5 @@
 const emojis = require("./emojis");
-const talents = require("./talents")
+const talents = require("./talents");
 const items = {
   //WEAPON
   needle: {
@@ -14,6 +14,9 @@ const items = {
     },
     talents: {
       passive: talents.passive["criticalStrike"],
+    },
+    recipe: {
+      suspendium: 3,
     }
   },
 
@@ -30,6 +33,9 @@ const items = {
     },
     talents: {
       passive: talents.passive["vigor"],
+    },
+    recipe: {
+      suspendium: 3,
     }
   },
 
@@ -51,43 +57,22 @@ const items = {
     type: "food",
   },
 
-  //ORES
-  ironChunk: {
-    level: 1,
+  metalBar: {
+    level: 3,
     weight: 1.0,
     spread: 1,
-    name: "Iron Chunk",
-    emoji: "🧊",
-    type: "chunk",
+    name: "Metal Bar",
+    emoji: "🦯",
+    type: "anvil",
   },
-  suspendiumChunk: {
-    level: 1,
+  suspendium: {
+    level: 3,
     weight: 1.0,
     spread: 1,
-    name: "Suspendium Chunk",
+    name: "Suspendium",
     emoji: emojis["suspendium"],
-    type: "chunk",
+    type: "anvil",
   },
-
-  //MATERIALS
-  butterflyWings: {
-    level: 1,
-    weight: 1.0,
-    spread: 1,
-    name: "Butterfly Wings",
-    emoji: "🦋",
-    type: "material",
-  },
-  frog: {
-    level: 1,
-    weight: 1.0,
-    spread: 1,
-    name: "Frog",
-    emoji: "🐸",
-    type: "material",
-  },
-
-  //LOCAL SPECIALTIES
 };
 
 module.exports = items;

@@ -20,7 +20,7 @@ module.exports = class LeaderboardCommand extends (
           prompt: "What would you like to sort the leaderboard by?",
           type: "string",
           oneOf: Object.keys(leaderboardFilters),
-          default: "adventureRank",
+          default: "level",
         },
       ],
       throttling: {
@@ -37,8 +37,8 @@ module.exports = class LeaderboardCommand extends (
         factions[player.factionId].emoji
       )} `;
       switch (type) {
-        case "adventureRank":
-          userMsg += `| AR: ${player.adventureRank.current}`;
+        case "level":
+          userMsg += `| AR: ${player.level.current}`;
           break;
       }
       return userMsg;

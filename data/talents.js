@@ -21,10 +21,9 @@ const talents = {
         defendingTeam.map((obj) => obj.takeDamage(talent.DMG));
       },
     },
-    /*
     healingStrike: {
       name: "Healing Strike",
-      description: "Deals [n] damage; Heals team by 20% of dealt damage.",
+      description: "Deals n damage; Heals team by 20% of dealt damage.",
       baseDMG: 20,
       cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
         targeted.takeDamage(damage);
@@ -33,15 +32,19 @@ const talents = {
     },
     pummel: {
       name: "Pummel",
-      description: "Deals [n] damage.",
+      description: "Deals n damage.",
       baseDMG: 35,
       cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
         targeted.HP -= damage;
       },
     },
-    ["Itching Powder"]: function () {
-      //Immediately removes all helpful effects from targeted; Deals 100 damage.
-    },*/
+    itchingPowder: {
+      name: "Itching Powder",
+      description: "Immediately removes all helpful effects from targeted; Deals 100 damage.",
+      cast({ caster, targeted, attackingTeam, defendingTeam, damage }) {
+
+      },
+    },
   },
   support: {
     emoji: "🤝",
@@ -65,16 +68,24 @@ const talents = {
         targeted.effects[this.name] = Object.assign({}, this);
       },
     },
-    /*
-    ["Healing Shield"]: function () {
-      //If any teammate takes damage, all teammates are healed by 15% of the taken damage; Lasts 3 turns.
+    healingShield: {
+      name: "Healing Shield",
+      description:
+        "If any teammate takes damage, all teammates are healed by 15% of the taken damage; Lasts 3 turns.",
+      cast({ targeted }) {},
     },
-    ["Arrr!"]: function () {
-      //All teammates’ attack power is increased by 25%; Lasts 3 turns.
+    arrr: {
+      name: "Arrr!",
+      description:
+        "All teammates’ attack power is increased by 25%; Lasts 3 turns.",
+      cast({ targeted }) {},
     },
-    ["Cheer"]: function () {
-      //100% chance to remove harmful effects from all teammates; All teammates’ attack power is increased by 15%; Lasts 3 turns.
-    },*/
+    cheer: {
+      name: "Cheer",
+      description:
+        "100% chance to remove harmful effects from all teammates; All teammates’ attack power is increased by 15%; Lasts 3 turns.",
+      cast({ targeted }) {},
+    },
   },
   passive: {
     emoji: "🕊️",
@@ -84,23 +95,26 @@ const talents = {
       description: "15% chance to deal 50% bonus damage.",
       onAttack({ talent }) {
         if (!Math.random() <= 0.15) return;
-        talent.bonusDMG += 0.50;
+        talent.bonusDMG += 0.5;
       },
     },
-    ["Chain Attack"]: function () {
-      //30% chance to attack an additional random targeted with 20% attack power
+    chainAttack: {
+      name: "Chain Attack",
+      description: "30% chance to attack an additional random targeted with 20% attack power",
     },
-    ["Bedtime"]: function () {
-      //5% chance to stun targeted for 1 turn
+    bedtime: {
+      name: "Bedtime",
+      description: "5% chance to stun targeted for 1 turn",
     },
-    ["Hocus Pokus"]: function () {
-      //Heal by 10% of dealt damage
+    hocusPokus: {
+      name: "Hocus Pokus",
+      description: "Heal by 10% of dealt damage",
     },
-    ["Dispel"]: function () {
-      //20% chance to purge blessings on targeted
+    dispel: {
+      name: "Dispel",
+      description: "20% chance to purge blessings on targeted",
     },
-
-    //Off-Hand
+    //OFFHAND
     vigor: {
       name: "Vigor",
       description: "Take 5% less damage.",
@@ -108,11 +122,13 @@ const talents = {
         return amount * 0.05;
       },
     },
-    ["Might"]: function () {
-      //Increase attack power by 5%
+    might: {
+      name: "Might",
+      description: "Increase attack power by 5%",
     },
-    ["Vitality"]: function () {
-      //Increase max HP by 15%
+    vitality: {
+      name: "Vitality",
+      description: "Increase max HP by 15%",
     },
   },
 };
@@ -121,6 +137,7 @@ module.exports = talents;
 
 /*
 EVENTS
+  onStart
   onDamaged(targeted, amount)
   onAttack(talent, caster, targeted, attackingTeam, defendingTeam)
   onDefend(talent, caster, targeted, attackingTeam, defendingTeam)

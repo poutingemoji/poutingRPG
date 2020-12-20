@@ -3,8 +3,6 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 const { createCanvas, loadImage } = require("canvas");
 
-const fs = require("fs");
-
 //DATA
 const items = require("../../data/items");
 const talents = require("../../data/talents");
@@ -41,16 +39,14 @@ module.exports = class CharDataCommand extends (
     if (!isNaN(characterId)) characterId = Array.from(player.characters.keys())[characterId - 1];
     const character = this.Game.getCharacter(player, characterId);
     if (!character) return;
-    const weapon = this.Game.getEquipment(character.weapon);
-    const offhand = this.Game.getEquipment(character.offhand);
     //prettier-ignore
     const params = {
       title: `${this.Discord.emoji(character.position.emoji)} ${character.name}`,
       description: stripIndents(`
-      ❤️ **HP**: ${character.baseStats.HP} + ${offhand.baseStats.HP}
-      🗡️ **ATK**: ${character.baseStats.ATK} + ${weapon.baseStats.ATK}
-      **Weapon**: ${weapon.name} ${this.Discord.emoji(weapon.emoji)}
-      **Offhand**: ${offhand.name} ${this.Discord.emoji(offhand.emoji)}
+      ❤️ **HP**: ${character.baseStats.HP} + ${character.offhand.baseStats.HP}
+      🗡️ **ATK**: ${character.baseStats.ATK} + ${character.weapon.baseStats.ATK}
+      **Weapon**: ${character.weapon.name} ${this.Discord.emoji(character.weapon.emoji)}
+      **Offhand**: ${character.offhand.name} ${this.Discord.emoji(character.offhand.emoji)}
       
       ${Object.keys(character.talents).map(
         (talentType) =>  `${this.Discord.emoji(talents[talentType].emoji)} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`

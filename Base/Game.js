@@ -4,6 +4,7 @@ const Parser = require("expr-eval").Parser;
 const gacha = require("gacha");
 const { stripIndents } = require("common-tags");
 const { capitalCase, camelCase } = require("change-case");
+const cloneDeep = require("lodash.clonedeep")
 const { aggregation } = require("./Util");
 
 //DATA
@@ -22,11 +23,9 @@ const Team = require("../utils/game/Team");
 const Database = require("../database/Database");
 
 const {
-  maxTeamMembers,
   adventureRankRanges,
   expFormulas,
   itemCategories,
-  maxTeams,
 } = require("../utils/enumHelper");
 
 class Game extends aggregation(Team, BaseHelper) {
@@ -34,14 +33,6 @@ class Game extends aggregation(Team, BaseHelper) {
     super();
     this.Database = new Database(client, this);
   }
-
-  //EQUIPMENT
-  addEquipment(player, equipmentId) {
-    player.equipments.push(newEquipmentObj(equipmentId, player.level.current));
-    this.Database.savePlayer(player);
-  }
-
-  equip() {}
 
   //EXPERIENCE
   addExpToPlayer(player, expToAdd) {
@@ -87,19 +78,51 @@ class Game extends aggregation(Team, BaseHelper) {
   }
 
   //INVENTORY
-  addItem(player, item, amount = 1) {
-    player.inventory.get(item)
-      ? player.inventory.set(item, player.inventory.get(item) + amount)
-      : player.inventory.set(item, amount);
-    this.updateQuestProgress(player, "Collect", item);
+  equip(player, characterId, itemId) {
+    itemId--;
+    const character = player.characters.get(characterId);
+    if (!character) return;
+    const item = this.getEquipment(player.equipment[itemId]);
+    if (!item) return;
+    this.addItem(player, character[item.type]);
+    this.removeItem(player, itemId)
+    character[item.type] = newEquipmentObj(item.id, item.level);
     this.Database.savePlayer(player);
   }
 
-  removeItem(player, item, amount = 1) {
-    //prettier-ignore
-    player.inventory.get(item) >= 2
-        ? player.inventory.set(item, player.inventory.get(item) - this.clamp(amount, 0, player.inventory.get(item)))
-        : player.inventory.delete(item);
+  addItem(player, itemId, amount = 1) {
+    const item = this.getEquipment(
+      typeof itemId == "object" ? itemId : newEquipmentObj(itemId)
+    );
+    console.log("TYPE", item.type);
+    if (itemCategories.equipment.includes(item.type)) {
+      player.equipment.push({ id: item.id, level: item.level });
+    } else {
+      player.inventory.get(itemId)
+        ? player.inventory.set(itemId, player.inventory.get(itemId) + amount)
+        : player.inventory.set(itemId, amount);
+    }
+    this.updateQuestProgress(player, "Collect", itemId);
+    this.Database.savePlayer(player);
+  }
+
+  removeItem(player, itemId, amount = 1) {
+    if (isNaN(itemId)) itemId--;
+    const item = isNaN(itemId)
+      ? items[itemId]
+      : items[player.equipment[itemId].id];
+    if (!item) return;
+    if (itemCategories.equipment.includes(item.type)) {
+      player.equipment.splice(itemId);
+    } else {
+      player.inventory.get(itemId) >= 2
+        ? player.inventory.set(
+            itemId,
+            player.inventory.get(itemId) -
+              this.clamp(amount, 0, player.inventory.get(itemId))
+          )
+        : player.inventory.delete(itemId);
+    }
     this.Database.savePlayer(player);
   }
 
@@ -195,12 +218,12 @@ class Game extends aggregation(Team, BaseHelper) {
   }
 
   getEquipment(equipment) {
-    console.log(equipment);
     if (!itemCategories.equipment.includes(items[equipment.id].type)) return;
-    const data = Object.assign({}, items[equipment.id], equipment);
+    const data = cloneDeep(Object.assign({}, items[equipment.id], equipment));
     data.baseStats.hasOwnProperty("ATK")
       ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)
       : (data.baseStats.HP = (data.level - 1) * 25 + data.baseStats.HP);
+    console.log("EQUIPMENT", data)
     return data;
   }
 }

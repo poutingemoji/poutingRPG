@@ -2,6 +2,7 @@
 const Command = require("../../Base/Command");
 
 //DATA
+const emojis = require("../../data/emojis")
 const items = require("../../data/items");
 
 //UTILS
@@ -38,7 +39,7 @@ module.exports = class InventoryCommand extends (
 
     const formatFilter = (itemId) => {
       const item = items[itemId];
-      return `${player.inventory.get(itemId)} **${
+      return `${emojis.rarities[item.level-1]} ${player.inventory.get(itemId)} **${
         item.name
       }** ${this.Discord.emoji(item.emoji)} | ${item.type}`;
     };
@@ -52,16 +53,16 @@ module.exports = class InventoryCommand extends (
       },
       formatFilter,
       category
-        ? {
+        ? {  
             [category]: itemIds.filter((itemId) =>
               itemCategories[category].includes(items[itemId].type)
             ),
           }
-        : this.groupBy(itemIds, (itemId) =>
-            Object.keys(itemCategories).find((category) =>
-              category.includes(items[itemId].type)
-            )
-          )
+        : this.groupBy(itemIds, (itemId) => {
+            return Object.keys(itemCategories).find((category) =>
+              itemCategories[category].includes(items[itemId].type)
+            );
+          })
     );
   }
 };

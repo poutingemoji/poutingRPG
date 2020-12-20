@@ -1,6 +1,7 @@
 //BASE
 const Battle = require("./Battle");
 const { stripIndents } = require("common-tags");
+const { findBestMatch } = require("string-similarity")
 
 //DATA
 const arcs = require("../../data/arcs");
@@ -139,14 +140,9 @@ class PVEBattle extends Battle {
           if (!response) return;
           const args = response.content.split(" ");
           if (!args.length == 3) return;
-          if (
-            !battleChoices.find((battleChoiceId) =>
-              battleChoiceId.includes(args[1])
-            )
-          )
-            return;
+          const battleChoiceId = findBestMatch(args[1], battleChoices).bestMatch.target
           const caster = Battle.team1[args[0] - 1];
-          const targeted = battleChoices[0].includes(args[1])
+          const targeted = battleChoiceId == battleChoices[0]
             ? Battle.team2[args[2] - 1]
             : Battle.team1[args[2] - 1];
           return (
@@ -160,13 +156,12 @@ class PVEBattle extends Battle {
       if (!res) return this.escape();
       console.log(res);
       const args = res.split(" ");
+      const battleChoiceId = findBestMatch(args[1], battleChoices).bestMatch.target
       teamKnockedOut = this.castTalent(
-        battleChoices.find((battleChoiceId) =>
-          battleChoiceId.includes(args[1])
-        ),
+        battleChoiceId,
         {
           caster: this.team1[args[0] - 1],
-          targeted: battleChoices[0].includes(args[1])
+          targeted: battleChoiceId == battleChoices[0]
             ? this.team2[args[2] - 1]
             : this.team1[args[2] - 1],
           attackingTeam: this.team1,

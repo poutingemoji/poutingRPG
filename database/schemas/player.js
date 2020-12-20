@@ -42,7 +42,7 @@ const playerSchema = mongoose.Schema({
   },
   equipment: {
     type: Array,
-    default: [newEquipmentObj("needle"), newEquipmentObj("armorInventory")],
+    default: [newEquipmentObj("needle", 30), newEquipmentObj("armorInventory", 20)],
   },
   inventory: { type: Map, of: Number, default: {} },
   progression: {
@@ -74,7 +74,7 @@ function newPlayerObj(discordId, factionId) {
       ["shipLeesoo"]: newCharacterObj("shipLeesoo"),
     },
     teams: [["twentyFifthBaam", "khunAgueroAgnis", "rakWraithraiser"]],
-    inventory: { butterflyWings: 3, frog: 5 },
+    inventory: { apple: 3, orange: 5, suspendium: 6, metalBar: 2 },
   };
 }
 
