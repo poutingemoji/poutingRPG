@@ -51,8 +51,14 @@ const playerSchema = mongoose.Schema({
       chapter: { type: Number, default: 0 },
     },
     tower: {
-      floor: { type: Number, default: 0 },
-      area: { type: Number, default: 0 },
+      current: {
+        floor: { type: Number, default: 0 },
+        area: { type: Number, default: 0 },
+      },
+      total: {
+        floor: { type: Number, default: 1 },
+        area: { type: Number, default: 1 },
+      }
     },
   },
   quests: {

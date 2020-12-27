@@ -32,10 +32,9 @@ class PVEBattle extends Battle {
       )
     );
     this.waveId = 0;
-    console.log(this.totalWaves);
-
     this.header = stripIndents(`
       ${this.msg.author}
+      ${this.title} Battle
       🟩 **TEAM POWER**: ${this.team1.reduce(calculateTotalPower, 0)}
       🟥 **ENEMY POWER**: ${
         this.totalWaves

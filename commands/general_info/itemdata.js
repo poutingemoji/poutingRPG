@@ -9,6 +9,9 @@ const fs = require("fs");
 const items = require("../../data/items");
 const talents = require("../../data/talents");
 
+//UTILS
+const {rarities} = require("../../utils/enumHelper")
+
 module.exports = class ItemDataCommand extends (
   Command
 ) {
@@ -24,7 +27,6 @@ module.exports = class ItemDataCommand extends (
           key: "itemId",
           prompt: `What item would you like to get information on?`,
           type: "string",
-          default: "needle",
         },
       ],
       throttling: {
@@ -37,27 +39,37 @@ module.exports = class ItemDataCommand extends (
   async run(msg, { itemId }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
- 
-    const item = this.Game.getEquipment({ id: itemId, level: 1 });
-    if (!item) return;
-    const params = {
-      title: `${this.Discord.emoji(item.emoji)} ${item.name}`,
-      description: stripIndents(`
-      ${
-        item.hasOwnProperty("HP")
-          ? `❤️ **HP**: +${item.baseStats.HP}`
-          : `🗡️ **ATK**: +${item.baseStats.ATK}`
-      }
 
-      ${Object.keys(item.talents)
-        .map(
-          (talentType) =>
-            `${this.Discord.emoji(talents[talentType].emoji)} **${
-              item.talents[talentType].name
-            }**: ${item.talents[talentType].description}`
-        )
-        .join("\n")}`),
-    };
+    const item = isNaN(itemId)
+      ? items[itemId]
+      : this.Game.getEquipment(player.equipment[itemId]);
+    if (!item) return;
+    const params = {  title: `${this.Discord.emoji(item.emoji)} ${item.name}` };
+
+    switch (item.type) {
+      case "weapon":
+      case "offhand":
+        params.description = stripIndents(`
+          ${
+            item.baseStats.hasOwnProperty("HP")
+              ? `❤️ **HP**: +${item.baseStats.HP}`
+              : `🗡️ **ATK**: +${item.baseStats.ATK}`
+          }
+
+          ${Object.keys(item.talents)
+            .map(
+              (talentType) =>
+                `${this.Discord.emoji(talents[talentType].emoji)} **${
+                  item.talents[talentType].name
+                }**: ${item.talents[talentType].description}`
+            )
+            .join("\n")}
+        `);
+        break;
+      default:
+        params.description = `${item.description}`;
+        params.color = rarities[item.level-1].hex
+    }
 
     const messageEmbed = this.Discord.buildEmbed(params);
     msg.say(messageEmbed);

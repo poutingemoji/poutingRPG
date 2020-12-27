@@ -13,22 +13,39 @@ class Pagination {
   }
 
   async buildEmbeds(params, formatFilter, data) {
-    const { msg, author, title } = params;
+    const {
+      msg,
+      author,
+      title,
+      pageLength,
+      startingIndex,
+      globalNumbering,
+    } = params;
     if (!(typeof data === "object")) return;
-    if (Object.keys(data).length == 0) return msg.reply(`your ${title.toLowerCase()} is empty :(`);
+    if (Object.keys(data).length == 0)
+      return msg.reply(`your ${title.toLowerCase()} is empty :(`);
     if (data instanceof Map) data = Array.from(data.keys());
     if (data instanceof Array) data = { "": data };
 
     const categories = Object.keys(data);
     const embeds = [];
+    let startingPage = 1;
+    let globalIndex = 0;
+
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
-      const { maxPage } = this.paginate(categoryData, 1);
+      const { maxPage } = this.paginate(categoryData, 1, pageLength);
       for (let page = 0; page < maxPage; page++) {
-        const { items } = this.paginate(categoryData, page + 1);
+        const { items } = this.paginate(categoryData, page + 1, pageLength);
         let description = "";
+        console.log("ITEMS", items)
         for (let i = 0; i < items.length; i++) {
-          description += `${await formatFilter(items[i], i)}\n`;
+          if (globalIndex == startingIndex) startingPage = page + 1;
+          description += `${await formatFilter(
+            items[i],
+            globalNumbering ? globalIndex : i
+          )}\n`;
+          globalIndex++;
         }
         embeds.push(
           new MessageEmbed()
@@ -43,10 +60,12 @@ class Pagination {
       }
     }
     delete params.title;
+    console.log("STARTING PAGE", startingPage);
     let Embeds = new PaginationEmbed.Embeds()
       .setArray(embeds)
       .setAuthorizedUsers([msg.author.id])
       .setChannel(msg.channel)
+      .setPage(startingPage)
       .setClientAssets({
         msg,
         prompt: "{{user}}, Which page would you like to see?",

@@ -1,6 +1,9 @@
 //BASE
 const Command = require("../../Base/Command");
 
+//DATA
+const { newEquipmentObj } = require("../../database/schemas/equipment");
+
 module.exports = class EquipCommand extends (
   Command
 ) {
@@ -32,6 +35,15 @@ module.exports = class EquipCommand extends (
   async run(msg, { characterId, itemId }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
-    this.Game.equip(player, characterId, itemId);
+    const character = player.characters.get(characterId);
+    if (!character) return;
+    itemId--;
+    const item = this.Game.getEquipment(player.equipment[itemId]);
+    if (!item) return;
+
+    this.Game.addItem(player, character[item.type]);
+    this.Game.removeItem(player, itemId)
+    character[item.type] = newEquipmentObj(item.id, item.level);
+    this.Game.Database.savePlayer(player);
   }
 };

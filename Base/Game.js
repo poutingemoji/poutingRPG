@@ -78,18 +78,6 @@ class Game extends aggregation(Team, BaseHelper) {
   }
 
   //INVENTORY
-  equip(player, characterId, itemId) {
-    itemId--;
-    const character = player.characters.get(characterId);
-    if (!character) return;
-    const item = this.getEquipment(player.equipment[itemId]);
-    if (!item) return;
-    this.addItem(player, character[item.type]);
-    this.removeItem(player, itemId)
-    character[item.type] = newEquipmentObj(item.id, item.level);
-    this.Database.savePlayer(player);
-  }
-
   addItem(player, itemId, amount = 1) {
     const item = this.getEquipment(
       typeof itemId == "object" ? itemId : newEquipmentObj(itemId)

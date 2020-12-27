@@ -45,7 +45,28 @@ const enumHelper = {
   isEnemy(enemyId) {
     return enemies.hasOwnProperty(enemyId);
   },
-
+  rarities: [
+    {
+      emoji: "⬜",
+      hex: "#e5e7e9",
+    },
+    {
+      emoji: "🟩",
+      hex: "#79b15a",
+    },
+    {
+      emoji: "🟦",
+      hex: "#55acef",
+    },
+    {
+      emoji: "🟪",
+      hex: "#aa8fd6",
+    },
+    {
+      emoji: "🟨",
+      hex: "#fdcb58",
+    },
+  ],
   maxTeams: 3,
   maxTeamMembers: 3,
   pageLength: 10,

@@ -26,24 +26,23 @@ module.exports = class BattleCommand extends (
   async run(msg) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
-    const towerProgression = player.progression.tower;
+    const curTowerProgression = player.progression.tower.current;
+    const curTowerArea =
+      floors[curTowerProgression.floor].areas[curTowerProgression.area];
     new PVEBattle({
       msg,
       player,
       Discord: this.Discord,
       Game: this.Game,
-      totalWaves: floors[towerProgression.floor].areas[towerProgression.area].waves.map(
-        (wave) => {
-          console.log(wave)
-          const enemiesInWave = [];
-          Object.keys(wave).map(enemyId => this.fillArray(
-            enemyId,
-            wave[enemyId],
-            enemiesInWave
-          ))
-          return enemiesInWave;
-        }
-      ),
+      title: curTowerArea.name,
+      totalWaves: curTowerArea.waves.map((wave) => {
+        console.log(wave);
+        const enemiesInWave = [];
+        Object.keys(wave).map((enemyId) =>
+          this.fillArray(enemyId, wave[enemyId], enemiesInWave)
+        );
+        return enemiesInWave;
+      }),
     });
     return;
   }

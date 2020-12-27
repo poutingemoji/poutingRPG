@@ -25,12 +25,10 @@ module.exports = class EquipmentCommand extends (
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
-    let i = 0;
-    const formatFilter = (data) => {
+    const formatFilter = (data, i) => {
       const item = this.Game.getEquipment(data);
-      i++
       console.log(item)
-      return `${i}) ${this.Discord.emoji(item.emoji)} (Lv. ${item.level}) ${item.name} +${
+      return `${i + 1}) ${this.Discord.emoji(item.emoji)} (Lv. ${item.level}) ${item.name} +${
         item.baseStats.hasOwnProperty("ATK")
           ? `${item.baseStats.ATK} 🗡️`
           : `${item.baseStats.HP} ❤️`
@@ -42,6 +40,7 @@ module.exports = class EquipmentCommand extends (
         msg,
         author: msg.author,
         title: "Equipment",
+        globalNumbering: true,
       },
       formatFilter,
       this.groupBy(player.equipment, (data) => items[data.id].type)

@@ -64,6 +64,7 @@ const items = {
     name: "Metal Bar",
     emoji: "🦯",
     type: "anvil",
+    description: "Yes its a metal bar.",
   },
   suspendium: {
     level: 3,
@@ -72,6 +73,7 @@ const items = {
     name: "Suspendium",
     emoji: emojis["suspendium"],
     type: "anvil",
+    description: "Yes its suspendium.",
   },
 };
 

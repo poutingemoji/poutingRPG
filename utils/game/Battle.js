@@ -13,12 +13,14 @@ const { itemCategories } = require("../enumHelper");
 class Battle extends BaseHelper {
   constructor(params) {
     super();
-    const { Discord, Game, player, msg } = params;
+    const { Discord, Game, player, msg, title = "" } = params;
     this.Discord = Discord;
     this.Game = Game;
     this.player = player;
     this.msg = msg;
 
+    this.title = title;
+    this.header = "";
     this.body = "";
     this.maxLength = 2000;
 
