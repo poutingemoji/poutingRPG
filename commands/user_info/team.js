@@ -18,8 +18,9 @@ module.exports = class TeamCommand extends (
       description: "Manage your team.",
       examples: [
         `${client.commandPrefix}team`,
-        `${client.commandPrefix}team select [teamNumber]`,
-        `${client.commandPrefix}team add/remove [id]`,
+        `${client.commandPrefix}team select [teamId]`,
+        `${client.commandPrefix}team add [characterId] (index)`,
+        `${client.commandPrefix}team remove [characterId/index]`,
       ],
       args: [
         {
@@ -53,43 +54,63 @@ module.exports = class TeamCommand extends (
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
-    if (!id) {
-      const messageEmbed = this.Discord.buildEmbed({
-        msg,
-        author: msg.author,
-        title: "Teams",
-      });
-
-      for (let i = 0; i < maxTeams; i++) {
-        if (!player.teams[i]) player.teams[i] = []
-        let teamMembers = []
-        for (let j = 0; j < maxTeamMembers; j++) {
-          if (!player.teams[i][j]) {
-            teamMembers[j] = "_"
-          } else {
-            const character = this.Game.getCharacter(player, player.teams[i][j])
-            teamMembers[j] = `${this.Discord.emoji(character.position.emoji)} ${character.name}`
-          }
+    if (Number.isInteger(id)) id--;
+    if (Number.isInteger(index)) index--;
+    const selectedTeam = player.teams[player.teamId] || [];
+    switch (action) {
+      case "select":
+        if (!this.isBetween(id, 0, maxTeams)) return;
+        player.teamId = id;
+        this.Game.Database.savePlayer(player);
+        break;
+      case "add":
+        if (!this.Game.getCharacter(player, id)) return;
+        if (index) {
+          if (!this.isBetween(index, 0, maxTeamMembers)) return;
+          selectedTeam[index] = id;
+        } else {
+          if (selectedTeam.length == maxTeamMembers) selectedTeam.shift();
+          selectedTeam.push(id);
         }
-        messageEmbed.addField(
-          `**Team ${i + 1} ${player.teamId == i ? "(Selected)" : ""}**`,
+        player.teams[player.teamId] = selectedTeam;
+        this.Game.Database.savePlayer(player);
+        break;
+      case "remove":
+        index = Number.isInteger(id) ? id : selectedTeam.indexOf(id)
+        if (!this.isBetween(index, 0, maxTeamMembers)) return;
+        selectedTeam.splice(index, 1);
+        this.Game.Database.savePlayer(player);
+        break;
+      default:
+        const messageEmbed = this.Discord.buildEmbed({
+          msg,
+          author: msg.author,
+          title: "Teams",
+        });
+
+        for (let i = 0; i < maxTeams; i++) {
+          if (!player.teams[i]) player.teams[i] = [];
+          let teamMembers = [];
+          for (let j = 0; j < maxTeamMembers; j++) {
+            if (!player.teams[i][j]) {
+              teamMembers[j] = "_";
+            } else {
+              const character = this.Game.getCharacter(
+                player,
+                player.teams[i][j]
+              );
+              teamMembers[j] = `${this.Discord.emoji(
+                character.position.emoji
+              )} ${character.name}`;
+            }
+          }
+          messageEmbed.addField(
+            `**Team ${i + 1} ${player.teamId == i ? "📌" : ""}**`,
             `${teamMembers.join("\n")}`,
-          true
-        );
-      }
-      msg.say(messageEmbed);
-    } else {
-      switch (action) {
-        case "select":
-          this.Game.changeSelectedTeam(player, id);
-          break;
-        case "add":
-          this.Game.addTeamMember(player, id, index);
-          break;
-        case "remove":
-          this.Game.removeTeamMember(player, id, index);
-          break;
-      }
+            true
+          );
+        }
+        msg.say(messageEmbed);
     }
   }
 };

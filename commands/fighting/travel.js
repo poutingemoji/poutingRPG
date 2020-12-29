@@ -50,7 +50,7 @@ module.exports = class TravelCommand extends (
           (area, j) =>
             `${j + 1}) ${area.name}${
               i == curTowerProgression.floor && j == curTowerProgression.area
-                ? " 📍"
+                ? " 📌"
                 : ""
             }${
               area.hasOwnProperty("harvestingSpot")
@@ -77,7 +77,8 @@ module.exports = class TravelCommand extends (
       this.Discord.Pagination.buildEmbeds(
         {
           msg,
-          title: "Floors",
+          author: msg.author,
+          title: "Tower",
           startingIndex: curTowerProgression.floor,
           pageLength: 1,
           globalNumbering: true,

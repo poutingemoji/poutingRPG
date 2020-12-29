@@ -5,7 +5,6 @@ const gacha = require("gacha");
 const { stripIndents } = require("common-tags");
 const { capitalCase, camelCase } = require("change-case");
 const cloneDeep = require("lodash.clonedeep")
-const { aggregation } = require("./Util");
 
 //DATA
 const { newEquipmentObj } = require("../database/schemas/equipment");
@@ -19,7 +18,6 @@ const positions = require("../data/positions");
 const talents = require("../data/talents");
 
 // UTILS
-const Team = require("../utils/game/Team");
 const Database = require("../database/Database");
 
 const {
@@ -28,7 +26,7 @@ const {
   itemCategories,
 } = require("../utils/enumHelper");
 
-class Game extends aggregation(Team, BaseHelper) {
+class Game extends BaseHelper {
   constructor(client) {
     super();
     this.Database = new Database(client, this);
@@ -208,11 +206,9 @@ class Game extends aggregation(Team, BaseHelper) {
   getEquipment(equipment) {
     if (!itemCategories.equipment.includes(items[equipment.id].type)) return;
     const data = cloneDeep(Object.assign({}, items[equipment.id], equipment));
-    console.log(data.id, data.level)
     data.baseStats.hasOwnProperty("ATK")
       ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)
       : (data.baseStats.HP = (data.level - 1) * 25 + data.baseStats.HP);
-    console.log("EQUIPMENT", data)
     return data;
   }
 }
