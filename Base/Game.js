@@ -90,7 +90,7 @@ class Game extends aggregation(Team, BaseHelper) {
         ? player.inventory.set(itemId, player.inventory.get(itemId) + amount)
         : player.inventory.set(itemId, amount);
     }
-    this.updateQuestProgress(player, "Collect", itemId);
+    //this.updateQuestProgress(player, "Collect", itemId);
     this.Database.savePlayer(player);
   }
 
@@ -208,6 +208,7 @@ class Game extends aggregation(Team, BaseHelper) {
   getEquipment(equipment) {
     if (!itemCategories.equipment.includes(items[equipment.id].type)) return;
     const data = cloneDeep(Object.assign({}, items[equipment.id], equipment));
+    console.log(data.id, data.level)
     data.baseStats.hasOwnProperty("ATK")
       ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)
       : (data.baseStats.HP = (data.level - 1) * 25 + data.baseStats.HP);

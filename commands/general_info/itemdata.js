@@ -1,16 +1,13 @@
 //BASE
 const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
-const { createCanvas, loadImage } = require("canvas");
-
-const fs = require("fs");
 
 //DATA
 const items = require("../../data/items");
 const talents = require("../../data/talents");
 
 //UTILS
-const {rarities} = require("../../utils/enumHelper")
+const { rarities } = require("../../utils/enumHelper");
 
 module.exports = class ItemDataCommand extends (
   Command
@@ -44,7 +41,11 @@ module.exports = class ItemDataCommand extends (
       ? items[itemId]
       : this.Game.getEquipment(player.equipment[itemId]);
     if (!item) return;
-    const params = {  title: `${this.Discord.emoji(item.emoji)} ${item.name}` };
+    const params = {
+      title: `${this.Discord.emoji(item.emoji)} ${item.name} (${item.type})`,
+      description: item.description || "",
+      color: rarities[item.rarity - 1].hex,
+    };
 
     switch (item.type) {
       case "weapon":
@@ -66,9 +67,6 @@ module.exports = class ItemDataCommand extends (
             .join("\n")}
         `);
         break;
-      default:
-        params.description = `${item.description}`;
-        params.color = rarities[item.level-1].hex
     }
 
     const messageEmbed = this.Discord.buildEmbed(params);

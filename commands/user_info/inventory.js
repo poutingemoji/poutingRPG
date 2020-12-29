@@ -38,7 +38,7 @@ module.exports = class InventoryCommand extends (
 
     const formatFilter = (itemId) => {
       const item = items[itemId];
-      return `${rarities[item.level - 1].emoji} ${player.inventory.get(itemId)} **${
+      return `${rarities[item.rarity - 1].emoji} ${player.inventory.get(itemId)} **${
         item.name
       }** ${this.Discord.emoji(item.emoji)} | ${item.type}`;
     };

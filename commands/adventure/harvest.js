@@ -2,10 +2,12 @@
 const Command = require("../../Base/Command");
 
 //DATA
-const floors = require("../../data/floors")
+const floors = require("../../data/floors");
 const items = require("../../data/items");
 
-module.exports = class HarvestCommand extends Command {
+module.exports = class HarvestCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "harvest",
@@ -27,12 +29,21 @@ module.exports = class HarvestCommand extends Command {
     const curTowerArea =
       floors[curTowerProgression.floor].areas[curTowerProgression.area];
 
-    const drops = {}
-    Object.keys(curTowerArea.harvestingSpot).map(itemId => {
-      const item = curTowerArea.harvestingSpot[itemId]
-      drops[itemId] = this.randomBetween(item.min, item.max)
-    })
-    console.log(drops)
-    msg.say(Object.keys(drops).map(dropId => `+ ${drops[dropId]} ${this.Discord.emoji(items[dropId].emoji)} ${items[dropId].name}`).join("\n"));
+    const drops = {};
+    Object.keys(curTowerArea.harvestingSpot).map((itemId) => {
+      const item = curTowerArea.harvestingSpot[itemId];
+      drops[itemId] = this.randomBetween(item.min, item.max);
+    });
+    console.log(drops);
+    msg.say(
+      Object.keys(drops)
+        .map(
+          (dropId) =>
+            `+${drops[dropId]} **${items[dropId].name}** ${this.Discord.emoji(
+              items[dropId].emoji
+            )}`
+        )
+        .join("\n")
+    );
   }
 };

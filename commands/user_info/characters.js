@@ -36,13 +36,13 @@ module.exports = class CharactersCommand extends (
 
     const formatFilter = async (characterId) => {
       const character = this.Game.getCharacter(player, characterId);
-      const weapon = this.Game.getEquipment(character.weapon);
-      const offhand = this.Game.getEquipment(character.offhand);
-      return `${this.Discord.emoji(character.position.emoji)} ${
+      const weapon = character.weapon;
+      const offhand = character.offhand;
+      return `${this.Discord.emoji(character.position.emoji)} **${
         character.name
-      } (Lv.${character.level.current}) | ${weapon.name} +${weapon.baseStats.ATK} 🗡️ | ${
-        offhand.name
-      } +${offhand.baseStats.HP} ❤️`;
+      }** (Lv.${character.level.current}) | ${this.Discord.emoji(weapon.emoji)} ${weapon.name} +${
+        weapon.baseStats.ATK
+      } | ${this.Discord.emoji(offhand.emoji)} ${offhand.name} +${offhand.baseStats.HP}`;
     };
 
     this.Discord.Pagination.buildEmbeds(

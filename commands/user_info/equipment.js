@@ -4,6 +4,10 @@ const Command = require("../../Base/Command");
 //DATA
 const characters = require("../../data/characters");
 const items = require("../../data/items");
+
+//UTILS
+const { rarities } = require("../../utils/enumHelper");
+
 module.exports = class EquipmentCommand extends (
   Command
 ) {
@@ -27,12 +31,11 @@ module.exports = class EquipmentCommand extends (
 
     const formatFilter = (data, i) => {
       const item = this.Game.getEquipment(data);
-      console.log(item)
-      return `${i + 1}) ${this.Discord.emoji(item.emoji)} (Lv. ${item.level}) ${item.name} +${
+      return `${i + 1}) ${rarities[item.rarity-1].emoji} **${item.name}** ${this.Discord.emoji(item.emoji)} (+${
         item.baseStats.hasOwnProperty("ATK")
-          ? `${item.baseStats.ATK} 🗡️`
-          : `${item.baseStats.HP} ❤️`
-      }`;
+          ? `${item.baseStats.ATK} ATK`
+          : `${item.baseStats.HP} HP`
+      })`;
     };
 
     this.Discord.Pagination.buildEmbeds(
@@ -47,3 +50,4 @@ module.exports = class EquipmentCommand extends (
     );
   }
 };
+//🗡️❤️
