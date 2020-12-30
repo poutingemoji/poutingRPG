@@ -1,4 +1,3 @@
-const characters = require("../data/characters");
 const enemies = require("../data/enemies");
 
 const enumHelper = {
@@ -74,7 +73,7 @@ const enumHelper = {
   itemCategories: {
     equipment: ["weapon", "offhand"],
     food: ["food"],
-    materials: ["anvil", "cauldron"],
+    materials: ["material", "cookingIngredient"],
   },
   expFormulas: {
     player: "floor((n-1)*125)",

@@ -2,7 +2,6 @@
 const { jpegVersion } = require("canvas");
 const { stripIndents } = require("common-tags");
 const Command = require("../../Base/Command");
-const positions = require("../../data/positions");
 
 //UTILS
 const { maxTeams, maxTeamMembers } = require("../../utils/enumHelper");

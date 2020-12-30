@@ -19,7 +19,7 @@ const factions = {
   fug: {
     name: "FUG",
     emoji: emojis["fug"],
-    leader: characters["khelHellam"],
+    leader: characters["karaka"],
     description: stripIndents(`
       FUG is the most dangerous and secretive criminal syndicate in the Tower and conduct our business in the shadows. 
       **Relies On:** Analyzing every situation

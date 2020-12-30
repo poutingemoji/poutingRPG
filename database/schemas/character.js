@@ -3,6 +3,7 @@ const { expFormulas } = require("../../utils/enumHelper");
 const characters = require("../../data/characters");
 const { newEquipmentObj } = require("./equipment")
 const { camelCase } = require("change-case")
+
 function newCharacterObj(characterId) {
   return {
     level: {

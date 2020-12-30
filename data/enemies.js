@@ -1,38 +1,44 @@
+const Item = require("../Base/Item");
 const talents = require("./talents");
-const positions = require("./positions");
+
+class Enemy extends Item {
+  constructor(params) {
+    super(params);
+    if (params.drops) this.drops = params.drops;
+  }
+}
+
+class Boss extends Enemy {
+  constructor(params) {
+    super(params);
+  }
+}
+
+class Special extends Enemy {
+  constructor(params) {
+    super(params);
+  }
+}
+
 const enemies = {
-  whiteSteelEel: {
-    level: 4,
-    weight: 4.0,
-    spread: 4,
+  whiteSteelEel: new Boss({
+    rarity: 5,
     name: "White Steel Eel",
-    baseStats: {
-      HP: 100,
-      ATK: 100,
-    },
-    talents: {
-      attack: positions["fisherman"].talents[0].attack,
-      support: positions["fisherman"].talents[0].support,
-      passive: positions["fisherman"].talents[0].passive,
-    },
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
     drops: { copperChunk: 4, ironChunk: 69 },
-  },
-  ball: {
-    level: 4,
-    weight: 4.0,
-    spread: 4,
+  }),
+  ball: new Special({
+    rarity: 1,
     name: "Ball",
-    baseStats: {
-      HP: 50,
-      ATK: 0,
-    },
-    talents: {
-      attack: positions["fisherman"].talents[0].attack,
-      support: positions["fisherman"].talents[0].support,
-      passive: positions["fisherman"].talents[0].passive,
-    },
+    HP: 50,
+    ATK: 0,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
     drops: { copperChunk: 4, ironChunk: 69 },
-  },
+  }),
 };
 
 module.exports = enemies;

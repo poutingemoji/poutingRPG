@@ -4,11 +4,9 @@ const { stripIndents } = require("common-tags");
 const { findBestMatch } = require("string-similarity")
 
 //DATA
-const arcs = require("../../data/arcs");
 const characters = require("../../data/characters");
 const emojis = require("../../data/emojis");
 const enemies = require("../../data/enemies");
-const floors = require("../../data/floors");
 const items = require("../../data/items");
 const talents = require("../../data/talents");
 
@@ -19,7 +17,6 @@ const {
   responseWaitTime,
   waitingOnResponse,
 } = require("../enumHelper");
-const enumHelper = require("../enumHelper");
 
 const getTotalEnemies = (acc, cur) => acc.concat(cur);
 const calculateTotalPower = (acc, cur) => acc + cur.HP + cur.ATK;
@@ -174,14 +171,13 @@ class PVEBattle extends Battle {
     //Enemy Turn
 
     this.team2.map((e) => {
-      const battleChoiceId =
-        battleChoices[Math.floor(Math.random() * battleChoices.length)];
+      const battleChoiceId = this.randomChoice(battleChoices)
       teamKnockedOut = this.castTalent(battleChoiceId, {
         caster: e,
         targeted: battleChoices[0].includes(battleChoiceId)
           ? this.team1[e.target.position] ||
-            this.team1[Math.floor(Math.random() * this.team1.length)]
-          : this.team2[Math.floor(Math.random() * this.team2.length)],
+            this.randomChoice(this.team1)
+          : this.randomChoice(this.team2),
         attackingTeam: this.team2,
         defendingTeam: this.team1,
       });
@@ -204,10 +200,10 @@ class PVEBattle extends Battle {
   async updateBattleMsg() {
     this.header = stripIndents(`
       ${this.msg.author}
-      **Your Team**
+      __Your Team__
       ${this.team1.map(this.formatBattleStats, this).join("\n")}
 
-      **[Wave ${this.waveId + 1}/${this.totalWaves.length}] Enemies**
+      __[Wave ${this.waveId + 1}/${this.totalWaves.length}] Enemies__
       ${this.team2.map(this.formatBattleStats, this).join("\n")}
 
       __Battle Log__

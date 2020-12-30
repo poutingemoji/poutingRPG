@@ -1,96 +1,78 @@
-const { suspendium } = require("./emojis");
+const Item = require("../Base/Item")
 const emojis = require("./emojis");
-const talents = require("./talents");
-const { rarities } = require("../utils/enumHelper");
 
-class Item {
-  constructor(name, rarity, emoji = "") {
-    if (!rarities[rarity - 1]) return console.log("Invalid rarity.");
-    this.name = name;
-    this.emoji = emoji;
-    this.rarity = rarity;
-
-    this.level = 1;
-    this.weight = 1.0;
-    this.spread = 1;
+//Food
+class Food extends Item {
+  constructor(params) {
+    super(params);
   }
 }
 
+//Materials
+class Material extends Item {
+  constructor(params) {
+    super(params);
+  }
+}
+
+class CookingIngredient extends Item {
+  constructor(params) {
+    super(params);
+  }
+}
+
+//EQUIPMENT
 class Weapon extends Item {
-  constructor({ name, rarity, emoji, ATK, passiveId }) {
-    super(name, rarity, emoji);
-    if (!talents.passive[passiveId]) return console.log("Invalid passive.");
-    this.baseStats = {
-      ATK: ATK,
-    };
-    this.talents = {
-      passive: talents.passive["criticalStrike"],
-    };
-    this.recipe = {
-      suspendium: 3,
-    };
+  constructor(params) {
+    super(params);
+    if (params.instructions) this.instructions = params.instructions;
   }
 }
 
 class Offhand extends Item {
-  constructor({ name, rarity, emoji, HP, passiveId }) {
-    super(name, rarity, emoji);
-    if (!talents.passive[passiveId]) return console.log("Invalid passive.");
-    this.baseStats = {
-      HP: HP,
-    };
-    this.talents = {
-      passive: talents.passive[passiveId],
-    };
-    this.recipe = {
-      suspendium: 3,
-    };
-  }
-}
-
-class Food extends Item {
-  constructor({ name, rarity, emoji }) {
-    super(name, rarity, emoji);
+  constructor(params) {
+    super(params);
+    if (params.instructions) this.instructions = params.instructions;
   }
 }
 
 const items = {
-  needle: new Weapon({
-    name: "Needle",
+  apple: new Food({
     rarity: 1,
+    name: "Apple",
+    emoji: "🍎",
+  }),
+  orange: new Food({
+    rarity: 1,
+    name: "Orange",
+    emoji: "🍊",
+  }),
+  //ANVIL
+  metalBar: new Material({
+    rarity: 3,
+    name: "Metal Bar",
+    emoji: "🦯",
+    description: "Yes its a metal bar.",
+  }),
+  suspendium: new Material({
+    rarity: 3,
+    name: "Suspendium",
+    emoji: emojis["suspendium"],
+    description: "Yes its suspendium.",
+  }),
+  needle: new Weapon({
+    rarity: 1,
+    name: "Needle",
     emoji: "🪡",
     ATK: 10,
     passiveId: "criticalStrike",
   }),
   armorInventory: new Offhand({
-    name: "Armor Inventory",
     rarity: 1,
+    name: "Armor Inventory",
     emoji: "🛡️",
     HP: 10,
     passiveId: "vigor",
-  }),
-  apple: new Food({
-    name: "Apple",
-    rarity: 1,
-    emoji: "🍎",
-  }),
-  orange: new Food({
-    name: "Orange",
-    rarity: 1,
-    emoji: "🍊",
-  }),
-  //ANVIL
-  metalBar: new Food({
-    name: "Metal Bar",
-    rarity: 3,
-    emoji: "🦯",
-    description: "Yes its a metal bar.",
-  }),
-  suspendium: new Food({
-    name: "Suspendium",
-    rarity: 3,
-    emoji: emojis["suspendium"],
-    description: "Yes its suspendium.",
   }),
 };
 

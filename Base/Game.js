@@ -3,8 +3,8 @@ const BaseHelper = require("../Base/Helper");
 const Parser = require("expr-eval").Parser;
 const gacha = require("gacha");
 const { stripIndents } = require("common-tags");
-const { capitalCase, camelCase } = require("change-case");
-const cloneDeep = require("lodash.clonedeep")
+const { capitalCase, camelCase, snakeCase } = require("change-case");
+const cloneDeep = require("lodash.clonedeep");
 
 //DATA
 const { newEquipmentObj } = require("../database/schemas/equipment");
@@ -14,7 +14,6 @@ const characters = require("../data/characters");
 const enemies = require("../data/enemies");
 const emojis = require("../data/emojis");
 const items = require("../data/items");
-const positions = require("../data/positions");
 const talents = require("../data/talents");
 
 // UTILS
@@ -204,7 +203,12 @@ class Game extends BaseHelper {
   }
 
   getEquipment(equipment) {
-    if (!itemCategories.equipment.includes(items[equipment.id].type)) return;
+    if (
+      !itemCategories.equipment.includes(
+        items[equipment.id].constructor.name.toLowerCase()
+      )
+    )
+      return;
     const data = cloneDeep(Object.assign({}, items[equipment.id], equipment));
     data.baseStats.hasOwnProperty("ATK")
       ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)

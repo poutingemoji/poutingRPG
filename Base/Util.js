@@ -1,5 +1,5 @@
 class Util {
-  /*
+  /** 
     Utilizing https://stackoverflow.com/a/45332959 to have multiple class inheritance
   */
   aggregation(baseClass, ...mixins) {
@@ -12,7 +12,7 @@ class Util {
       }
     }
 
-    // this function copies all properties and symbols, filtering out some special ones
+    //This function copies all properties and symbols, filtering out some special ones.
     let copyProps = (targeted, source) => {
       Object.getOwnPropertyNames(source)
         .concat(Object.getOwnPropertySymbols(source))
@@ -30,7 +30,7 @@ class Util {
         });
     };
 
-    // outside contructor() to allow aggregation(A,B,C).staticFunction() to be called etc.
+    //Outside contructor() to allow aggregation(A,B,C).staticFunction() to be called etc.
     mixins.forEach((mixin) => {
       copyProps(base.prototype, mixin.prototype);
       copyProps(base, mixin);

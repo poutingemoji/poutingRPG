@@ -4,7 +4,6 @@ const { camelCase, snakeCase } = require("change-case")
 
 //DATA
 const factions = require("../../data/factions");
-const positions = require("../../data/positions");
 const { responseWaitTime } = require("../../utils/enumHelper");
 //prettier-ignore
 module.exports = class StartCommand extends Command {

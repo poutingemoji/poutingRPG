@@ -42,14 +42,14 @@ module.exports = class ItemDataCommand extends (
       : this.Game.getEquipment(player.equipment[itemId]);
     if (!item) return;
     const params = {
-      title: `${this.Discord.emoji(item.emoji)} ${item.name} (${item.type})`,
+      title: `${this.Discord.emoji(item.emoji)} ${item.name} (${item.constructor.name})`,
       description: item.description || "",
       color: rarities[item.rarity - 1].hex,
     };
 
-    switch (item.type) {
-      case "weapon":
-      case "offhand":
+    switch (item.constructor.name) {
+      case "Weapon":
+      case "Offhand":
         params.description = stripIndents(`
           ${
             item.baseStats.hasOwnProperty("HP")

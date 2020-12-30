@@ -1,101 +1,193 @@
-//DATA
+const Item = require("../Base/Item")
 const emojis = require("./emojis");
 const items = require("./items");
-const positions = require("./positions");
-const talents = require("./talents");
+
+class Character extends Item {
+  constructor(params) {
+    super(params)
+    if (!params.volume) return console.error(`${params.name} doesn't have a volume.`)
+    this.volume = params.volume;
+    const weapon = items[params.weaponId]
+    const offhand = items[params.offhandId]
+    if (!weapon) return console.error(`${params.name}'s weapon, ${params.weaponId}, is illegal.`)
+    if (!offhand) return console.error(`${params.name}'s offhand, ${params.offhandId}, is illegal.`)
+    this.weapon = weapon
+    this.offhand = offhand
+  }
+}
+
+//Positions
+class WaveController extends Character {
+  constructor(params) {
+    super(params)
+    this.position = {
+      name: "Wave Controller",
+      emoji: emojis["wave_controller"],
+    }
+  }
+  ultimate() {
+
+  }
+}
+
+class LightBearer extends Character {
+  constructor(params) {
+    super(params)
+    this.position = {
+      name: "Light Bearer",
+      emoji: emojis["light_bearer"],
+    }
+  }
+  ultimate() {
+
+  }
+}
+
+class SpearBearer extends Character {
+  constructor(params) {
+    super(params)
+    this.position = {
+      name: "Spear Bearer",
+      emoji: emojis["spear_bearer"],
+    }
+  }
+  ultimate() {
+
+  }
+}
+
+class Fisherman extends Character {
+  constructor(params) {
+    super(params)
+    this.position = {
+      name: "Fisherman",
+      emoji: emojis["fisherman"],
+    }
+  }
+  ultimate() {
+
+  }
+}
+
+class Scout extends Character {
+  constructor(params) {
+    super(params)
+    this.position = {
+      name: "Scout",
+      emoji: emojis["scout"],
+    }
+  }
+  ultimate() {
+
+  }
+}
 
 const characters = {
-  twentyFifthBaam: {
-    name: "Twenty-Fifth Baam",
-    emoji: "",
-    position: positions["waveController"],
+  twentyFifthBaam: new WaveController({
+    rarity: 4,
+    name:"Twenty-Fifth Baam",
+    emoji: emojis["twenty_fifth_baam"],
     volume: 1,
-    baseStats: {
-      HP: 100,
-      ATK: 100,
-    },
-    talents: {
-      attack: positions["fisherman"].talents[0].attack,
-      support: positions["fisherman"].talents[0].support,
-    },
-    weapon: items["needle"],
-    offhand: items["armorInventory"],
-  },
-  khunAgueroAgnis: {
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
+    weaponId: "needle",
+    offhandId: "armorInventory",
+ }),
+  khunAgueroAgnis: new LightBearer({
+    rarity: 4,
     name: "Khun Aguero Agnis",
-    emoji: "",
-    position: positions["lightBearer"],
+    emoji: emojis["khun_aguero_agnis"],
     volume: 1,
-    baseStats: {
-      HP: 100,
-      ATK: 100,
-    },
-    talents: {
-      attack: positions["fisherman"].talents[0].attack,
-      support: positions["fisherman"].talents[0].support,
-    },
-    weapon: items["needle"],
-    offhand: items["armorInventory"],
-  },
-  rakWraithraiser: {
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
+    weaponId: "needle",
+    offhandId: "armorInventory",
+  }),
+  rakWraithraiser: new SpearBearer({
+    rarity: 4,
     name: "Rak Wraithraiser",
-    emoji: "",
-    position: positions["spearBearer"],
+    emoji: emojis["rak_wraithraiser"],
     volume: 1,
-    baseStats: {
-      HP: 100,
-      ATK: 100,
-    },
-    talents: {
-      attack: positions["fisherman"].talents[0].attack,
-      support: positions["fisherman"].talents[0].support,
-    },
-    weapon: items["needle"],
-    offhand: items["armorInventory"],
-  },
-  androssiZahard: {
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
+    weaponId: "needle",
+    offhandId: "armorInventory",
+  }),
+  androssiZahard: new Fisherman({
+    rarity: 4,
     name: "Androssi Zahard",
-    emoji: "",
-    position: positions["fisherman"],
+    emoji: emojis["androssi_zahard"],
     volume: 1,
-    baseStats: {
-      HP: 100,
-      ATK: 100,
-    },
-    talents: {
-      attack: positions["fisherman"].talents[0].attack,
-      support: positions["fisherman"].talents[0].support,
-    },
-    weapon: items["needle"],
-    offhand: items["armorInventory"],
-  },
-  shipLeesoo: {
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
+    weaponId: "needle",
+    offhandId: "armorInventory",
+  }),
+  shipLeesoo: new Scout({
+    rarity: 4,
     name: "Ship Leesoo",
-    emoji: "",
-    position: positions["scout"],
+    emoji: emojis["ship_leesoo"],
     volume: 1,
-    baseStats: {
-      HP: 100,
-      ATK: 100,
-    },
-    talents: {
-      attack: positions["fisherman"].talents[0].attack,
-      support: positions["fisherman"].talents[0].support,
-    },
-    weapon: items["needle"],
-    offhand: items["armorInventory"],
-  },
-  kingZahard: {
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
+    weaponId: "needle",
+    offhandId: "armorInventory",
+  }),
+  kingZahard: new Scout({
+    rarity: 4,
     name: "King Zahard",
     emoji: emojis["king_zahard"],
-  },
-  khelHellam: {
-    name: "Khel Hellam",
-    emoji: emojis["khel_hellam"],
-  },
-  urekMazino: {
+    volume: 1,
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
+    weaponId: "needle",
+    offhandId: "armorInventory",
+  }),
+  karaka: new Scout({
+    rarity: 4,
+    name: "Karaka",
+    emoji: emojis["karaka"],
+    volume: 1,
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
+    weaponId: "needle",
+    offhandId: "armorInventory",
+  }),
+  urekMazino: new Scout({
+    rarity: 4,
     name: "Urek Mazino",
     emoji: emojis["urek_mazino"],
-  },
+    volume: 1,
+    HP: 100,
+    ATK: 100,
+    attackId: "shinsuBlast",
+    supportId: "shinsuAura",
+    weaponId: "needle",
+    offhandId: "armorInventory",
+  }),
 };
 module.exports = characters;
+
+  /*
+  SPECIAL POSITIONS
+  Guides
+  Anima
+  Jeonsulsa
+  Hwayeomsa
+  targeted
+  Unknown Position
+  */

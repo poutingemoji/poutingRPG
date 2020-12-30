@@ -53,6 +53,7 @@ class Battle extends BaseHelper {
 
     if (caster.hasOwnProperty("weapon") && caster.hasOwnProperty("offhand")) {
       itemCategories.equipment.map((equipmentType) => {
+        console.log(caster[equipmentType]);
         const passiveTalent = caster[equipmentType].talents.passive;
         if (passiveTalent.hasOwnProperty("onAttack"))
           passiveTalent.onAttack(params);
@@ -113,7 +114,9 @@ class Battle extends BaseHelper {
   formatBattleStats(obj, i) {
     return `${i + 1}) ${this.Discord.emoji(
       obj.turnEnded ? "✅" : "red_cross"
-    )} ${obj.name} (${obj.HP}/${obj.maxHP} ❤️) ${
+    )} ${this.Discord.emoji(obj.emoji)} **${obj.name}** (${obj.HP}/${
+      obj.maxHP
+    } ❤️) ${
       obj.target.position !== null
         ? ` | 🎯 ${
             this.team1.includes(obj)
@@ -138,8 +141,10 @@ class Battle extends BaseHelper {
       target: { position: null, turns: 0 },
       effects: {},
       takeDamage: function (amount) {
+        console.log(obj);
         if (obj.hasOwnProperty("weapon") && obj.hasOwnProperty("offhand")) {
           itemCategories.equipment.map((equipmentType) => {
+            console.log(equipmentType);
             if (obj[equipmentType].talents.passive.hasOwnProperty("onDamaged"))
               amount -=
                 obj[equipmentType].talents.passive.onDamaged({
@@ -155,6 +160,7 @@ class Battle extends BaseHelper {
       },
     });
     if (data.hasOwnProperty("weapon") && data.hasOwnProperty("offhand")) {
+      console.log(data);
       data.HP += data.offhand.baseStats.HP;
       data.ATK += data.weapon.baseStats.ATK;
     }

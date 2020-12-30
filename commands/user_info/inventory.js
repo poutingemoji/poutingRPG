@@ -1,6 +1,6 @@
 //BASE
 const Command = require("../../Base/Command");
-
+const { capitalCase } = require("change-case");
 //DATA
 const items = require("../../data/items");
 
@@ -38,9 +38,11 @@ module.exports = class InventoryCommand extends (
 
     const formatFilter = (itemId) => {
       const item = items[itemId];
-      return `${rarities[item.rarity - 1].emoji} ${player.inventory.get(itemId)} **${
-        item.name
-      }** ${this.Discord.emoji(item.emoji)} | ${item.type}`;
+      return `${rarities[item.rarity - 1].emoji} ${player.inventory.get(
+        itemId
+      )} **${item.name}** ${this.Discord.emoji(item.emoji)} | ${
+        item.constructor.name
+      }`;
     };
 
     const itemIds = Array.from(player.inventory.keys());
@@ -54,12 +56,12 @@ module.exports = class InventoryCommand extends (
       category
         ? {
             [category]: itemIds.filter((itemId) =>
-              itemCategories[category].includes(items[itemId].type)
+              itemCategories[category].includes(items[itemId].constructor.name.toLowerCase())
             ),
           }
         : this.groupBy(itemIds, (itemId) => {
-            return Object.keys(itemCategories).find((category) =>
-              itemCategories[category].includes(items[itemId].type)
+            return Object.keys(itemCategories).find((itemCategoryId) =>
+              itemCategories[itemCategoryId].includes(items[itemId].constructor.name.toLowerCase())
             );
           })
     );
