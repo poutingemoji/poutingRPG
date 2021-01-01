@@ -5,7 +5,8 @@ const { capitalCase } = require("change-case");
 const items = require("../../data/items");
 
 //UTILS
-const { itemCategories, rarities } = require("../../utils/enumHelper");
+const { rarities } = require("../../utils/enumHelper");
+
 module.exports = class InventoryCommand extends (
   Command
 ) {
@@ -34,15 +35,16 @@ module.exports = class InventoryCommand extends (
   async run(msg, { category }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
-    if (category && !Object.keys(itemCategories).includes(category)) return;
-
+    if (category) {
+      category = capitalCase(category)
+      if (!["Food", "Material", "Ingredient"].includes(category)) return;
+    }
+    
     const formatFilter = (itemId) => {
       const item = items[itemId];
       return `${rarities[item.rarity - 1].emoji} ${player.inventory.get(
         itemId
-      )} **${item.name}** ${this.Discord.emoji(item.emoji)} | ${
-        item.constructor.name
-      }`;
+      )} **${item.name}** ${this.Discord.emoji(item.emoji)}`;
     };
 
     const itemIds = Array.from(player.inventory.keys());
@@ -55,15 +57,11 @@ module.exports = class InventoryCommand extends (
       formatFilter,
       category
         ? {
-            [category]: itemIds.filter((itemId) =>
-              itemCategories[category].includes(items[itemId].constructor.name.toLowerCase())
+            [category]: itemIds.filter(
+              (itemId) => items[itemId].constructor.name == category
             ),
           }
-        : this.groupBy(itemIds, (itemId) => {
-            return Object.keys(itemCategories).find((itemCategoryId) =>
-              itemCategories[itemCategoryId].includes(items[itemId].constructor.name.toLowerCase())
-            );
-          })
+        : this.groupBy(itemIds, (itemId) => items[itemId].constructor.name)
     );
   }
 };

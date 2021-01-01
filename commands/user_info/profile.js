@@ -34,7 +34,7 @@ module.exports = class ProfileCommand extends (
     user = user || msg.author;
     const player = await this.Game.findPlayer(user, msg);
     if (!player) return;
-    console.log(this.Game.getAdventureRankRange(player))
+    console.log(player)
     const messageEmbed = this.Discord.buildEmbed({
       thumbnail: user.displayAvatarURL(),
       title: `Profile ${this.Discord.emoji(player.factionId)}`,

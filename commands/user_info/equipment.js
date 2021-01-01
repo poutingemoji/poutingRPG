@@ -46,7 +46,7 @@ module.exports = class EquipmentCommand extends (
         globalNumbering: true,
       },
       formatFilter,
-      this.groupBy(player.equipment, (data) => items[data.id].constructor.name)
+      this.groupBy(player.equipment, (item) => items[item.id].constructor.name)
     );
   }
 };

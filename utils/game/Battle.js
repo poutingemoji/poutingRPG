@@ -5,6 +5,7 @@ const { camelCase } = require("change-case");
 //DATA
 const characters = require("../../data/characters");
 const enemies = require("../../data/enemies");
+const emojis = require("../../data/emojis");
 const talents = require("../../data/talents");
 
 //UTILS
@@ -84,7 +85,7 @@ class Battle extends BaseHelper {
     this.body += `${this.team1.includes(caster) ? "🟩" : "🟥"} ${
       caster.name
     } uses **${caster.talents[battleChoice].name}** ${
-      talents[battleChoice].emoji
+      emojis[battleChoice]
     } on ${targeted.name}.\n`;
     caster.turnEnded = true;
     this.team1.map(this.removeKnockedOutObjs, this);

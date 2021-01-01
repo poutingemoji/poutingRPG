@@ -1,40 +1,11 @@
-const Item = require("../Base/Item")
+const {
+  Food,
+  Material,
+  Ingredient,
+  Weapon,
+  Offhand,
+} = require("../utils/game/Item");
 const emojis = require("./emojis");
-
-//Food
-class Food extends Item {
-  constructor(params) {
-    super(params);
-  }
-}
-
-//Materials
-class Material extends Item {
-  constructor(params) {
-    super(params);
-  }
-}
-
-class CookingIngredient extends Item {
-  constructor(params) {
-    super(params);
-  }
-}
-
-//EQUIPMENT
-class Weapon extends Item {
-  constructor(params) {
-    super(params);
-    if (params.instructions) this.instructions = params.instructions;
-  }
-}
-
-class Offhand extends Item {
-  constructor(params) {
-    super(params);
-    if (params.instructions) this.instructions = params.instructions;
-  }
-}
 
 const items = {
   apple: new Food({

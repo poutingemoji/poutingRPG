@@ -32,6 +32,11 @@ const emojis = {
 
   //Items
   suspendium: "765338211362406422",
+
+  //Talent Types
+  attack: "⚔",
+  support: "🤝",
+  passive: "🕊️",
 };
 
 module.exports = emojis;

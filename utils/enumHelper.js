@@ -41,6 +41,7 @@ const enumHelper = {
     },
   },
   battleChoices: ["attack", "support"],
+  talentTypes: ["attack", "support", "passive"],
   isEnemy(enemyId) {
     return enemies.hasOwnProperty(enemyId);
   },

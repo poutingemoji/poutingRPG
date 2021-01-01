@@ -1,91 +1,17 @@
-const Item = require("../Base/Item")
+const {
+  WaveController,
+  LightBearer,
+  SpearBearer,
+  Fisherman,
+  Scout,
+} = require("../utils/game/Character");
 const emojis = require("./emojis");
 const items = require("./items");
-
-class Character extends Item {
-  constructor(params) {
-    super(params)
-    if (!params.volume) return console.error(`${params.name} doesn't have a volume.`)
-    this.volume = params.volume;
-    const weapon = items[params.weaponId]
-    const offhand = items[params.offhandId]
-    if (!weapon) return console.error(`${params.name}'s weapon, ${params.weaponId}, is illegal.`)
-    if (!offhand) return console.error(`${params.name}'s offhand, ${params.offhandId}, is illegal.`)
-    this.weapon = weapon
-    this.offhand = offhand
-  }
-}
-
-//Positions
-class WaveController extends Character {
-  constructor(params) {
-    super(params)
-    this.position = {
-      name: "Wave Controller",
-      emoji: emojis["wave_controller"],
-    }
-  }
-  ultimate() {
-
-  }
-}
-
-class LightBearer extends Character {
-  constructor(params) {
-    super(params)
-    this.position = {
-      name: "Light Bearer",
-      emoji: emojis["light_bearer"],
-    }
-  }
-  ultimate() {
-
-  }
-}
-
-class SpearBearer extends Character {
-  constructor(params) {
-    super(params)
-    this.position = {
-      name: "Spear Bearer",
-      emoji: emojis["spear_bearer"],
-    }
-  }
-  ultimate() {
-
-  }
-}
-
-class Fisherman extends Character {
-  constructor(params) {
-    super(params)
-    this.position = {
-      name: "Fisherman",
-      emoji: emojis["fisherman"],
-    }
-  }
-  ultimate() {
-
-  }
-}
-
-class Scout extends Character {
-  constructor(params) {
-    super(params)
-    this.position = {
-      name: "Scout",
-      emoji: emojis["scout"],
-    }
-  }
-  ultimate() {
-
-  }
-}
 
 const characters = {
   twentyFifthBaam: new WaveController({
     rarity: 4,
-    name:"Twenty-Fifth Baam",
+    name: "Twenty-Fifth Baam",
     emoji: emojis["twenty_fifth_baam"],
     volume: 1,
     HP: 100,
@@ -94,7 +20,7 @@ const characters = {
     supportId: "shinsuAura",
     weaponId: "needle",
     offhandId: "armorInventory",
- }),
+  }),
   khunAgueroAgnis: new LightBearer({
     rarity: 4,
     name: "Khun Aguero Agnis",
@@ -182,7 +108,7 @@ const characters = {
 };
 module.exports = characters;
 
-  /*
+/*
   SPECIAL POSITIONS
   Guides
   Anima

@@ -22,10 +22,10 @@ class Pagination {
       globalNumbering,
     } = params;
     if (!(typeof data === "object")) return;
-    if (Object.keys(data).length == 0)
-      return msg.reply(`your ${title.toLowerCase()} is empty :(`);
     if (data instanceof Map) data = Array.from(data.keys());
     if (data instanceof Array) data = { "": data };
+    const firstKey = Object.keys(data)[0]
+    if (data[firstKey].length == 0) return msg.reply(`Your \`${title} | ${firstKey.length == 0 ?  "" : firstKey}\` is empty. 😔`);
 
     const categories = Object.keys(data);
     const embeds = [];

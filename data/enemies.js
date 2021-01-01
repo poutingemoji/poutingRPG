@@ -1,24 +1,5 @@
-const Item = require("../Base/Item");
+const { Boss, Special } = require("../utils/game/Enemy");
 const talents = require("./talents");
-
-class Enemy extends Item {
-  constructor(params) {
-    super(params);
-    if (params.drops) this.drops = params.drops;
-  }
-}
-
-class Boss extends Enemy {
-  constructor(params) {
-    super(params);
-  }
-}
-
-class Special extends Enemy {
-  constructor(params) {
-    super(params);
-  }
-}
 
 const enemies = {
   whiteSteelEel: new Boss({
