@@ -1,6 +1,4 @@
 const { Boss, Special } = require("../utils/game/Enemy");
-const talents = require("./talents");
-
 const enemies = {
   whiteSteelEel: new Boss({
     rarity: 5,

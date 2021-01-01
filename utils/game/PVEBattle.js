@@ -1,7 +1,7 @@
 //BASE
-const Battle = require("./Battle");
+const Battle = require("./_Battle");
 const { stripIndents } = require("common-tags");
-const { findBestMatch } = require("string-similarity")
+const { findBestMatch } = require("string-similarity");
 
 //DATA
 const characters = require("../../data/characters");
@@ -136,11 +136,13 @@ class PVEBattle extends Battle {
           if (!response) return;
           const args = response.content.split(" ");
           if (!args.length == 3) return;
-          const battleChoiceId = findBestMatch(args[1], battleChoices).bestMatch.target
+          const battleChoiceId = findBestMatch(args[1], battleChoices).bestMatch
+            .target;
           const caster = Battle.team1[args[0] - 1];
-          const targeted = battleChoiceId == battleChoices[0]
-            ? Battle.team2[args[2] - 1]
-            : Battle.team1[args[2] - 1];
+          const targeted =
+            battleChoiceId == battleChoices[0]
+              ? Battle.team2[args[2] - 1]
+              : Battle.team1[args[2] - 1];
           return (
             response.author.id == Battle.player.discordId &&
             typeof caster !== "undefined" &&
@@ -152,18 +154,17 @@ class PVEBattle extends Battle {
       if (!res) return this.escape();
       console.log(res);
       const args = res.split(" ");
-      const battleChoiceId = findBestMatch(args[1], battleChoices).bestMatch.target
-      teamKnockedOut = this.castTalent(
-        battleChoiceId,
-        {
-          caster: this.team1[args[0] - 1],
-          targeted: battleChoiceId == battleChoices[0]
+      const battleChoiceId = findBestMatch(args[1], battleChoices).bestMatch
+        .target;
+      teamKnockedOut = this.castTalent(battleChoiceId, {
+        caster: this.team1[args[0] - 1],
+        targeted:
+          battleChoiceId == battleChoices[0]
             ? this.team2[args[2] - 1]
             : this.team1[args[2] - 1],
-          attackingTeam: this.team1,
-          defendingTeam: this.team2,
-        }
-      );
+        attackingTeam: this.team1,
+        defendingTeam: this.team2,
+      });
     } while (this.team1.some((t) => t.turnEnded == false) && !teamKnockedOut);
     if (teamKnockedOut) return;
     this.team2.map(this.decreaseEffectTurn);
@@ -171,12 +172,11 @@ class PVEBattle extends Battle {
     //Enemy Turn
 
     this.team2.map((e) => {
-      const battleChoiceId = this.randomChoice(battleChoices)
+      const battleChoiceId = this.randomChoice(battleChoices);
       teamKnockedOut = this.castTalent(battleChoiceId, {
         caster: e,
         targeted: battleChoices[0].includes(battleChoiceId)
-          ? this.team1[e.target.position] ||
-            this.randomChoice(this.team1)
+          ? this.team1[e.target.position] || this.randomChoice(this.team1)
           : this.randomChoice(this.team2),
         attackingTeam: this.team2,
         defendingTeam: this.team1,

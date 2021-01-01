@@ -8,10 +8,7 @@ const emojis = require("../data/emojis");
 
 //UTILS
 const Pagination = require("../utils/discord/Pagination");
-const {
-  responseWaitTime,
-  waitingOnResponse,
-} = require("../utils/enumHelper");
+const { responseWaitTime, waitingOnResponse } = require("../utils/enumHelper");
 
 class Discord extends BaseHelper {
   constructor(client) {
@@ -108,15 +105,15 @@ class Discord extends BaseHelper {
         chooseFrom.includes(reaction.emoji.name)) &&
       user.id == author.id;
 
-      console.log(msg)
+    console.log(msg);
     let collector;
     if (type == "message") {
-      collector = msg.channel.createMessageCollector(filter || messageFilter)
+      collector = msg.channel.createMessageCollector(filter || messageFilter);
       collector.on("collect", (message) => {
         //if (removeResponses) message.delete()
         console.log(`Collected ${message.content}`);
         onCollect(message.content);
-      })
+      });
     } else {
       collector = msg.createReactionCollector(filter || reactionFilter);
       collector.on("collect", (reaction, user) => {

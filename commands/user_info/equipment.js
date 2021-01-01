@@ -31,7 +31,9 @@ module.exports = class EquipmentCommand extends (
 
     const formatFilter = (data, i) => {
       const item = this.Game.getEquipment(data);
-      return `${i + 1}) ${rarities[item.rarity-1].emoji} **${item.name}** ${this.Discord.emoji(item.emoji)} (+${
+      return `${i + 1}) ${rarities[item.rarity - 1].emoji} **${
+        item.name
+      }** ${this.Discord.emoji(item.emoji)} (+${
         item.baseStats.hasOwnProperty("ATK")
           ? `${item.baseStats.ATK} ATK`
           : `${item.baseStats.HP} HP`

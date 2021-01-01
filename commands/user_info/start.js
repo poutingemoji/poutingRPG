@@ -1,6 +1,6 @@
 //BASE
 const Command = require("../../Base/Command");
-const { camelCase, snakeCase } = require("change-case")
+const { camelCase, snakeCase } = require("change-case");
 
 //DATA
 const factions = require("../../data/factions");

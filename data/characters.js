@@ -6,8 +6,6 @@ const {
   Scout,
 } = require("../utils/game/Character");
 const emojis = require("./emojis");
-const items = require("./items");
-
 const characters = {
   twentyFifthBaam: new WaveController({
     rarity: 4,

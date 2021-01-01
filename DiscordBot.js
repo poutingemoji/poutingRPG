@@ -1,7 +1,7 @@
 //BASE
-const BaseDiscord = require("./Base/Discord");
-const BaseGame = require("./Base/Game");
-const BaseHelper = require("./Base/Helper");
+const BaseDiscord = require("./Base/Discord").default;
+const BaseGame = require("./Base/Game").default;
+const BaseHelper = require("./Base/Helper").default;
 
 const { stripIndents } = require("common-tags");
 const DBL = require("dblapi.js");
@@ -10,7 +10,11 @@ const fs = require("fs");
 const path = require("path");
 
 //UTILS
-const { commandGroups, links, waitingOnResponse } = require("./utils/enumHelper");
+const {
+  commandGroups,
+  links,
+  waitingOnResponse,
+} = require("./utils/enumHelper");
 require("dotenv").config();
 
 class DiscordBot extends BaseHelper {
@@ -53,9 +57,7 @@ class DiscordBot extends BaseHelper {
       );
       if (!this.client.user.avatarURL) {
         // avatarURL == null if not set
-        this.client.user.setAvatar(
-          fs.readFileSync("./images/poutingbot.png")
-        );
+        this.client.user.setAvatar(fs.readFileSync("./images/poutingbot.png"));
       }
       this.client.user.setActivity(`${this.client.commandPrefix}help`, {
         type: "STREAMING",

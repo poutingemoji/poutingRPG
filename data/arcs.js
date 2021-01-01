@@ -1,6 +1,5 @@
 //DATA
 const { newQuest } = require("../database/schemas/quest");
-
 const arcs = [
   {
     name: "Headon's Floor",

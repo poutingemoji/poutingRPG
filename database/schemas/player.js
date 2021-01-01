@@ -1,15 +1,15 @@
 //BASE
-const mongoose = require("mongoose");
-const Parser = require("expr-eval").Parser;
+import { Schema } from "mongoose";
+import { Parser } from "expr-eval";
 
 //DATA
-const { newEquipmentObj } = require("./equipment");
-const { newCharacterObj } = require("./character");
+import { newEquipmentObj } from "./equipment";
+import { newCharacterObj } from "./character";
 
 //UTILS
-const { expFormulas } = require("../../utils/enumHelper");
+import { expFormulas } from "../../utils/enumHelper";
 
-const playerSchema = mongoose.Schema({
+const playerSchema = Schema({
   discordId: String,
   factionId: String,
   level: {
@@ -42,7 +42,10 @@ const playerSchema = mongoose.Schema({
   },
   equipment: {
     type: Array,
-    default: [newEquipmentObj("needle", 30), newEquipmentObj("armorInventory", 20)],
+    default: [
+      newEquipmentObj("needle", 30),
+      newEquipmentObj("armorInventory", 20),
+    ],
   },
   inventory: { type: Map, of: Number, default: {} },
   progression: {
@@ -58,7 +61,7 @@ const playerSchema = mongoose.Schema({
       total: {
         floor: { type: Number, default: 1 },
         area: { type: Number, default: 1 },
-      }
+      },
     },
   },
   quests: {
@@ -84,4 +87,4 @@ function newPlayerObj(discordId, factionId) {
   };
 }
 
-module.exports = { playerSchema, newPlayerObj };
+export default { playerSchema, newPlayerObj };

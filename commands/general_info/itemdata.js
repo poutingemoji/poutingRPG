@@ -42,7 +42,9 @@ module.exports = class ItemDataCommand extends (
       : this.Game.getEquipment(player.equipment[itemId]);
     if (!item) return;
     const params = {
-      title: `${this.Discord.emoji(item.emoji)} ${item.name} (${item.constructor.name})`,
+      title: `${this.Discord.emoji(item.emoji)} ${item.name} (${
+        item.constructor.name
+      })`,
       description: item.description || "",
       color: rarities[item.rarity - 1].hex,
     };

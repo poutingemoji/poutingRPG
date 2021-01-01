@@ -1,5 +1,4 @@
 //BASE
-const { jpegVersion } = require("canvas");
 const { stripIndents } = require("common-tags");
 const Command = require("../../Base/Command");
 
@@ -75,7 +74,7 @@ module.exports = class TeamCommand extends (
         this.Game.Database.savePlayer(player);
         break;
       case "remove":
-        index = Number.isInteger(id) ? id : selectedTeam.indexOf(id)
+        index = Number.isInteger(id) ? id : selectedTeam.indexOf(id);
         if (!this.isBetween(index, 0, maxTeamMembers)) return;
         selectedTeam.splice(index, 1);
         this.Game.Database.savePlayer(player);

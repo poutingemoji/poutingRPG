@@ -4,7 +4,7 @@ const MongoClient = require("mongodb").MongoClient;
 const MongoDBProvider = require("commando-mongodb");
 
 //DATA
-const { playerSchema, newPlayerObj } = require("./schemas/player");
+const { playerSchema, newPlayerObj } = require("./schemas/player").default;
 const { settingSchema, newSettingObj } = require("./schemas/setting");
 
 //UTILS

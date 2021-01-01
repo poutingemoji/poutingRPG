@@ -1,6 +1,7 @@
-const { Item } = require("./Item");
+const Entity = require("./_Entity");
+const items = require("../../data/items")
 
-class Character extends Item {
+class Character extends Entity {
   constructor(params) {
     super(params);
     if (!params.volume)
@@ -25,10 +26,6 @@ class Character extends Item {
 class WaveController extends Character {
   constructor(params) {
     super(params);
-    this.position = {
-      name: "Wave Controller",
-      emoji: emojis["wave_controller"],
-    };
   }
   ultimate() {}
 }
@@ -36,10 +33,6 @@ class WaveController extends Character {
 class LightBearer extends Character {
   constructor(params) {
     super(params);
-    this.position = {
-      name: "Light Bearer",
-      emoji: emojis["light_bearer"],
-    };
   }
   ultimate() {}
 }
@@ -47,10 +40,6 @@ class LightBearer extends Character {
 class SpearBearer extends Character {
   constructor(params) {
     super(params);
-    this.position = {
-      name: "Spear Bearer",
-      emoji: emojis["spear_bearer"],
-    };
   }
   ultimate() {}
 }
@@ -58,10 +47,6 @@ class SpearBearer extends Character {
 class Fisherman extends Character {
   constructor(params) {
     super(params);
-    this.position = {
-      name: "Fisherman",
-      emoji: emojis["fisherman"],
-    };
   }
   ultimate() {}
 }
@@ -69,16 +54,11 @@ class Fisherman extends Character {
 class Scout extends Character {
   constructor(params) {
     super(params);
-    this.position = {
-      name: "Scout",
-      emoji: emojis["scout"],
-    };
   }
   ultimate() {}
 }
 
 module.exports = {
-  Character,
   WaveController,
   LightBearer,
   SpearBearer,

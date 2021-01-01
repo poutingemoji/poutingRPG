@@ -1,7 +1,8 @@
-const talents = require("../data/talents");
-const { rarities } = require("../utils/enumHelper");
+const Entity = require("./_Entity");
+const talents = require("../../data/talents");
+const { rarities, talentTypes } = require("../enumHelper");
 
-class Item {
+class Item extends Entity {
   constructor({
     rarity,
     name,
@@ -13,22 +14,15 @@ class Item {
     supportId,
     passiveId,
   }) {
+    super({ name, emoji, description });
     if (!rarities[rarity - 1])
       return console.error(`${name}'s rarity, ${rarity}, is illegal.`);
-    this.name = name;
-    this.emoji = emoji;
-    this.description = description;
     this.rarity = rarity;
-
-    this.level = 1;
-    this.weight = 1.0;
-    this.spread = 1;
 
     this.baseStats = {};
     if (HP) this.baseStats.HP = HP;
     if (ATK) this.baseStats.ATK = ATK;
     this.talents = {};
-    const talentTypes = Object.keys(talents.types);
     const talentIds = [attackId, supportId, passiveId];
     talentIds.map((talentId, i) => {
       const talentType = talentTypes[i].toLowerCase();
@@ -77,4 +71,4 @@ class Offhand extends Item {
   }
 }
 
-module.exports = { Item, Food, Material, Ingredient, Weapon, Offhand };
+module.exports = { Food, Material, Ingredient, Weapon, Offhand };

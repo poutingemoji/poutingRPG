@@ -1,6 +1,6 @@
-const Item = require("./Item");
+const Entity = require("./_Entity");
 
-class Enemy extends Item {
+class Enemy extends Entity {
   constructor(params) {
     super(params);
     if (params.drops) this.drops = params.drops;
@@ -19,4 +19,4 @@ class Special extends Enemy {
   }
 }
 
-module.exports = { Enemy, Boss, Special };
+module.exports = { Boss, Special };

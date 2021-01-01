@@ -36,10 +36,10 @@ module.exports = class InventoryCommand extends (
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
     if (category) {
-      category = capitalCase(category)
+      category = capitalCase(category);
       if (!["Food", "Material", "Ingredient"].includes(category)) return;
     }
-    
+
     const formatFilter = (itemId) => {
       const item = items[itemId];
       return `${rarities[item.rarity - 1].emoji} ${player.inventory.get(

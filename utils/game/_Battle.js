@@ -1,5 +1,5 @@
 //BASE
-const BaseHelper = require("../../Base/Helper");
+const BaseHelper = require("../../Base/Helper").default;
 const { camelCase } = require("change-case");
 
 //DATA

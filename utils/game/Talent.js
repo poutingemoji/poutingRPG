@@ -42,7 +42,6 @@ class Passive extends Talent {
 }
 
 module.exports = {
-  Talent,
   Attack,
   Support,
   Passive,

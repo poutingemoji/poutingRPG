@@ -179,7 +179,7 @@ class Game extends BaseHelper {
       characters[characterId],
       player.characters.get(characterId)
     );
-    character.constructor = characters[characterId].constructor
+    character.constructor = characters[characterId].constructor;
     //calculate battlestats
     character.id = characterId;
     character.baseStats = {

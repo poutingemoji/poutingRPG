@@ -1,3 +1,4 @@
+const { Attack, Support, Passive } = require("../utils/game/Talent");
 const talents = {
   slash: new Attack({
     name: "Slash",

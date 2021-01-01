@@ -24,8 +24,13 @@ class Pagination {
     if (!(typeof data === "object")) return;
     if (data instanceof Map) data = Array.from(data.keys());
     if (data instanceof Array) data = { "": data };
-    const firstKey = Object.keys(data)[0]
-    if (data[firstKey].length == 0) return msg.reply(`Your \`${title} | ${firstKey.length == 0 ?  "" : firstKey}\` is empty. 😔`);
+    const firstKey = Object.keys(data)[0];
+    if (data[firstKey].length == 0)
+      return msg.reply(
+        `Your \`${title} | ${
+          firstKey.length == 0 ? "" : firstKey
+        }\` is empty. 😔`
+      );
 
     const categories = Object.keys(data);
     const embeds = [];
@@ -38,7 +43,7 @@ class Pagination {
       for (let page = 0; page < maxPage; page++) {
         const { items } = this.paginate(categoryData, page + 1, pageLength);
         let description = "";
-        console.log("ITEMS", items)
+        console.log("ITEMS", items);
         for (let i = 0; i < items.length; i++) {
           if (globalIndex == startingIndex) startingPage = page + 1;
           description += `${await formatFilter(
