@@ -6,12 +6,12 @@ const { aggregation } = require("./Util");
 //UTILS
 const { Discord, Game } = require("../DiscordBot");
 
-class Command extends aggregation(BaseCommand, BaseHelper) {
+module.exports = class Command extends (
+  aggregation(BaseCommand, BaseHelper)
+) {
   constructor(client, commandInfo) {
     super(client, commandInfo);
     this.Discord = Discord;
     this.Game = Game;
   }
-}
-
-module.exports = Command;
+};

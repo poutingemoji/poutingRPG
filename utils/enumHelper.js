@@ -1,7 +1,7 @@
-const { pascalCase } = require("change-case");
+const { camelCase } = require("change-case");
 const Talent = require("../utils/game/Talent");
 const enemies = require("../data/enemies");
-const enumHelper = {
+module.exports = {
   leaderboardFilters: {
     level: {
       sort: { "level.current": -1, "exp.current": -1 },
@@ -42,7 +42,7 @@ const enumHelper = {
     },
   },
   battleChoices: ["attack", "support"],
-  talentTypes: Object.keys(Talent).map(pascalCase),
+  talentTypes: Object.keys(Talent).map(camelCase),
   isEnemy(enemyId) {
     return enemies.hasOwnProperty(enemyId);
   },
@@ -103,4 +103,3 @@ const enumHelper = {
   },
 };
 
-module.exports = enumHelper;

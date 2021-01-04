@@ -20,7 +20,7 @@ const {
 
 const getTotalEnemies = (acc, cur) => acc.concat(cur);
 const calculateTotalPower = (acc, cur) => acc + cur.HP + cur.ATK;
-class PVEBattle extends Battle {
+module.exports = class PVEBattle extends Battle {
   constructor(params) {
     super(params);
     this.totalWaves = params.totalWaves.map((wave) =>
@@ -235,4 +235,4 @@ class PVEBattle extends Battle {
     //await this.Game.addQuestProgress(this.player, "defeat", this.enemy.id, 1);
   }
 }
-module.exports = PVEBattle;
+

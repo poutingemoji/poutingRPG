@@ -1,5 +1,5 @@
 const { Attack, Support, Passive } = require("../utils/game/Talent");
-const talents = {
+module.exports = {
   slash: new Attack({
     name: "Slash",
     description:
@@ -135,8 +135,6 @@ const talents = {
     description: "Increase max HP by 15%",
   }),
 };
-
-module.exports = talents;
 
 /*
 EVENTS

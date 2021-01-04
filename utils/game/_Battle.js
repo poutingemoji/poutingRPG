@@ -1,5 +1,5 @@
 //BASE
-const BaseHelper = require("../../Base/Helper").default;
+const BaseHelper = require("../../Base/Helper");
 const { camelCase } = require("change-case");
 
 //DATA
@@ -11,7 +11,7 @@ const talents = require("../../data/talents");
 //UTILS
 const { itemCategories } = require("../enumHelper");
 
-class Battle extends BaseHelper {
+module.exports = class Battle extends BaseHelper {
   constructor(params) {
     super();
     const { Discord, Game, player, msg, title = "" } = params;
@@ -169,5 +169,3 @@ class Battle extends BaseHelper {
     return data;
   }
 }
-
-module.exports = Battle;

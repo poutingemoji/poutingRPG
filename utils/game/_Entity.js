@@ -1,4 +1,4 @@
-class Entity {
+module.exports = class Entity {
   constructor({ name, emoji = "", description = "" }) {
     this.name = name;
     this.emoji = emoji;
@@ -9,5 +9,3 @@ class Entity {
     this.spread = 1;
   }
 }
-
-module.exports = Entity;

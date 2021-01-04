@@ -6,7 +6,7 @@ const {
   Scout,
 } = require("../utils/game/Character");
 const emojis = require("./emojis");
-const characters = {
+module.exports = {
   twentyFifthBaam: new WaveController({
     rarity: 4,
     name: "Twenty-Fifth Baam",
@@ -104,7 +104,6 @@ const characters = {
     offhandId: "armorInventory",
   }),
 };
-module.exports = characters;
 
 /*
   SPECIAL POSITIONS

@@ -7,7 +7,7 @@ const emojis = require("../../data/emojis");
 const enemies = require("../../data/enemies");
 
 const enumHelper = require("../enumHelper");
-class Pagination {
+module.exports = class Pagination {
   constructor(Discord) {
     this.Discord = Discord;
   }
@@ -104,5 +104,3 @@ class Pagination {
     };
   }
 }
-
-module.exports = Pagination;

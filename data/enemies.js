@@ -1,5 +1,5 @@
 const { Boss, Special } = require("../utils/game/Enemy");
-const enemies = {
+module.exports = {
   whiteSteelEel: new Boss({
     rarity: 5,
     name: "White Steel Eel",
@@ -19,5 +19,3 @@ const enemies = {
     drops: { copperChunk: 4, ironChunk: 69 },
   }),
 };
-
-module.exports = enemies;

@@ -1,5 +1,5 @@
 const items = require("./items");
-const floors = [
+module.exports = [
   //Floor 1
   {
     areas: [
@@ -100,5 +100,3 @@ const floors = [
     ],
   },
 ];
-
-module.exports = floors;

@@ -4,7 +4,7 @@ const MongoClient = require("mongodb").MongoClient;
 const MongoDBProvider = require("commando-mongodb");
 
 //DATA
-const { playerSchema, newPlayerObj } = require("./schemas/player").default;
+const { playerSchema, newPlayerObj } = require("./schemas/player");
 const { settingSchema, newSettingObj } = require("./schemas/setting");
 
 //UTILS
@@ -49,7 +49,7 @@ mongoose.connection.on("error", (err) => {
   disconnect();
 });
 
-class Database {
+module.exports = class Database {
   constructor(client, Game) {
     this.client = client;
     this.Game = Game;
@@ -157,8 +157,6 @@ class Database {
     );
   }
 }
-
-module.exports = Database;
 
 /*
   Player.updateMany({  }, 

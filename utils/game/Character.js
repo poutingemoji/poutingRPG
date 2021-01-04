@@ -1,5 +1,7 @@
 const Entity = require("./_Entity");
 const items = require("../../data/items")
+const talents = require("../../data/talents");
+const { talentTypes } = require("../enumHelper");
 
 class Character extends Entity {
   constructor(params) {
@@ -19,6 +21,22 @@ class Character extends Entity {
       );
     this.weapon = weapon;
     this.offhand = offhand;
+
+    this.talents = {};
+    const talentIds = [params.attackId, params.supportId, params.passiveId];
+    talentIds.map((talentId, i) => {
+      const talentType = talentTypes[i].toLowerCase();
+      if (!talentId) return;
+      if (!talents[talentId])
+        return console.error(
+          `${params.name}'s ${talentType}, ${talentId}, is illegal.`
+        );
+      this.talents[talentType] = talents[talentId];
+    }, this);
+
+    this.baseStats = {};
+    if (params.HP) this.baseStats.HP = params.HP;
+    if (params.ATK) this.baseStats.ATK = params.ATK;
   }
 }
 

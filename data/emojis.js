@@ -1,4 +1,4 @@
-const emojis = {
+module.exports = {
   green_check: "761361652012286034",
   red_cross: "761361667975938128",
   empty_star: "762389249772617729",
@@ -38,5 +38,3 @@ const emojis = {
   support: "🤝",
   passive: "🕊️",
 };
-
-module.exports = emojis;

@@ -10,7 +10,7 @@ const emojis = require("../data/emojis");
 const Pagination = require("../utils/discord/Pagination");
 const { responseWaitTime, waitingOnResponse } = require("../utils/enumHelper");
 
-class Discord extends BaseHelper {
+module.exports = class Discord extends BaseHelper {
   constructor(client) {
     super();
     this.client = client;
@@ -193,4 +193,3 @@ class Discord extends BaseHelper {
   }
 }
 
-module.exports = Discord;

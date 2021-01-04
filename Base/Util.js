@@ -39,4 +39,4 @@ class Util {
   }
 }
 
-export default new Util();
+module.exports = new Util();

@@ -25,7 +25,7 @@ const {
   itemCategories,
 } = require("../utils/enumHelper");
 
-class Game extends BaseHelper {
+module.exports = class Game extends BaseHelper {
   constructor(client) {
     super();
     this.Database = new Database(client, this);
@@ -173,7 +173,6 @@ class Game extends BaseHelper {
 
   getCharacter(player, characterId) {
     if (!player.characters.get(characterId)) return;
-    console.log(characterId);
     const character = Object.assign(
       {},
       characters[characterId],
@@ -210,6 +209,7 @@ class Game extends BaseHelper {
       )
     )
       return;
+    console.log(equipment)
     const data = cloneDeep(Object.assign({}, items[equipment.id], equipment));
     data.baseStats.hasOwnProperty("ATK")
       ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)
@@ -217,8 +217,6 @@ class Game extends BaseHelper {
     return data;
   }
 }
-
-module.exports = Game;
 
 function addExp(obj, expToAdd, expFormula) {
   obj.exp.current += expToAdd;

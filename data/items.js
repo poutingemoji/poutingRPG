@@ -7,7 +7,7 @@ const {
 } = require("../utils/game/Item");
 const emojis = require("./emojis");
 
-const items = {
+module.exports = {
   apple: new Food({
     rarity: 1,
     name: "Apple",
@@ -18,7 +18,6 @@ const items = {
     name: "Orange",
     emoji: "🍊",
   }),
-  //ANVIL
   metalBar: new Material({
     rarity: 3,
     name: "Metal Bar",
@@ -46,5 +45,3 @@ const items = {
     passiveId: "vigor",
   }),
 };
-
-module.exports = items;

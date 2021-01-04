@@ -41,6 +41,7 @@ module.exports = class ItemDataCommand extends (
       ? items[itemId]
       : this.Game.getEquipment(player.equipment[itemId]);
     if (!item) return;
+    console.log(item)
     const params = {
       title: `${this.Discord.emoji(item.emoji)} ${item.name} (${
         item.constructor.name
@@ -55,14 +56,14 @@ module.exports = class ItemDataCommand extends (
         params.description = stripIndents(`
           ${
             item.baseStats.hasOwnProperty("HP")
-              ? `❤️ **HP**: +${item.baseStats.HP}`
-              : `🗡️ **ATK**: +${item.baseStats.ATK}`
+              ? `**HP**: +${item.baseStats.HP}`
+              : `**ATK**: +${item.baseStats.ATK}`
           }
 
           ${Object.keys(item.talents)
             .map(
               (talentType) =>
-                `${this.Discord.emoji(talents[talentType].emoji)} **${
+                `${this.Discord.emoji(talentType)} **${
                   item.talents[talentType].name
                 }**: ${item.talents[talentType].description}`
             )

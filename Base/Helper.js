@@ -1,5 +1,5 @@
 //http://patorjk.com/software/taag/#p=testall&f=Modular
-class Helper {
+module.exports = class Helper {
   /*
    ___   __    _  _______  _______  _______  _______  ______   
   |   | |  |  | ||       ||       ||       ||       ||    _ |  
@@ -258,4 +258,3 @@ class Helper {
   }
 }
 
-export default Helper;

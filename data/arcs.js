@@ -1,6 +1,6 @@
 //DATA
 const { newQuest } = require("../database/schemas/quest");
-const arcs = [
+module.exports = [
   {
     name: "Headon's Floor",
     image:
@@ -172,4 +172,3 @@ const arcs = [
   },
 ];
 
-module.exports = arcs;

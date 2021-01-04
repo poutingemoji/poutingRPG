@@ -1,15 +1,15 @@
 //BASE
-import { Schema } from "mongoose";
-import { Parser } from "expr-eval";
+const mongoose = require("mongoose");
+const Parser = require("expr-eval").Parser;
 
 //DATA
-import { newEquipmentObj } from "./equipment";
-import { newCharacterObj } from "./character";
+const { newEquipmentObj } = require("./equipment");
+const { newCharacterObj } = require("./character");
 
 //UTILS
-import { expFormulas } from "../../utils/enumHelper";
+const { expFormulas } = require("../../utils/enumHelper");
 
-const playerSchema = Schema({
+const playerSchema = mongoose.Schema({
   discordId: String,
   factionId: String,
   level: {
@@ -87,4 +87,4 @@ function newPlayerObj(discordId, factionId) {
   };
 }
 
-export default { playerSchema, newPlayerObj };
+module.exports = { playerSchema, newPlayerObj };

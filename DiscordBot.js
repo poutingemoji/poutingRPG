@@ -1,7 +1,7 @@
 //BASE
-const BaseDiscord = require("./Base/Discord").default;
-const BaseGame = require("./Base/Game").default;
-const BaseHelper = require("./Base/Helper").default;
+const BaseDiscord = require("./Base/Discord");
+const BaseGame = require("./Base/Game");
+const BaseHelper = require("./Base/Helper");
 
 const { stripIndents } = require("common-tags");
 const DBL = require("dblapi.js");
@@ -76,11 +76,14 @@ class DiscordBot extends BaseHelper {
             console.log(err);
           });
         });
-    });*/
-
-    /*this.client.on("message", (msg) => {
-
-    });*/
+    });
+    
+    this.client.on("message", (msg) => {
+      if (msg.author.id == "") {
+        msg.reply("you are dumb")
+      }
+    });
+    */
   }
 
   postStatisticsOnDBL() {

@@ -39,8 +39,10 @@ module.exports = class CharDataCommand extends (
     //prettier-ignore
     if (!isNaN(characterId)) characterId = Array.from(player.characters.keys())[characterId - 1];
     const character = this.Game.getCharacter(player, characterId);
+    console.log(character)
     if (!character) return;
     //prettier-ignore
+    console.log("BOTH", character.baseStats, character.weapon.baseStats)
     const params = {
       title: `${this.Discord.emoji(character.constructor.name)} ${character.name}`,
       description: stripIndents(`

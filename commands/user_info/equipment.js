@@ -6,8 +6,8 @@ const characters = require("../../data/characters");
 const items = require("../../data/items");
 
 //UTILS
-const { rarities } = require("../../utils/enumHelper");
-
+const { rarities, talentTypes } = require("../../utils/enumHelper");
+console.log(talentTypes)
 module.exports = class EquipmentCommand extends (
   Command
 ) {

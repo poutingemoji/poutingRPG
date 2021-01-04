@@ -5,7 +5,7 @@ const { stripIndents } = require("common-tags");
 const characters = require("./characters")
 const emojis = require("./emojis")
 
-const factions = {
+module.exports = {
   zahardEmpire: {
     name: "Zahard Empire",
     emoji: emojis["zahard_empire"],
@@ -37,5 +37,3 @@ const factions = {
     `),
   },
 };
-
-module.exports = factions;
