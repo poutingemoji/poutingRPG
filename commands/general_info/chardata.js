@@ -39,21 +39,27 @@ module.exports = class CharDataCommand extends (
     //prettier-ignore
     if (!isNaN(characterId)) characterId = Array.from(player.characters.keys())[characterId - 1];
     const character = this.Game.getCharacter(player, characterId);
-    console.log(character)
+    console.log(character);
     if (!character) return;
     //prettier-ignore
-    console.log("BOTH", character.baseStats, character.weapon.baseStats)
+    console.log("BOTH", character.baseStats, character.equipment.weapon.baseStats)
+    const { weapon, offhand } = character.equipment;
     const params = {
-      title: `${this.Discord.emoji(character.constructor.name)} ${character.name}`,
+      title: `${this.Discord.emoji(character.constructor.name)} ${
+        character.name
+      }`,
       description: stripIndents(`
-        **HP**: ${character.baseStats.HP} + ${character.offhand.baseStats.HP}
-        **ATK**: ${character.baseStats.ATK} + ${character.weapon.baseStats.ATK}
-        **Weapon**: ${character.weapon.name} ${this.Discord.emoji(character.weapon.emoji)}
-        **Offhand**: ${character.offhand.name} ${this.Discord.emoji(character.offhand.emoji)}
+        **HP**: ${character.baseStats.HP} + ${offhand.baseStats.HP}
+        **ATK**: ${character.baseStats.ATK} + ${weapon.baseStats.ATK}
+        **Weapon**: ${weapon.name} ${this.Discord.emoji(weapon.emoji)}
+        **Offhand**: ${offhand.name} ${this.Discord.emoji(offhand.emoji)}
         
-        ${Object.keys(character.talents).map(
-          (talentType) =>  `${emojis[talentType]} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`
-          ).join("\n")}`),
+        ${Object.keys(character.talents)
+          .map(
+            (talentType) =>
+              `${emojis[talentType]} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`
+          )
+          .join("\n")}`),
     };
 
     const characterImage = await loadImage(

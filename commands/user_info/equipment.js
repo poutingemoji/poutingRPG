@@ -7,7 +7,8 @@ const items = require("../../data/items");
 
 //UTILS
 const { rarities, talentTypes } = require("../../utils/enumHelper");
-console.log(talentTypes)
+const { groupBy } = require("../../utils/Helper");
+
 module.exports = class EquipmentCommand extends (
   Command
 ) {
@@ -48,7 +49,10 @@ module.exports = class EquipmentCommand extends (
         globalNumbering: true,
       },
       formatFilter,
-      this.groupBy(player.equipment, (item) => items[item.id].constructor.name)
+      groupBy(
+        player.equipment,
+        (item) => items[item.id].constructor.name
+      )
     );
   }
 };

@@ -35,13 +35,17 @@ module.exports = {
     name: "Needle",
     emoji: "🪡",
     ATK: 10,
-    passiveId: "criticalStrike",
+    talentIds: {
+      passive: "criticalStrike",
+    },
   }),
   armorInventory: new Offhand({
     rarity: 1,
     name: "Armor Inventory",
     emoji: "🛡️",
     HP: 10,
-    passiveId: "vigor",
+    talentIds: {
+      passive: "vigor",
+    },
   }),
 };

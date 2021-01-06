@@ -1,13 +1,14 @@
 //BASE
 const BaseCommand = require("discord.js-commando").Command;
-const BaseHelper = require("./Helper");
+
 const { aggregation } = require("./Util");
 
 //UTILS
 const { Discord, Game } = require("../DiscordBot");
+const Helper = require("../utils/Helper");
 
 module.exports = class Command extends (
-  aggregation(BaseCommand, BaseHelper)
+  BaseCommand
 ) {
   constructor(client, commandInfo) {
     super(client, commandInfo);

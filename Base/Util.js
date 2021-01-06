@@ -7,7 +7,7 @@ class Util {
       constructor(...args) {
         super(...args);
         mixins.forEach((mixin) => {
-          copyProps(this, new mixin());
+          copyProps(this, new mixin(...args));
         });
       }
     }

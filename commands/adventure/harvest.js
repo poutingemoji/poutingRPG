@@ -5,6 +5,9 @@ const Command = require("../../Base/Command");
 const floors = require("../../data/floors");
 const items = require("../../data/items");
 
+//UTILS
+const { randomBetween } = require("../../utils/Helper");
+
 module.exports = class HarvestCommand extends (
   Command
 ) {
@@ -32,7 +35,7 @@ module.exports = class HarvestCommand extends (
     const drops = {};
     Object.keys(curTowerArea.harvestingSpot).map((itemId) => {
       const item = curTowerArea.harvestingSpot[itemId];
-      drops[itemId] = this.randomBetween(item.min, item.max);
+      drops[itemId] = randomBetween(item.min, item.max);
     });
     console.log(drops);
     msg.say(

@@ -1,5 +1,4 @@
 //BASE
-const BaseHelper = require("../../Base/Helper");
 const { camelCase } = require("change-case");
 
 //DATA
@@ -10,10 +9,10 @@ const talents = require("../../data/talents");
 
 //UTILS
 const { itemCategories } = require("../enumHelper");
+const Helper = require("../Helper");
 
-module.exports = class Battle extends BaseHelper {
+module.exports = class Battle {
   constructor(params) {
-    super();
     const { Discord, Game, player, msg, title = "" } = params;
     this.Discord = Discord;
     this.Game = Game;
@@ -135,37 +134,13 @@ module.exports = class Battle extends BaseHelper {
   }
 
   getBattleStats(obj) {
-    const Battle = this;
-    const data = Object.assign({}, obj, {
-      HP: obj.baseStats.HP,
-      ATK: obj.baseStats.ATK,
-      target: { position: null, turns: 0 },
-      effects: {},
-      takeDamage: function (amount) {
-        console.log(obj);
-        if (obj.hasOwnProperty("weapon") && obj.hasOwnProperty("offhand")) {
-          itemCategories.equipment.map((equipmentType) => {
-            console.log(equipmentType);
-            if (obj[equipmentType].talents.passive.hasOwnProperty("onDamaged"))
-              amount -=
-                obj[equipmentType].talents.passive.onDamaged({
-                  targeted: this,
-                  amount,
-                }) || 0;
-          });
-        }
-        this.HP = Battle.clamp(Math.floor(this.HP - amount), 0, this.maxHP);
-      },
-      healDamage: function (amount) {
-        this.HP = Battle.clamp(Math.floor(this.HP + amount), 0, this.maxHP);
-      },
-    });
+    const data = Object.assign({}, obj);
     if (data.hasOwnProperty("weapon") && data.hasOwnProperty("offhand")) {
       console.log(data);
-      data.HP += data.offhand.baseStats.HP;
-      data.ATK += data.weapon.baseStats.ATK;
+      data.HP += data.equipment.offhand.baseStats.HP;
+      data.ATK += data.equipment.weapon.baseStats.ATK;
     }
     data.maxHP = data.HP;
     return data;
   }
-}
+};

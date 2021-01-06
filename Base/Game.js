@@ -1,5 +1,4 @@
 //BASE
-const BaseHelper = require("../Base/Helper");
 const Parser = require("expr-eval").Parser;
 const gacha = require("gacha");
 const { stripIndents } = require("common-tags");
@@ -18,6 +17,7 @@ const talents = require("../data/talents");
 
 // UTILS
 const Database = require("../database/Database");
+const { clamp, isBetween } = require("../utils/Helper");
 
 const {
   adventureRankRanges,
@@ -25,9 +25,8 @@ const {
   itemCategories,
 } = require("../utils/enumHelper");
 
-module.exports = class Game extends BaseHelper {
+module.exports = class Game {
   constructor(client) {
-    super();
     this.Database = new Database(client, this);
   }
 
@@ -104,7 +103,7 @@ module.exports = class Game extends BaseHelper {
         ? player.inventory.set(
             itemId,
             player.inventory.get(itemId) -
-              this.clamp(amount, 0, player.inventory.get(itemId))
+              clamp(amount, 0, player.inventory.get(itemId))
           )
         : player.inventory.delete(itemId);
     }
@@ -165,7 +164,7 @@ module.exports = class Game extends BaseHelper {
     let previousAR = 1;
     for (let AR in adventureRankRanges) {
       console.log(AR);
-      if (this.isBetween(player.adventureRank.current, previousAR, AR))
+      if (isBetween(player.adventureRank.current, previousAR, AR))
         return adventureRankRanges[AR];
       previousAR = AR + 1;
     }
@@ -185,8 +184,10 @@ module.exports = class Game extends BaseHelper {
       HP: (character.level.current - 1) * 10 + character.baseStats.HP,
       ATK: (character.level.current - 1) * 10 + character.baseStats.ATK,
     };
-    character.weapon = this.getEquipment(character.weapon);
-    character.offhand = this.getEquipment(character.offhand);
+    character.equipment = {
+      weapon: this.getEquipment(character.equipment.weapon),
+      offhand: this.getEquipment(character.equipment.offhand),
+    };
     return character;
   }
 
@@ -209,14 +210,14 @@ module.exports = class Game extends BaseHelper {
       )
     )
       return;
-    console.log(equipment)
+    console.log(equipment);
     const data = cloneDeep(Object.assign({}, items[equipment.id], equipment));
     data.baseStats.hasOwnProperty("ATK")
       ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)
       : (data.baseStats.HP = (data.level - 1) * 25 + data.baseStats.HP);
     return data;
   }
-}
+};
 
 function addExp(obj, expToAdd, expFormula) {
   obj.exp.current += expToAdd;

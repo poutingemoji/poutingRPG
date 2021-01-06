@@ -1,38 +1,20 @@
-const Entity = require("./_Entity");
+const {aggregation}= require("./../../Base/Util")
+const BattleObject = require("./BattleObject");
+const Instance = require("./Instance");
 const talents = require("../../data/talents");
 const { rarities, talentTypes } = require("../enumHelper");
 
-class Item extends Entity {
-  constructor({
-    rarity,
-    name,
-    emoji = "",
-    description = "",
-    HP,
-    ATK,
-    attackId,
-    supportId,
-    passiveId,
-  }) {
-    super({ name, emoji, description });
+class Item extends Instance {
+  constructor(params) {
+    super(params);
+    const { name, rarity } = params;
     if (!rarities[rarity - 1])
       return console.error(`${name}'s rarity, ${rarity}, is illegal.`);
     this.rarity = rarity;
 
-    this.baseStats = {};
-    if (HP) this.baseStats.HP = HP;
-    if (ATK) this.baseStats.ATK = ATK;
-    this.talents = {};
-    const talentIds = [attackId, supportId, passiveId];
-    talentIds.map((talentId, i) => {
-      const talentType = talentTypes[i].toLowerCase();
-      if (!talentId) return;
-      if (!talents[talentId])
-        return console.error(
-          `${name}'s ${talentType}, ${talentId}, is illegal.`
-        );
-      this.talents[talentType] = talents[talentId];
-    }, this);
+    this.level = 1;
+    this.weight = 1.0;
+    this.spread = 1;
   }
 }
 
@@ -56,18 +38,23 @@ class Ingredient extends Item {
   }
 }
 
-//EQUIPMENT
-class Weapon extends Item {
+class Equipment extends aggregation(Item, BattleObject) {
   constructor(params) {
     super(params);
     if (params.instructions) this.instructions = params.instructions;
   }
 }
 
-class Offhand extends Item {
+//EQUIPMENT
+class Weapon extends Equipment {
   constructor(params) {
     super(params);
-    if (params.instructions) this.instructions = params.instructions;
+  }
+}
+
+class Offhand extends Equipment {
+  constructor(params) {
+    super(params);
   }
 }
 

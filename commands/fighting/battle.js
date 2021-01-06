@@ -2,10 +2,13 @@
 const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 
+//DATA
+const floors = require("../../data/floors");
+
 //UTILS
 const PVEBattle = require("../../utils/game/PVEBattle");
 const enumHelper = require("../../utils/enumHelper");
-const floors = require("../../data/floors");
+const { fillArray } = require("../../utils/Helper");
 
 module.exports = class BattleCommand extends (
   Command
@@ -39,7 +42,7 @@ module.exports = class BattleCommand extends (
         console.log(wave);
         const enemiesInWave = [];
         Object.keys(wave).map((enemyId) =>
-          this.fillArray(enemyId, wave[enemyId], enemiesInWave)
+          fillArray(enemyId, wave[enemyId], enemiesInWave)
         );
         return enemiesInWave;
       }),

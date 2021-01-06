@@ -1,5 +1,5 @@
 //BASE
-const Battle = require("./_Battle");
+const Battle = require("./Battle");
 const { stripIndents } = require("common-tags");
 const { findBestMatch } = require("string-similarity");
 
@@ -17,6 +17,7 @@ const {
   responseWaitTime,
   waitingOnResponse,
 } = require("../enumHelper");
+const { randomChoice, sleep } = require("../Helper");
 
 const getTotalEnemies = (acc, cur) => acc.concat(cur);
 const calculateTotalPower = (acc, cur) => acc + cur.HP + cur.ATK;
@@ -172,16 +173,16 @@ module.exports = class PVEBattle extends Battle {
     //Enemy Turn
 
     this.team2.map((e) => {
-      const battleChoiceId = this.randomChoice(battleChoices);
+      const battleChoiceId = randomChoice(battleChoices);
       teamKnockedOut = this.castTalent(battleChoiceId, {
         caster: e,
         targeted: battleChoices[0].includes(battleChoiceId)
-          ? this.team1[e.target.position] || this.randomChoice(this.team1)
-          : this.randomChoice(this.team2),
+          ? this.team1[e.target.position] || randomChoice(this.team1)
+          : randomChoice(this.team2),
         attackingTeam: this.team2,
         defendingTeam: this.team1,
       });
-      this.sleep(2000);
+      sleep(2000);
       console.log("cast enemey turn");
     });
     if (teamKnockedOut) return;

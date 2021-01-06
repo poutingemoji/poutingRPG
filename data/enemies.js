@@ -5,8 +5,10 @@ module.exports = {
     name: "White Steel Eel",
     HP: 100,
     ATK: 100,
-    attackId: "shinsuBlast",
-    supportId: "shinsuAura",
+    talentIds: {
+      attack: "shinsuBlast",
+      support: "shinsuAura",
+    },
     drops: { copperChunk: 4, ironChunk: 69 },
   }),
   ball: new Special({
@@ -14,8 +16,10 @@ module.exports = {
     name: "Ball",
     HP: 50,
     ATK: 0,
-    attackId: "shinsuBlast",
-    supportId: "shinsuAura",
+    talentIds: {
+      attack: "shinsuBlast",
+      support: "shinsuAura",
+    },
     drops: { copperChunk: 4, ironChunk: 69 },
   }),
 };

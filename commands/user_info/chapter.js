@@ -5,6 +5,9 @@ const { stripIndents } = require("common-tags");
 //DATA
 const arcs = require("../../data/arcs");
 
+//Utils
+const { setImportantMessage } = require("../../utils/Helper");
+
 module.exports = class ChapterCommand extends (
   Command
 ) {
@@ -37,7 +40,7 @@ module.exports = class ChapterCommand extends (
     //prettier-ignore
     let description = stripIndents(`
     📖 **__${arc.name} Arc__  - Chapter ${player.progression.story.chapter + 1}/${arc.chapters.length}** : ${chapter.name}
-    ${this.setImportantMessage(chapter.description)}
+    ${setImportantMessage(chapter.description)}
   
     📜 **__Quests__**: (${totalPercent}%)
     ${questsInfo}

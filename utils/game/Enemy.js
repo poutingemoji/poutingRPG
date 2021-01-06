@@ -1,9 +1,10 @@
-const Entity = require("./_Entity");
+const BattleObject = require("./BattleObject");
 
-class Enemy extends Entity {
+class Enemy extends BattleObject {
   constructor(params) {
     super(params);
-    if (params.drops) this.drops = params.drops;
+    const { drops } = params;
+    if (drops) this.drops = drops;
   }
 }
 

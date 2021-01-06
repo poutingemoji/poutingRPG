@@ -4,6 +4,7 @@ const Command = require("../../Base/Command");
 
 //UTILS
 const { maxTeams, maxTeamMembers } = require("../../utils/enumHelper");
+const { isBetween } = require("../../utils/Helper");
 
 module.exports = class TeamCommand extends (
   Command
@@ -57,14 +58,14 @@ module.exports = class TeamCommand extends (
     const selectedTeam = player.teams[player.teamId] || [];
     switch (action) {
       case "select":
-        if (!this.isBetween(id, 0, maxTeams)) return;
+        if (!isBetween(id, 0, maxTeams)) return;
         player.teamId = id;
         this.Game.Database.savePlayer(player);
         break;
       case "add":
         if (!this.Game.getCharacter(player, id)) return;
         if (index) {
-          if (!this.isBetween(index, 0, maxTeamMembers)) return;
+          if (!isBetween(index, 0, maxTeamMembers)) return;
           selectedTeam[index] = id;
         } else {
           if (selectedTeam.length == maxTeamMembers) selectedTeam.shift();
@@ -75,7 +76,7 @@ module.exports = class TeamCommand extends (
         break;
       case "remove":
         index = Number.isInteger(id) ? id : selectedTeam.indexOf(id);
-        if (!this.isBetween(index, 0, maxTeamMembers)) return;
+        if (!isBetween(index, 0, maxTeamMembers)) return;
         selectedTeam.splice(index, 1);
         this.Game.Database.savePlayer(player);
         break;

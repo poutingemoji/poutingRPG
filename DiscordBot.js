@@ -1,7 +1,6 @@
 //BASE
 const BaseDiscord = require("./Base/Discord");
 const BaseGame = require("./Base/Game");
-const BaseHelper = require("./Base/Helper");
 
 const { stripIndents } = require("common-tags");
 const DBL = require("dblapi.js");
@@ -15,11 +14,11 @@ const {
   links,
   waitingOnResponse,
 } = require("./utils/enumHelper");
+const { secondsToTimeFormat } = require("./utils/Helper");
 require("dotenv").config();
 
-class DiscordBot extends BaseHelper {
+class DiscordBot {
   constructor() {
-    super();
     this.client = new CommandoClient({
       commandPrefix: process.env.PREFIX,
       owner: "257641125135908866",
@@ -114,7 +113,6 @@ class DiscordBot extends BaseHelper {
     */
 
     const commandInfos = {};
-    const secondsToTimeFormat = this.secondsToTimeFormat;
 
     this.client.registry.groups
       .filter((grp) => grp.commands.some((cmd) => !cmd.hidden))

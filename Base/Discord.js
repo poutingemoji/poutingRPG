@@ -1,5 +1,4 @@
 //BASE
-const BaseHelper = require("./Helper");
 const { MessageAttachment, MessageEmbed } = require("discord.js");
 const { snakeCase } = require("change-case");
 
@@ -9,10 +8,10 @@ const emojis = require("../data/emojis");
 //UTILS
 const Pagination = require("../utils/discord/Pagination");
 const { responseWaitTime, waitingOnResponse } = require("../utils/enumHelper");
+const {containsOnlyEmojis} = require("../utils/Helper");
 
-module.exports = class Discord extends BaseHelper {
+module.exports = class Discord {
   constructor(client) {
-    super();
     this.client = client;
     this.Pagination = new Pagination(this);
   }
@@ -24,7 +23,7 @@ module.exports = class Discord extends BaseHelper {
     if (!this.client.emojis.cache.get(emojiId)) {
       return emojis.hasOwnProperty(str)
         ? emojiId
-        : this.containsOnlyEmojis(str); //return the unicode emoji or a blank string
+        : containsOnlyEmojis(str); //return the unicode emoji or a blank string
     }
     return this.client.emojis.cache.get(emojiId).toString(); //return the custom emoji
   }
@@ -191,5 +190,4 @@ module.exports = class Discord extends BaseHelper {
       ? collected.first().content
       : collected.first().emoji.name;
   }
-}
-
+};

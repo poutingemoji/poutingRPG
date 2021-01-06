@@ -73,7 +73,7 @@ module.exports = {
   pageLength: 10,
   responseWaitTime: 60000,
   itemCategories: {
-    equipment: ["weapon", "offhand"],
+    equipment: ["Weapon", "Offhand"],
     food: ["food"],
     materials: ["material", "cookingIngredient"],
   },
@@ -102,4 +102,3 @@ module.exports = {
     user_info: "User Info Commands",
   },
 };
-

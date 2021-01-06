@@ -1,5 +1,5 @@
 //http://patorjk.com/software/taag/#p=testall&f=Modular
-module.exports = class Helper {
+module.exports = {
   /*
    ___   __    _  _______  _______  _______  _______  ______   
   |   | |  |  | ||       ||       ||       ||       ||    _ |  
@@ -19,7 +19,7 @@ module.exports = class Helper {
    */
   clamp(int, min, max) {
     return int <= min ? min : int >= max ? max : int;
-  }
+  },
 
   /**
    * Returns a boolean if a number is within a min and max
@@ -30,7 +30,7 @@ module.exports = class Helper {
    */
   isBetween(int, min, max) {
     return (int - min) * (int - max) <= 0;
-  }
+  },
 
   /**
    * Returns a number with commas
@@ -39,7 +39,7 @@ module.exports = class Helper {
    */
   numberWithCommas(int) {
     return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+  },
 
   /*
    _______  _______  ______    ___   __    _  _______ 
@@ -64,7 +64,7 @@ module.exports = class Helper {
       const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '')
       return onlyEmojis.length === visibleChars.length
     */
-  }
+  },
 
   /**
    * Returns a codeblock for Discord
@@ -74,7 +74,7 @@ module.exports = class Helper {
    */
   setImportantMessage(message, syntax = "") {
     return `\`\`\`${syntax}\n${message}\`\`\``;
-  }
+  },
 
   /*
      _______  ______    ______    _______  __   __ 
@@ -98,7 +98,7 @@ module.exports = class Helper {
       arr.push(value);
     }
     return arr;
-  }
+  },
 
   /*
      _______  _______      ___  _______  _______  _______ 
@@ -124,7 +124,7 @@ module.exports = class Helper {
         obj[key] = raw[key];
         return obj;
       }, {});
-  }
+  },
 
   /**
    * Groups values of an array into categories and returns as an object
@@ -140,7 +140,7 @@ module.exports = class Helper {
       console.log(result);
       return result;
     }, {});
-  }
+  },
 
   /**
    * Recursively checks the object for a property
@@ -161,7 +161,7 @@ module.exports = class Helper {
       }
     }
     return false;                                  
-  }
+  },
 
   /*
      ______    _______  __    _  ______   _______  __   __ 
@@ -184,7 +184,7 @@ module.exports = class Helper {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+  },
 
   /**
    * Returns a random value from an array
@@ -193,7 +193,7 @@ module.exports = class Helper {
    */
   randomChoice(arr) {
     return arr[this.randomBetween(0, arr.length - 1)];
-  }
+  },
 
   /* 
      _______  ___   __   __  _______ 
@@ -212,7 +212,7 @@ module.exports = class Helper {
    */
   getTimePassed(timeStamp) {
     return (new Date().getTime() - timeStamp) / 1000;
-  }
+  },
 
   /**
    * Converts seconds to time format
@@ -242,7 +242,7 @@ module.exports = class Helper {
     }
 
     return Display.join(conjunction);
-  }
+  },
 
   /**
    * Put program to sleep for x milliseconds
@@ -255,6 +255,6 @@ module.exports = class Helper {
     do {
       currentDate = Date.now();
     } while (currentDate - date < milliseconds);
-  }
+  },
 }
 

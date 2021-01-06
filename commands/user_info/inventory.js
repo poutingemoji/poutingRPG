@@ -6,6 +6,7 @@ const items = require("../../data/items");
 
 //UTILS
 const { rarities } = require("../../utils/enumHelper");
+const { groupBy } = require("../../utils/Helper");
 
 module.exports = class InventoryCommand extends (
   Command
@@ -61,7 +62,7 @@ module.exports = class InventoryCommand extends (
               (itemId) => items[itemId].constructor.name == category
             ),
           }
-        : this.groupBy(itemIds, (itemId) => items[itemId].constructor.name)
+        : groupBy(itemIds, (itemId) => items[itemId].constructor.name)
     );
   }
 };
