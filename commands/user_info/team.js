@@ -63,7 +63,7 @@ module.exports = class TeamCommand extends (
         this.Game.Database.savePlayer(player);
         break;
       case "add":
-        if (!this.Game.getCharacter(player, id)) return;
+        if (!this.Game.getObjectStats(player, id)) return;
         if (index) {
           if (!isBetween(index, 0, maxTeamMembers)) return;
           selectedTeam[index] = id;
@@ -94,12 +94,12 @@ module.exports = class TeamCommand extends (
             if (!player.teams[i][j]) {
               teamMembers[j] = "_";
             } else {
-              const character = this.Game.getCharacter(
+              const character = this.Game.getObjectStats(
                 player,
                 player.teams[i][j]
               );
               teamMembers[j] = `${this.Discord.emoji(
-                character.position.emoji
+                character.constructor.name
               )} ${character.name}`;
             }
           }

@@ -27,7 +27,6 @@ module.exports = class HarvestCommand extends (
   async run(msg) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
-
     const curTowerProgression = player.progression.tower.current;
     const curTowerArea =
       floors[curTowerProgression.floor].areas[curTowerProgression.area];

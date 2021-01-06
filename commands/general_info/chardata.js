@@ -3,11 +3,6 @@ const Command = require("../../Base/Command");
 const { stripIndents } = require("common-tags");
 const { createCanvas, loadImage } = require("canvas");
 
-//DATA
-const emojis = require("../../data/emojis");
-const items = require("../../data/items");
-const talents = require("../../data/talents");
-
 module.exports = class CharDataCommand extends (
   Command
 ) {
@@ -36,29 +31,31 @@ module.exports = class CharDataCommand extends (
   async run(msg, { characterId }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
-    //prettier-ignore
-    if (!isNaN(characterId)) characterId = Array.from(player.characters.keys())[characterId - 1];
-    const character = this.Game.getCharacter(player, characterId);
-    console.log(character);
+
+    if (!isNaN(characterId))
+      characterId = Array.from(player.characters.keys())[characterId - 1];
+    const character = this.Game.getObjectStats(player, characterId);
     if (!character) return;
-    //prettier-ignore
-    console.log("BOTH", character.baseStats, character.equipment.weapon.baseStats)
+
+    const { baseStats, stats } = character;
     const { weapon, offhand } = character.equipment;
     const params = {
       title: `${this.Discord.emoji(character.constructor.name)} ${
         character.name
       }`,
       description: stripIndents(`
-        **HP**: ${character.baseStats.HP} + ${offhand.baseStats.HP}
-        **ATK**: ${character.baseStats.ATK} + ${weapon.baseStats.ATK}
+        **HP**: ${baseStats.HP} + ${stats.HP - baseStats.HP}
+        **ATK**: ${baseStats.ATK} + ${stats.ATK - baseStats.ATK}
         **Weapon**: ${weapon.name} ${this.Discord.emoji(weapon.emoji)}
         **Offhand**: ${offhand.name} ${this.Discord.emoji(offhand.emoji)}
         
         ${Object.keys(character.talents)
-          .map(
-            (talentType) =>
-              `${emojis[talentType]} **${character.talents[talentType].name}**: ${character.talents[talentType].description}`
-          )
+          .map((talentType) => {
+            const talent = character.talents[talentType];
+            return `${this.Discord.emoji(talentType)} **${talent.name}**: ${
+              talent.description
+            }`;
+          })
           .join("\n")}`),
     };
 

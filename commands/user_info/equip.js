@@ -35,10 +35,11 @@ module.exports = class EquipCommand extends (
   async run(msg, { characterId, itemId }) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
+    
     const character = player.characters.get(characterId);
     if (!character) return;
     itemId--;
-    const item = this.Game.getEquipment(player.equipment[itemId]);
+    const item = this.Game.getObjectStats(player, player.equipment[itemId]);
     if (!item) return;
 
     this.Game.addItem(player, character[item.type]);

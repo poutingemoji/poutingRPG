@@ -38,7 +38,7 @@ module.exports = class CharactersCommand extends (
     if (!player) return;
 
     const formatFilter = async (characterId) => {
-      const character = this.Game.getCharacter(player, characterId);
+      const character = this.Game.getObjectStats(player, characterId);
       const { weapon, offhand } = character.equipment;
       return `${this.Discord.emoji(character.position.emoji)} **${
         character.name

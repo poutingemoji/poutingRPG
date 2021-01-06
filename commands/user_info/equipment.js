@@ -31,7 +31,7 @@ module.exports = class EquipmentCommand extends (
     if (!player) return;
 
     const formatFilter = (data, i) => {
-      const item = this.Game.getEquipment(data);
+      const item = this.Game.getObjectStats(player, data);
       return `${i + 1}) ${rarities[item.rarity - 1].emoji} **${
         item.name
       }** ${this.Discord.emoji(item.emoji)} (+${

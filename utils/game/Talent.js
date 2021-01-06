@@ -1,16 +1,8 @@
-class Talent {
-  constructor({
-    name,
-    description = "",
-    turns,
-    baseDMG,
-    onStart,
-    onDamaged,
-    onAttack,
-    onDefend,
-  }) {
-    this.name = name;
-    this.description = description;
+const Instance = require("./Instance");
+class Talent extends Instance {
+  constructor(params) {
+    super(params);
+    const { turns, baseDMG, onStart, onDamaged, onAttack, onDefend } = params;
     if (turns) this.turns = turns;
     if (baseDMG) this.baseDMG = baseDMG;
     if (onStart) this.onStart = onStart;
@@ -24,21 +16,18 @@ class Attack extends Talent {
   constructor(params) {
     super(params);
   }
-  emoji = "🗡️";
 }
 
 class Support extends Talent {
   constructor(params) {
     super(params);
   }
-  emoji = "🤝";
 }
 
 class Passive extends Talent {
   constructor(params) {
     super(params);
   }
-  passive = "🕊️";
 }
 
 module.exports = {

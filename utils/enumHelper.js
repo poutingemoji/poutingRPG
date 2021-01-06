@@ -86,6 +86,11 @@ module.exports = {
     mediumSlow: "floor((6/5*n^3)-(15*n^2)+(100*n)-140)",
     slow: "floor(((5*n)^3)/4)",
   },
+  statFormulas: {
+    character: "floor((n-1)*10+x)",
+    enemy: "floor((n-1)*10+x)",
+    equipment: "floor((n-1)*10+x)",
+  },
   links: {
     website: "https://poutingemoji.github.io/poutingbot/",
     commandList: "https://poutingemoji.github.io/poutingbot/commands.html",

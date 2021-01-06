@@ -17,13 +17,13 @@ const talents = require("../data/talents");
 
 // UTILS
 const Database = require("../database/Database");
-const { clamp, isBetween } = require("../utils/Helper");
-
 const {
   adventureRankRanges,
   expFormulas,
+  statFormulas,
   itemCategories,
 } = require("../utils/enumHelper");
+const { clamp, isBetween } = require("../utils/Helper");
 
 module.exports = class Game {
   constructor(client) {
@@ -75,7 +75,7 @@ module.exports = class Game {
 
   //INVENTORY
   addItem(player, itemId, amount = 1) {
-    const item = this.getEquipment(
+    const item = this.getObjectStats(
       typeof itemId == "object" ? itemId : newEquipmentObj(itemId)
     );
     console.log("TYPE", item.type);
@@ -170,52 +170,60 @@ module.exports = class Game {
     }
   }
 
-  getCharacter(player, characterId) {
-    if (!player.characters.get(characterId)) return;
-    const character = Object.assign(
-      {},
-      characters[characterId],
-      player.characters.get(characterId)
-    );
-    character.constructor = characters[characterId].constructor;
-    //calculate battlestats
-    character.id = characterId;
-    character.baseStats = {
-      HP: (character.level.current - 1) * 10 + character.baseStats.HP,
-      ATK: (character.level.current - 1) * 10 + character.baseStats.ATK,
-    };
-    character.equipment = {
-      weapon: this.getEquipment(character.equipment.weapon),
-      offhand: this.getEquipment(character.equipment.offhand),
-    };
-    return character;
-  }
+  getObjectStats(player, object, level) {
+    if (!["object", "string"].includes(typeof object)) return;
+    if (typeof object == "string") object = { id: object };
 
-  getEnemy(player, enemyId) {
-    const enemy = enemies[enemyId];
-    enemy.id = enemyId;
-    //calculate battlestats
-    /*
-    enemy.baseStats = {
-      HP: (player.level.current - 1) * 10 + enemy.baseStats.HP,
-      ATK: (player.level.current - 1) * 10 + enemy.baseStats.ATK,
-    }*/
-    return enemy;
-  }
+    const { id } = object;
+    const datas = [characters, enemies, items];
+    const data = datas.find((x) => x.hasOwnProperty(id));
+    if (!data[id]) return;
+    if (!data[id].hasOwnProperty("baseStats")) return data[id];
 
-  getEquipment(equipment) {
-    if (
-      !itemCategories.equipment.includes(
-        items[equipment.id].constructor.name.toLowerCase()
-      )
-    )
-      return;
-    console.log(equipment);
-    const data = cloneDeep(Object.assign({}, items[equipment.id], equipment));
-    data.baseStats.hasOwnProperty("ATK")
-      ? (data.baseStats.ATK = (data.level - 1) * 25 + data.baseStats.ATK)
-      : (data.baseStats.HP = (data.level - 1) * 25 + data.baseStats.HP);
-    return data;
+    let obj = Object.assign({constructor: data[id].constructor}, data[id], object);
+    if (!level) {
+      switch (Object.getPrototypeOf(obj.constructor).name) {
+        case "Character":
+          obj = Object.assign(obj, player.characters.get(id));
+          level = obj.level.current
+          break;
+        case "Equipment":
+          level = obj.level;
+          break;
+        case "Enemy":
+          level = player.level.current;
+          break;
+      }
+    }
+
+    Object.keys(obj.baseStats).map((statId) => {
+      obj.baseStats[statId] = Parser.evaluate(
+        statFormulas[Object.getPrototypeOf(obj.constructor).name.toLowerCase()],
+        {
+          n: level,
+          x: obj.baseStats[statId],
+        }
+      );
+    });
+
+    if (obj.hasOwnProperty("equipment")) {
+      Object.keys(obj.equipment).map((equipmentType) => {
+        obj.equipment[equipmentType] = this.getObjectStats(
+          player,
+          Object.assign(
+            obj.equipment[equipmentType],
+            player.characters.get(id).equipment[equipmentType]
+          )
+        );
+      });
+      obj.stats = {
+        HP: obj.baseStats.HP + obj.equipment.offhand.baseStats.HP,
+        ATK: obj.baseStats.ATK + obj.equipment.weapon.baseStats.ATK,
+      }
+    }
+    return obj;
+    //Calculate stats
+    //Calculate talent level
   }
 };
 

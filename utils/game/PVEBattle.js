@@ -20,16 +20,18 @@ const {
 const { randomChoice, sleep } = require("../Helper");
 
 const getTotalEnemies = (acc, cur) => acc.concat(cur);
-const calculateTotalPower = (acc, cur) => acc + cur.HP + cur.ATK;
-module.exports = class PVEBattle extends Battle {
+const calculateTotalPower = (acc, cur) =>
+  acc + cur.baseStats.HP || 0 + cur.baseStats.ATK || 0;
+module.exports = class PVEBattle extends (
+  Battle
+) {
   constructor(params) {
     super(params);
     this.totalWaves = params.totalWaves.map((wave) =>
-      wave.map((enemyId) =>
-        this.getBattleStats(this.Game.getEnemy(this.player, enemyId))
-      )
+      wave.map((enemyId) => this.Game.getObjectStats(this.player, enemyId))
     );
     this.waveId = 0;
+    console.log(this.team1, this.totalWaves);
     this.header = stripIndents(`
       ${this.msg.author}
       ${this.title} Battle
@@ -235,5 +237,4 @@ module.exports = class PVEBattle extends Battle {
     isInBattle.delete(this.player.discordId);
     //await this.Game.addQuestProgress(this.player, "defeat", this.enemy.id, 1);
   }
-}
-
+};

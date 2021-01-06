@@ -23,10 +23,12 @@ module.exports = class BattleObject extends (
         throw new Error(`${talentId} is not a valid ${talentType}.`);
       this.talents[talentType.toLowerCase()] = talent;
     });
-    this.baseStats = {
-      HP,
-      ATK,
-    };
+    this.baseStats = {};
+    if (HP) {
+      this.baseStats.HP = HP 
+      this.baseStats.maxHP = HP
+    }
+    if (ATK) this.baseStats.ATK = ATK
     this.target = { position: null, turns: 0 };
     this.effects = {};
   }

@@ -37,11 +37,8 @@ module.exports = class ItemDataCommand extends (
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
-    const item = isNaN(itemId)
-      ? items[itemId]
-      : this.Game.getEquipment(player.equipment[itemId]);
+    const item = this.Game.getObjectStats(player, player.equipment[itemId-1] || itemId);
     if (!item) return;
-    console.log(item)
     const params = {
       title: `${this.Discord.emoji(item.emoji)} ${item.name} (${
         item.constructor.name

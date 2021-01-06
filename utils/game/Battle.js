@@ -25,13 +25,11 @@ module.exports = class Battle {
     this.maxLength = 2000;
 
     this.team1 = this.player.teams[this.player.teamId].map((characterId) =>
-      this.getBattleStats(this.Game.getCharacter(this.player, characterId))
+      this.Game.getObjectStats(this.player, characterId)
     );
     this.team2 = [];
     /*
-      this.team2 = params.team2.map((characterId) =>
-        this.getBattleStats(this.Game.getCharacter(this.player2, characterId))
-      );
+      this.team2 = params.team2.map((characterId) => this.Game.getObjectStats(this.player2, characterId));
     */
     this.drops = {};
   }
@@ -131,16 +129,5 @@ module.exports = class Battle {
             .join(", ")}`
         : ""
     }`;
-  }
-
-  getBattleStats(obj) {
-    const data = Object.assign({}, obj);
-    if (data.hasOwnProperty("weapon") && data.hasOwnProperty("offhand")) {
-      console.log(data);
-      data.HP += data.equipment.offhand.baseStats.HP;
-      data.ATK += data.equipment.weapon.baseStats.ATK;
-    }
-    data.maxHP = data.HP;
-    return data;
   }
 };
