@@ -1,22 +1,15 @@
 const items = require("./items");
-class Area {
-  constructor({ name, waves, harvestingSpot }) {
-    this.name = name;
-    this.waves = waves;
-    this.harvestingSpot = harvestingSpot;
-  }
-}
 
 module.exports = [
   //Floor 1
   {
     areas: [
-      new Area({
+      {
         name: "Shinsu Tank",
         waves: [
           {
-            whiteSteelEel: 1,
-            ball: 1,
+            hilichurl: 1,
+            mitachurl: 1,
           },
         ],
         harvestingSpot: {
@@ -29,21 +22,21 @@ module.exports = [
             max: 2,
           },
         },
-      }),
+      },
     ],
   },
   {
     areas: [
-      new Area({
+      {
         name: "Shinsu Tank",
         waves: [
           {
-            whiteSteelEel: 1,
-            ball: 1,
+            hilichurl: 1,
+            mitachurl: 1,
           },
           {
-            whiteSteelEel: 1,
-            ball: 1,
+            hilichurl: 1,
+            mitachurl: 1,
           },
         ],
         harvestingSpot: {
@@ -56,17 +49,17 @@ module.exports = [
             max: 2,
           },
         },
-      }),
-      new Area({
+      },
+      {
         name: "Shinsu Tank 2",
         waves: [
           {
-            whiteSteelEel: 1,
-            ball: 1,
+            hilichurl: 1,
+            mitachurl: 1,
           },
           {
-            whiteSteelEel: 1,
-            ball: 1,
+            hilichurl: 1,
+            mitachurl: 1,
           },
         ],
         harvestingSpot: {
@@ -79,17 +72,17 @@ module.exports = [
             max: 2,
           },
         },
-      }),
-      new Area({
+      },
+      {
         name: "Shinsu Tank 3",
         waves: [
           {
-            whiteSteelEel: 1,
-            ball: 1,
+            hilichurl: 1,
+            mitachurl: 1,
           },
           {
-            whiteSteelEel: 1,
-            ball: 1,
+            hilichurl: 1,
+            mitachurl: 1,
           },
         ],
         harvestingSpot: {
@@ -102,7 +95,7 @@ module.exports = [
             max: 2,
           },
         },
-      }),
+      },
     ],
   },
 ];

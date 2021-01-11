@@ -15,14 +15,9 @@ function newCharacterObj(characterId) {
       current: 0,
       total: Parser.evaluate(expFormulas["mediumSlow"], { n: 2 }),
     },
-    equipment: {
-      weapon: newEquipmentObj(
-        camelCase(characters[characterId].equipment.weapon.name)
-      ),
-      offhand: newEquipmentObj(
-        camelCase(characters[characterId].equipment.offhand.name)
-      ),
-    },
+    weapon: newEquipmentObj(
+      characters[characterId].weaponId,
+    ),
   };
 }
 

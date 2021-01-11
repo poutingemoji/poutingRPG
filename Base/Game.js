@@ -1,6 +1,5 @@
 //BASE
 const Parser = require("expr-eval").Parser;
-const gacha = require("gacha");
 const { stripIndents } = require("common-tags");
 const { capitalCase, camelCase, snakeCase } = require("change-case");
 const cloneDeep = require("lodash.clonedeep");
@@ -14,7 +13,7 @@ const enemies = require("../data/enemies");
 const emojis = require("../data/emojis");
 const items = require("../data/items");
 const talents = require("../data/talents");
-
+console.log(items)
 // UTILS
 const Database = require("../database/Database");
 const {
@@ -23,8 +22,8 @@ const {
   statFormulas,
   itemCategories,
 } = require("../utils/enumHelper");
-const { clamp, isBetween } = require("../utils/Helper");
-
+const { clamp, isBetween, randomWeightedChoice } = require("../utils/Helper");
+console.log("ITEM", randomWeightedChoice(Object.values(items)))
 module.exports = class Game {
   constructor(client) {
     this.Database = new Database(client, this);
@@ -56,8 +55,10 @@ module.exports = class Game {
       }
       return false;
     }
-    player.username = user.username;
-    return player;
+    player.characters.forEach((value, key) =>
+      player.characters.set(key, this.getObjectStats(player, key))
+    );
+    return Object.assign(player, user);
   }
 
   async addValueToPlayer(player, key, value) {
@@ -111,17 +112,6 @@ module.exports = class Game {
   }
 
   //ITEMS
-  roguelike(items, level, itemFilter) {
-    // Which item should we spawn on level {n}?
-    const lvl = gacha.roguelike(items, itemFilter)[level];
-    const strata = Math.random() * lvl.total;
-    for (let i = 0; i < lvl.strata.length; i++) {
-      if (strata <= lvl.strata[i]) {
-        const id = lvl.lookup[i];
-        return id;
-      }
-    }
-  }
 
   //QUESTS
   findQuestType(player, type, id) {
@@ -170,24 +160,30 @@ module.exports = class Game {
     }
   }
 
-  getObjectStats(player, object, level) {
-    if (!["object", "string"].includes(typeof object)) return;
-    if (typeof object == "string") object = { id: object };
+  getObjectStats(player, value, level) {
+    if (!["object", "string"].includes(typeof value)) return;
+    if (typeof value == "string") value = { id: value };
 
-    const { id } = object;
+    const { id } = value;
     const datas = [characters, enemies, items];
     const data = datas.find((x) => x.hasOwnProperty(id));
+    
     if (!data[id]) return;
     if (!data[id].hasOwnProperty("baseStats")) return data[id];
-
-    let obj = Object.assign({constructor: data[id].constructor}, data[id], object);
+    
+    let obj = Object.assign(
+      { constructor: data[id].constructor, stats: {} },
+      data[id],
+      value
+    );
+    
     if (!level) {
       switch (Object.getPrototypeOf(obj.constructor).name) {
         case "Character":
           obj = Object.assign(obj, player.characters.get(id));
-          level = obj.level.current
+          level = obj.level.current;
           break;
-        case "Equipment":
+        case "Weapon":
           level = obj.level;
           break;
         case "Enemy":
@@ -197,7 +193,7 @@ module.exports = class Game {
     }
 
     Object.keys(obj.baseStats).map((statId) => {
-      obj.baseStats[statId] = Parser.evaluate(
+      obj.stats[statId] = Parser.evaluate(
         statFormulas[Object.getPrototypeOf(obj.constructor).name.toLowerCase()],
         {
           n: level,
@@ -205,21 +201,12 @@ module.exports = class Game {
         }
       );
     });
-
-    if (obj.hasOwnProperty("equipment")) {
-      Object.keys(obj.equipment).map((equipmentType) => {
-        obj.equipment[equipmentType] = this.getObjectStats(
-          player,
-          Object.assign(
-            obj.equipment[equipmentType],
-            player.characters.get(id).equipment[equipmentType]
-          )
-        );
+   
+    if (obj.hasOwnProperty("weapon")) {
+      obj.weapon = this.getObjectStats(player, obj.weapon);
+      Object.keys(obj.weapon.stats).map((statId) => {
+        obj.stats[statId] += obj.weapon.stats[statId];
       });
-      obj.stats = {
-        HP: obj.baseStats.HP + obj.equipment.offhand.baseStats.HP,
-        ATK: obj.baseStats.ATK + obj.equipment.weapon.baseStats.ATK,
-      }
     }
     return obj;
     //Calculate stats

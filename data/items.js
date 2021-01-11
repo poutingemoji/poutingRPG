@@ -1,51 +1,37 @@
-const {
-  Food,
-  Material,
-  Ingredient,
-  Weapon,
-  Offhand,
-} = require("../utils/game/Item");
+const { Food, Material, Ingredient, Sword } = require("../utils/game/Item");
 const emojis = require("./emojis");
+const { convertArrayToObject } = require("../utils/Helper");
 
-module.exports = {
-  apple: new Food({
+module.exports = convertArrayToObject([
+  new Food({
+    id: "apple",
     rarity: 1,
-    name: "Apple",
     emoji: "🍎",
   }),
-  orange: new Food({
+  new Food({
+    id: "orange",
     rarity: 1,
-    name: "Orange",
     emoji: "🍊",
   }),
-  metalBar: new Material({
+  new Material({
+    id: "metalBar",
     rarity: 3,
-    name: "Metal Bar",
     emoji: "🦯",
     description: "Yes its a metal bar.",
   }),
-  suspendium: new Material({
+  new Material({
+    id: "suspendium",
     rarity: 3,
-    name: "Suspendium",
     emoji: emojis["suspendium"],
     description: "Yes its suspendium.",
   }),
-  needle: new Weapon({
+  new Sword({
+    id: "dullBlade",
     rarity: 1,
-    name: "Needle",
     emoji: "🪡",
     ATK: 10,
     talentIds: {
       passive: "criticalStrike",
     },
   }),
-  armorInventory: new Offhand({
-    rarity: 1,
-    name: "Armor Inventory",
-    emoji: "🛡️",
-    HP: 10,
-    talentIds: {
-      passive: "vigor",
-    },
-  }),
-};
+]);

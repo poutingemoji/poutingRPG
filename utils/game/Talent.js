@@ -18,7 +18,13 @@ class Attack extends Talent {
   }
 }
 
-class Support extends Talent {
+class Skill extends Talent {
+  constructor(params) {
+    super(params);
+  }
+}
+
+class Burst extends Talent {
   constructor(params) {
     super(params);
   }
@@ -32,6 +38,7 @@ class Passive extends Talent {
 
 module.exports = {
   Attack,
-  Support,
+  Skill,
+  Burst,
   Passive,
 };

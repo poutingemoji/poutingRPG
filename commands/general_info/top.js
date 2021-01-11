@@ -2,7 +2,6 @@
 const Command = require("../../Base/Command");
 
 //DATA
-const factions = require("../../data/factions");
 const { leaderboardFilters } = require("../../utils/enumHelper");
 module.exports = class LeaderboardCommand extends (
   Command
@@ -33,9 +32,7 @@ module.exports = class LeaderboardCommand extends (
   async run(msg, { type }) {
     const formatFilter = async (player) => {
       const user = await this.client.users.fetch(player.discordId);
-      let userMsg = `${user} ${this.Discord.emoji(
-        factions[player.factionId].emoji
-      )} `;
+      let userMsg = `${user} `;
       switch (type) {
         case "level":
           userMsg += `| AR: ${player.level.current}`;

@@ -17,15 +17,6 @@ module.exports = class CharactersCommand extends (
       group: "user_info",
       memberName: "characters",
       description: "View your characters.",
-      args: [
-        {
-          key: "filter",
-          prompt: `What would you like to filter by?`,
-          type: "string",
-          oneOf: ["volume", "position"],
-          default: "volume",
-        },
-      ],
       throttling: {
         usages: 1,
         duration: 2,
@@ -33,20 +24,16 @@ module.exports = class CharactersCommand extends (
     });
   }
 
-  async run(msg, { filter }) {
+  async run(msg) {
     const player = await this.Game.findPlayer(msg.author, msg);
     if (!player) return;
 
     const formatFilter = async (characterId) => {
-      const character = this.Game.getObjectStats(player, characterId);
-      const { weapon, offhand } = character.equipment;
-      return `${this.Discord.emoji(character.position.emoji)} **${
+      const character = player.characters.get(characterId);
+      console.log("CHARACTER", character);
+      return `${this.Discord.emoji(character.constructor.name)} **${
         character.name
-      }** (Lv.${character.level.current}) | ${this.Discord.emoji(
-        weapon.emoji
-      )} ${weapon.name} +${weapon.baseStats.ATK} | ${this.Discord.emoji(
-        offhand.emoji
-      )} ${offhand.name} +${offhand.baseStats.HP}`;
+      }** (Lv.${character.level.current})`;
     };
 
     this.Discord.Pagination.buildEmbeds(
@@ -56,12 +43,7 @@ module.exports = class CharactersCommand extends (
         title: "Characters",
       },
       formatFilter,
-      groupBy(
-        Array.from(player.characters.keys()),
-        filter == "volume"
-          ? (characterId) => `Volume ${characters[characterId].volume}`
-          : (characterId) => characters[characterId].position.name
-      )
+      Array.from(player.characters.keys())
     );
   }
 };

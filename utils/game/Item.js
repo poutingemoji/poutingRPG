@@ -1,15 +1,14 @@
-const {aggregation}= require("./../../Base/Util")
-const BattleObject = require("./BattleObject");
+const { aggregation } = require("./../../Base/Util");
 const Instance = require("./Instance");
-const talents = require("../../data/talents");
-const { rarities, talentTypes } = require("../enumHelper");
+const BattleObject = require("./BattleObject");
+const { rarities } = require("../enumHelper");
 
 class Item extends Instance {
   constructor(params) {
     super(params);
-    const { name, rarity } = params;
+    const { id, rarity } = params;
     if (!rarities[rarity - 1])
-      return console.error(`${name}'s rarity, ${rarity}, is illegal.`);
+      throw new Error(`${id}'s rarity, ${rarity}, is illegal.`);
     this.rarity = rarity;
 
     this.level = 1;
@@ -38,24 +37,51 @@ class Ingredient extends Item {
   }
 }
 
-class Equipment extends aggregation(Item, BattleObject) {
+//Weapons
+class Weapon extends aggregation(Item, BattleObject) {
   constructor(params) {
     super(params);
     if (params.instructions) this.instructions = params.instructions;
   }
 }
 
-//EQUIPMENT
-class Weapon extends Equipment {
+class Sword extends Weapon {
   constructor(params) {
     super(params);
   }
 }
 
-class Offhand extends Equipment {
+class Claymore extends Weapon {
   constructor(params) {
     super(params);
   }
 }
 
-module.exports = { Food, Material, Ingredient, Weapon, Offhand };
+class Polearm extends Weapon {
+  constructor(params) {
+    super(params);
+  }
+}
+
+class Catalyst extends Weapon {
+  constructor(params) {
+    super(params);
+  }
+}
+
+class Bow extends Weapon {
+  constructor(params) {
+    super(params);
+  }
+}
+
+module.exports = {
+  Food,
+  Material,
+  Ingredient,
+  Sword,
+  Claymore,
+  Polearm,
+  Catalyst,
+  Bow,
+};

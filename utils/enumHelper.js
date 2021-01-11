@@ -89,16 +89,16 @@ module.exports = {
   statFormulas: {
     character: "floor((n-1)*10+x)",
     enemy: "floor((n-1)*10+x)",
-    equipment: "floor((n-1)*10+x)",
+    weapon: "floor((n-1)*10+x)",
   },
+  talkedRecently: new Set(),
+  waitingOnResponse: new Set(),
+  isInBattle: new Set(),
   links: {
     website: "https://poutingemoji.github.io/poutingbot/",
     commandList: "https://poutingemoji.github.io/poutingbot/commands.html",
     supportServer: "https://discord.gg/nGVe96h",
   },
-  talkedRecently: new Set(),
-  waitingOnResponse: new Set(),
-  isInBattle: new Set(),
   commandGroups: {
     administrative: "Administrative Commands",
     adventure: "Adventure Commands",

@@ -1,60 +1,64 @@
 const BattleObject = require("./BattleObject");
 const items = require("../../data/items");
 const talents = require("../../data/talents");
-const { itemCategories } = require("../enumHelper");
+const { rarities, itemCategories } = require("../enumHelper");
 
 class Character extends BattleObject {
   constructor(params) {
     super(params);
-    const { name, season, equipmentIds } = params;
-    if (isNaN(season)) throw new Error(`${name} doesn't have a season.`);
-    this.season = season;
-
-    this.equipment = {};
-    itemCategories.equipment.map((equipmentType) => {
-      const equipmentId = equipmentIds[equipmentType.toLowerCase()];
-      if (!equipmentId)
-        throw new Error(`${name} is missing a ${equipmentType}Id.`);
-      const equipment = items[equipmentId];
-      if (!equipment)
-        throw new Error(`${equipmentId} is not a valid equipment.`);
-      if (equipment.constructor.name !== equipmentType)
-        throw new Error(`${equipmentId} is not a valid ${equipmentType}.`);
-      this.equipment[equipmentType.toLowerCase()] = equipment;
-    });
+    const { id, rarity, weaponId } = params;
+    if (!rarities[rarity - 1])
+      throw new Error(`${id}'s rarity, ${rarity}, is illegal.`);
+    this.rarity = rarity;
+    if (!items[weaponId]) throw new Error(`${weaponId} is not a valid weapon.`);
+    this.weaponId = weaponId;
   }
 }
 
-//Positions
-class WaveController extends Character {
+//Elements
+class Anemo extends Character {
   constructor(params) {
     super(params);
   }
   ultimate() {}
 }
 
-class LightBearer extends Character {
+class Geo extends Character {
   constructor(params) {
     super(params);
   }
   ultimate() {}
 }
 
-class SpearBearer extends Character {
+class Electro extends Character {
   constructor(params) {
     super(params);
   }
   ultimate() {}
 }
 
-class Fisherman extends Character {
+class Dendro extends Character {
   constructor(params) {
     super(params);
   }
   ultimate() {}
 }
 
-class Scout extends Character {
+class Hydro extends Character {
+  constructor(params) {
+    super(params);
+  }
+  ultimate() {}
+}
+
+class Pyro extends Character {
+  constructor(params) {
+    super(params);
+  }
+  ultimate() {}
+}
+
+class Cryo extends Character {
   constructor(params) {
     super(params);
   }
@@ -62,9 +66,11 @@ class Scout extends Character {
 }
 
 module.exports = {
-  WaveController,
-  LightBearer,
-  SpearBearer,
-  Fisherman,
-  Scout,
+  Anemo,
+  Geo,
+  Electro,
+  Dendro,
+  Hydro,
+  Pyro,
+  Cryo,
 };

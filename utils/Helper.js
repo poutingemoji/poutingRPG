@@ -1,5 +1,5 @@
 //http://patorjk.com/software/taag/#p=testall&f=Modular
-module.exports = {
+const Helper = {
   /*
    ___   __    _  _______  _______  _______  _______  ______   
   |   | |  |  | ||       ||       ||       ||       ||    _ |  
@@ -86,6 +86,13 @@ module.exports = {
     |__| |__||___|  |_||___|  |_||__| |__|  |___|  
   */
 
+  convertArrayToObject(array, key = "id") {
+    return array.reduce((obj, item) => {
+      obj[item[key]] = item;
+      return obj;
+    }, {});
+  },
+
   /**
    * Fills the given array with the given value x times.
    * @param value
@@ -149,18 +156,17 @@ module.exports = {
    * @returns {Boolean} Object has property
    */
   hasOwnDeepProperty(obj, prop) {
-    if (typeof obj === 'object' && obj !== null) { 
-      if (obj.hasOwnProperty(prop)) {            
+    if (typeof obj === "object" && obj !== null) {
+      if (obj.hasOwnProperty(prop)) {
         return true;
       }
-      for (let p in obj) {                       
-        if (obj.hasOwnProperty(p) &&               
-            hasOwnDeepProperty(obj[p], prop)) { 
+      for (let p in obj) {
+        if (obj.hasOwnProperty(p) && hasOwnDeepProperty(obj[p], prop)) {
           return true;
         }
       }
     }
-    return false;                                  
+    return false;
   },
 
   /*
@@ -192,7 +198,11 @@ module.exports = {
    * @returns Random value
    */
   randomChoice(arr) {
-    return arr[this.randomBetween(0, arr.length - 1)];
+    return arr[Helper.randomBetween(0, arr.length - 1)];
+  },
+
+  randomWeightedChoice(arr, prop = "weight") {
+    return Helper.randomChoice([].concat(...arr.map((obj) => Array(Math.ceil(obj[prop] * 100)).fill(obj))))
   },
 
   /* 
@@ -256,5 +266,6 @@ module.exports = {
       currentDate = Date.now();
     } while (currentDate - date < milliseconds);
   },
-}
+};
 
+module.exports = Helper

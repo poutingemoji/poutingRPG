@@ -31,20 +31,19 @@ const playerSchema = mongoose.Schema({
   teams: {
     type: Array,
     of: Array,
-    default: [["twentyFifthBaam"]],
+    default: [["traveler"]],
   },
   characters: {
     type: Map,
     of: Object,
     default: {
-      ["twentyFifthBaam"]: newCharacterObj("twentyFifthBaam"),
+      ["traveler"]: newCharacterObj("traveler"),
     },
   },
   equipment: {
     type: Array,
     default: [
-      newEquipmentObj("needle", 30),
-      newEquipmentObj("armorInventory", 20),
+      newEquipmentObj("dullBlade", 30),
     ],
   },
   inventory: { type: Map, of: Number, default: {} },
@@ -76,13 +75,9 @@ function newPlayerObj(discordId, factionId) {
     discordId,
     factionId,
     characters: {
-      ["twentyFifthBaam"]: newCharacterObj("twentyFifthBaam"),
-      ["khunAgueroAgnis"]: newCharacterObj("khunAgueroAgnis"),
-      ["rakWraithraiser"]: newCharacterObj("rakWraithraiser"),
-      ["androssiZahard"]: newCharacterObj("androssiZahard"),
-      ["shipLeesoo"]: newCharacterObj("shipLeesoo"),
+      ["traveler"]: newCharacterObj("traveler"),
     },
-    teams: [["twentyFifthBaam", "khunAgueroAgnis", "rakWraithraiser"]],
+    teams: [["traveler"]],
     inventory: { apple: 3, orange: 5, suspendium: 6, metalBar: 2 },
   };
 }

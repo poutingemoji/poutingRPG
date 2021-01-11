@@ -18,7 +18,7 @@ module.exports = class CharDataCommand extends (
           key: "characterId",
           prompt: `What character would you like to get information on?`,
           type: "string",
-          default: "twentyFifthBaam",
+          default: "traveler",
         },
       ],
       throttling: {
@@ -34,20 +34,20 @@ module.exports = class CharDataCommand extends (
 
     if (!isNaN(characterId))
       characterId = Array.from(player.characters.keys())[characterId - 1];
-    const character = this.Game.getObjectStats(player, characterId);
+    const character = player.characters.get(characterId);
     if (!character) return;
 
-    const { baseStats, stats } = character;
-    const { weapon, offhand } = character.equipment;
+    console.log(character.weapon);
     const params = {
       title: `${this.Discord.emoji(character.constructor.name)} ${
         character.name
       }`,
       description: stripIndents(`
-        **HP**: ${baseStats.HP} + ${stats.HP - baseStats.HP}
-        **ATK**: ${baseStats.ATK} + ${stats.ATK - baseStats.ATK}
-        **Weapon**: ${weapon.name} ${this.Discord.emoji(weapon.emoji)}
-        **Offhand**: ${offhand.name} ${this.Discord.emoji(offhand.emoji)}
+        **HP**: ${character.stats.HP}
+        **ATK**: ${character.stats.ATK}
+        **Weapon**: ${character.weapon.name} ${this.Discord.emoji(
+        character.weapon.emoji
+      )}
         
         ${Object.keys(character.talents)
           .map((talentType) => {

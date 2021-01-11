@@ -1,9 +1,10 @@
-const { camelCase } = require("change-case");
+const { capitalCase, snakeCase } = require("change-case");
+const emojis = require("../../data/emojis")
 module.exports = class Instance {
-  constructor({ name, emoji = "", description = "" }) {
-    this.id = camelCase(name);
-    this.name = name;
-    this.emoji = emoji;
+  constructor({ id, emoji, description = "" }) {
+    this.id = id;
+    this.name = capitalCase(id);
+    this.emoji = emoji ? emoji : emojis[snakeCase(id)] || "";
     this.description = description;
   }
 };

@@ -1,25 +1,29 @@
 const { Boss, Special } = require("../utils/game/Enemy");
-module.exports = {
-  whiteSteelEel: new Boss({
+const { convertArrayToObject } = require("../utils/Helper");
+
+module.exports = convertArrayToObject([
+  new Boss({
+    id: "mitachurl",
     rarity: 5,
-    name: "White Steel Eel",
     HP: 100,
     ATK: 100,
     talentIds: {
-      attack: "shinsuBlast",
-      support: "shinsuAura",
+      attack: "foreignIronwind",
+      skill: "palmVortex",
+      burst: "gustSurge",
     },
     drops: { copperChunk: 4, ironChunk: 69 },
   }),
-  ball: new Special({
+  new Boss({
+    id: "hilichurl",
     rarity: 1,
-    name: "Ball",
     HP: 50,
     ATK: 0,
     talentIds: {
-      attack: "shinsuBlast",
-      support: "shinsuAura",
+      attack: "foreignIronwind",
+      skill: "palmVortex",
+      burst: "gustSurge",
     },
     drops: { copperChunk: 4, ironChunk: 69 },
   }),
-};
+]);

@@ -24,18 +24,16 @@ module.exports = class Battle {
     this.body = "";
     this.maxLength = 2000;
 
-    this.team1 = this.player.teams[this.player.teamId].map((characterId) =>
-      this.Game.getObjectStats(this.player, characterId)
-    );
+    this.team1 = player.teams[player.teamId].map((id) => player.characters.get(id));
     this.team2 = [];
     /*
+    PVPBattle
       this.team2 = params.team2.map((characterId) => this.Game.getObjectStats(this.player2, characterId));
     */
     this.drops = {};
   }
 
   castTalent(battleChoice, params) {
-    //const casterTurnEnded = !caster.turnEnded == false;
     const teamKnockedOut = !(
       this.team2.some((e) => e.HP > 0) && this.team1.some((t) => t.HP > 0)
     );
@@ -49,7 +47,7 @@ module.exports = class Battle {
     };
     //console.log("CASTER", caster);
 
-    if (caster.hasOwnProperty("weapon") && caster.hasOwnProperty("offhand")) {
+    if (["weapon", "offhand"].every(prop => caster.hasOwnProperty(prop))) {
       itemCategories.equipment.map((equipmentType) => {
         console.log(caster[equipmentType]);
         const passiveTalent = caster[equipmentType].talents.passive;
@@ -57,10 +55,7 @@ module.exports = class Battle {
           passiveTalent.onAttack(params);
       });
     }
-    if (
-      targeted.hasOwnProperty("weapon") &&
-      targeted.hasOwnProperty("offhand")
-    ) {
+    if (["weapon", "offhand"].every(prop => targeted.hasOwnProperty(prop))) {
       itemCategories.equipment.map((equipmentType) => {
         const passiveTalent = targeted[equipmentType].talents.passive;
         if (passiveTalent.hasOwnProperty("onDefend"))
@@ -112,8 +107,8 @@ module.exports = class Battle {
   formatBattleStats(obj, i) {
     return `${i + 1}) ${this.Discord.emoji(
       obj.turnEnded ? "✅" : "red_cross"
-    )} ${this.Discord.emoji(obj.emoji)} **${obj.name}** (${obj.HP}/${
-      obj.maxHP
+    )} ${this.Discord.emoji(obj.emoji)} **${obj.name}** (${obj.stats.HP}/${
+      obj.stats.maxHP
     } ❤️) ${
       obj.target.position !== null
         ? ` | 🎯 ${

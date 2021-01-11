@@ -31,23 +31,10 @@ module.exports = class BattleObject extends (
     if (ATK) this.baseStats.ATK = ATK
     this.target = { position: null, turns: 0 };
     this.effects = {};
+    this.turnEnded = false;
   }
-  
+
   takeDamage(amount) {
-    if (this.hasOwnProperty("equipment")) {
-      Object.keys(this.equipment).map((equipmentType) => {
-        if (
-          this.equipment[equipmentType].talents.passive.hasOwnProperty(
-            "onDamaged"
-          )
-        )
-          amount -=
-            this.equipment[equipmentType].talents.passive.onDamaged({
-              targeted: this,
-              amount,
-            }) || 0;
-      });
-    }
     this.HP = clamp(Math.floor(this.HP - amount), 0, this.maxHP);
   }
 };

@@ -14,14 +14,14 @@ const talents = require("../../data/talents");
 const {
   battleChoices,
   isInBattle,
-  responseWaitTime,
   waitingOnResponse,
 } = require("../enumHelper");
-const { randomChoice, sleep } = require("../Helper");
+const { randomChoice,  sleep } = require("../Helper");
 
 const getTotalEnemies = (acc, cur) => acc.concat(cur);
 const calculateTotalPower = (acc, cur) =>
   acc + cur.baseStats.HP || 0 + cur.baseStats.ATK || 0;
+
 module.exports = class PVEBattle extends (
   Battle
 ) {
@@ -31,7 +31,7 @@ module.exports = class PVEBattle extends (
       wave.map((enemyId) => this.Game.getObjectStats(this.player, enemyId))
     );
     this.waveId = 0;
-    console.log(this.team1, this.totalWaves);
+    console.log("TEAMS", this.team1, this.totalWaves);
     this.header = stripIndents(`
       ${this.msg.author}
       ${this.title} Battle
@@ -58,42 +58,6 @@ module.exports = class PVEBattle extends (
     isInBattle.add(this.player.discordId);
 
     this.team2 = this.totalWaves[this.waveId];
-    const Battle = this;
-
-    this.Discord.createResponseCollector({
-      author: { id: this.player.discordId },
-      msg: this.msgSent,
-      type: "message",
-      removeResponses: true,
-      filter: function (response) {
-        if (!response) return;
-        const args = response.content.split(" ");
-        if (!args.length == 2) return;
-        if (args[0] !== "data") return;
-        if (isNaN(args[1])) return;
-        const obj =
-          Math.sign(args[1]) == 1
-            ? Battle.team1[args[1] - 1]
-            : Battle.team2[Math.abs(args[1]) - 1];
-        return typeof obj !== "undefined";
-      },
-      onCollect: function (message) {
-        console.log("MESSAGE", message);
-        const args = message.split(" ");
-        const obj =
-          Math.sign(args[1]) == 1
-            ? Battle.team1[args[1] - 1]
-            : Battle.team2[Math.abs(args[1]) - 1];
-        console.log(obj);
-        const messageEmbed = Battle.Discord.buildEmbed({
-          name: obj.name,
-          description: `yes`,
-        });
-        Battle.msg.say(messageEmbed);
-      },
-      onEnd: function (collected) {},
-    });
-
     for (this.waveId; this.waveId < this.totalWaves.length; this.waveId++) {
       await this.startWave();
       if (
@@ -107,8 +71,6 @@ module.exports = class PVEBattle extends (
 
   async startWave() {
     this.team2 = this.totalWaves[this.waveId];
-    this.team1.map((t) => (t.turnEnded = false));
-    this.team2.map((e) => (e.turnEnded = false));
     this.round = 0;
     do {
       this.updateBattleMsg();
@@ -128,69 +90,34 @@ module.exports = class PVEBattle extends (
     this.body += `*Round ${this.round}*\n`;
     //Player Turn
     let teamKnockedOut;
-    do {
-      const res = await this.Discord.awaitResponse({
-        author: { id: this.player.discordId },
-        msg: this.msgSent,
-        type: "message",
-        removeResponses: true,
-        responseWaitTime: responseWaitTime,
-        filter: function (response) {
-          if (!response) return;
-          const args = response.content.split(" ");
-          if (!args.length == 3) return;
-          const battleChoiceId = findBestMatch(args[1], battleChoices).bestMatch
-            .target;
-          const caster = Battle.team1[args[0] - 1];
-          const targeted =
-            battleChoiceId == battleChoices[0]
-              ? Battle.team2[args[2] - 1]
-              : Battle.team1[args[2] - 1];
-          return (
-            response.author.id == Battle.player.discordId &&
-            typeof caster !== "undefined" &&
-            caster.turnEnded == false &&
-            typeof targeted !== "undefined"
-          );
-        },
-      });
-      if (!res) return this.escape();
-      console.log(res);
-      const args = res.split(" ");
-      const battleChoiceId = findBestMatch(args[1], battleChoices).bestMatch
-        .target;
-      teamKnockedOut = this.castTalent(battleChoiceId, {
-        caster: this.team1[args[0] - 1],
-        targeted:
-          battleChoiceId == battleChoices[0]
-            ? this.team2[args[2] - 1]
-            : this.team1[args[2] - 1],
-        attackingTeam: this.team1,
-        defendingTeam: this.team2,
-      });
-    } while (this.team1.some((t) => t.turnEnded == false) && !teamKnockedOut);
-    if (teamKnockedOut) return;
+
     this.team2.map(this.decreaseEffectTurn);
     console.log("Enemy Turn");
     //Enemy Turn
 
-    this.team2.map((e) => {
-      const battleChoiceId = randomChoice(battleChoices);
-      teamKnockedOut = this.castTalent(battleChoiceId, {
-        caster: e,
-        targeted: battleChoices[0].includes(battleChoiceId)
-          ? this.team1[e.target.position] || randomChoice(this.team1)
-          : randomChoice(this.team2),
-        attackingTeam: this.team2,
-        defendingTeam: this.team1,
-      });
-      sleep(2000);
-      console.log("cast enemey turn");
-    });
-    if (teamKnockedOut) return;
-
-    this.team1.map(this.decreaseEffectTurn);
-    this.team1.concat(this.team2).map((obj) => (obj.turnEnded = false));
+    let attackingTeam = this.team1,
+      defendingTeam = this.team2;
+    const teams = [attackingTeam, defendingTeam]
+    teams.map((team => {
+      team.map((caster => {
+        const battleChoiceId = randomChoice(battleChoices);
+        teamKnockedOut = this.castTalent(battleChoiceId, {
+          caster,
+          targeted: battleChoices[0].includes(battleChoiceId)
+            ? defendingTeam[caster.target.position] || randomChoice(defendingTeam)
+            : randomChoice(this.team2),
+          attackingTeam,
+          defendingTeam,
+        });
+        sleep(2000);
+        if (teamKnockedOut) return;
+        console.log("Next turn");
+        defendingTeam.map(this.decreaseEffectTurn);
+        defendingTeam = [attackingTeam, (attackingTeam = defendingTeam)][0];
+      }))
+    }))
+      
+    teams.map(team => team.map((entity) => (entity.turnEnded = false)));
     this.updateBattleMsg();
     console.log("----round ended----");
   }
@@ -219,7 +146,7 @@ module.exports = class PVEBattle extends (
     //prettier-ignore
     this.result = `${this.msg.author} ${this.team1.length > 0 ? "wins 👑" : "loses 💀"} the battle.\n`
     if (this.team1.length > 0 && this.drops) {
-      this.result += "__Drops__\n";
+      this.result += "**Obtained**\n";
       Object.keys(this.drops).map((dropId) => {
         dropId == "points"
           ? this.Game.addValueToPlayer(this.player, dropId, this.drops[dropId])
